@@ -1,0 +1,14 @@
+{
+  "weightStep": 0.05,
+  "weightMin": 0.05,
+  "weightMax": 2,
+  "duplicatePolicy": "skip",
+  "translationProvider": "local",
+  "localLanguage": "ja",
+  "outputLanguage": "en",
+  "autoTranslate": false,
+  "blacklist": [],
+  "blacklistAction": "warn",
+  "tagColors": {},
+  "filter": "all"
+}

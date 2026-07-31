@@ -1,0 +1,127 @@
+.paio-editor {
+  --paio-bg: var(--comfy-menu-bg, oklch(0.16 0 0));
+  --paio-surface: var(--comfy-input-bg, oklch(0.21 0 0));
+  --paio-raised: color-mix(in oklch, var(--paio-surface), white 6%);
+  --paio-ink: var(--input-text, oklch(0.94 0 0));
+  --paio-muted: var(--descrip-text, oklch(0.72 0 0));
+  --paio-primary: oklch(0.54 0.12 140);
+  --paio-accent: oklch(0.76 0.13 75);
+  --paio-danger: oklch(0.62 0.20 25);
+  --paio-warning: oklch(0.78 0.14 80);
+  --paio-info: oklch(0.65 0.13 235);
+  --paio-border: color-mix(in oklch, var(--paio-ink), transparent 78%);
+  box-sizing: border-box;
+  color: var(--paio-ink);
+  background: var(--paio-bg);
+  font: 12px/1.4 system-ui, sans-serif;
+  padding: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.paio-editor *, .paio-editor *::before, .paio-editor *::after { box-sizing: border-box; }
+.paio-tabs, .paio-toolbar, .paio-add-row, .paio-bulk, .paio-tag, .paio-tag-actions, .paio-dialog-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.paio-tabs { margin-bottom: 7px; }
+.paio-tabs .paio-button { flex: 1; }
+.paio-tabs .is-active {
+  background: var(--paio-primary);
+  color: oklch(0.98 0 0);
+  border-color: transparent;
+}
+.paio-toolbar, .paio-bulk { flex-wrap: wrap; margin: 7px 0; }
+.paio-add-row { align-items: stretch; }
+.paio-add-input { flex: 1; min-height: 48px; resize: vertical; }
+.paio-search { flex: 1 1 140px; min-width: 110px; }
+.paio-button, .paio-select, .paio-search, .paio-add-input, .paio-tag-input, .paio-dialog-textarea {
+  color: var(--paio-ink);
+  background: var(--paio-surface);
+  border: 1px solid var(--paio-border);
+  border-radius: 6px;
+  font: inherit;
+}
+.paio-button { min-height: 28px; padding: 3px 8px; cursor: pointer; }
+.paio-button:hover { background: var(--paio-raised); }
+.paio-button:active { transform: translateY(1px); }
+.paio-button:disabled { cursor: not-allowed; opacity: 0.55; }
+.paio-button:focus-visible, .paio-select:focus-visible, .paio-search:focus-visible,
+.paio-add-input:focus-visible, .paio-tag-input:focus-visible, .paio-dialog-textarea:focus-visible {
+  outline: 2px solid var(--paio-info);
+  outline-offset: 1px;
+}
+.paio-select, .paio-search { min-height: 28px; padding: 3px 6px; }
+.paio-add-input, .paio-dialog-textarea { padding: 6px 8px; }
+.paio-bulk {
+  background: color-mix(in oklch, var(--paio-primary), transparent 82%);
+  border-radius: 8px;
+  padding: 6px;
+}
+.paio-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 340px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: 2px;
+}
+.paio-tag {
+  min-width: 0;
+  background: var(--paio-surface);
+  border: 1px solid var(--paio-color-normal, var(--paio-border));
+  border-radius: 9px;
+  padding: 5px;
+}
+.paio-tag[data-type="lora"] { border-color: var(--paio-color-lora, var(--paio-info)); }
+.paio-tag[data-type="lycoris"] { border-color: var(--paio-color-lycoris, oklch(0.65 0.15 305)); }
+.paio-tag[data-type="embedding"] { border-color: var(--paio-color-embedding, oklch(0.68 0.13 185)); }
+.paio-tag[data-type="wildcard"], .paio-tag[data-type="dynamic"] { border-color: var(--paio-color-wildcard, var(--paio-accent)); }
+.paio-tag.is-selected { background: color-mix(in oklch, var(--paio-primary), var(--paio-surface) 75%); }
+.paio-tag.is-disabled { border-color: var(--paio-color-disabled, var(--paio-border)); opacity: 0.58; }
+.paio-tag.is-disabled .paio-tag-input { text-decoration: line-through; }
+.paio-tag.is-duplicate { box-shadow: inset 0 0 0 1px var(--paio-color-duplicate, var(--paio-warning)); }
+.paio-tag.is-blacklisted { background: color-mix(in oklch, var(--paio-color-blacklist, var(--paio-danger)), var(--paio-surface) 82%); }
+.paio-tag.is-missing { border-color: var(--paio-color-missing, var(--paio-danger)); }
+.paio-tag.has-error { border-color: var(--paio-color-error, var(--paio-danger)); }
+.paio-tag.is-dragging { opacity: 0.35; }
+.paio-drag { color: var(--paio-muted); cursor: grab; user-select: none; }
+.paio-tag-text { flex: 1; min-width: 80px; }
+.paio-tag-input { width: 100%; min-height: 27px; padding: 3px 6px; }
+.paio-tag-text small { display: block; color: var(--paio-muted); padding: 2px 6px 0; overflow-wrap: anywhere; }
+.paio-tag-text small.paio-error, .paio-status.is-error { color: var(--paio-danger); }
+.paio-tag-actions { flex-wrap: wrap; justify-content: flex-end; }
+.paio-tag-actions .paio-button { min-height: 24px; padding: 2px 5px; }
+.paio-status { color: var(--paio-muted); margin: 7px 2px 0; min-height: 1.4em; }
+.paio-empty { color: var(--paio-muted); text-align: center; padding: 20px 8px; }
+.paio-dialog {
+  color: var(--paio-ink);
+  background: var(--paio-bg);
+  border: 1px solid var(--paio-border);
+  border-radius: 12px;
+  width: min(620px, 90vw);
+  max-height: 82vh;
+  padding: 14px;
+}
+.paio-dialog::backdrop { background: oklch(0.05 0 0 / 0.68); }
+.paio-dialog h3 { margin: 0 0 10px; font-size: 1.12rem; text-wrap: balance; }
+.paio-dialog-body { display: flex; flex-direction: column; gap: 9px; overflow: auto; max-height: 65vh; }
+.paio-dialog-footer { justify-content: flex-end; margin-top: 10px; }
+.paio-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.paio-field > span { min-width: 120px; }
+.paio-dialog-textarea { min-height: 220px; resize: vertical; width: 100%; }
+.paio-example-list { display: flex; flex-direction: column; gap: 4px; max-height: 48vh; overflow: auto; }
+.paio-example-list .paio-field { background: var(--paio-surface); border-radius: 6px; padding: 5px 7px; }
+.paio-color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 7px; }
+.paio-color-grid input[type="color"] { width: 42px; height: 28px; padding: 2px; border: 1px solid var(--paio-border); background: var(--paio-surface); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .paio-button, .paio-tag { transition: background-color 150ms ease-out, border-color 150ms ease-out, opacity 150ms ease-out; }
+}
+@media (max-width: 560px) {
+  .paio-tag { align-items: flex-start; flex-wrap: wrap; }
+  .paio-tag-text { flex-basis: calc(100% - 54px); }
+  .paio-tag-actions { width: 100%; justify-content: flex-start; padding-left: 44px; }
+}
