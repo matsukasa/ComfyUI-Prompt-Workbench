@@ -1,0 +1,76 @@
+{
+  "last_node_id": 3,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "PromptAllInOne",
+      "pos": [80, 120],
+      "size": [520, 620],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        { "name": "positive", "type": "STRING", "links": [1], "slot_index": 0 },
+        { "name": "negative", "type": "STRING", "links": [2], "slot_index": 1 }
+      ],
+      "properties": {
+        "Node name for S&R": "PromptAllInOne",
+        "promptAllInOneState": {
+          "version": 1,
+          "activeSide": "positive",
+          "positive": [
+            { "id": "example-positive-1", "value": "masterpiece", "enabled": true, "translation": "傑作", "translatedTo": "ja", "type": "normal" },
+            { "id": "example-positive-2", "value": "detailed eyes", "enabled": true, "translation": "精細な瞳", "translatedTo": "ja", "type": "normal" }
+          ],
+          "negative": [
+            { "id": "example-negative-1", "value": "low quality", "enabled": true, "translation": "", "translatedTo": "", "type": "normal" }
+          ],
+          "settings": { "weightStep": 0.05, "duplicatePolicy": "skip", "translationProvider": "local", "localLanguage": "ja", "outputLanguage": "en", "autoTranslate": false, "blacklist": [], "blacklistAction": "warn", "tagColors": {} }
+        }
+      },
+      "widgets_values": ["masterpiece, detailed eyes", "low quality"]
+    },
+    {
+      "id": 2,
+      "type": "CLIPTextEncode",
+      "pos": [690, 130],
+      "size": [400, 200],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        { "name": "clip", "type": "CLIP", "link": null },
+        { "name": "text", "type": "STRING", "link": 1, "widget": { "name": "text" } }
+      ],
+      "outputs": [{ "name": "CONDITIONING", "type": "CONDITIONING", "links": null, "slot_index": 0 }],
+      "properties": { "Node name for S&R": "CLIPTextEncode" },
+      "widgets_values": [""]
+    },
+    {
+      "id": 3,
+      "type": "CLIPTextEncode",
+      "pos": [690, 390],
+      "size": [400, 200],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        { "name": "clip", "type": "CLIP", "link": null },
+        { "name": "text", "type": "STRING", "link": 2, "widget": { "name": "text" } }
+      ],
+      "outputs": [{ "name": "CONDITIONING", "type": "CONDITIONING", "links": null, "slot_index": 0 }],
+      "properties": { "Node name for S&R": "CLIPTextEncode" },
+      "widgets_values": [""]
+    }
+  ],
+  "links": [
+    [1, 1, 0, 2, 1, "STRING"],
+    [2, 1, 1, 3, 1, "STRING"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": { "ds": { "scale": 1, "offset": [0, 0] } },
+  "version": 0.4
+}

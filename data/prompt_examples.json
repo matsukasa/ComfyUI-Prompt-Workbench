@@ -1,0 +1,58 @@
+{
+  "source": {
+    "repository": "https://github.com/Physton/sd-webui-prompt-all-in-one",
+    "commit": "d4b37aa4187b40466772b6282d8b28acd5ad77c9",
+    "path": "group_tags/ja_JP.yaml",
+    "modified": true
+  },
+  "categories": [
+    {
+      "id": "character",
+      "label": { "en": "Character", "ja": "キャラクター" },
+      "items": [
+        { "prompt": "1girl", "translation": { "ja": "1人の女の子" } },
+        { "prompt": "1boy", "translation": { "ja": "1人の男の子" } },
+        { "prompt": "solo", "translation": { "ja": "一人" } },
+        { "prompt": "multiple_girls", "translation": { "ja": "複数の女の子" } },
+        { "prompt": "kawaii", "translation": { "ja": "可愛い" } },
+        { "prompt": "bishoujo", "translation": { "ja": "美少女" } }
+      ]
+    },
+    {
+      "id": "identity",
+      "label": { "en": "Identity", "ja": "身分" },
+      "items": [
+        { "prompt": "student", "translation": { "ja": "学生" } },
+        { "prompt": "teacher", "translation": { "ja": "教師" } },
+        { "prompt": "nurse", "translation": { "ja": "看護師" } },
+        { "prompt": "detective", "translation": { "ja": "探偵" } },
+        { "prompt": "samurai", "translation": { "ja": "侍" } },
+        { "prompt": "astronaut", "translation": { "ja": "宇宙飛行士" } }
+      ]
+    },
+    {
+      "id": "fantasy",
+      "label": { "en": "Fantasy", "ja": "ファンタジー" },
+      "items": [
+        { "prompt": "witch", "translation": { "ja": "魔女" } },
+        { "prompt": "miko", "translation": { "ja": "巫女" } },
+        { "prompt": "ninja", "translation": { "ja": "忍者" } },
+        { "prompt": "vampire", "translation": { "ja": "吸血鬼" } },
+        { "prompt": "magical_girl", "translation": { "ja": "魔法少女" } },
+        { "prompt": "elf", "translation": { "ja": "エルフ" } },
+        { "prompt": "fairy", "translation": { "ja": "妖精" } },
+        { "prompt": "mermaid", "translation": { "ja": "人魚" } }
+      ]
+    },
+    {
+      "id": "quality",
+      "label": { "en": "Quality", "ja": "品質" },
+      "items": [
+        { "prompt": "masterpiece", "translation": { "ja": "傑作" } },
+        { "prompt": "best quality", "translation": { "ja": "最高品質" } },
+        { "prompt": "highly detailed", "translation": { "ja": "非常に詳細" } },
+        { "prompt": "detailed eyes", "translation": { "ja": "精細な瞳" } }
+      ]
+    }
+  ]
+}
