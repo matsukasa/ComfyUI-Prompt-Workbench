@@ -16,16 +16,17 @@ class PromptExamplesTests(unittest.TestCase):
     def test_contains_all_audited_upstream_entries(self):
         categories = self.data["categories"]
         item_count = sum(len(category["items"]) for category in categories)
-        self.assertEqual(len(categories), 134)
-        self.assertEqual(item_count, 3744)
+        self.assertEqual(len(categories), 115)
+        self.assertEqual(item_count, 3595)
         self.assertEqual(self.data["stats"]["primaryCategories"], 10)
-        self.assertEqual(self.data["stats"]["categories"], 134)
-        self.assertEqual(self.data["stats"]["items"], 3744)
-        self.assertEqual(self.data["stats"]["excludedItems"], 62)
+        self.assertEqual(self.data["stats"]["categories"], 115)
+        self.assertEqual(self.data["stats"]["items"], 3595)
+        self.assertEqual(self.data["stats"]["excludedItems"], 211)
         self.assertNotIn(
             "人物 / 二次元キャラクター",
             [category["label"]["ja"] for category in categories],
         )
+        self.assertNotIn("漢服", [category["parent"]["ja"] for category in categories])
 
     def test_source_is_pinned_and_every_item_is_searchable_text(self):
         source = self.data["source"]

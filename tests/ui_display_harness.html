@@ -11,7 +11,7 @@
   </section>
   <output id="result"></output>
   <script type="module">
-    import { getTagDisplayText } from "../web/prompt_editor.js";
+    import { appendPresentChildren, getTagDisplayText } from "../web/prompt_editor.js";
     const display = getTagDisplayText(
       { value: "1girl", translation: "1girl null", translatedTo: "ja" },
       { translationDisplay: "local", localLanguage: "ja" },
@@ -30,7 +30,8 @@
       secondary.textContent = display.secondary;
       content.append(secondary);
     }
-    button.append(content);
+    const warning = null;
+    appendPresentChildren(button, content, warning);
     document.querySelector("#tags").append(button);
     document.querySelector("#result").textContent = button.textContent === "1girl" ? "PASS" : `FAIL:${button.textContent}`;
   </script>

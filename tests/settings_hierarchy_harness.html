@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="../web/prompt_all_in_one.css">
+  <title>Prompt All-in-One settings hierarchy QA</title>
+</head>
+<body style="margin:0;background:#101210;color:#eee">
+  <main id="mount" style="width:720px;margin:20px auto"></main>
+  <output id="result" style="position:fixed;right:12px;bottom:12px;padding:7px 10px;border-radius:6px;background:#18351f;color:#dfffe6">LOADING</output>
+  <script type="module">
+    import { PromptEditor } from "../web/prompt_editor.js";
+
+    const prompt = { name: "prompt", type: "text", value: "1girl, masterpiece", draw() {}, computeSize() { return [600, 120]; } };
+    const node = {
+      size: [720, 820],
+      addDOMWidget(_name, _type, root) { document.querySelector("#mount").append(root); return {}; },
+      setSize(size) { this.size = size; },
+    };
+    const api = {
+      fetchApi(path) {
+        if (path === "/prompt_all_in_one/examples") return fetch("../data/prompt_examples.json");
+        return Promise.resolve(new Response(JSON.stringify({ loras: [], embeddings: [] }), { headers: { "content-type": "application/json" } }));
+      },
+    };
+    new PromptEditor(node, { prompt }, api);
+    [...document.querySelectorAll("button")].find((item) => item.textContent === "設定")?.click();
+    [...document.querySelectorAll("button")].find((item) => item.textContent === "タグ管理")?.click();
+    window.setTimeout(() => document.querySelector(".paio-library-tree-row.is-small")?.click(), 900);
+    window.setTimeout(() => {
+      const levels = [...document.querySelectorAll(".paio-level-badge")].map((item) => item.textContent);
+      const hasHierarchy = levels.includes("大") && levels.includes("中") && levels.includes("小");
+      const hanfuAbsent = !document.querySelector(".paio-settings-dialog")?.textContent.includes("漢服");
+      const widgetHidden = prompt.hidden === true && prompt.computeSize()[1] < 0 && prompt.draw.toString().includes("=> {}");
+      const tagEditor = Boolean(document.querySelector(".paio-tag-editor .paio-tag-add"));
+      document.querySelector("#result").textContent = hasHierarchy && hanfuAbsent && widgetHidden && tagEditor ? "PASS" : `FAIL hierarchy=${hasHierarchy} hanfu=${hanfuAbsent} widget=${widgetHidden} tags=${tagEditor}`;
+    }, 1800);
+  </script>
+</body>
+</html>

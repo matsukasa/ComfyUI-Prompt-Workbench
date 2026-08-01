@@ -18,6 +18,15 @@ import {
   sanitizeEditorState,
 } from "./settings.js";
 import { translateTags } from "./translation.js";
+import {
+  buildTagLibrary,
+  deleteCategoryEdit,
+  deleteTagEdit,
+  libraryToExampleData,
+  saveCategoryEdit,
+  saveTagEdit,
+  sanitizeLibraryEdits,
+} from "./tag_library.js";
 
 const STATE_KEY = "promptAllInOneState";
 const MAX_RENDERED_TAGS = 250;
@@ -41,6 +50,10 @@ function element(tagName, options = {}, children = []) {
     if (child) node.append(child);
   }
   return node;
+}
+
+export function appendPresentChildren(parent, ...children) {
+  parent.append(...children.filter((child) => child !== null && child !== undefined));
 }
 
 function button(label, action, title = label) {
@@ -105,9 +118,11 @@ function hideWidgetForGood(widget, suffix = "") {
   if (!Object.hasOwn(widget, "paioOriginalType")) {
     widget.paioOriginalType = widget.type;
     widget.paioOriginalComputeSize = widget.computeSize;
+    widget.paioOriginalDraw = widget.draw;
   }
   widget.hidden = true;
   widget.computeSize = () => [0, -4];
+  widget.draw = () => {};
   widget.type = `converted-widget${suffix}`;
   for (const linked of widget.linkedWidgets || []) hideWidgetForGood(linked, `:${widget.name}`);
 }
@@ -133,6 +148,9 @@ export class PromptEditor {
     this.modelRegistry = { loras: null, embeddings: null };
     this.syncing = false;
     this.lastWidgetValue = "";
+    this.exampleData = null;
+    this.exampleLoadPromise = null;
+    this.refreshExamplesPanel = null;
     this.restore();
     this.root = this.build();
     this.attach();
@@ -430,7 +448,8 @@ export class PromptEditor {
   }
 
   buildSettingsDialog() {
-    const dialog = this.buildDialog("エディター設定");
+    const dialog = this.buildDialog("設定");
+    dialog.classList.add("paio-settings-dialog");
     const step = element("select", { className: "paio-select" });
     for (const value of [0.05, 0.1, 0.25]) {
       const option = element("option", { text: value });
@@ -475,7 +494,37 @@ export class PromptEditor {
       colorInputs[key] = input;
       colorGrid.append(this.labeled(label, input));
     }
-    const save = button("保存", () => {
+    const libraryManager = this.buildLibraryManager();
+    const generalPanel = element("section", { className: "paio-settings-panel is-active", dataset: { panel: "general" } });
+    generalPanel.append(
+      element("h4", { text: "一般" }),
+      this.labeled("重み刻み", step),
+      this.labeled("重複時", duplicate),
+      this.labeled("出力言語", output),
+      element("p", { className: "paio-settings-caption", text: "タグ状態の色" }),
+      colorGrid,
+    );
+    const translationPanel = element("section", { className: "paio-settings-panel", dataset: { panel: "translation" } });
+    translationPanel.append(
+      element("h4", { text: "翻訳" }),
+      this.labeled("翻訳プロバイダー", provider),
+      this.labeled("入力時に自動翻訳", auto),
+      element("p", { className: "paio-settings-help", text: "翻訳操作は上部の「翻訳」メニューから、選択中または全タグを対象に実行できます。" }),
+    );
+    const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.root);
+    const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, libraryPanel]);
+    const navigation = element("nav", { className: "paio-settings-nav", ariaLabel: "設定項目" });
+    for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["library", "タグ管理"]]) {
+      const navButton = button(label, () => {
+        navigation.querySelectorAll(".paio-button").forEach((item) => item.classList.toggle("is-active", item === navButton));
+        content.querySelectorAll(".paio-settings-panel").forEach((item) => item.classList.toggle("is-active", item.dataset.panel === id));
+        if (id === "library") libraryManager.refresh();
+      });
+      navButton.classList.add("paio-settings-nav-button");
+      if (id === "general") navButton.classList.add("is-active");
+      navigation.append(navButton);
+    }
+    const save = button("変更を保存", () => {
       this.pushUndo();
       this.settings.weightStep = Number(step.value);
       this.settings.duplicatePolicy = duplicate.value;
@@ -483,23 +532,151 @@ export class PromptEditor {
       this.settings.outputLanguage = output.value;
       this.settings.autoTranslate = auto.checked;
       this.settings.tagColors = Object.fromEntries(Object.entries(colorInputs).map(([key, input]) => [key, input.value]));
+      this.settings.libraryEdits = libraryManager.getEdits();
       this.applyCustomColors();
       this.syncToWidgets();
       this.render();
+      this.refreshExamplesPanel?.();
       closeDialog(dialog);
       this.setStatus("設定を保存しました。APIキーはワークフローに保存されません");
     });
-    dialog.body.append(
-      this.labeled("重み刻み", step),
-      this.labeled("重複時", duplicate),
-      this.labeled("翻訳プロバイダー", provider),
-      this.labeled("出力言語", output),
-      this.labeled("入力時に自動翻訳", auto),
-      element("p", { text: "タグ状態の色" }),
-      colorGrid,
-      save,
-    );
+    const shell = element("div", { className: "paio-settings-shell" }, [navigation, content]);
+    dialog.body.append(shell);
+    dialog.querySelector(".paio-dialog-footer")?.prepend(save);
     return dialog;
+  }
+
+  buildLibraryManager() {
+    const root = element("div", { className: "paio-library-manager" });
+    const heading = element("div", { className: "paio-library-heading" }, [
+      element("div", {}, [element("h4", { text: "タグ管理" }), element("p", { text: "大分類 → 中分類 → 小分類 → タグの順で整理します。" })]),
+    ]);
+    const modeTabs = element("div", { className: "paio-library-tabs" });
+    const body = element("div", { className: "paio-library-body" });
+    const treePane = element("section", { className: "paio-library-tree" });
+    const detailPane = element("section", { className: "paio-library-detail" });
+    const search = element("input", { className: "paio-search" });
+    search.type = "search";
+    search.placeholder = "カテゴリーやタグを検索";
+    let mode = "category";
+    let edits = sanitizeLibraryEdits(this.settings.libraryEdits);
+    let selectedId = "";
+    let serial = 0;
+    const source = () => this.exampleData || { categories: [] };
+    const getLibrary = () => buildTagLibrary(source(), edits);
+    const createCategory = (level) => {
+      const library = getLibrary();
+      let parentId = "";
+      const selected = library.categories.find((item) => item.id === selectedId);
+      if (level === "medium") parentId = selected?.level === "large" ? selected.id : selected?.level === "medium" ? selected.parentId : library.categories.find((item) => item.level === "large")?.id || "";
+      if (level === "small") parentId = selected?.level === "medium" ? selected.id : selected?.level === "small" ? selected.parentId : library.categories.find((item) => item.level === "medium")?.id || "";
+      if (level !== "large" && !parentId) return this.setStatus("先に親カテゴリーを作成してください", true);
+      const id = `custom-category-${Date.now()}-${serial++}`;
+      edits = saveCategoryEdit(edits, { id, level, parentId, en: "New category", ja: "新しいカテゴリー", custom: true });
+      selectedId = id;
+      render();
+    };
+    const addBar = element("div", { className: "paio-library-addbar" }, [
+      button("＋ 大分類", () => createCategory("large")),
+      button("＋ 中分類", () => createCategory("medium")),
+      button("＋ 小分類", () => createCategory("small")),
+    ]);
+    const showCategoryDetail = (library, category) => {
+      if (!category) return detailPane.append(element("p", { className: "paio-empty", text: "左からカテゴリーを選択してください" }));
+      const en = element("input", { className: "paio-search" }); en.value = category.en;
+      const ja = element("input", { className: "paio-search" }); ja.value = category.ja;
+      const save = button("名称を保存", () => {
+        edits = saveCategoryEdit(edits, { ...category, en: en.value, ja: ja.value, custom: !category.builtin });
+        render();
+      });
+      const destination = element("select", { className: "paio-select" });
+      const empty = element("option", { text: "移動先を選択" }); empty.value = ""; destination.append(empty);
+      for (const small of library.categories.filter((item) => item.level === "small" && item.id !== category.id)) {
+        const option = element("option", { text: `${small.ja} / ${small.en}` }); option.value = small.id; destination.append(option);
+      }
+      const remove = button("カテゴリーを削除", () => {
+        try {
+          edits = deleteCategoryEdit(source(), edits, category.id, destination.value);
+          selectedId = "";
+          render();
+        } catch (error) { this.setStatus(error.message, true); }
+      });
+      remove.classList.add("is-danger");
+      detailPane.append(
+        element("div", { className: "paio-library-detail-title" }, [element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大分類", medium: "中分類", small: "小分類" }[category.level] }), element("strong", { text: category.ja })]),
+        this.labeled("英語名", en), this.labeled("日本語名", ja), save,
+      );
+      if (category.level === "small") detailPane.append(this.buildTagEditor(library, category, () => edits, (value) => { edits = value; render(); }));
+      detailPane.append(element("div", { className: "paio-library-danger" }, [
+        element("strong", { text: "カテゴリー削除" }),
+        element("p", { text: "配下のタグがある場合は、小分類の移動先を選択してください。" }), destination, remove,
+      ]));
+    };
+    const render = () => {
+      const library = getLibrary();
+      const query = search.value.trim().toLocaleLowerCase();
+      treePane.replaceChildren(search, addBar);
+      detailPane.replaceChildren();
+      const visible = library.categories.filter((category) => {
+        if (mode === "tag" && category.level !== "small") return false;
+        if (!query) return true;
+        if (`${category.en} ${category.ja}`.toLocaleLowerCase().includes(query)) return true;
+        return library.tags.some((tag) => tag.categoryId === category.id && `${tag.prompt} ${tag.ja}`.toLocaleLowerCase().includes(query));
+      });
+      for (const category of visible) {
+        const row = button(`${category.ja}  ${category.en}`, () => { selectedId = category.id; render(); });
+        row.className = `paio-library-tree-row is-${category.level}${selectedId === category.id ? " is-selected" : ""}`;
+        row.prepend(element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大", medium: "中", small: "小" }[category.level] }));
+        treePane.append(row);
+        if (category.level === "small") {
+          const tags = library.tags.filter((tag) => tag.categoryId === category.id).slice(0, 8);
+          if (tags.length) treePane.append(element("div", { className: "paio-tree-tag-preview" }, tags.map((tag) => element("span", { text: tag.prompt }))));
+        }
+      }
+      if (!selectedId) selectedId = visible[0]?.id || "";
+      showCategoryDetail(library, library.categories.find((item) => item.id === selectedId));
+    };
+    search.addEventListener("input", render);
+    for (const [id, label] of [["tag", "タグ"], ["category", "カテゴリー"]]) {
+      const tab = button(label, () => { mode = id; modeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === tab)); render(); });
+      if (id === mode) tab.classList.add("is-active");
+      modeTabs.append(tab);
+    }
+    body.append(treePane, detailPane);
+    root.append(heading, modeTabs, body);
+    this.loadExampleData().then(render).catch(render);
+    return { root, getEdits: () => sanitizeLibraryEdits(edits), refresh: render };
+  }
+
+  buildTagEditor(library, category, getEdits, setEdits) {
+    const section = element("div", { className: "paio-tag-editor" }, [element("strong", { text: "タグ" })]);
+    const prompt = element("input", { className: "paio-search" }); prompt.placeholder = "英語タグ";
+    const ja = element("input", { className: "paio-search" }); ja.placeholder = "日本語訳";
+    section.append(element("div", { className: "paio-tag-add" }, [prompt, ja, button("追加", () => {
+      if (!prompt.value.trim()) return this.setStatus("タグを入力してください", true);
+      const id = `custom-tag-${Date.now()}`;
+      setEdits(saveTagEdit(getEdits(), { id, categoryId: category.id, prompt: prompt.value, ja: ja.value, custom: true }));
+    })]));
+    for (const tag of library.tags.filter((item) => item.categoryId === category.id)) {
+      const tagPrompt = element("input", { className: "paio-search" }); tagPrompt.value = tag.prompt;
+      const tagJa = element("input", { className: "paio-search" }); tagJa.value = tag.ja;
+      const row = element("div", { className: "paio-tag-edit-row" }, [tagPrompt, tagJa]);
+      row.append(button("保存", () => setEdits(saveTagEdit(getEdits(), { ...tag, prompt: tagPrompt.value, ja: tagJa.value, custom: !tag.builtin }))));
+      const remove = button("削除", () => setEdits(deleteTagEdit(getEdits(), tag))); remove.classList.add("is-danger"); row.append(remove);
+      section.append(row);
+    }
+    return section;
+  }
+
+  loadExampleData() {
+    if (this.exampleData) return Promise.resolve(this.exampleData);
+    if (!this.exampleLoadPromise) {
+      this.exampleLoadPromise = this.api.fetchApi("/prompt_all_in_one/examples").then((response) => response.json()).then((body) => {
+        this.exampleData = body;
+        return body;
+      });
+    }
+    return this.exampleLoadPromise;
   }
 
   labeled(label, control) {
@@ -571,19 +748,26 @@ export class PromptEditor {
         }));
       }
     };
-    this.api.fetchApi("/prompt_all_in_one/examples")
-      .then((response) => response.json())
+    const populate = () => {
+      data = libraryToExampleData(buildTagLibrary(this.exampleData || { categories: [] }, this.settings.libraryEdits));
+      const previous = category.value;
+      category.replaceChildren();
+      const all = element("option", { text: "全カテゴリー" });
+      all.value = "";
+      category.append(all);
+      for (const group of data.categories || []) {
+        const option = element("option", { text: `${group.label?.ja || group.id} / ${group.label?.en || ""}` });
+        option.value = group.id;
+        category.append(option);
+      }
+      if ([...category.options].some((option) => option.value === previous)) category.value = previous;
+      redraw();
+    };
+    this.refreshExamplesPanel = populate;
+    this.loadExampleData()
       .then((body) => {
-        data = body;
-        const all = element("option", { text: "全カテゴリー" });
-        all.value = "";
-        category.append(all);
-        for (const group of data.categories || []) {
-          const option = element("option", { text: `${group.label?.ja || group.id} / ${group.label?.en || ""}` });
-          option.value = group.id;
-          category.append(option);
-        }
-        redraw();
+        this.exampleData = body;
+        populate();
       })
       .catch(() => {
         data = { categories: [] };
@@ -823,7 +1007,7 @@ export class PromptEditor {
     ]);
     if (secondaryText) content.append(element("span", { className: "paio-tag-translation", text: secondaryText }));
     const warning = notices.length ? element("span", { className: "paio-tag-warning", text: "!", title: notices.join(" / ") }) : null;
-    row.append(selectMark, stateMark, content, warning);
+    appendPresentChildren(row, selectMark, stateMark, content, warning);
 
     row.addEventListener("click", (event) => {
       if (this.didDrag) {

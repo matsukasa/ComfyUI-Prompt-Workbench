@@ -10,6 +10,7 @@ import yaml
 AUDITED_COMMIT = "d4b37aa4187b40466772b6282d8b28acd5ad77c9"
 REPOSITORY = "https://github.com/Physton/sd-webui-prompt-all-in-one"
 EXCLUDED_GROUPS = {("人物", "二次元キャラクター")}
+EXCLUDED_PRIMARY_CATEGORIES = {"漢服"}
 
 
 def load_yaml(path):
@@ -46,7 +47,7 @@ def convert(source_directory):
             tag_map = ja_group.get("tags") or {}
             if not isinstance(tag_map, dict):
                 raise ValueError(f"Expected tag mapping in category {category_index}/{group_index}")
-            if (ja_parent, ja_name) in EXCLUDED_GROUPS:
+            if ja_parent in EXCLUDED_PRIMARY_CATEGORIES or (ja_parent, ja_name) in EXCLUDED_GROUPS:
                 excluded_items += len(tag_map)
                 continue
 
@@ -82,7 +83,7 @@ def convert(source_directory):
             "paths": ["group_tags/default.yaml", "group_tags/ja_JP.yaml"],
             "modified": True,
             "conversion": "Second-level groups flattened into bilingual categories, excluding the configured group list",
-            "excludedGroups": ["人物 / 二次元キャラクター"],
+            "excludedGroups": ["人物 / 二次元キャラクター", "漢服 / *"],
         },
         "stats": {
             "primaryCategories": len(japanese),
