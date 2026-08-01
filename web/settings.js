@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   translationProvider: "local",
   localLanguage: "ja",
   outputLanguage: "en",
+  translationDisplay: "original",
   autoTranslate: false,
   blacklist: [],
   blacklistAction: "warn",
@@ -27,6 +28,9 @@ export function sanitizeSettings(input = {}) {
     settings.translationProvider = input.translationProvider;
   }
   if (["en", "ja"].includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
+  if (["original", "local", "both"].includes(input.translationDisplay)) {
+    settings.translationDisplay = input.translationDisplay;
+  }
   if (typeof input.localLanguage === "string" && /^[a-z-]{2,16}$/i.test(input.localLanguage)) {
     settings.localLanguage = input.localLanguage;
   }
@@ -52,12 +56,21 @@ export function sanitizeSettings(input = {}) {
   return settings;
 }
 
+function sanitizeTranslation(value) {
+  return String(value ?? "").trim().split(/\s+/u)
+    .filter((token) => !/^(null|undefined)$/iu.test(token)).join(" ").trim();
+}
+
 function sanitizeTag(tag) {
+  const rawValue = String(tag?.value || "").slice(0, 10000).trim();
+  const legacyDisabled = /^.+\S\s+(?:null|undefined)$/iu.test(rawValue);
+  const value = legacyDisabled ? rawValue.replace(/\s+(?:null|undefined)$/iu, "").trim() : rawValue;
+  const translation = sanitizeTranslation(tag?.translation);
   return {
     id: String(tag?.id || "").slice(0, 80),
-    value: String(tag?.value || "").slice(0, 10000),
-    enabled: tag?.enabled !== false,
-    translation: String(tag?.translation || "").slice(0, 10000),
+    value,
+    enabled: legacyDisabled ? false : tag?.enabled !== false,
+    translation: translation.slice(0, 10000),
     translatedTo: String(tag?.translatedTo || "").slice(0, 16),
     type: String(tag?.type || "normal").slice(0, 32),
   };
@@ -65,11 +78,10 @@ function sanitizeTag(tag) {
 
 export function sanitizeEditorState(input = {}) {
   const state = input && typeof input === "object" ? input : {};
+  const tags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
   return {
     version: 1,
-    activeSide: state.activeSide === "negative" ? "negative" : "positive",
-    positive: Array.isArray(state.positive) ? state.positive.slice(0, 2000).map(sanitizeTag) : [],
-    negative: Array.isArray(state.negative) ? state.negative.slice(0, 2000).map(sanitizeTag) : [],
+    tags: tags.slice(0, 2000).map(sanitizeTag),
     settings: sanitizeSettings(state.settings),
   };
 }

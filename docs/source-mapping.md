@@ -6,7 +6,7 @@
 | `phystonPrompt.vue` | Main Vue prompt editor and Gradio synchronization | Dependency-free DOM editor and ComfyUI widget synchronization |
 | `tagMixin.js` | Weight controls and network classification | Pure weight/classification functions plus tag controls |
 | `dropMixin.js` | Selection rectangle and bulk actions | Checkbox/Ctrl/Shift selection and in-flow bulk toolbar |
-| `groupTagsMixin.js` | YAML prompt group browser | Bounded JSON category/search dialog |
+| `groupTagsMixin.js` | YAML prompt group browser | 134 YAML groups flattened into the JSON category/search dialog; `人物 / 二次元キャラクター` is excluded |
 | `blacklist.vue` | Lists for prompt/network/translation blocking | Rule-based exact/iexact/substring/regex editor |
 | `translate.py` and translators | Provider dispatch and cache | Four-provider aiohttp adapter with environment-only secrets |
 | `history.*`, `favorite.*` | Persistent prompt history and favorites | Explicitly omitted |

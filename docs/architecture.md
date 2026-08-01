@@ -5,12 +5,12 @@
 ```text
 DOM editor state
   -> enabled tags + selected output language
-  -> positive_prompt / negative_prompt STRING widgets
-  -> Python PromptAllInOne.emit_prompts
-  -> positive / negative STRING outputs
+  -> prompt STRING widget
+  -> Python PromptAllInOne.emit_prompt
+  -> prompt STRING output
 ```
 
-The two widgets are the execution source of truth. Full browser editing state,
+The widget is the execution source of truth. Full browser editing state,
 including disabled tags and bilingual labels, is serialized separately under a
 versioned node property. This makes API and headless execution independent from
 the frontend while allowing the browser to restore non-output state.
@@ -22,7 +22,7 @@ the frontend while allowing the browser to restore non-output state.
 - `web/prompt_parser.js`: parser, serializer, weights, normalization, blacklist.
 - `web/settings.js`: versioned editor-state and import validation.
 - `web/translation.js`: abortable frontend translation client.
-- `web/prompt_editor.js`: DOM UI, two-way synchronization and session undo.
+- `web/prompt_editor.js`: single-prompt DOM UI, two-way synchronization and session undo.
 - `web/prompt_all_in_one.js`: ComfyUI registration hook and stylesheet loading.
 
 ## Synchronization

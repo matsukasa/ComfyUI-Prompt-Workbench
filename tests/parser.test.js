@@ -78,6 +78,14 @@ test("disabled tags are excluded from node output serialization", () => {
   assert.equal(serializePrompt(tags, { includeDisabled: true }), "a, b, c");
 });
 
+test("legacy null suffix becomes a visually disabled tag without displaying null", () => {
+  const [tag] = parsePrompt("1girl null").tags;
+  assert.equal(tag.value, "1girl");
+  assert.equal(tag.enabled, false);
+  assert.equal(serializePrompt([tag]), "");
+  assert.equal(serializePrompt([tag], { includeDisabled: true }), "1girl");
+});
+
 test("weight adjustment is precise, bounded and preserves LoRA", () => {
   assert.equal(adjustTagWeight("detailed eyes", 0.05), "(detailed eyes:1.05)");
   assert.equal(adjustTagWeight("(detailed eyes:1.20)", 0.05), "(detailed eyes:1.25)");

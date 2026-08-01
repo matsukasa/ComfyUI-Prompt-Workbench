@@ -67,7 +67,7 @@ small so a future V3 entrypoint can be added without changing workflow data.
 | Weight increase/decrease | Implement | Explicit-weight parser with configurable 0.05/0.1/0.25 step and bounds. |
 | Multi-selection and bulk actions | Implement | Ctrl/Meta, Shift and checkboxes; enable, disable, delete, translate, weight, copy and cross-prompt move. |
 | Prompt formatting | Implement | Preview/undo-oriented normalization and duplicate operations without semantic rewriting. |
-| Prompt group/tag library | Implement with reduced initial data | A small, traceable JSON conversion from `group_tags/ja_JP.yaml`; searchable and extensible. |
+| Prompt group/tag library | Implement with one explicit exclusion | 134 groups and 3,744 entries are converted to searchable bilingual JSON categories; `人物 / 二次元キャラクター` and its 62 entries are intentionally excluded. |
 | Translation | Implement with changed provider set | Server-side adapters for local dictionary, LibreTranslate, DeepL and OpenAI-compatible APIs. Unofficial legacy providers are not ported. |
 | Translation cache | Implement | Bounded in-memory cache; no prompt history is written to disk. |
 | Blacklist | Implement with changed rules | Exact, case-insensitive exact, substring and regex; warn, disable or delete. |
@@ -121,11 +121,14 @@ browser-side settings, import/export state or logs.
 
 ## Data reuse
 
-Only a compact subset of English prompt tokens and Japanese translations is
-converted from `group_tags/ja_JP.yaml`. The full YAML is not copied because it
-is large, contains community-aggregated material with mixed provenance, and is
-not necessary for a reliable first release. Exact source and commit attribution
-is recorded in `THIRD_PARTY_NOTICES.md` and each converted data file.
+All parsed entries from `group_tags/ja_JP.yaml` except the explicitly excluded
+`人物 / 二次元キャラクター` group are converted, preserving their original
+order and group membership. This leaves 134 groups and 3,744 entries. The
+parallel `group_tags/default.yaml` supplies English category labels. The
+second-level groups are flattened into bilingual categories because the
+ComfyUI dialog uses one visible category level.
+Exact source paths, item counts and commit attribution are recorded in
+`THIRD_PARTY_NOTICES.md` and the converted data file.
 
 No source JavaScript, Vue component, icon, CSS bundle, Python translator or
 history/favorite code is copied.

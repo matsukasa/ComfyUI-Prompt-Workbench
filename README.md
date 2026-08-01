@@ -23,8 +23,9 @@ Positive / Negative Promptをタグ単位で編集する、ComfyUI用カスタ�
 - ブラウザセッション内のUndo / Redo
 - 原文・翻訳・状態・種別・重複・ブラックリストによる絞り込み
 - Positive / Negative間の移動と重複検出
-- 出典付きの内蔵プロンプト例、日本語・英語検索、一括追加
+- 出典付き内蔵プロンプト例134カテゴリー・3,744項目、日本語・英語検索、一括追加
 - ローカル辞書、LibreTranslate、DeepL、OpenAI互換の翻訳アダプター
+- 原文 / 日本語 / 両方の表示切り替えと、選択・全体をまとめた翻訳メニュー
 - 完全一致・大小文字無視・部分一致・正規表現ブラックリスト
 - LoRA、LyCORIS、Embedding、Wildcard、Dynamic Prompt、BREAKの識別
 - TXT / 状態JSONのインポート・エクスポート（1 MB上限）
@@ -73,11 +74,14 @@ Packageごとに`custom_nodes`が分かれるため、実際に起動するPacka
 ## 使い方
 
 1. ノード検索で `Prompt All-in-One` を追加します。
-2. PositiveまたはNegativeタブを選び、追加欄へタグを入力します。
-3. Enterで追加、Shift+Enterで追加欄内を改行します。
-4. タグをドラッグして順序を変更します。
-5. チェックボックス、Ctrl / Cmd、Shiftで複数選択し、一括操作します。
-6. `positive` / `negative`出力をそれぞれ`CLIP Text Encode`の`text`入力へ接続します。
+2. PositiveまたはNegativeタブを選び、上部の本文欄または追加欄へタグを入力します。
+3. 本文欄は`Ctrl+Enter`または`タグへ反映`、追加欄はEnterで確定します。
+4. タグボタンをドラッグして順序を変更し、クリックで有効 / 無効を切り替えます。
+5. ダブルクリックで編集、Ctrl / CmdまたはShift+クリックで複数選択、右クリックで
+   重み・翻訳・コピー・移動・削除を操作します。
+6. `表示`で原文 / 日本語 / 両方を切り替え、`翻訳`メニューから選択タグまたは全タグを翻訳します。
+7. 最下部の`例から追加`でカテゴリーや英語 / 日本語を検索し、タグ例を追加します。
+8. `positive` / `negative`出力をそれぞれ`CLIP Text Encode`の`text`入力へ接続します。
 
 無効タグはUI状態としてワークフローに残りますが、STRING出力からは除外されます。
 ブラウザ拡張が読み込めないAPI / ヘッドレス実行では、保存済みSTRINGがそのまま
@@ -85,7 +89,8 @@ Packageごとに`custom_nodes`が分かれるため、実際に起動するPacka
 
 ## 入力と同期
 
-エディター操作は対応する標準STRINGウィジェットへ即時反映されます。ワークフロー
+タグボタンや追加操作は対応する標準STRINGウィジェットへ即時反映されます。本文欄を
+直接編集した場合は、IME入力中の誤解析を避けるため明示的な反映操作を行います。ワークフロー
 読込や外部操作でSTRING値が変わった場合も、エディターが変更を検出して再解析します。
 完全なタグ状態はバージョン付き`node.properties.promptAllInOneState`へ保存され、
 実行用STRINGとは分離されます。
@@ -114,9 +119,10 @@ $env:PROMPT_AIO_DEEPL_API_KEY = "your-key"
 
 ## 内蔵例の出典
 
-初期例は `Physton/sd-webui-prompt-all-in-one` の
-`group_tags/ja_JP.yaml` から小さなセットへ変換しました。取得元コミット、変更内容、
-MITライセンスは[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
+内蔵例は `Physton/sd-webui-prompt-all-in-one` の
+`group_tags/default.yaml`と`group_tags/ja_JP.yaml`から、`人物 / 二次元キャラクター`
+の62項目だけを除いた134グループ・3,744項目を変換しました。取得元コミット、変更内容、MITライセンスは
+[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
 
 元プロジェクトと作者のPhyston氏、タグデータ貢献者に感謝します。
 

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../web/prompt_all_in_one.css">
+  <title>Prompt All-in-One display check</title>
+</head>
+<body style="margin: 24px; background: #111; color: #eee">
+  <section class="paio-editor">
+    <div class="paio-tags" id="tags"></div>
+  </section>
+  <output id="result"></output>
+  <script type="module">
+    import { getTagDisplayText } from "../web/prompt_editor.js";
+    const display = getTagDisplayText(
+      { value: "1girl", translation: "1girl null", translatedTo: "ja" },
+      { translationDisplay: "local", localLanguage: "ja" },
+    );
+    const button = document.createElement("div");
+    button.className = "paio-tag";
+    const content = document.createElement("span");
+    content.className = "paio-tag-content";
+    const primary = document.createElement("span");
+    primary.className = "paio-tag-label";
+    primary.textContent = display.primary;
+    content.append(primary);
+    if (display.secondary) {
+      const secondary = document.createElement("span");
+      secondary.className = "paio-tag-translation";
+      secondary.textContent = display.secondary;
+      content.append(secondary);
+    }
+    button.append(content);
+    document.querySelector("#tags").append(button);
+    document.querySelector("#result").textContent = button.textContent === "1girl" ? "PASS" : `FAIL:${button.textContent}`;
+  </script>
+</body>
+</html>

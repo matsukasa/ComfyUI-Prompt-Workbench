@@ -20,19 +20,18 @@ routes = load_module("prompt_aio_routes", "routes.py")
 class PromptAllInOneNodeTests(unittest.TestCase):
     def test_schema_has_multiline_string_inputs_and_string_outputs(self):
         schema = nodes.PromptAllInOne.INPUT_TYPES()
-        self.assertEqual(schema["required"]["positive_prompt"][0], "STRING")
-        self.assertTrue(schema["required"]["positive_prompt"][1]["multiline"])
-        self.assertEqual(schema["required"]["negative_prompt"][0], "STRING")
-        self.assertEqual(nodes.PromptAllInOne.RETURN_TYPES, ("STRING", "STRING"))
+        self.assertEqual(schema["required"]["prompt"][0], "STRING")
+        self.assertTrue(schema["required"]["prompt"][1]["multiline"])
+        self.assertEqual(nodes.PromptAllInOne.RETURN_TYPES, ("STRING",))
 
-    def test_outputs_positive_and_negative_verbatim(self):
+    def test_outputs_prompt_verbatim(self):
         node = nodes.PromptAllInOne()
-        self.assertEqual(node.emit_prompts("a, b", "c"), ("a, b", "c"))
+        self.assertEqual(node.emit_prompt("a, b"), ("a, b",))
 
     def test_empty_and_none_values_do_not_fail(self):
         node = nodes.PromptAllInOne()
-        self.assertEqual(node.emit_prompts("", ""), ("", ""))
-        self.assertEqual(node.emit_prompts(None, None), ("", ""))
+        self.assertEqual(node.emit_prompt(""), ("",))
+        self.assertEqual(node.emit_prompt(None), ("",))
 
     def test_headless_import_does_not_require_frontend(self):
         self.assertIn("PromptAllInOne", nodes.NODE_CLASS_MAPPINGS)
