@@ -10,7 +10,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_all_in_one.css", import.meta.url).href;
+  link.href = new URL("./prompt_all_in_one.css?v=20260801-dialog-visibility-1", import.meta.url).href;
   document.head.append(link);
 }
 
