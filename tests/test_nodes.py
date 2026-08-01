@@ -35,7 +35,8 @@ class PromptAllInOneNodeTests(unittest.TestCase):
 
     def test_headless_import_does_not_require_frontend(self):
         self.assertIn("PromptAllInOne", nodes.NODE_CLASS_MAPPINGS)
-        self.assertEqual(nodes.PromptAllInOne.CATEGORY, "prompt/Prompt All-in-One")
+        self.assertEqual(nodes.PromptAllInOne.CATEGORY, "prompt/Prompt Workbench")
+        self.assertEqual(nodes.NODE_DISPLAY_NAME_MAPPINGS["PromptAllInOne"], "Prompt Workbench")
 
 
 class TranslationTests(unittest.IsolatedAsyncioTestCase):

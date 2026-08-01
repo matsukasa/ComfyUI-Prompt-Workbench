@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { appendPresentChildren, cleanTranslation, getTagDisplayText } from "../web/prompt_editor.js";
+
+test("closed settings dialog stays hidden", () => {
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.match(css, /\.paio-settings-dialog:not\(\[open\]\)\s*\{\s*display:\s*none;/u);
+  assert.match(css, /\.paio-settings-dialog\[open\]\s*\{\s*display:\s*flex;/u);
+});
 
 test("tag button never displays null tokens from a composite translation", () => {
   const tag = { value: "1girl", translation: "1girl null", translatedTo: "ja" };

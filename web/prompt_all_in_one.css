@@ -320,7 +320,9 @@
 .paio-field > span { min-width: 120px; }
 .paio-dialog-textarea { min-height: 220px; resize: vertical; width: 100%; padding: 6px 8px; }
 
-.paio-settings-dialog { display: flex; flex-direction: column; width: min(1120px, 94vw); max-width: none; max-height: 90vh; }
+.paio-settings-dialog { flex-direction: column; width: min(1120px, 94vw); max-width: none; max-height: 90vh; }
+.paio-settings-dialog[open] { display: flex; }
+.paio-settings-dialog:not([open]) { display: none; }
 .paio-settings-dialog .paio-dialog-body { flex: 1; min-height: 0; height: min(68vh, 700px); max-height: none; overflow: hidden; }
 .paio-settings-shell { display: grid; grid-template-columns: 168px minmax(0, 1fr); min-height: 0; height: 100%; border: 1px solid var(--paio-line); border-radius: 10px; overflow: hidden; background: var(--paio-bg); }
 .paio-settings-nav { display: flex; flex-direction: column; gap: 4px; padding: 12px 8px; border-right: 1px solid var(--paio-line); background: color-mix(in srgb, var(--paio-surface) 86%, black); }

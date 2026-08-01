@@ -257,7 +257,7 @@ export class PromptEditor {
 
   build() {
     const root = element("section", { className: "paio-editor" });
-    root.setAttribute("aria-label", "Prompt All-in-One editor");
+    root.setAttribute("aria-label", "Prompt Workbench editor");
 
     const promptHeader = element("div", { className: "paio-section-header" }, [
       element("strong", { text: "プロンプト本文" }),
@@ -633,7 +633,7 @@ export class PromptEditor {
           if (tags.length) treePane.append(element("div", { className: "paio-tree-tag-preview" }, tags.map((tag) => element("span", { text: tag.prompt }))));
         }
       }
-      if (!selectedId) selectedId = visible[0]?.id || "";
+      if (!visible.some((item) => item.id === selectedId)) selectedId = visible[0]?.id || "";
       showCategoryDetail(library, library.categories.find((item) => item.id === selectedId));
     };
     search.addEventListener("input", render);

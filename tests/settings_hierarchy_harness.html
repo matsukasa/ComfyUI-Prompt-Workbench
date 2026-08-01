@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="../web/prompt_all_in_one.css">
-  <title>Prompt All-in-One settings hierarchy QA</title>
+  <title>Prompt Workbench settings hierarchy QA</title>
 </head>
 <body style="margin:0;background:#101210;color:#eee">
   <main id="mount" style="width:720px;margin:20px auto"></main>
@@ -27,14 +27,15 @@
     new PromptEditor(node, { prompt }, api);
     [...document.querySelectorAll("button")].find((item) => item.textContent === "設定")?.click();
     [...document.querySelectorAll("button")].find((item) => item.textContent === "タグ管理")?.click();
-    window.setTimeout(() => document.querySelector(".paio-library-tree-row.is-small")?.click(), 900);
+    window.setTimeout(() => [...document.querySelectorAll(".paio-library-tabs button")].find((item) => item.textContent === "タグ")?.click(), 900);
     window.setTimeout(() => {
-      const levels = [...document.querySelectorAll(".paio-level-badge")].map((item) => item.textContent);
-      const hasHierarchy = levels.includes("大") && levels.includes("中") && levels.includes("小");
+      const tagTabActive = [...document.querySelectorAll(".paio-library-tabs button")].some((item) => item.textContent === "タグ" && item.classList.contains("is-active"));
+      const treeRows = [...document.querySelectorAll(".paio-library-tree-row")];
+      const onlySmallCategories = treeRows.length > 0 && treeRows.every((item) => item.classList.contains("is-small"));
       const hanfuAbsent = !document.querySelector(".paio-settings-dialog")?.textContent.includes("漢服");
       const widgetHidden = prompt.hidden === true && prompt.computeSize()[1] < 0 && prompt.draw.toString().includes("=> {}");
       const tagEditor = Boolean(document.querySelector(".paio-tag-editor .paio-tag-add"));
-      document.querySelector("#result").textContent = hasHierarchy && hanfuAbsent && widgetHidden && tagEditor ? "PASS" : `FAIL hierarchy=${hasHierarchy} hanfu=${hanfuAbsent} widget=${widgetHidden} tags=${tagEditor}`;
+      document.querySelector("#result").textContent = tagTabActive && onlySmallCategories && hanfuAbsent && widgetHidden && tagEditor ? "PASS" : `FAIL tagTab=${tagTabActive} smallOnly=${onlySmallCategories} hanfu=${hanfuAbsent} widget=${widgetHidden} tags=${tagEditor}`;
     }, 1800);
   </script>
 </body>

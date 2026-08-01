@@ -1,4 +1,4 @@
-# Prompt All-in-One
+# Prompt Workbench
 
 1本のプロンプトをタグ単位で編集し、STRINGとしてそのまま出力します。
 

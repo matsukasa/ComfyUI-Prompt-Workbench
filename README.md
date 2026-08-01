@@ -1,6 +1,6 @@
-# ComfyUI-Prompt-All-in-One
+# ComfyUI-Prompt-Workbench
 
-Positive / Negative Promptをタグ単位で編集する、ComfyUI用カスタムノードです。
+単一のPromptをタグ単位で編集する、ComfyUI用カスタムノードです。
 標準の複数行STRINGウィジェットを実行時の正本として保ちつつ、ノード内に
 並べ替え・無効化・重み調整・翻訳・検索などの編集UIを追加します。
 
@@ -15,15 +15,16 @@ Positive / Negative Promptをタグ単位で編集する、ComfyUI用カスタ�
 
 ## 主な機能
 
-- Positive / Negativeを1ノードで編集し、2つのSTRINGとして出力
+- 単一プロンプトを編集し、接続先を限定しないSTRINGとして出力
 - 括弧・引用符・エスケープを追跡するステートマシン型パーサー
 - タグのドラッグ並べ替え、インライン編集、無効化、削除、コピー
 - 0.05 / 0.1 / 0.25刻みの重み調整（LoRA強度は変更しません）
 - Ctrl / Cmd・Shift・チェックボックスによる複数選択と一括操作
 - ブラウザセッション内のUndo / Redo
 - 原文・翻訳・状態・種別・重複・ブラックリストによる絞り込み
-- Positive / Negative間の移動と重複検出
-- 出典付き内蔵プロンプト例134カテゴリー・3,744項目、日本語・英語検索、一括追加
+- 重複検出と選択タグの一括操作
+- 大分類・中分類・小分類によるカテゴリー管理とユーザータグの追加・編集・削除
+- 出典付き内蔵プロンプト例115カテゴリー・3,595項目、日本語・英語検索、一括追加
 - ローカル辞書、LibreTranslate、DeepL、OpenAI互換の翻訳アダプター
 - 原文 / 日本語 / 両方の表示切り替えと、選択・全体をまとめた翻訳メニュー
 - 完全一致・大小文字無視・部分一致・正規表現ブラックリスト
@@ -41,7 +42,7 @@ Positive / Negative Promptをタグ単位で編集する、ComfyUI用カスタ�
 このフォルダを次の位置へ配置し、ComfyUIを再起動します。
 
 ```text
-ComfyUI/custom_nodes/ComfyUI-Prompt-All-in-One/
+ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/
 ```
 
 追加依存関係はありません。翻訳のHTTP通信にはComfyUI同梱の`aiohttp`を使います。
@@ -51,7 +52,7 @@ ComfyUI/custom_nodes/ComfyUI-Prompt-All-in-One/
 Portable版のルートを基準に、次へフォルダを配置します。
 
 ```text
-ComfyUI_windows_portable/ComfyUI/custom_nodes/ComfyUI-Prompt-All-in-One/
+ComfyUI_windows_portable/ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/
 ```
 
 その後、`run_nvidia_gpu.bat`など普段の起動ファイルから再起動してください。
@@ -73,15 +74,15 @@ Packageごとに`custom_nodes`が分かれるため、実際に起動するPacka
 
 ## 使い方
 
-1. ノード検索で `Prompt All-in-One` を追加します。
-2. PositiveまたはNegativeタブを選び、上部の本文欄または追加欄へタグを入力します。
+1. ノード検索で `Prompt Workbench` を追加します。
+2. 上部の本文欄または追加欄へタグを入力します。
 3. 本文欄は`Ctrl+Enter`または`タグへ反映`、追加欄はEnterで確定します。
 4. タグボタンをドラッグして順序を変更し、クリックで有効 / 無効を切り替えます。
 5. ダブルクリックで編集、Ctrl / CmdまたはShift+クリックで複数選択、右クリックで
    重み・翻訳・コピー・移動・削除を操作します。
 6. `表示`で原文 / 日本語 / 両方を切り替え、`翻訳`メニューから選択タグまたは全タグを翻訳します。
 7. 最下部の`例から追加`でカテゴリーや英語 / 日本語を検索し、タグ例を追加します。
-8. `positive` / `negative`出力をそれぞれ`CLIP Text Encode`の`text`入力へ接続します。
+8. `prompt`出力を必要なノードのSTRING入力へ接続します。
 
 無効タグはUI状態としてワークフローに残りますが、STRING出力からは除外されます。
 ブラウザ拡張が読み込めないAPI / ヘッドレス実行では、保存済みSTRINGがそのまま
@@ -121,7 +122,7 @@ $env:PROMPT_AIO_DEEPL_API_KEY = "your-key"
 
 内蔵例は `Physton/sd-webui-prompt-all-in-one` の
 `group_tags/default.yaml`と`group_tags/ja_JP.yaml`から、`人物 / 二次元キャラクター`
-の62項目だけを除いた134グループ・3,744項目を変換しました。取得元コミット、変更内容、MITライセンスは
+の62項目と漢服カテゴリー149項目を除いた115グループ・3,595項目を変換しました。取得元コミット、変更内容、MITライセンスは
 [第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
 
 元プロジェクトと作者のPhyston氏、タグデータ貢献者に感謝します。
@@ -157,7 +158,7 @@ Node.jsは本体の実行には不要で、JavaScriptテストを実行すると
 
 ## トラブルシューティング
 
-- ノードが見つからない: `custom_nodes/ComfyUI-Prompt-All-in-One/__init__.py`の位置を確認し、
+- ノードが見つからない: `custom_nodes/ComfyUI-Prompt-Workbench/__init__.py`の位置を確認し、
   起動ログにimport errorがないか確認します。
 - UIが表示されない: ブラウザを強制再読込し、`WEB_DIRECTORY = "./web"`が読まれているか
   確認します。STRING出力自体はUIなしでも動作します。
@@ -168,9 +169,9 @@ Node.jsは本体の実行には不要で、JavaScriptテストを実行すると
 
 ## アンインストール
 
-ComfyUIを終了し、`custom_nodes/ComfyUI-Prompt-All-in-One`フォルダを別の場所へ退避するか
+ComfyUIを終了し、`custom_nodes/ComfyUI-Prompt-Workbench`フォルダを別の場所へ退避するか
 削除してから再起動します。既存ワークフローには未登録ノードとして残るため、必要なら
-アンインストール前に2つのSTRINGを別ノードへコピーしてください。
+アンインストール前にSTRINGを別ノードへコピーしてください。
 
 ## ライセンス
 

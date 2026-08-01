@@ -3,7 +3,7 @@
 Use a disposable workflow and test both ComfyUI light and dark themes.
 
 - [ ] ComfyUI starts without `import failed`.
-- [ ] `Prompt All-in-One` appears under `prompt/Prompt All-in-One`.
+- [ ] `Prompt Workbench` appears under `prompt/Prompt Workbench`.
 - [ ] Node creates with one empty prompt editor and no Positive/Negative tabs.
 - [ ] Native prompt STRING widget stays serialized but is not visibly duplicated.
 - [ ] Top prompt text applies with Ctrl+Enter/button and shows synced/dirty state.

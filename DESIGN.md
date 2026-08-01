@@ -1,4 +1,4 @@
-# Prompt All-in-One Design System
+# Prompt Workbench Design System
 
 ## Intent
 
