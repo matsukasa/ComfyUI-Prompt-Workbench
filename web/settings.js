@@ -1,3 +1,5 @@
+import { sanitizeLibraryEdits } from "./tag_library.js";
+
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
   weightMin: 0.05,
@@ -12,6 +14,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   blacklistAction: "warn",
   tagColors: {},
   filter: "all",
+  libraryEdits: { categories: [], tags: [] },
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
@@ -53,6 +56,7 @@ export function sanitizeSettings(input = {}) {
       if (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)) settings.tagColors[key] = value;
     }
   }
+  settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
   return settings;
 }
 

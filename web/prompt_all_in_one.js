@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20260801-null-display-1";
+import { PromptEditor } from "./prompt_editor.js?v=20260801-category-manager-1";
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
