@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js";
+import { PromptEditor } from "./prompt_editor.js?v=20260801-null-display-1";
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
@@ -24,10 +24,9 @@ app.registerExtension({
     const previousCreated = nodeType.prototype.onNodeCreated;
     nodeType.prototype.onNodeCreated = function onNodeCreated() {
       const result = previousCreated?.apply(this, arguments);
-      const positive = this.widgets?.find((widget) => widget.name === "positive_prompt");
-      const negative = this.widgets?.find((widget) => widget.name === "negative_prompt");
-      if (positive && negative && typeof this.addDOMWidget === "function") {
-        this.promptAllInOneEditor = new PromptEditor(this, { positive, negative }, api);
+      const prompt = this.widgets?.find((widget) => widget.name === "prompt");
+      if (prompt && typeof this.addDOMWidget === "function") {
+        this.promptAllInOneEditor = new PromptEditor(this, { prompt }, api);
       }
       return result;
     };

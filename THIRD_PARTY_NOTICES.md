@@ -9,13 +9,18 @@
 
 The following source data was adapted:
 
-- `group_tags/ja_JP.yaml` -> `data/prompt_examples.json`
-- selected English/Japanese tag pairs -> `data/translations.json`
+- `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
+  entries in `data/prompt_examples.json`; the 62-entry
+  `人物 / 二次元キャラクター` group is intentionally excluded
+- selected English/Japanese tag pairs -> the offline translation helper in
+  `data/translations.json`
 
-The data was converted to a smaller JSON schema, category labels were
-normalized for the ComfyUI editor, and unsafe or adult-oriented entries were
-not included in the starter set. No JavaScript, Vue, CSS, icon, Python
-translator, history or favorite implementation was copied.
+The prompt-group data was converted to JSON and second-level groups were
+flattened into bilingual categories for the ComfyUI editor. Entries retain the
+upstream order, grouping and translations. The single group named above is the
+only content exclusion.
+No JavaScript, Vue, CSS, icon, Python translator, history or favorite
+implementation was copied.
 
 The upstream MIT license follows:
 

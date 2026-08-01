@@ -9,16 +9,34 @@ const CLOSE_TO_OPEN = Object.fromEntries(
 
 let nextTagId = 1;
 
+function normalizeLegacyDisabledValue(raw) {
+  const text = String(raw ?? "").trim();
+  const match = text.match(/^(.+\S)\s+(?:null|undefined)$/iu);
+  return match ? { value: match[1].trim(), disabled: true } : { value: text, disabled: false };
+}
+
+export function normalizeTranslationText(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return "";
+  return text
+    .split(/\s+/u)
+    .filter((token) => !/^(null|undefined)$/iu.test(token))
+    .join(" ")
+    .trim();
+}
+
 export function createTag(raw, overrides = {}) {
-  const value = String(raw ?? "").trim();
+  const legacy = normalizeLegacyDisabledValue(raw);
+  const value = legacy.value;
   return {
     id: overrides.id || `paio-${nextTagId++}`,
     value,
-    enabled: overrides.enabled !== false,
+    enabled: legacy.disabled ? false : overrides.enabled !== false,
     selected: Boolean(overrides.selected),
-    translation: String(overrides.translation || ""),
+    translation: normalizeTranslationText(overrides.translation),
     translatedTo: String(overrides.translatedTo || ""),
     translationError: String(overrides.translationError || ""),
+    translationErrorTarget: String(overrides.translationErrorTarget || ""),
     type: overrides.type || classifyTag(value),
     missingModel: Boolean(overrides.missingModel),
     blacklistMatch: Boolean(overrides.blacklistMatch),
@@ -135,8 +153,8 @@ export function outputPrompt(tags, outputLanguage = "en") {
     (tags || []).map((tag) => ({
       ...tag,
       value:
-        tag.translation && tag.translatedTo === outputLanguage
-          ? tag.translation
+        normalizeTranslationText(tag.translation) && tag.translatedTo === outputLanguage
+          ? normalizeTranslationText(tag.translation)
           : tag.value,
     })),
   );
