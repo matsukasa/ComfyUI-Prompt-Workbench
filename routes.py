@@ -25,19 +25,99 @@ _REMOTE_SEMAPHORE = asyncio.Semaphore(3)
 _ROUTES_REGISTERED = False
 SUPPORTED_PROVIDERS = {"local", "offline", "libretranslate", "deepl", "openai"}
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
+_DICTIONARY_CACHE_SIGNATURE = None
+_DICTIONARY_CACHE_VALUE = {}
 
 
 class TranslationError(RuntimeError):
     pass
 
 
+def _translation_lookup_key(value):
+    text = unicodedata.normalize("NFKC", str(value or "")).strip()
+    weighted = re.fullmatch(
+        r"\(\s*(.+?)\s*:\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)\s*\)",
+        text,
+    )
+    if weighted:
+        text = weighted.group(1).strip()
+    text = re.sub(r"[_\s]+", " ", text)
+    return text.casefold().strip()
+
+
+def _iter_catalog_translations(value):
+    if isinstance(value, list):
+        for item in value:
+            yield from _iter_catalog_translations(item)
+        return
+    if not isinstance(value, dict):
+        return
+
+    prompt = value.get("prompt") or value.get("name")
+    translation = value.get("translation_ja")
+    if not translation and isinstance(value.get("translation"), dict):
+        translation = value["translation"].get("ja")
+    if isinstance(prompt, str) and isinstance(translation, str) and translation.strip():
+        aliases = value.get("aliases") if isinstance(value.get("aliases"), list) else []
+        yield prompt, translation.strip(), aliases
+
+    for child in value.values():
+        if isinstance(child, (dict, list)):
+            yield from _iter_catalog_translations(child)
+
+
 def _load_dictionary():
-    path = Path(__file__).with_name("data") / "translations.json"
+    global _DICTIONARY_CACHE_SIGNATURE, _DICTIONARY_CACHE_VALUE
+
+    data_directory = Path(__file__).with_name("data")
+    paths = [
+        data_directory / "prompt_examples.json",
+        data_directory / "tag_catalog.json",
+        data_directory / "translations.json",
+    ]
+    signature = tuple(
+        (str(path), path.stat().st_mtime_ns, path.stat().st_size)
+        for path in paths
+        if path.is_file()
+    )
+    if signature == _DICTIONARY_CACHE_SIGNATURE:
+        return _DICTIONARY_CACHE_VALUE
+
+    dictionary = {"ja": {}, "en": {}}
+    for path in paths[:2]:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for prompt, translation, aliases in _iter_catalog_translations(data):
+            canonical_key = _translation_lookup_key(prompt)
+            if not canonical_key:
+                continue
+            dictionary["ja"][canonical_key] = translation
+            dictionary["en"][_translation_lookup_key(translation)] = prompt
+            for alias in aliases:
+                alias_key = _translation_lookup_key(alias)
+                if alias_key:
+                    dictionary["ja"][alias_key] = translation
+
+    explicit_path = paths[2]
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return data if isinstance(data, dict) else {}
+        explicit = json.loads(explicit_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return {}
+        explicit = {}
+    if isinstance(explicit, dict):
+        for language, table in explicit.items():
+            if not isinstance(language, str) or not isinstance(table, dict):
+                continue
+            normalized_table = dictionary.setdefault(language.casefold(), {})
+            for source, translated in table.items():
+                key = _translation_lookup_key(source)
+                if key and isinstance(translated, str) and translated.strip():
+                    normalized_table[key] = translated.strip()
+
+    _DICTIONARY_CACHE_SIGNATURE = signature
+    _DICTIONARY_CACHE_VALUE = dictionary
+    return dictionary
 
 
 def catalog_storage_directory(base_directory=None):
@@ -233,9 +313,9 @@ def _rate_limit(client_id):
 
 def _local_translate(text, target):
     dictionary = _load_dictionary()
-    table = dictionary.get(target.lower(), {})
-    normalized = text.strip().lower()
-    return table.get(normalized, text)
+    target_language = target.casefold()
+    table = dictionary.get(target_language) or dictionary.get(target_language.split("-", 1)[0], {})
+    return table.get(_translation_lookup_key(text), text)
 
 
 async def _post_json(session, url, payload, headers=None):

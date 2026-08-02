@@ -380,9 +380,9 @@
 .paio-example-resize-handle:hover, .paio-example-resize-handle.is-dragging { color: var(--paio-ink); background: var(--paio-raised); }
 .paio-example-resize-handle:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
 .paio-example-resize-mark { font-size: 18px; line-height: 0.5; letter-spacing: 2px; transform: rotate(90deg); }
-.paio-example-chip { display: inline-flex; align-items: baseline; gap: 7px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 32px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
-.paio-example-chip-prompt { color: var(--paio-ink); font-weight: 650; overflow: hidden; text-overflow: ellipsis; }
-.paio-example-chip-translation { color: color-mix(in srgb, var(--paio-ink) 82%, var(--paio-muted)); font-size: 0.88rem; font-weight: 550; overflow: hidden; text-overflow: ellipsis; }
+.paio-example-chip { display: inline-flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 44px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
+.paio-example-chip-prompt { max-width: 100%; color: var(--paio-ink); font-weight: 650; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
+.paio-example-chip-translation { max-width: 100%; color: color-mix(in srgb, var(--paio-ink) 82%, var(--paio-muted)); font-size: 0.88rem; font-weight: 550; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
 .paio-example-chip.is-selected { background: var(--paio-primary-soft); box-shadow: inset 0 0 0 1px var(--paio-primary); }
 .paio-example-footer { justify-content: space-between; flex-wrap: wrap; min-height: 26px; margin-top: 5px; }
 .paio-example-count { color: var(--paio-muted); }

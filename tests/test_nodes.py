@@ -60,6 +60,26 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(translated, "傑作")
         self.assertFalse(cached)
 
+    async def test_local_translation_uses_bundled_catalog_and_legacy_translations(self):
+        catalog_translation, _ = await routes.translate_text(
+            "offline", "expressionless", target="ja"
+        )
+        legacy_translation, _ = await routes.translate_text(
+            "offline", "blonde_hair", target="ja"
+        )
+        self.assertEqual(catalog_translation, "無表情")
+        self.assertEqual(legacy_translation, "金髪")
+
+    async def test_local_translation_normalizes_spaces_underscores_and_weights(self):
+        spaced, _ = await routes.translate_text(
+            "offline", "looking_back", target="ja-JP"
+        )
+        weighted, _ = await routes.translate_text(
+            "offline", "(dynamic angle: 1.20)", target="ja"
+        )
+        self.assertEqual(spaced, "振り返る")
+        self.assertEqual(weighted, "ダイナミックな角度")
+
     def test_free_translation_normalizes_prompt_tag_underscores(self):
         self.assertEqual(routes._mymemory_query("looking_at_viewer"), "looking at viewer")
 

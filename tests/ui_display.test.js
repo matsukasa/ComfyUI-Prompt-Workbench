@@ -10,6 +10,7 @@ import {
   filterExampleLibraryTags,
   getTagDisplayText,
   hideWidgetForGood,
+  removeUnlinkedWidgetInput,
   resolveExampleCategoryPath,
   translationBatchTimeoutMs,
 } from "../web/prompt_editor.js";
@@ -50,10 +51,27 @@ test("native prompt widget is fully hidden but remains serializable", async () =
   assert.equal(widget.y, 0);
   assert.equal(widget.last_y, 0);
   assert.equal(widget.computedHeight, 0);
+  assert.equal(widget.type, "text");
   assert.equal(widget.options.hidden, true);
   assert.equal(inputEl.style.display, "none");
   assert.equal(removed, true);
   assert.equal(await widget.serializeValue(), "1girl");
+});
+
+test("stale unlinked prompt input is removed without disconnecting linked inputs", () => {
+  const node = {
+    inputs: [
+      { name: "prompt", link: null, widget: { name: "prompt" } },
+      { name: "other", link: null },
+      { name: "prompt", link: 17, widget: { name: "prompt" } },
+    ],
+    removeInput(index) { this.inputs.splice(index, 1); },
+  };
+  assert.equal(removeUnlinkedWidgetInput(node, "prompt"), 1);
+  assert.deepEqual(node.inputs.map((input) => [input.name, input.link]), [
+    ["other", null],
+    ["prompt", 17],
+  ]);
 });
 
 test("custom editor starts at the top of the node widget area", () => {
@@ -144,9 +162,11 @@ test("example search matches a Danbooru alias", () => {
 
 test("example tags display English prompt and Japanese translation together", () => {
   const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
   assert.match(source, /paio-example-chip-prompt/u);
   assert.match(source, /paio-example-chip-translation/u);
   assert.doesNotMatch(source, /投稿数:|エイリアス:/u);
+  assert.match(css, /\.paio-example-chip\s*\{[^}]*flex-direction:\s*column;[^}]*align-items:\s*flex-start;[^}]*min-height:\s*44px;/su);
 });
 
 test("tag addition is an obvious disclosure and tag management is unified", () => {

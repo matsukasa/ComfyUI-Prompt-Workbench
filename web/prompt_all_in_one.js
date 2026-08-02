@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20260802-simple-tag-hover-1";
+import { PromptEditor } from "./prompt_editor.js?v=20260802-compact-top-gap-1";
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
@@ -10,7 +10,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_all_in_one.css?v=20260802-resizable-tags-1", import.meta.url).href;
+  link.href = new URL("./prompt_all_in_one.css?v=20260802-two-line-example-tags-1", import.meta.url).href;
   document.head.append(link);
 }
 
