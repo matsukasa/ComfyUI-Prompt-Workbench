@@ -5,11 +5,13 @@ import {
   compileBlacklist,
   createTag,
   findDuplicateKeys,
+  getTagWeight,
   matchesBlacklist,
   normalizePromptTags,
   outputPrompt,
   parsePrompt,
   serializePrompt,
+  setTagWeight,
 } from "./prompt_parser.js";
 import {
   DEFAULT_SETTINGS,
@@ -125,8 +127,11 @@ export function hideWidgetForGood(widget, suffix = "") {
   }
   widget.hidden = true;
   widget.visible = false;
-  widget.computeSize = () => [0, -4];
+  widget.computeSize = () => [0, 0];
   widget.draw = () => {};
+  widget.y = 0;
+  widget.last_y = 0;
+  if (Object.hasOwn(widget, "computedHeight")) widget.computedHeight = 0;
   widget.type = `converted-widget${suffix}`;
   widget.serialize = true;
   widget.serializeValue = async () => widget.value;
@@ -214,6 +219,7 @@ export class PromptEditor {
     this.exampleData = null;
     this.exampleLoadPromise = null;
     this.refreshExamplesPanel = null;
+    this.domWidget = null;
     this.restore();
     this.root = this.build();
     this.attach();
@@ -433,15 +439,13 @@ export class PromptEditor {
   }
 
   attach() {
-    compactNodeWidgetLayout(this.node);
-    for (const widget of Object.values(this.widgets)) {
-      hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
-    }
     const domWidget = this.node.addDOMWidget("prompt_editor", "div", this.root, {
       serialize: false,
       hideOnZoom: false,
     });
+    this.domWidget = domWidget;
     domWidget.computeSize = (width) => [width, 690];
+    this.stabilizeLayout();
     this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), Math.max(this.node.size?.[1] || 0, 760)]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
@@ -451,6 +455,18 @@ export class PromptEditor {
       previousRemoved?.apply(this.node);
     };
     this.render();
+  }
+
+  stabilizeLayout() {
+    compactNodeWidgetLayout(this.node);
+    for (const widget of Object.values(this.widgets)) {
+      hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
+    }
+    if (this.domWidget) {
+      this.domWidget.y = 0;
+      this.domWidget.last_y = 0;
+    }
+    this.node.graph?.setDirtyCanvas?.(true, true);
   }
 
   buildTranslationBar() {
@@ -1431,22 +1447,75 @@ export class PromptEditor {
       control.setAttribute("role", "menuitem");
       return control;
     };
+    const title = element("strong", { className: "paio-context-title", text: tag.value || "空タグ" });
+    const currentWeight = getTagWeight(tag.value);
+    const weightInput = element("input", { className: "paio-context-weight-input" });
+    weightInput.type = "number";
+    weightInput.min = String(this.settings.weightMin);
+    weightInput.max = String(this.settings.weightMax);
+    weightInput.step = String(this.settings.weightStep);
+    weightInput.value = currentWeight === null ? "" : currentWeight.toFixed(2);
+    weightInput.inputMode = "decimal";
+    weightInput.disabled = currentWeight === null;
+    weightInput.setAttribute("aria-label", "タグの重み");
+    const applyWeight = (requestedWeight) => {
+      const appliedWeight = this.setWeightOne(index, requestedWeight);
+      if (appliedWeight === null) return;
+      weightInput.value = appliedWeight.toFixed(2);
+      title.textContent = this.currentTags[index]?.value || "空タグ";
+    };
+    const weightButton = (label, requestedWeight, ariaLabel) => {
+      const control = button(label, () => applyWeight(requestedWeight()));
+      control.className = "paio-context-weight-button";
+      control.disabled = currentWeight === null;
+      control.setAttribute("aria-label", ariaLabel);
+      return control;
+    };
+    const weightControls = element("div", { className: "paio-context-weight-controls" }, [
+      weightButton("−", () => Number(weightInput.value) - this.settings.weightStep, "重みを下げる"),
+      weightInput,
+      weightButton("＋", () => Number(weightInput.value) + this.settings.weightStep, "重みを上げる"),
+    ]);
+    const resetWeight = weightButton("1.00へ戻す", () => 1, "重みを1.00へ戻す");
+    resetWeight.classList.add("is-reset");
+    const weightPanel = element("div", { className: "paio-context-weight" }, [
+      element("span", {
+        className: "paio-context-weight-label",
+        text: currentWeight === null ? "重み（タグ編集で変更）" : `重み・刻み ${this.settings.weightStep}`,
+      }),
+      weightControls,
+      resetWeight,
+    ]);
+    weightPanel.setAttribute("role", "group");
+    weightPanel.setAttribute("aria-label", "重みを変更");
+    weightInput.addEventListener("change", () => {
+      const requestedWeight = weightInput.valueAsNumber;
+      if (Number.isFinite(requestedWeight)) applyWeight(requestedWeight);
+      else weightInput.value = (getTagWeight(this.currentTags[index]?.value) ?? 1).toFixed(2);
+    });
+    weightInput.addEventListener("keydown", (inputEvent) => {
+      if (inputEvent.key === "Enter") {
+        inputEvent.preventDefault();
+        const requestedWeight = weightInput.valueAsNumber;
+        if (Number.isFinite(requestedWeight)) applyWeight(requestedWeight);
+        weightInput.select();
+      }
+    });
     menu.append(
-      element("strong", { className: "paio-context-title", text: tag.value || "空タグ" }),
+      title,
+      weightPanel,
       action("編集", () => {
         const row = [...this.tagList.children].find((item) => item.dataset?.tagIndex === String(index));
         if (row) this.beginInlineEdit(row, tag, index);
       }),
-      action("重みを上げる", () => this.weightOne(index, 1)),
-      action("重みを下げる", () => this.weightOne(index, -1)),
       action("英語へ翻訳", () => this.translateIndexes([index], "en")),
       action("日本語へ翻訳", () => this.translateIndexes([index], this.settings.localLanguage)),
       action(tag.enabled ? "無効にする" : "有効にする", () => this.toggleOne(index)),
       action("コピー", async () => { await copyText(tag.value); this.setStatus("タグをコピーしました"); }),
       action("削除", () => this.deleteOne(index), "is-danger"),
     );
-    menu.style.left = `${Math.min(event.clientX, window.innerWidth - 210)}px`;
-    menu.style.top = `${Math.min(event.clientY, window.innerHeight - 330)}px`;
+    menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
+    menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 420))}px`;
     document.body.append(menu);
     this.contextMenu = menu;
     window.setTimeout(() => {
@@ -1554,6 +1623,29 @@ export class PromptEditor {
     tag.type = classifyTag(tag.value);
     this.syncToWidgets();
     this.render();
+  }
+
+  setWeightOne(index, weight) {
+    const tagId = this.currentTags[index]?.id;
+    this.commitPromptBeforeAction();
+    index = this.currentTags.findIndex((tag) => tag.id === tagId);
+    if (index < 0) return null;
+    const tag = this.currentTags[index];
+    const currentWeight = getTagWeight(tag.value);
+    if (currentWeight === null || !Number.isFinite(Number(weight))) return currentWeight;
+    const nextValue = setTagWeight(
+      tag.value,
+      Number(weight),
+      this.settings.weightMin,
+      this.settings.weightMax,
+    );
+    if (nextValue === tag.value) return getTagWeight(nextValue);
+    this.pushUndo();
+    tag.value = nextValue;
+    tag.type = classifyTag(nextValue);
+    this.syncToWidgets();
+    this.render();
+    return getTagWeight(nextValue);
   }
 
   bulkWeight(direction) {
