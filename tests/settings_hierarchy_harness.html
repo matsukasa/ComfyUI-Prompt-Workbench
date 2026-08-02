@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="../web/prompt_all_in_one.css">
-  <title>Prompt All-in-One settings hierarchy QA</title>
+  <title>Prompt Workbench settings hierarchy QA</title>
 </head>
 <body style="margin:0;background:#101210;color:#eee">
   <main id="mount" style="width:720px;margin:20px auto"></main>
@@ -24,18 +24,42 @@
         return Promise.resolve(new Response(JSON.stringify({ loras: [], embeddings: [] }), { headers: { "content-type": "application/json" } }));
       },
     };
-    new PromptEditor(node, { prompt }, api);
+    const editor = new PromptEditor(node, { prompt }, api);
     [...document.querySelectorAll("button")].find((item) => item.textContent === "設定")?.click();
     [...document.querySelectorAll("button")].find((item) => item.textContent === "タグ管理")?.click();
-    window.setTimeout(() => document.querySelector(".paio-library-tree-row.is-small")?.click(), 900);
+    window.foldPass = false;
     window.setTimeout(() => {
-      const levels = [...document.querySelectorAll(".paio-level-badge")].map((item) => item.textContent);
-      const hasHierarchy = levels.includes("大") && levels.includes("中") && levels.includes("小");
+      const before = document.querySelectorAll(".paio-library-tree-row").length;
+      const large = document.querySelector(".paio-library-tree-row.is-large");
+      large?.click();
+      const after = document.querySelectorAll(".paio-library-tree-row").length;
+      const collapsedLarge = document.querySelector(".paio-library-tree-row.is-large");
+      window.foldPass = collapsedLarge?.getAttribute("aria-expanded") === "false" && after < before;
+    }, 800);
+    window.setTimeout(() => {
+      document.querySelector(".paio-library-tree-row.is-large")?.click();
+      document.querySelector(".paio-library-tree-row.is-small")?.click();
+    }, 1100);
+    window.batchSavePass = false;
+    window.setTimeout(() => {
+      const firstTag = document.querySelector(".paio-tag-edit-row .paio-search");
+      if (!firstTag) return;
+      firstTag.value = "1girl_custom";
+      firstTag.dispatchEvent(new Event("input", { bubbles: true }));
+      [...document.querySelectorAll(".paio-settings-dialog button")].find((item) => item.textContent === "変更を保存")?.click();
+      window.batchSavePass = editor.settings.libraryEdits.tags.some((tag) => tag.prompt === "1girl_custom");
+    }, 1500);
+    window.setTimeout(() => {
+      const treeRows = [...document.querySelectorAll(".paio-library-tree-row")];
+      const unifiedManager = !document.querySelector(".paio-library-tabs");
+      const fullHierarchy = ["large", "medium", "small"].every((level) => treeRows.some((item) => item.classList.contains(`is-${level}`)));
       const hanfuAbsent = !document.querySelector(".paio-settings-dialog")?.textContent.includes("漢服");
       const widgetHidden = prompt.hidden === true && prompt.computeSize()[1] < 0 && prompt.draw.toString().includes("=> {}");
       const tagEditor = Boolean(document.querySelector(".paio-tag-editor .paio-tag-add"));
-      document.querySelector("#result").textContent = hasHierarchy && hanfuAbsent && widgetHidden && tagEditor ? "PASS" : `FAIL hierarchy=${hasHierarchy} hanfu=${hanfuAbsent} widget=${widgetHidden} tags=${tagEditor}`;
-    }, 1800);
+      const searchLabel = document.querySelector(".paio-example-controls .paio-search")?.placeholder === "英語・日本語でタグを検索";
+      const rowSaveAbsent = ![...document.querySelectorAll(".paio-tag-edit-row button")].some((item) => item.textContent === "保存");
+      document.querySelector("#result").textContent = window.foldPass && window.batchSavePass && unifiedManager && fullHierarchy && hanfuAbsent && widgetHidden && tagEditor && searchLabel && rowSaveAbsent ? "PASS" : `FAIL fold=${window.foldPass} batch=${window.batchSavePass} unified=${unifiedManager} hierarchy=${fullHierarchy} hanfu=${hanfuAbsent} widget=${widgetHidden} tags=${tagEditor} search=${searchLabel} rowSaveAbsent=${rowSaveAbsent}`;
+    }, 2000);
   </script>
 </body>
 </html>

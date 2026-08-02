@@ -1,12 +1,18 @@
 import asyncio
+import html
 import json
 import os
+import re
 import time
+import unicodedata
 from collections import OrderedDict, defaultdict, deque
 from pathlib import Path
 from urllib.parse import urlparse
 
 MAX_REQUEST_BYTES = 64 * 1024
+MAX_CATALOG_BYTES = 4 * 1024 * 1024
+MAX_CATALOG_CATEGORIES = 500
+MAX_CATALOG_TAGS = 10_000
 MAX_TEXT_LENGTH = 8_000
 MAX_BATCH_SIZE = 100
 CACHE_LIMIT = 512
@@ -17,6 +23,8 @@ _CACHE = OrderedDict()
 _RATE_BUCKETS = defaultdict(deque)
 _REMOTE_SEMAPHORE = asyncio.Semaphore(3)
 _ROUTES_REGISTERED = False
+SUPPORTED_PROVIDERS = {"local", "offline", "libretranslate", "deepl", "openai"}
+MYMEMORY_URL = "https://api.mymemory.translated.net/get"
 
 
 class TranslationError(RuntimeError):
@@ -32,11 +40,129 @@ def _load_dictionary():
         return {}
 
 
+def catalog_storage_directory(base_directory=None):
+    if base_directory is not None:
+        return Path(base_directory)
+    try:
+        import folder_paths
+
+        user_directory = Path(folder_paths.get_user_directory())
+    except (ImportError, AttributeError):
+        user_directory = Path(__file__).with_name("user_data")
+    return user_directory / "prompt_workbench" / "tag_catalogs"
+
+
+def normalize_catalog_name(value):
+    name = unicodedata.normalize("NFKC", str(value or "")).strip()
+    if name.lower().endswith(".json"):
+        name = name[:-5].rstrip()
+    if not name or len(name) > 64 or not re.fullmatch(r"[\w -]+", name, flags=re.UNICODE):
+        raise ValueError("Catalog name must use letters, numbers, spaces, hyphens, or underscores")
+    if name.rstrip(" .").upper() in {
+        "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5",
+        "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4",
+        "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+    }:
+        raise ValueError("Catalog name is reserved by Windows")
+    return name
+
+
+def user_catalog_path(name, storage_directory=None):
+    safe_name = normalize_catalog_name(name)
+    directory = catalog_storage_directory(storage_directory).resolve()
+    target = (directory / f"{safe_name}.json").resolve()
+    if target.parent != directory:
+        raise ValueError("Catalog path is outside the storage directory")
+    return target
+
+
+def default_examples_path(data_directory=None):
+    data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
+    danbooru = data_directory / "danbooru_tag_catalog.json"
+    return danbooru if danbooru.is_file() else data_directory / "prompt_examples.json"
+
+
+def examples_path(data_directory=None, requested_name="", storage_directory=None):
+    if requested_name:
+        requested = user_catalog_path(requested_name, storage_directory)
+        if requested.is_file():
+            return requested
+    return default_examples_path(data_directory)
+
+
+def load_examples_catalog(data_directory=None, requested_name="", storage_directory=None):
+    path = examples_path(data_directory, requested_name, storage_directory)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("Prompt examples root must be an object")
+    return data
+
+
+def list_user_catalogs(storage_directory=None):
+    directory = catalog_storage_directory(storage_directory)
+    if not directory.is_dir():
+        return []
+    return sorted(
+        (path.stem for path in directory.glob("*.json") if path.is_file()),
+        key=str.casefold,
+    )[:500]
+
+
+def validate_user_catalog(data):
+    if not isinstance(data, dict) or data.get("schema") != "prompt-workbench/tag-catalog" or data.get("version") != 1:
+        raise ValueError("Unsupported user catalog schema")
+    if not isinstance(data.get("categories"), list) or not isinstance(data.get("tags"), list):
+        raise ValueError("Catalog must contain categories and tags arrays")
+    categories = data["categories"]
+    if not categories or len(categories) > MAX_CATALOG_CATEGORIES:
+        raise ValueError("Catalog category count is invalid")
+    for category in categories:
+        if not isinstance(category, dict):
+            raise ValueError("Every catalog category must be an object")
+        if not isinstance(category.get("id"), str) or not category["id"].strip():
+            raise ValueError("Every catalog category must have an id")
+    tags = data["tags"]
+    if len(tags) > MAX_CATALOG_TAGS:
+        raise ValueError("Catalog contains too many tags")
+    for item in tags:
+        if not isinstance(item, dict) or not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
+            raise ValueError("Every catalog tag must have a prompt")
+    encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    if len(encoded) > MAX_CATALOG_BYTES:
+        raise ValueError("Catalog exceeds the 4 MB limit")
+    return data
+
+
+def save_user_catalog(name, data, storage_directory=None):
+    catalog = validate_user_catalog(data)
+    target = user_catalog_path(name, storage_directory)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
+    created = False
+    try:
+        with target.open("x", encoding="utf-8", newline="\n") as output:
+            created = True
+            output.write(serialized)
+            output.flush()
+            os.fsync(output.fileno())
+    except Exception:
+        if created and target.exists():
+            target.unlink()
+        raise
+    return target
+
+
 def provider_status():
     return [
         {
             "id": "local",
-            "label": "Local dictionary",
+            "label": "Free automatic (dictionary -> MyMemory)",
+            "available": True,
+            "api_key_required": False,
+        },
+        {
+            "id": "offline",
+            "label": "Local dictionary only",
             "available": True,
             "api_key_required": False,
         },
@@ -123,12 +249,58 @@ async def _post_json(session, url, payload, headers=None):
             raise TranslationError("Translation service returned invalid JSON") from exc
 
 
+async def _get_json(session, url, params):
+    async with session.get(url, params=params) as response:
+        body = await response.text()
+        if response.status >= 400:
+            raise TranslationError(f"Translation service returned HTTP {response.status}")
+        try:
+            return json.loads(body)
+        except json.JSONDecodeError as exc:
+            raise TranslationError("Translation service returned invalid JSON") from exc
+
+
+def _mymemory_query(text):
+    query = " ".join(text.replace("_", " ").split())
+    if len(query.encode("utf-8")) > 500:
+        raise TranslationError("Free translation is limited to 500 bytes per tag")
+    return query
+
+
+def _parse_mymemory_result(data, query):
+    status = data.get("responseStatus", 200) if isinstance(data, dict) else 500
+    if not isinstance(status, int) or status >= 400:
+        details = data.get("responseDetails") if isinstance(data, dict) else None
+        raise TranslationError(str(details or "Free translation service rejected the request"))
+    result = data.get("responseData", {}).get("translatedText")
+    if not isinstance(result, str) or not result.strip():
+        raise TranslationError("Free translation service returned an empty result")
+    result = html.unescape(result).strip()
+    if result.casefold() == query.casefold():
+        raise TranslationError("Free translation service did not translate this tag")
+    return result
+
+
+async def _translate_mymemory(session, text, source, target):
+    query = _mymemory_query(text)
+    source_language = source.lower()
+    target_language = target.lower()
+    if source_language == "auto":
+        source_language = "en" if target_language.startswith("ja") else "ja"
+    data = await _get_json(
+        session,
+        MYMEMORY_URL,
+        {"q": query, "langpair": f"{source_language}|{target_language}", "mt": "1"},
+    )
+    return _parse_mymemory_result(data, query)
+
+
 async def translate_text(provider, text, source="auto", target="en", timeout=12):
     if not isinstance(text, str) or not text.strip():
         raise TranslationError("Translation text is empty")
     if len(text) > MAX_TEXT_LENGTH:
         raise TranslationError(f"Translation text exceeds {MAX_TEXT_LENGTH} characters")
-    if provider not in {"local", "libretranslate", "deepl", "openai"}:
+    if provider not in SUPPORTED_PROVIDERS:
         raise TranslationError("Unknown translation provider")
 
     key = _cache_key(provider, source, target, text)
@@ -136,10 +308,14 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12)
     if cached is not None:
         return cached, True
 
-    if provider == "local":
-        result = _local_translate(text, target)
-        _cache_set(key, result)
-        return result, False
+    local_result = _local_translate(text, target)
+    if target.lower().startswith("ja") and local_result != text:
+        _cache_set(key, local_result)
+        return local_result, False
+    if provider in {"local", "offline"}:
+        if provider == "offline" or local_result != text:
+            _cache_set(key, local_result)
+            return local_result, False
 
     try:
         import aiohttp
@@ -149,7 +325,9 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12)
     timeout = max(3, min(int(timeout), 30))
     client_timeout = aiohttp.ClientTimeout(total=timeout)
     async with _REMOTE_SEMAPHORE, aiohttp.ClientSession(timeout=client_timeout) as session:
-        if provider == "libretranslate":
+        if provider == "local":
+            result = await _translate_mymemory(session, text, source, target)
+        elif provider == "libretranslate":
             base_url = _validate_url(os.getenv("PROMPT_AIO_LIBRE_URL", ""))
             payload = {"q": text, "source": source, "target": target, "format": "text"}
             api_key = os.getenv("PROMPT_AIO_LIBRE_API_KEY")
@@ -226,13 +404,36 @@ def register_routes():
     routes = PromptServer.instance.routes
 
     @routes.get("/prompt_all_in_one/examples")
-    async def get_examples(_request):
-        path = Path(__file__).with_name("data") / "prompt_examples.json"
+    async def get_examples(request):
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+            requested_name = request.rel_url.query.get("file", "")
+            data = load_examples_catalog(requested_name=requested_name)
+        except (OSError, ValueError, json.JSONDecodeError):
             return web.json_response({"error": "Prompt examples are unavailable"}, status=500)
         return web.json_response(data)
+
+    @routes.get("/prompt_all_in_one/catalogs")
+    async def get_catalogs(request):
+        selected = request.rel_url.query.get("selected", "")
+        try:
+            files = list_user_catalogs()
+            exists = bool(selected and user_catalog_path(selected).is_file())
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        return web.json_response({"files": files, "selected": selected, "exists": exists})
+
+    @routes.post("/prompt_all_in_one/catalogs")
+    async def post_catalog(request):
+        if request.content_length and request.content_length > MAX_CATALOG_BYTES:
+            return web.json_response({"error": "Catalog request is too large"}, status=413)
+        try:
+            body = await request.json()
+            target = save_user_catalog(body.get("name"), body.get("catalog"))
+            return web.json_response({"name": target.stem, "filename": target.name}, status=201)
+        except FileExistsError:
+            return web.json_response({"error": "A catalog with this name already exists"}, status=409)
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
 
     @routes.get("/prompt_all_in_one/providers")
     async def get_providers(_request):
@@ -254,10 +455,15 @@ def register_routes():
             source = str(body.get("source", "auto"))[:16]
             target = str(body.get("target", "en"))[:16]
             timeout = body.get("timeout", 12)
-            results = []
-            for item in texts:
-                translated, cached = await translate_text(provider, item, source, target, timeout)
-                results.append({"source": item, "translated": translated, "cached": cached})
+            async def translate_item(item):
+                try:
+                    translated, cached = await translate_text(provider, item, source, target, timeout)
+                    return {"source": item, "translated": translated, "cached": cached}
+                except (TranslationError, asyncio.TimeoutError) as exc:
+                    message = "Translation timed out" if isinstance(exc, asyncio.TimeoutError) else str(exc)
+                    return {"source": item, "translated": "", "cached": False, "error": message}
+
+            results = await asyncio.gather(*(translate_item(item) for item in texts))
             return web.json_response({"results": results})
         except (TranslationError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)

@@ -3,37 +3,52 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../web/prompt_all_in_one.css">
-  <title>Prompt All-in-One display check</title>
+  <title>Prompt Workbench display check</title>
 </head>
 <body style="margin: 24px; background: #111; color: #eee">
-  <section class="paio-editor">
+  <section class="paio-editor" style="width:900px">
     <div class="paio-tags" id="tags"></div>
   </section>
   <output id="result"></output>
   <script type="module">
     import { appendPresentChildren, getTagDisplayText } from "../web/prompt_editor.js";
-    const display = getTagDisplayText(
-      { value: "1girl", translation: "1girl null", translatedTo: "ja" },
-      { translationDisplay: "local", localLanguage: "ja" },
-    );
-    const button = document.createElement("div");
-    button.className = "paio-tag";
-    const content = document.createElement("span");
-    content.className = "paio-tag-content";
-    const primary = document.createElement("span");
-    primary.className = "paio-tag-label";
-    primary.textContent = display.primary;
-    content.append(primary);
-    if (display.secondary) {
-      const secondary = document.createElement("span");
-      secondary.className = "paio-tag-translation";
-      secondary.textContent = display.secondary;
-      content.append(secondary);
-    }
-    const warning = null;
-    appendPresentChildren(button, content, warning);
-    document.querySelector("#tags").append(button);
-    document.querySelector("#result").textContent = button.textContent === "1girl" ? "PASS" : `FAIL:${button.textContent}`;
+    const makeTag = (value, { disabled = false, type = "normal", translation = "" } = {}) => {
+      const display = getTagDisplayText(
+        { value, translation, translatedTo: "ja" },
+        { translationDisplay: "both", localLanguage: "ja" },
+      );
+      const tag = document.createElement("div");
+      tag.className = `paio-tag${disabled ? " is-disabled" : ""}`;
+      tag.dataset.type = type;
+      const content = document.createElement("span");
+      content.className = "paio-tag-content";
+      const primary = document.createElement("span");
+      primary.className = "paio-tag-label";
+      primary.textContent = display.primary;
+      content.append(primary);
+      if (display.secondary) {
+        const secondary = document.createElement("span");
+        secondary.className = "paio-tag-translation";
+        secondary.textContent = display.secondary;
+        content.append(secondary);
+      }
+      const warning = null;
+      appendPresentChildren(tag, content, warning);
+      document.querySelector("#tags").append(tag);
+      return tag;
+    };
+    const shortTag = makeTag("1girl", { translation: "1人の女の子" });
+    const longTag = makeTag("looking_at_viewer");
+    makeTag("<lora:detail:1>", { type: "lora" });
+    makeTag("embedding:EasyNegative", { type: "embedding" });
+    const disabledTag = makeTag("no_bra", { disabled: true });
+    const enabledColor = getComputedStyle(shortTag).backgroundColor;
+    const translationStyle = getComputedStyle(shortTag.querySelector(".paio-tag-translation"));
+    const disabledColor = getComputedStyle(disabledTag).backgroundColor;
+    const strike = getComputedStyle(disabledTag.querySelector(".paio-tag-label")).textDecorationLine.includes("line-through");
+    const translationReadable = translationStyle.color === "rgb(255, 255, 255)" && translationStyle.fontSize === "11px" && Number(translationStyle.fontWeight) >= 600;
+    const pass = shortTag.textContent === "1girl1人の女の子" && longTag.offsetWidth > shortTag.offsetWidth && enabledColor !== disabledColor && strike && translationReadable;
+    document.querySelector("#result").textContent = pass ? "PASS" : `FAIL widths=${shortTag.offsetWidth}/${longTag.offsetWidth} colors=${enabledColor}/${disabledColor} strike=${strike} translation=${translationStyle.color}/${translationStyle.fontSize}/${translationStyle.fontWeight}`;
   </script>
 </body>
 </html>

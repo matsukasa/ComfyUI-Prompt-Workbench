@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="../web/prompt_all_in_one.css">
+  <title>Prompt Workbench progressive examples QA</title>
+</head>
+<body style="margin:0;background:#101210;color:#eee">
+  <main id="mount" style="width:720px;margin:20px auto"></main>
+  <output id="result" style="position:fixed;right:12px;bottom:12px;padding:7px 10px;border-radius:6px;background:#18351f;color:#dfffe6">LOADING</output>
+  <script type="module">
+    import { PromptEditor } from "../web/prompt_editor.js";
+
+    const prompt = { name: "prompt", type: "text", value: "1girl", draw() {}, computeSize() { return [600, 120]; } };
+    const node = {
+      size: [720, 820],
+      addDOMWidget(_name, _type, root) { document.querySelector("#mount").append(root); return {}; },
+      setSize(size) { this.size = size; },
+    };
+    const api = {
+      fetchApi(path) {
+        if (path === "/prompt_all_in_one/examples") return fetch("../data/prompt_examples.json");
+        return Promise.resolve(new Response(JSON.stringify({ loras: [], embeddings: [] }), { headers: { "content-type": "application/json" } }));
+      },
+    };
+    new PromptEditor(node, { prompt }, api);
+    window.setTimeout(() => {
+      const bands = [...document.querySelectorAll(".paio-example-category-band")];
+      const levels = ["is-large", "is-medium", "is-small"];
+      const hierarchyPass = bands.length === 3 && bands.every((band, index) => band.classList.contains(levels[index]));
+      const activePass = bands.every((band) => band.querySelector(".paio-example-category-chip.is-active"));
+      const bilingualChip = [...document.querySelectorAll(".paio-example-chip")].find((chip) => chip.querySelector(".paio-example-chip-translation"));
+      const bilingualPass = Boolean(bilingualChip?.querySelector(".paio-example-chip-prompt")?.textContent && bilingualChip?.querySelector(".paio-example-chip-translation")?.textContent);
+      const searchPass = document.querySelector(".paio-example-controls .paio-search")?.placeholder === "英語・日本語でタグを検索";
+      document.querySelector("#result").textContent = hierarchyPass && activePass && bilingualPass && searchPass
+        ? "PASS"
+        : `FAIL hierarchy=${hierarchyPass} active=${activePass} bilingual=${bilingualPass} search=${searchPass}`;
+    }, 1200);
+  </script>
+</body>
+</html>

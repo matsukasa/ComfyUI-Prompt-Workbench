@@ -27,14 +27,18 @@ export function sanitizeLibraryEdits(input = {}) {
       deleted: Boolean(entry?.deleted),
       custom: Boolean(entry?.custom),
     })).filter((entry) => entry.id),
-    tags: tags.slice(0, MAX_EDITS).map((entry) => ({
-      id: text(entry?.id, 160),
-      categoryId: text(entry?.categoryId, 120),
-      prompt: text(entry?.prompt, 10000),
-      ja: text(entry?.ja, 10000),
-      deleted: Boolean(entry?.deleted),
-      custom: Boolean(entry?.custom),
-    })).filter((entry) => entry.id),
+    tags: tags.slice(0, MAX_EDITS).map((entry) => {
+      const sanitized = {
+        id: text(entry?.id, 160),
+        categoryId: text(entry?.categoryId, 120),
+        prompt: text(entry?.prompt, 10000),
+        ja: text(entry?.ja, 10000),
+        deleted: Boolean(entry?.deleted),
+        custom: Boolean(entry?.custom),
+      };
+      if (Number.isInteger(entry?.order) && entry.order >= 0) sanitized.order = Math.min(entry.order, MAX_EDITS);
+      return sanitized;
+    }).filter((entry) => entry.id),
   };
 }
 
@@ -55,8 +59,66 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
   const categories = new Map();
   const tags = new Map();
   const largeIds = new Map();
+  const isDanbooruCatalog = Array.isArray(source.major_categories);
+  const isStoredCatalog = source.schema === "prompt-workbench/tag-catalog" && source.version === 1;
 
-  for (const group of source.categories || []) {
+  if (isStoredCatalog) {
+    for (const category of source.categories || []) {
+      const id = text(category?.id, 120);
+      if (!id) continue;
+      categories.set(id, {
+        id,
+        level: LEVELS.includes(category?.level) ? category.level : "small",
+        parentId: text(category?.parentId, 120),
+        en: text(category?.en),
+        ja: text(category?.ja),
+        builtin: true,
+      });
+    }
+    for (const [index, tag] of (source.tags || []).entries()) {
+      const id = text(tag?.id, 160) || `stored-tag:${index}`;
+      tags.set(id, {
+        id,
+        categoryId: text(tag?.categoryId, 120),
+        prompt: text(tag?.prompt, 10000),
+        ja: text(tag?.ja, 10000),
+        order: Number.isInteger(tag?.order) ? Math.max(0, tag.order) : index,
+        builtin: true,
+      });
+    }
+  }
+
+  if (isDanbooruCatalog && !isStoredCatalog) {
+    for (const major of source.major_categories) {
+      const largeId = `danbooru:${text(major.id, 100)}`;
+      categories.set(largeId, {
+        id: largeId, level: "large", parentId: "", en: "", ja: text(major.label_ja), builtin: true,
+      });
+      for (const medium of major.medium_categories || []) {
+        const mediumId = `danbooru:${text(medium.id, 100)}`;
+        categories.set(mediumId, {
+          id: mediumId, level: "medium", parentId: largeId, en: "", ja: text(medium.label_ja), builtin: true,
+        });
+        for (const small of medium.small_categories || []) {
+          const smallId = `danbooru:${text(small.id, 100)}`;
+          categories.set(smallId, {
+            id: smallId, level: "small", parentId: mediumId, en: "", ja: text(small.label_ja), builtin: true,
+          });
+          (small.tags || []).forEach((item, index) => {
+            const officialId = text(item.id, 80) || `${small.id}:${index}`;
+            const id = `danbooru-tag:${officialId}`;
+            tags.set(id, {
+              id, categoryId: smallId, prompt: text(item.name, 10000), ja: "",
+              order: Number.isInteger(item.rank) ? Math.max(0, item.rank - 1) : index,
+              builtin: true,
+            });
+          });
+        }
+      }
+    }
+  }
+
+  for (const group of (isDanbooruCatalog || isStoredCatalog) ? [] : (source.categories || [])) {
     const parentKey = `${text(group.parent?.en)}\u0000${text(group.parent?.ja)}`;
     let largeId = largeIds.get(parentKey);
     if (!largeId) {
@@ -85,19 +147,31 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       const id = `tag:${text(group.id, 80)}:${index}`;
       tags.set(id, {
         id, categoryId: smallId, prompt: text(item.prompt, 10000),
-        ja: text(item.translation?.ja, 10000), builtin: true,
+        ja: text(item.translation?.ja, 10000), order: index, builtin: true,
       });
     });
   }
 
+  const customCategoryIds = new Set(edits.categories.filter((edit) => edit.custom && !edit.deleted).map((edit) => edit.id));
+  const ensureCustomFallback = () => {
+    if (!categories.has("custom:root")) categories.set("custom:root", { id: "custom:root", level: "large", parentId: "", en: "User", ja: "ユーザー定義", builtin: false, custom: true });
+    if (!categories.has("custom:medium")) categories.set("custom:medium", { id: "custom:medium", level: "medium", parentId: "custom:root", en: "Custom", ja: "独自カテゴリー", builtin: false, custom: true });
+    if (!categories.has("custom:small")) categories.set("custom:small", { id: "custom:small", level: "small", parentId: "custom:medium", en: "Tags", ja: "独自タグ", builtin: false, custom: true });
+  };
   for (const edit of edits.categories) {
     if (edit.deleted) {
       categories.delete(edit.id);
       continue;
     }
     const existing = categories.get(edit.id);
-    categories.set(edit.id, {
-      ...(existing || {}), ...edit,
+    if (isDanbooruCatalog && !existing && !edit.custom) continue;
+    const adjusted = { ...edit };
+    if (isDanbooruCatalog && edit.custom && edit.parentId && !categories.has(edit.parentId) && !customCategoryIds.has(edit.parentId)) {
+      ensureCustomFallback();
+      adjusted.parentId = edit.level === "small" ? "custom:medium" : edit.level === "medium" ? "custom:root" : "";
+    }
+    categories.set(adjusted.id, {
+      ...(existing || {}), ...adjusted,
       builtin: existing?.builtin || !edit.custom,
     });
   }
@@ -107,8 +181,14 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       continue;
     }
     const existing = tags.get(edit.id);
+    if (isDanbooruCatalog && !existing && !edit.custom) continue;
+    const adjusted = { ...edit };
+    if (isDanbooruCatalog && edit.custom && !categories.has(edit.categoryId)) {
+      ensureCustomFallback();
+      adjusted.categoryId = "custom:small";
+    }
     tags.set(edit.id, {
-      ...(existing || {}), ...edit,
+      ...(existing || {}), ...adjusted,
       builtin: existing?.builtin || !edit.custom,
     });
   }
@@ -127,7 +207,15 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     if (!tag.prompt || !categories.has(tag.categoryId)) tags.delete(tag.id);
   }
 
-  return { categories: [...categories.values()], tags: [...tags.values()] };
+  const categoryList = [...categories.values()];
+  const categoryOrder = new Map(categoryList.map((category, index) => [category.id, index]));
+  const tagList = [...tags.values()];
+  tagList.sort((left, right) => {
+    const categoryDifference = (categoryOrder.get(left.categoryId) ?? MAX_EDITS) - (categoryOrder.get(right.categoryId) ?? MAX_EDITS);
+    if (categoryDifference) return categoryDifference;
+    return (Number.isInteger(left.order) ? left.order : MAX_EDITS) - (Number.isInteger(right.order) ? right.order : MAX_EDITS);
+  });
+  return { categories: categoryList, tags: tagList };
 }
 
 function upsert(list, entry) {
@@ -148,12 +236,32 @@ export function saveCategoryEdit(rawEdits, category) {
 
 export function saveTagEdit(rawEdits, tag) {
   const edits = cloneEdits(sanitizeLibraryEdits(rawEdits));
-  upsert(edits.tags, {
+  const entry = {
     id: text(tag.id, 160), categoryId: text(tag.categoryId, 120),
     prompt: text(tag.prompt, 10000), ja: text(tag.ja, 10000),
     deleted: false, custom: Boolean(tag.custom),
-  });
+  };
+  if (Number.isInteger(tag.order) && tag.order >= 0) entry.order = Math.min(tag.order, MAX_EDITS);
+  upsert(edits.tags, entry);
   return sanitizeLibraryEdits(edits);
+}
+
+export function reorderTagEdits(rawEdits, categoryTags, draggedId, targetId, position = "before") {
+  const tags = Array.isArray(categoryTags) ? categoryTags.map((tag) => ({ ...tag })) : [];
+  const dragged = tags.find((tag) => tag.id === draggedId);
+  const target = tags.find((tag) => tag.id === targetId);
+  if (!dragged || !target || dragged.id === target.id || dragged.categoryId !== target.categoryId) {
+    return sanitizeLibraryEdits(rawEdits);
+  }
+  const draggedIndex = tags.findIndex((tag) => tag.id === dragged.id);
+  const [moved] = tags.splice(draggedIndex, 1);
+  const targetIndex = tags.findIndex((tag) => tag.id === target.id);
+  tags.splice(targetIndex + (position === "after" ? 1 : 0), 0, moved);
+  let edits = sanitizeLibraryEdits(rawEdits);
+  tags.forEach((tag, order) => {
+    edits = saveTagEdit(edits, { ...tag, order, custom: !tag.builtin });
+  });
+  return edits;
 }
 
 export function deleteTagEdit(rawEdits, tag) {
@@ -207,4 +315,25 @@ export function libraryToExampleData(library) {
     };
   });
   return { categories };
+}
+
+export function libraryToStoredCatalog(library) {
+  return {
+    schema: "prompt-workbench/tag-catalog",
+    version: 1,
+    categories: (library?.categories || []).map((category) => ({
+      id: text(category.id, 120),
+      level: LEVELS.includes(category.level) ? category.level : "small",
+      parentId: text(category.parentId, 120),
+      en: text(category.en),
+      ja: text(category.ja),
+    })),
+    tags: (library?.tags || []).map((tag, index) => ({
+      id: text(tag.id, 160),
+      categoryId: text(tag.categoryId, 120),
+      prompt: text(tag.prompt, 10000),
+      ja: text(tag.ja, 10000),
+      order: Number.isInteger(tag.order) ? tag.order : index,
+    })),
+  };
 }

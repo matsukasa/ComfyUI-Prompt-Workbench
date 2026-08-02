@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   blacklistAction: "warn",
   tagColors: {},
   filter: "all",
+  libraryFile: "",
   libraryEdits: { categories: [], tags: [] },
 });
 
@@ -27,7 +28,7 @@ export function sanitizeSettings(input = {}) {
   if (["allow", "skip", "move"].includes(input.duplicatePolicy)) {
     settings.duplicatePolicy = input.duplicatePolicy;
   }
-  if (["local", "libretranslate", "deepl", "openai"].includes(input.translationProvider)) {
+  if (["local", "offline", "libretranslate", "deepl", "openai"].includes(input.translationProvider)) {
     settings.translationProvider = input.translationProvider;
   }
   if (["en", "ja"].includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
@@ -57,6 +58,9 @@ export function sanitizeSettings(input = {}) {
     }
   }
   settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
+  if (typeof input.libraryFile === "string") {
+    settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);
+  }
   return settings;
 }
 

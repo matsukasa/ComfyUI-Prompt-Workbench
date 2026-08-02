@@ -43,6 +43,14 @@ test("translation display preference round-trips with editor state", () => {
   assert.equal(restored.settings.translationDisplay, "both");
 });
 
+test("selected tag catalog filename round-trips without a path or extension", () => {
+  const restored = parseImportedState(exportEditorState({
+    tags: [],
+    settings: { libraryFile: "私のタグ.json" },
+  }));
+  assert.equal(restored.settings.libraryFile, "私のタグ");
+});
+
 test("legacy editor state imports only the former positive prompt", () => {
   const restored = parseImportedState(JSON.stringify({
     schema: "prompt-all-in-one/editor-state",

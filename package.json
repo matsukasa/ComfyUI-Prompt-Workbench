@@ -1,5 +1,5 @@
 {
-  "name": "comfyui-prompt-all-in-one-tests",
+  "name": "comfyui-prompt-workbench-tests",
   "private": true,
   "type": "module",
   "scripts": {

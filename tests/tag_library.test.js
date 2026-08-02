@@ -5,6 +5,8 @@ import {
   deleteCategoryEdit,
   deleteTagEdit,
   libraryToExampleData,
+  libraryToStoredCatalog,
+  reorderTagEdits,
   saveCategoryEdit,
   saveTagEdit,
 } from "../web/tag_library.js";
@@ -65,4 +67,62 @@ test("tag deletion hides a built-in tag without copying the full library", () =>
   const edits = deleteTagEdit({}, tag);
   assert.equal(buildTagLibrary(source, edits).tags.length, 1);
   assert.equal(edits.tags.length, 1);
+});
+
+test("reorders tags within a small category and persists the display order", () => {
+  const library = buildTagLibrary(source);
+  const [first, second] = library.tags;
+  const edits = reorderTagEdits({}, library.tags, second.id, first.id, "before");
+  const reordered = buildTagLibrary(source, edits);
+  assert.deepEqual(reordered.tags.map((tag) => tag.prompt), ["blue dress", "red dress"]);
+  assert.deepEqual(reordered.tags.map((tag) => tag.order), [0, 1]);
+});
+
+test("normalizes the nested Danbooru catalog without exposing audit metadata", () => {
+  const catalog = { major_categories: [{ id: "appearance", label_ja: "外見", medium_categories: [{
+    id: "hair", label_ja: "髪", small_categories: [{
+      id: "hair-style", label_ja: "髪型", tags: [
+        { id: 10, name: "long_hair", post_count: 1000, rank: 1 },
+        { id: 11, name: "short_hair", post_count: 900, rank: 2 },
+      ],
+    }],
+  }] }] };
+  const library = buildTagLibrary(catalog);
+  assert.deepEqual(library.categories.map((item) => item.ja), ["外見", "髪", "髪型"]);
+  assert.deepEqual(library.tags.map((item) => item.prompt), ["long_hair", "short_hair"]);
+  assert.ok(library.tags.every((item) => !("post_count" in item) && !("rank" in item)));
+});
+
+test("drops obsolete built-in edits and moves orphaned custom tags to user-defined", () => {
+  const catalog = { major_categories: [{ id: "new", label_ja: "新分類", medium_categories: [{
+    id: "new-medium", label_ja: "中分類", small_categories: [{ id: "new-small", label_ja: "小分類", tags: [] }],
+  }] }] };
+  const edits = {
+    categories: [{ id: "large:person", level: "large", parentId: "", en: "Old", ja: "旧分類", custom: false }],
+    tags: [{ id: "custom-tag", categoryId: "small:old:general", prompt: "my_tag", ja: "独自", custom: true }],
+  };
+  const library = buildTagLibrary(catalog, edits);
+  assert.equal(library.categories.some((item) => item.id === "large:person"), false);
+  assert.equal(library.categories.some((item) => item.id === "custom:root" && item.ja === "ユーザー定義"), true);
+  assert.equal(library.tags.find((item) => item.id === "custom-tag")?.categoryId, "custom:small");
+});
+
+test("stored catalog round-trip preserves hierarchy, order, and Japanese translations", () => {
+  let edits = saveCategoryEdit({}, {
+    id: "custom-small", level: "small", parentId: "medium:01-001",
+    en: "Saved", ja: "保存済み", custom: true,
+  });
+  edits = saveTagEdit(edits, {
+    id: "custom-tag", categoryId: "custom-small", prompt: "saved_tag", ja: "保存タグ", custom: true,
+  });
+  const original = buildTagLibrary(source, edits);
+  const restored = buildTagLibrary(libraryToStoredCatalog(original));
+  assert.deepEqual(
+    restored.categories.map(({ id, level, parentId, en, ja }) => ({ id, level, parentId, en, ja })),
+    original.categories.map(({ id, level, parentId, en, ja }) => ({ id, level, parentId, en, ja })),
+  );
+  assert.deepEqual(
+    restored.tags.map(({ id, categoryId, prompt, ja, order }) => ({ id, categoryId, prompt, ja, order })),
+    original.tags.map(({ id, categoryId, prompt, ja }, order) => ({ id, categoryId, prompt, ja, order })),
+  );
 });

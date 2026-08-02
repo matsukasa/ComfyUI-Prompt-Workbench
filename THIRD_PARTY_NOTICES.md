@@ -1,5 +1,18 @@
 # Third-party notices
 
+## Danbooru official API
+
+- Service: <https://danbooru.donmai.us/>
+- API help: <https://danbooru.donmai.us/wiki_pages/help:api>
+- Endpoints used: `/tags.json`, `/wiki_pages.json`, `/tag_aliases.json`,
+  `/tag_implications.json`
+
+`tools/update_danbooru_tag_catalog.py` retrieves public tag metadata from the
+official API only. Generated UI data contains tag IDs, names, post counts and
+local classification metadata. Wiki bodies are used only during classification
+and are not redistributed in generated JSON files. The normal ComfyUI runtime
+does not contact Danbooru.
+
 ## sd-webui-prompt-all-in-one
 
 - Project: <https://github.com/Physton/sd-webui-prompt-all-in-one>
@@ -7,7 +20,8 @@
 - License: MIT
 - Copyright: Copyright (c) 2023 Physton
 
-The following source data was adapted:
+The following source data remains as a compatibility fallback until a complete
+Danbooru catalog has been successfully generated:
 
 - `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
   entries in `data/prompt_examples.json`; the 62-entry

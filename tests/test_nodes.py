@@ -1,4 +1,6 @@
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -35,7 +37,8 @@ class PromptAllInOneNodeTests(unittest.TestCase):
 
     def test_headless_import_does_not_require_frontend(self):
         self.assertIn("PromptAllInOne", nodes.NODE_CLASS_MAPPINGS)
-        self.assertEqual(nodes.PromptAllInOne.CATEGORY, "prompt/Prompt All-in-One")
+        self.assertEqual(nodes.PromptAllInOne.CATEGORY, "prompt/Prompt Workbench")
+        self.assertEqual(nodes.NODE_DISPLAY_NAME_MAPPINGS["PromptAllInOne"], "Prompt Workbench")
 
 
 class TranslationTests(unittest.IsolatedAsyncioTestCase):
@@ -47,6 +50,33 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(cached)
         self.assertTrue(cached_again)
 
+    async def test_offline_provider_keeps_unknown_tag_local(self):
+        translated, cached = await routes.translate_text("offline", "unknown_tag", target="ja")
+        self.assertEqual(translated, "unknown_tag")
+        self.assertFalse(cached)
+
+    async def test_japanese_translation_uses_local_dictionary_before_remote_provider(self):
+        translated, cached = await routes.translate_text("deepl", "masterpiece", target="ja")
+        self.assertEqual(translated, "傑作")
+        self.assertFalse(cached)
+
+    def test_free_translation_normalizes_prompt_tag_underscores(self):
+        self.assertEqual(routes._mymemory_query("looking_at_viewer"), "looking at viewer")
+
+    def test_mymemory_response_is_parsed_and_html_unescaped(self):
+        result = routes._parse_mymemory_result(
+            {"responseStatus": 200, "responseData": {"translatedText": "髪&amp;目"}},
+            "hair and eyes",
+        )
+        self.assertEqual(result, "髪&目")
+
+    def test_unchanged_free_translation_is_rejected(self):
+        with self.assertRaises(routes.TranslationError):
+            routes._parse_mymemory_result(
+                {"responseStatus": 200, "responseData": {"translatedText": "long hair"}},
+                "long hair",
+            )
+
     async def test_unknown_provider_is_rejected(self):
         with self.assertRaises(routes.TranslationError):
             await routes.translate_text("unknown", "hello", target="ja")
@@ -54,6 +84,69 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
     async def test_oversized_text_is_rejected(self):
         with self.assertRaises(routes.TranslationError):
             await routes.translate_text("local", "x" * (routes.MAX_TEXT_LENGTH + 1), target="ja")
+
+
+class CatalogRouteTests(unittest.TestCase):
+    def test_examples_path_falls_back_without_a_completed_danbooru_catalog(self):
+        self.assertEqual(routes.examples_path().name, "prompt_examples.json")
+
+    def test_examples_path_prefers_and_loads_completed_danbooru_catalog(self):
+        with tempfile.TemporaryDirectory() as directory:
+            data_directory = Path(directory)
+            (data_directory / "prompt_examples.json").write_text('{"source":"legacy"}', encoding="utf-8")
+            expected = {"schema_version": 1, "major_categories": []}
+            (data_directory / "danbooru_tag_catalog.json").write_text(
+                json.dumps(expected), encoding="utf-8"
+            )
+            self.assertEqual(routes.examples_path(data_directory).name, "danbooru_tag_catalog.json")
+            self.assertEqual(routes.load_examples_catalog(data_directory), expected)
+
+    def test_broken_catalog_json_is_reported_instead_of_silently_using_legacy(self):
+        with tempfile.TemporaryDirectory() as directory:
+            data_directory = Path(directory)
+            (data_directory / "prompt_examples.json").write_text('{"source":"legacy"}', encoding="utf-8")
+            (data_directory / "danbooru_tag_catalog.json").write_text("{broken", encoding="utf-8")
+            with self.assertRaises(json.JSONDecodeError):
+                routes.load_examples_catalog(data_directory)
+
+    def test_named_user_catalog_is_preferred_and_missing_name_falls_back(self):
+        with tempfile.TemporaryDirectory() as data_directory, tempfile.TemporaryDirectory() as storage_directory:
+            data_path = Path(data_directory)
+            storage_path = Path(storage_directory)
+            default = {"categories": [{"id": "default", "items": []}]}
+            custom = {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "custom"}], "tags": []}
+            (data_path / "prompt_examples.json").write_text(json.dumps(default), encoding="utf-8")
+            routes.save_user_catalog("私のタグ", custom, storage_path)
+            self.assertEqual(
+                routes.load_examples_catalog(data_path, "私のタグ", storage_path), custom
+            )
+            self.assertEqual(
+                routes.load_examples_catalog(data_path, "存在しない", storage_path), default
+            )
+
+    def test_named_catalog_save_never_overwrites_existing_file(self):
+        with tempfile.TemporaryDirectory() as storage_directory:
+            catalog = {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "custom"}], "tags": []}
+            target = routes.save_user_catalog("my catalog", catalog, storage_directory)
+            original = target.read_bytes()
+            with self.assertRaises(FileExistsError):
+                routes.save_user_catalog("my catalog.json", {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "other"}], "tags": []}, storage_directory)
+            self.assertEqual(target.read_bytes(), original)
+
+    def test_catalog_names_cannot_escape_storage_directory(self):
+        with tempfile.TemporaryDirectory() as storage_directory:
+            with self.assertRaises(ValueError):
+                routes.user_catalog_path("../outside", storage_directory)
+
+    def test_existing_broken_user_catalog_does_not_fall_back_to_default(self):
+        with tempfile.TemporaryDirectory() as data_directory, tempfile.TemporaryDirectory() as storage_directory:
+            data_path = Path(data_directory)
+            storage_path = Path(storage_directory)
+            (data_path / "prompt_examples.json").write_text('{"categories":[]}', encoding="utf-8")
+            storage_path.mkdir(parents=True, exist_ok=True)
+            (storage_path / "broken.json").write_text("{broken", encoding="utf-8")
+            with self.assertRaises(json.JSONDecodeError):
+                routes.load_examples_catalog(data_path, "broken", storage_path)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 Use a disposable workflow and test both ComfyUI light and dark themes.
 
 - [ ] ComfyUI starts without `import failed`.
-- [ ] `Prompt All-in-One` appears under `prompt/Prompt All-in-One`.
+- [ ] `Prompt Workbench` appears under `prompt/Prompt Workbench`.
 - [ ] Node creates with one empty prompt editor and no Positive/Negative tabs.
 - [ ] Native prompt STRING widget stays serialized but is not visibly duplicated.
 - [ ] Top prompt text applies with Ctrl+Enter/button and shows synced/dirty state.
@@ -11,10 +11,24 @@ Use a disposable workflow and test both ComfyUI light and dark themes.
 - [ ] Nested syntax, quoted commas and escaped commas stay intact.
 - [ ] Dragging changes tag order and STRING output order.
 - [ ] Click toggle, double-click inline edit and right-click actions work.
+- [ ] Right-clicking the node UI does not open the ComfyUI canvas menu; tag and text-input context menus still work.
 - [ ] Ctrl/Cmd and Shift selection work.
 - [ ] Bulk enable, disable, delete, translate, weight and copy work.
 - [ ] Undo/Redo restores deletion, formatting and weight changes.
-- [ ] Example search works in English/Japanese and bulk-add works.
+- [ ] `タグを追加` shows large, medium and small Danbooru category controls.
+- [ ] All 14 large categories are available and `成人向け表現` is not hidden behind a setting.
+- [ ] Selecting a small category shows exactly 20 official English tag names.
+- [ ] Tag buttons preserve underscores and show no post count, rank, category path or metadata tooltip.
+- [ ] Search finds English tag names and Japanese large/medium/small category names.
+- [ ] Search shows at most 50 tag names without category paths and bulk-add works.
+- [ ] Adding the same catalog tag twice is prevented and comma formatting remains valid.
+- [ ] Edited categories, order and Japanese translations can be saved under a new catalog filename.
+- [ ] Saving with an existing catalog name is rejected without changing the existing file.
+- [ ] A selected user catalog loads instead of the default; a missing selected file falls back to the default.
+- [ ] Switching catalogs with unsaved library edits is blocked until those edits are saved under a new name.
+- [ ] A catalog Japanese translation is reused when adding a tag and does not trigger a remote request.
+- [ ] Japanese translation checks the local dictionary before every remote provider and sends only misses.
+- [ ] Opening and using the catalog causes no request to `danbooru.donmai.us` in the browser network panel.
 - [ ] Invalid blacklist regex reports an error without breaking the editor.
 - [ ] Missing-model lookup failure does not block editing.
 - [ ] Translation success is bilingual; failure shows retryable inline text.
