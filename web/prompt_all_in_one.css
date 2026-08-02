@@ -358,11 +358,28 @@
   align-content: flex-start;
   flex-wrap: wrap;
   gap: 5px;
-  max-height: 118px;
+  min-height: 96px;
+  max-height: 520px;
   overflow: auto;
   scrollbar-gutter: stable;
   padding: 2px;
 }
+.paio-example-resize-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 20px;
+  margin-top: 3px;
+  color: var(--paio-muted);
+  border-radius: 5px;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+}
+.paio-example-resize-handle:hover, .paio-example-resize-handle.is-dragging { color: var(--paio-ink); background: var(--paio-raised); }
+.paio-example-resize-handle:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
+.paio-example-resize-mark { font-size: 18px; line-height: 0.5; letter-spacing: 2px; transform: rotate(90deg); }
 .paio-example-chip { display: inline-flex; align-items: baseline; gap: 7px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 32px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
 .paio-example-chip-prompt { color: var(--paio-ink); font-weight: 650; overflow: hidden; text-overflow: ellipsis; }
 .paio-example-chip-translation { color: color-mix(in srgb, var(--paio-ink) 82%, var(--paio-muted)); font-size: 0.88rem; font-weight: 550; overflow: hidden; text-overflow: ellipsis; }

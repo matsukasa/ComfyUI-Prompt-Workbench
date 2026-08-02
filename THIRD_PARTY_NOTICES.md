@@ -1,17 +1,23 @@
 # Third-party notices
 
-## Danbooru official API
+## qdlabs/danbooru-tags
 
-- Service: <https://danbooru.donmai.us/>
-- API help: <https://danbooru.donmai.us/wiki_pages/help:api>
-- Endpoints used: `/tags.json`, `/wiki_pages.json`, `/tag_aliases.json`,
-  `/tag_implications.json`
+- Dataset: <https://huggingface.co/datasets/qdlabs/danbooru-tags>
+- License declared by the dataset card: Apache-2.0
+- Files used: `tags.parquet`, or `tags.jsonl` when no Parquet reader is available
 
-`tools/update_danbooru_tag_catalog.py` retrieves public tag metadata from the
-official API only. Generated UI data contains tag IDs, names, post counts and
-local classification metadata. Wiki bodies are used only during classification
-and are not redistributed in generated JSON files. The normal ComfyUI runtime
-does not contact Danbooru.
+This dataset was used to prepare the bundled static tag-catalog snapshot.
+Raw source files and acquisition tools are not distributed with the node.
+
+## a1111-sd-webui-tagcomplete
+
+- Project: <https://github.com/DominikDoom/a1111-sd-webui-tagcomplete>
+- File used: `tags/danbooru.csv`
+- Audited main commit: `4170882f90b47be130a0ff9314f663c230b9153d`
+- License: MIT
+
+The TagComplete CSV was used only to supplement aliases in the bundled static
+snapshot. The CSV and its acquisition tools are not distributed with the node.
 
 ## sd-webui-prompt-all-in-one
 
@@ -20,8 +26,7 @@ does not contact Danbooru.
 - License: MIT
 - Copyright: Copyright (c) 2023 Physton
 
-The following source data remains as a compatibility fallback until a complete
-Danbooru catalog has been successfully generated:
+The following source data remains as the local compatibility fallback:
 
 - `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
   entries in `data/prompt_examples.json`; the 62-entry

@@ -78,8 +78,8 @@ def user_catalog_path(name, storage_directory=None):
 
 def default_examples_path(data_directory=None):
     data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
-    danbooru = data_directory / "danbooru_tag_catalog.json"
-    return danbooru if danbooru.is_file() else data_directory / "prompt_examples.json"
+    catalog = data_directory / "tag_catalog.json"
+    return catalog if catalog.is_file() else data_directory / "prompt_examples.json"
 
 
 def examples_path(data_directory=None, requested_name="", storage_directory=None):

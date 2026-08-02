@@ -36,6 +36,11 @@ const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
+const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
+const MIN_EXAMPLE_LIST_HEIGHT = 96;
+const MAX_EXAMPLE_LIST_HEIGHT = 520;
+const BASE_DOM_WIDGET_HEIGHT = 690;
+const BASE_NODE_HEIGHT = 760;
 const COLOR_DEFAULTS = {
   normal: "#7b8794", disabled: "#6b7280", lora: "#3b82f6", lycoris: "#a855f7",
   embedding: "#14b8a6", wildcard: "#eab308", duplicate: "#f59e0b",
@@ -186,13 +191,17 @@ export function filterExampleLibraryTags(library, selectedSmallId, query = "") {
     const small = categories.get(tag.categoryId);
     const medium = categories.get(small?.parentId);
     const large = categories.get(medium?.parentId);
-    return [tag.prompt, large?.ja, medium?.ja, small?.ja]
+    return [tag.prompt, ...(tag.aliases || []), large?.ja, medium?.ja, small?.ja]
       .filter(Boolean).join(" ").toLocaleLowerCase().includes(normalizedQuery);
   });
 }
 
 export function translationBatchTimeoutMs(itemCount) {
   return Math.max(12000, Math.min(30000, Math.max(1, Number(itemCount) || 1) * 500));
+}
+
+export function clampExampleListHeight(value) {
+  return Math.min(MAX_EXAMPLE_LIST_HEIGHT, Math.max(MIN_EXAMPLE_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_EXAMPLE_LIST_HEIGHT)));
 }
 
 export class PromptEditor {
@@ -404,7 +413,6 @@ export class PromptEditor {
       button("重複削除", () => this.normalize(true)),
       button("禁止", () => openDialog(this.blacklistDialog), "ブラックリスト"),
       button("設定", () => openDialog(this.settingsDialog)),
-      button("入出力", () => openDialog(this.ioDialog)),
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
@@ -444,9 +452,12 @@ export class PromptEditor {
       hideOnZoom: false,
     });
     this.domWidget = domWidget;
-    domWidget.computeSize = (width) => [width, 690];
+    domWidget.computeSize = (width) => [width, BASE_DOM_WIDGET_HEIGHT + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT];
     this.stabilizeLayout();
-    this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), Math.max(this.node.size?.[1] || 0, 760)]);
+    this.node.setSize([
+      Math.max(this.node.size?.[0] || 0, 540),
+      Math.max(this.node.size?.[1] || 0, BASE_NODE_HEIGHT + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT),
+    ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
       clearInterval(this.pollTimer);
@@ -971,6 +982,80 @@ export class PromptEditor {
     const pathStatus = element("span", { className: "paio-example-path", text: "分類を読み込み中…" });
     const list = element("div", { className: "paio-example-list" });
     list.setAttribute("aria-live", "polite");
+    list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
+    const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
+      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
+      element("span", { text: "ドラッグで高さ変更" }),
+    ]);
+    resizeHandle.tabIndex = 0;
+    resizeHandle.setAttribute("role", "separator");
+    resizeHandle.setAttribute("aria-orientation", "horizontal");
+    resizeHandle.setAttribute("aria-label", "タグ一覧の高さを変更");
+    resizeHandle.title = "上下にドラッグしてタグ一覧の高さを変更（ダブルクリックでリセット）";
+    const applyListHeight = (height, nodeHeight = null, persist = false) => {
+      const nextHeight = clampExampleListHeight(height);
+      this.settings.exampleListHeight = nextHeight;
+      list.style.height = `${nextHeight}px`;
+      resizeHandle.setAttribute("aria-valuemin", String(MIN_EXAMPLE_LIST_HEIGHT));
+      resizeHandle.setAttribute("aria-valuemax", String(MAX_EXAMPLE_LIST_HEIGHT));
+      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
+      if (this.node && nodeHeight !== null) {
+        this.node.setSize([
+          Math.max(this.node.size?.[0] || 0, 540),
+          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_EXAMPLE_LIST_HEIGHT, nodeHeight),
+        ]);
+      }
+      this.node?.graph?.setDirtyCanvas?.(true, true);
+      if (persist) this.persist();
+      return nextHeight;
+    };
+    applyListHeight(this.settings.exampleListHeight);
+    resizeHandle.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      const startY = event.clientY;
+      const startHeight = this.settings.exampleListHeight;
+      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      resizeHandle.classList.add("is-dragging");
+      resizeHandle.setPointerCapture?.(pointerId);
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        const nextHeight = clampExampleListHeight(startHeight + moveEvent.clientY - startY);
+        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        resizeHandle.removeEventListener("pointermove", move);
+        resizeHandle.removeEventListener("pointerup", finish);
+        resizeHandle.removeEventListener("pointercancel", finish);
+        resizeHandle.releasePointerCapture?.(pointerId);
+        resizeHandle.classList.remove("is-dragging");
+        applyListHeight(this.settings.exampleListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
+      };
+      resizeHandle.addEventListener("pointermove", move);
+      resizeHandle.addEventListener("pointerup", finish);
+      resizeHandle.addEventListener("pointercancel", finish);
+    });
+    resizeHandle.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const currentHeight = this.settings.exampleListHeight;
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyListHeight(DEFAULT_EXAMPLE_LIST_HEIGHT, currentNodeHeight + DEFAULT_EXAMPLE_LIST_HEIGHT - currentHeight, true);
+    });
+    resizeHandle.addEventListener("keydown", (event) => {
+      if (!['ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) return;
+      event.preventDefault();
+      const currentHeight = this.settings.exampleListHeight;
+      const nextHeight = event.key === 'Home'
+        ? DEFAULT_EXAMPLE_LIST_HEIGHT
+        : currentHeight + (event.key === 'ArrowDown' ? 20 : -20);
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      const applied = clampExampleListHeight(nextHeight);
+      applyListHeight(applied, currentNodeHeight + applied - currentHeight, true);
+    });
     const resultStatus = element("span", { className: "paio-example-count", text: "読み込み中…" });
     const selected = new Set();
     let library = null;
@@ -1041,7 +1126,9 @@ export class PromptEditor {
           this.pushUndo();
           this.addValues([{ value: item.prompt, translation: translation, translatedTo: translation ? this.settings.localLanguage : "" }]);
           this.setStatus(`${item.prompt} を追加しました`);
-        }, translation ? `${item.prompt} — ${translation}` : item.prompt);
+        }, [
+          translation ? `${item.prompt} — ${translation}` : item.prompt,
+        ].filter(Boolean).join("\n"));
         chip.classList.add("paio-example-chip");
         chip.replaceChildren(
           element("span", { className: "paio-example-chip-prompt", text: `＋ ${item.prompt}` }),
@@ -1106,7 +1193,7 @@ export class PromptEditor {
       element("span", { className: "paio-hint", text: "Ctrl+クリックで複数選択" }),
       this.exampleBulkButton,
     ]);
-    panel.append(summary, navigation, controls, list, footer);
+    panel.append(summary, navigation, controls, list, resizeHandle, footer);
     redraw();
     return panel;
   }

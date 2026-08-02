@@ -108,8 +108,11 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
             const officialId = text(item.id, 80) || `${small.id}:${index}`;
             const id = `danbooru-tag:${officialId}`;
             tags.set(id, {
-              id, categoryId: smallId, prompt: text(item.name, 10000), ja: "",
+              id, categoryId: smallId, prompt: text(item.name, 10000),
+              ja: text(item.translation_ja ?? item.ja, 10000),
               order: Number.isInteger(item.rank) ? Math.max(0, item.rank - 1) : index,
+              postCount: Number.isInteger(item.post_count) ? Math.max(0, item.post_count) : 0,
+              aliases: Array.isArray(item.aliases) ? item.aliases.map((alias) => text(alias, 200)).filter(Boolean) : [],
               builtin: true,
             });
           });
