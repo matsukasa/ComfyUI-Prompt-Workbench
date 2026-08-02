@@ -3,7 +3,9 @@ import test from "node:test";
 import {
   adjustTagWeight,
   classifyTag,
+  getTagWeight,
   parsePrompt,
+  setTagWeight,
   serializePrompt,
   splitPrompt,
 } from "../web/prompt_parser.js";
@@ -92,4 +94,14 @@ test("weight adjustment is precise, bounded and preserves LoRA", () => {
   assert.equal(adjustTagWeight("[background:0.8]", -0.1), "[background:0.70]");
   assert.equal(adjustTagWeight("(x:2.0)", 0.25), "(x:2.00)");
   assert.equal(adjustTagWeight("<lora:model:0.8>", 0.25), "<lora:model:0.8>");
+});
+
+test("weight control reads, directly sets, resets, and clamps tag weight", () => {
+  assert.equal(getTagWeight("detailed eyes"), 1);
+  assert.equal(getTagWeight("(detailed eyes:1.25)"), 1.25);
+  assert.equal(getTagWeight("<lora:model:0.8>"), null);
+  assert.equal(setTagWeight("detailed eyes", 1.2), "(detailed eyes:1.20)");
+  assert.equal(setTagWeight("(detailed eyes:1.25)", 1), "detailed eyes");
+  assert.equal(setTagWeight("detailed eyes", 4), "(detailed eyes:2.00)");
+  assert.equal(setTagWeight("<lora:model:0.8>", 1.2), "<lora:model:0.8>");
 });

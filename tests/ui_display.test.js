@@ -38,11 +38,17 @@ test("Japanese translations remain readable on colored tag backgrounds", () => {
 test("native prompt widget is fully hidden but remains serializable", async () => {
   let removed = false;
   const inputEl = { style: {}, remove: () => { removed = true; } };
-  const widget = { name: "prompt", type: "text", value: "1girl", inputEl, options: {} };
+  const widget = {
+    name: "prompt", type: "text", value: "1girl", inputEl, options: {},
+    y: 96, last_y: 96, computedHeight: 24,
+  };
   hideWidgetForGood(widget, ":prompt");
   assert.equal(widget.hidden, true);
   assert.equal(widget.visible, false);
-  assert.deepEqual(widget.computeSize(), [0, -4]);
+  assert.deepEqual(widget.computeSize(), [0, 0]);
+  assert.equal(widget.y, 0);
+  assert.equal(widget.last_y, 0);
+  assert.equal(widget.computedHeight, 0);
   assert.equal(widget.options.hidden, true);
   assert.equal(inputEl.style.display, "none");
   assert.equal(removed, true);
@@ -53,6 +59,22 @@ test("custom editor starts at the top of the node widget area", () => {
   const node = { widgets_start_y: 96 };
   compactNodeWidgetLayout(node);
   assert.equal(node.widgets_start_y, 1);
+});
+
+test("workflow reload reapplies the compact widget layout after configuration", () => {
+  const source = readFileSync(new URL("../web/prompt_all_in_one.js", import.meta.url), "utf8");
+  assert.match(source, /nodeType\.prototype\.onConfigure/u);
+  assert.match(source, /queueMicrotask\(stabilize\)/u);
+  assert.match(source, /requestAnimationFrame\(stabilize\)/u);
+});
+
+test("tag context menu exposes the compact weight stepper", () => {
+  const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.match(source, /paio-context-weight-controls/u);
+  assert.match(source, /重みを1\.00へ戻す/u);
+  assert.match(source, /setWeightOne\(index, requestedWeight\)/u);
+  assert.match(css, /\.paio-context-weight-controls\s*\{[^}]*grid-template-columns:/su);
 });
 
 test("custom node contains right-click events without disabling text editing menus", () => {

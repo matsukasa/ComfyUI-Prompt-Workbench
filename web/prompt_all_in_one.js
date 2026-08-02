@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20260802-library-files-1";
+import { PromptEditor } from "./prompt_editor.js?v=20260802-weight-control-1";
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
@@ -10,7 +10,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_all_in_one.css?v=20260802-library-files-1", import.meta.url).href;
+  link.href = new URL("./prompt_all_in_one.css?v=20260802-weight-control-1", import.meta.url).href;
   document.head.append(link);
 }
 
@@ -28,6 +28,15 @@ app.registerExtension({
       if (prompt && typeof this.addDOMWidget === "function") {
         this.promptAllInOneEditor = new PromptEditor(this, { prompt }, api);
       }
+      return result;
+    };
+    const previousConfigured = nodeType.prototype.onConfigure;
+    nodeType.prototype.onConfigure = function onConfigure() {
+      const result = previousConfigured?.apply(this, arguments);
+      const stabilize = () => this.promptAllInOneEditor?.stabilizeLayout();
+      stabilize();
+      queueMicrotask(stabilize);
+      requestAnimationFrame(stabilize);
       return result;
     };
   },

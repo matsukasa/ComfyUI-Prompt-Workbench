@@ -258,7 +258,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  width: 196px;
+  width: 232px;
   max-height: min(420px, 80vh);
   overflow: auto;
   color: var(--input-text, oklch(0.94 0 0));
@@ -269,6 +269,32 @@
   box-shadow: 0 4px 8px oklch(0.05 0 0 / 0.35);
 }
 .paio-context-title { padding: 5px 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paio-context-weight {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 3px;
+  padding: 7px;
+  background: var(--comfy-input-bg, oklch(0.21 0 0));
+  border-radius: 6px;
+}
+.paio-context-weight-label { color: var(--descrip-text, oklch(0.76 0 0)); font-size: 11px; }
+.paio-context-weight-controls { display: grid; grid-template-columns: 34px minmax(70px, 1fr) 34px; gap: 5px; }
+.paio-context-weight-button, .paio-context-weight-input {
+  min-width: 0;
+  min-height: 30px;
+  color: inherit;
+  background: var(--comfy-menu-bg, oklch(0.16 0 0));
+  border: 1px solid color-mix(in oklch, currentColor, transparent 72%);
+  border-radius: 5px;
+  font: inherit;
+}
+.paio-context-weight-button { padding: 2px 5px; cursor: pointer; font-weight: 700; }
+.paio-context-weight-button.is-reset { min-height: 26px; color: var(--descrip-text, oklch(0.76 0 0)); font-size: 11px; }
+.paio-context-weight-input { padding: 3px 4px; text-align: center; }
+.paio-context-weight-button:hover { background: color-mix(in oklch, var(--paio-blue), transparent 72%); }
+.paio-context-weight-button:focus-visible, .paio-context-weight-input:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
+.paio-context-weight-button:disabled, .paio-context-weight-input:disabled { cursor: not-allowed; opacity: 0.45; }
 .paio-context-action {
   min-height: 28px;
   color: inherit;
