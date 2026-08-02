@@ -51,6 +51,13 @@ test("selected tag catalog filename round-trips without a path or extension", ()
   assert.equal(restored.settings.libraryFile, "私のタグ");
 });
 
+test("tag browser height round-trips and is clamped", () => {
+  const tall = parseImportedState(exportEditorState({ tags: [], settings: { exampleListHeight: 360 } }));
+  const oversized = parseImportedState(exportEditorState({ tags: [], settings: { exampleListHeight: 9999 } }));
+  assert.equal(tall.settings.exampleListHeight, 360);
+  assert.equal(oversized.settings.exampleListHeight, 520);
+});
+
 test("legacy editor state imports only the former positive prompt", () => {
   const restored = parseImportedState(JSON.stringify({
     schema: "prompt-all-in-one/editor-state",

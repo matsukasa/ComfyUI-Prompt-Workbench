@@ -25,7 +25,7 @@
 - 原文・翻訳・状態・種別・重複・ブラックリストによる絞り込み
 - 重複検出と選択タグの一括操作
 - 大分類・中分類・小分類によるカテゴリー管理とユーザータグの追加・編集・削除
-- Danbooru公式APIから生成する14大分類のタグカタログ、英語タグ名・日本語分類名検索、一括追加
+- ローカル完結の大・中・小分類タグカタログ、英語タグ名・日本語分類名検索、一括追加
 - 無料自動翻訳（ローカル辞書→MyMemory）、完全オフライン辞書、LibreTranslate、DeepL、OpenAI互換の翻訳アダプター
 - 原文 / 日本語 / 両方の表示切り替えと、選択・全体をまとめた翻訳メニュー
 - 完全一致・大小文字無視・部分一致・正規表現ブラックリスト
@@ -141,60 +141,19 @@ $env:PROMPT_AIO_DEEPL_API_KEY = "your-key"
 ハイフン・アンダースコアを使用でき、パス区切りやWindows予約名は使用できません。
 編集中の差分がある状態では別ファイルへの切替を止めるため、先に`別名で保存`してください。
 
-## Danbooruタグカタログ
+## 内蔵タグカタログ
 
-更新ツールはDanbooru公式のTags、Wiki、Aliases、Implications APIだけを参照し、
-Generalカテゴリの現行タグを14大分類へ分類します。各小分類は投稿数順の20タグで、
-20件に満たない小分類は同じ中分類内でだけ統合します。「成人向け表現」も通常の
-大分類として常時表示されます。タグボタンには正式な英語タグ名だけを表示し、
-投稿数・順位・カテゴリパスは表示しません。
+`data/tag_catalog.json`はローカル専用の固定スナップショットです。10大分類・34中分類・
+124小分類に3,623タグを収録し、旧タグ集の分類と日本語訳を基準にしています。
+「成人向け表現」も通常の大分類として表示します。
 
-通常のComfyUI利用時はローカルJSONだけを読み、Danbooruへ通信しません。更新時だけ
-次のコマンドを実行します。
+タグボタンは英語名と日本語訳を表示し、ホバーにも同じ内容だけを表示します。検索では
+英語名、エイリアス、日本語の大・中・小分類名を利用できます。カタログの閲覧・検索・追加で
+外部タグサービスへ通信することはありません。
 
-Windowsでは`tools/run_danbooru_update.cmd`をダブルクリックすると、資格情報
-ダイアログへDanbooruユーザー名とAPIキーを入力できます。APIキーは伏せ字で入力され、
-ファイルやログへ保存せず、更新プロセス終了時に環境変数から除去されます。
-
-コマンドラインから実行する場合は次のとおりです。
-
-```powershell
-python -m pip install -r tools/requirements.txt
-python tools/update_danbooru_tag_catalog.py --refresh
-python tools/validate_danbooru_tag_catalog.py
-```
-
-認証なしでも取得できます。任意のBasic認証を使う場合は、ComfyUIやGitへ値を保存せず、
-更新を実行するプロセスの環境変数`DANBOORU_USERNAME`と`DANBOORU_API_KEY`へ設定します。
-更新ツールは固有User-Agent、4 req/s以下、タイムアウト、429・5xx再試行、ページキャッシュ、
-原子的保存を使用します。取得または検証に失敗した場合、完成済みカタログは上書きしません。
-
-生成物はUI用`data/danbooru_tag_catalog.json`、監査用
-`data/danbooru_tag_catalog_full.json`、確認用`docs/danbooru_tag_catalog.md`です。
-API仕様変更時はDanbooru公式の[APIヘルプ](https://danbooru.donmai.us/wiki_pages/help:api)、
-[Tags](https://danbooru.donmai.us/wiki_pages/api:tags)、
-[Wiki](https://danbooru.donmai.us/wiki_pages/api:wiki_pages)、
-[Aliases](https://danbooru.donmai.us/wiki_pages/api:tag_aliases)、
-[Implications](https://danbooru.donmai.us/wiki_pages/api:tag_implications)を確認してください。
-
-### GitHub Actionsで更新する
-
-ローカル回線がCloudflare Challengeで遮断される場合は、プライベートリポジトリの
-`Update Danbooru tag catalog`ワークフローを手動実行できます。
-
-1. GitHubの`Settings`→`Secrets and variables`→`Actions`を開きます。
-2. Repository secretsへ`DANBOORU_USERNAME`と`DANBOORU_API_KEY`を登録します。
-3. `Actions`→`Update Danbooru tag catalog`→`Run workflow`を実行します。
-4. 成功後、実行ページのArtifactsから`danbooru-tag-catalog`をダウンロードします。
-5. 展開した`data`と`docs`の3ファイルを同じ相対位置へ配置し、検証コマンドを実行します。
-
-ワークフローは手動実行専用で、リポジトリ内容の書き込み権限を持ちません。Secretsは
-公式API取得ステップだけへ渡し、生成物には含めません。Artifactの保存期間は7日です。
-
-現在の配布ツリーには、公式API取得に成功するまで旧`prompt_examples.json`を読み込む
-安全なフォールバックがあります。公式カタログの生成に成功すると、既存の
-`/prompt_all_in_one/examples` URLの返却元だけが自動的に新JSONへ切り替わります。
-旧データの出典とライセンスは[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
+外部データの取得・更新スクリプト、API認証設定、rawキャッシュ、中間生成物は同梱していません。
+固定カタログがない場合だけ`data/prompt_examples.json`を安全なフォールバックとして読み込みます。
+由来データの出典とライセンスは[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
 
 ## セキュリティ
 
@@ -222,8 +181,6 @@ Node.jsは本体の実行には不要で、JavaScriptテストを実行すると
   使用してください。
 - 大量タグは250件ずつ段階表示します。これは完全な仮想スクロールではありません。
 - DeepL、LibreTranslate、OpenAI互換は有効な利用者設定がないため自動ライブ試験していません。
-- Danbooru公式APIがCloudflare Challengeを返す環境ではカタログ更新を完了できません。
-  非公式一覧や古いCSVへは自動的に切り替えません。
 - AIによるプロンプト生成は初版の対象外です。
 - V3ノードスキーマへの移行は、安定版APIと互換性要件を再評価してから行います。
 

@@ -15,9 +15,9 @@ Use a disposable workflow and test both ComfyUI light and dark themes.
 - [ ] Ctrl/Cmd and Shift selection work.
 - [ ] Bulk enable, disable, delete, translate, weight and copy work.
 - [ ] Undo/Redo restores deletion, formatting and weight changes.
-- [ ] `タグを追加` shows large, medium and small Danbooru category controls.
-- [ ] All 14 large categories are available and `成人向け表現` is not hidden behind a setting.
-- [ ] Selecting a small category shows exactly 20 official English tag names.
+- [ ] `タグを追加` shows large, medium and small local category controls.
+- [ ] All 10 large categories are available and `成人向け表現` is not hidden behind a setting.
+- [ ] Selecting a small category shows its bundled English tag names and Japanese translations.
 - [ ] Tag buttons preserve underscores and show no post count, rank, category path or metadata tooltip.
 - [ ] Search finds English tag names and Japanese large/medium/small category names.
 - [ ] Search shows at most 50 tag names without category paths and bulk-add works.
@@ -28,7 +28,7 @@ Use a disposable workflow and test both ComfyUI light and dark themes.
 - [ ] Switching catalogs with unsaved library edits is blocked until those edits are saved under a new name.
 - [ ] A catalog Japanese translation is reused when adding a tag and does not trigger a remote request.
 - [ ] Japanese translation checks the local dictionary before every remote provider and sends only misses.
-- [ ] Opening and using the catalog causes no request to `danbooru.donmai.us` in the browser network panel.
+- [ ] Opening and using the catalog causes no request to an external tag service.
 - [ ] Invalid blacklist regex reports an error without breaking the editor.
 - [ ] Missing-model lookup failure does not block editing.
 - [ ] Translation success is bilingual; failure shows retryable inline text.

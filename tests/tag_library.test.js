@@ -82,7 +82,7 @@ test("normalizes the nested Danbooru catalog without exposing audit metadata", (
   const catalog = { major_categories: [{ id: "appearance", label_ja: "外見", medium_categories: [{
     id: "hair", label_ja: "髪", small_categories: [{
       id: "hair-style", label_ja: "髪型", tags: [
-        { id: 10, name: "long_hair", post_count: 1000, rank: 1 },
+        { id: 10, name: "long_hair", translation_ja: "長い髪", post_count: 1000, aliases: ["longhair"], rank: 1 },
         { id: 11, name: "short_hair", post_count: 900, rank: 2 },
       ],
     }],
@@ -90,6 +90,9 @@ test("normalizes the nested Danbooru catalog without exposing audit metadata", (
   const library = buildTagLibrary(catalog);
   assert.deepEqual(library.categories.map((item) => item.ja), ["外見", "髪", "髪型"]);
   assert.deepEqual(library.tags.map((item) => item.prompt), ["long_hair", "short_hair"]);
+  assert.equal(library.tags[0].ja, "長い髪");
+  assert.equal(library.tags[0].postCount, 1000);
+  assert.deepEqual(library.tags[0].aliases, ["longhair"]);
   assert.ok(library.tags.every((item) => !("post_count" in item) && !("rank" in item)));
 });
 

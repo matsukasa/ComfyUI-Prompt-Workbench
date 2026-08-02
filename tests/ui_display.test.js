@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   appendPresentChildren,
+  clampExampleListHeight,
   cleanTranslation,
   compactNodeWidgetLayout,
   containNodeContextMenu,
@@ -97,6 +98,11 @@ test("custom node contains right-click events without disabling text editing men
   assert.equal(prevented, 1);
 });
 
+test("toolbar does not expose the input-output dialog button", () => {
+  const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /button\("入出力"/u);
+});
+
 test("example browser resolves a large, medium and small category path", () => {
   const library = { categories: [
     { id: "large", level: "large", parentId: "", ja: "人物" },
@@ -124,10 +130,23 @@ test("example search matches English tags and Japanese category names without pa
   assert.equal("post_count" in library.tags[0], false);
 });
 
+test("example search matches a Danbooru alias", () => {
+  const library = {
+    categories: [
+      { id: "large", level: "large", parentId: "", ja: "人物" },
+      { id: "medium", level: "medium", parentId: "large", ja: "外見" },
+      { id: "small", level: "small", parentId: "medium", ja: "髪" },
+    ],
+    tags: [{ prompt: "long_hair", aliases: ["longhair"], categoryId: "small" }],
+  };
+  assert.deepEqual(filterExampleLibraryTags(library, "small", "longhair").map((item) => item.prompt), ["long_hair"]);
+});
+
 test("example tags display English prompt and Japanese translation together", () => {
   const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
   assert.match(source, /paio-example-chip-prompt/u);
   assert.match(source, /paio-example-chip-translation/u);
+  assert.doesNotMatch(source, /投稿数:|エイリアス:/u);
 });
 
 test("tag addition is an obvious disclosure and tag management is unified", () => {
@@ -138,6 +157,17 @@ test("tag addition is an obvious disclosure and tag management is unified", () =
   assert.doesNotMatch(source, /例から追加|クリックで追加|無効タグも表示します/u);
   assert.doesNotMatch(source, /className: "paio-library-tabs"/u);
   assert.match(css, /\.paio-examples\[open\] \.paio-examples-disclosure\s*\{\s*transform:\s*rotate\(90deg\);/u);
+});
+
+test("tag browser exposes a persistent vertical resize handle", () => {
+  const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.equal(clampExampleListHeight(40), 96);
+  assert.equal(clampExampleListHeight(300), 300);
+  assert.equal(clampExampleListHeight(900), 520);
+  assert.match(source, /ドラッグで高さ変更/u);
+  assert.match(source, /setPointerCapture/u);
+  assert.match(css, /\.paio-example-resize-handle\s*\{[^}]*cursor:\s*ns-resize;/su);
 });
 
 test("tag manager exposes a dedicated drag handle and drop position feedback", () => {

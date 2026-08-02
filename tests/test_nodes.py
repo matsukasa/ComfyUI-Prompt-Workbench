@@ -87,25 +87,28 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
 
 
 class CatalogRouteTests(unittest.TestCase):
-    def test_examples_path_falls_back_without_a_completed_danbooru_catalog(self):
-        self.assertEqual(routes.examples_path().name, "prompt_examples.json")
+    def test_examples_path_falls_back_without_a_bundled_catalog(self):
+        with tempfile.TemporaryDirectory() as directory:
+            data_directory = Path(directory)
+            (data_directory / "prompt_examples.json").write_text('{"source":"legacy"}', encoding="utf-8")
+            self.assertEqual(routes.examples_path(data_directory).name, "prompt_examples.json")
 
-    def test_examples_path_prefers_and_loads_completed_danbooru_catalog(self):
+    def test_examples_path_prefers_and_loads_bundled_catalog(self):
         with tempfile.TemporaryDirectory() as directory:
             data_directory = Path(directory)
             (data_directory / "prompt_examples.json").write_text('{"source":"legacy"}', encoding="utf-8")
             expected = {"schema_version": 1, "major_categories": []}
-            (data_directory / "danbooru_tag_catalog.json").write_text(
+            (data_directory / "tag_catalog.json").write_text(
                 json.dumps(expected), encoding="utf-8"
             )
-            self.assertEqual(routes.examples_path(data_directory).name, "danbooru_tag_catalog.json")
+            self.assertEqual(routes.examples_path(data_directory).name, "tag_catalog.json")
             self.assertEqual(routes.load_examples_catalog(data_directory), expected)
 
     def test_broken_catalog_json_is_reported_instead_of_silently_using_legacy(self):
         with tempfile.TemporaryDirectory() as directory:
             data_directory = Path(directory)
             (data_directory / "prompt_examples.json").write_text('{"source":"legacy"}', encoding="utf-8")
-            (data_directory / "danbooru_tag_catalog.json").write_text("{broken", encoding="utf-8")
+            (data_directory / "tag_catalog.json").write_text("{broken", encoding="utf-8")
             with self.assertRaises(json.JSONDecodeError):
                 routes.load_examples_catalog(data_directory)
 
