@@ -15,7 +15,7 @@ class PromptAllInOne:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("prompt",)
     FUNCTION = "emit_prompt"
-    CATEGORY = "prompt/Prompt All-in-One"
+    CATEGORY = "prompt/Prompt Workbench"
     DESCRIPTION = "Edit one prompt as structured tags and pass it through as STRING."
 
     def emit_prompt(self, prompt=""):
@@ -24,4 +24,4 @@ class PromptAllInOne:
 
 
 NODE_CLASS_MAPPINGS = {"PromptAllInOne": PromptAllInOne}
-NODE_DISPLAY_NAME_MAPPINGS = {"PromptAllInOne": "Prompt All-in-One"}
+NODE_DISPLAY_NAME_MAPPINGS = {"PromptAllInOne": "Prompt Workbench"}
