@@ -137,7 +137,7 @@ export function hideWidgetForGood(widget, suffix = "") {
   widget.y = 0;
   widget.last_y = 0;
   if (Object.hasOwn(widget, "computedHeight")) widget.computedHeight = 0;
-  widget.type = `converted-widget${suffix}`;
+  widget.type = widget.paioOriginalType;
   widget.serialize = true;
   widget.serializeValue = async () => widget.value;
   widget.options = { ...widget.options, hidden: true, serialize: true };
@@ -153,6 +153,22 @@ export function hideWidgetForGood(widget, suffix = "") {
     widgetElement.remove?.();
   }
   for (const linked of widget.linkedWidgets || []) hideWidgetForGood(linked, `:${widget.name}`);
+}
+
+export function removeUnlinkedWidgetInput(node, widgetName) {
+  if (!Array.isArray(node?.inputs) || !widgetName) return 0;
+  let removed = 0;
+  for (let index = node.inputs.length - 1; index >= 0; index -= 1) {
+    const input = node.inputs[index];
+    const belongsToWidget = input?.name === widgetName || input?.widget?.name === widgetName;
+    const isLinked = input?.link !== null && input?.link !== undefined
+      || Array.isArray(input?.links) && input.links.length > 0;
+    if (!belongsToWidget || isLinked) continue;
+    if (typeof node.removeInput === "function") node.removeInput(index);
+    else node.inputs.splice(index, 1);
+    removed += 1;
+  }
+  return removed;
 }
 
 export function compactNodeWidgetLayout(node) {
@@ -469,6 +485,7 @@ export class PromptEditor {
   }
 
   stabilizeLayout() {
+    removeUnlinkedWidgetInput(this.node, "prompt");
     compactNodeWidgetLayout(this.node);
     for (const widget of Object.values(this.widgets)) {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
