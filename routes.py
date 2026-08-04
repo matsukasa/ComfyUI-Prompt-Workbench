@@ -3,6 +3,7 @@ import html
 import json
 import os
 import re
+import tempfile
 import time
 import unicodedata
 from collections import OrderedDict, defaultdict, deque
@@ -189,24 +190,65 @@ def list_user_catalogs(storage_directory=None):
 
 
 def validate_user_catalog(data):
-    if not isinstance(data, dict) or data.get("schema") != "prompt-workbench/tag-catalog" or data.get("version") != 1:
+    if not isinstance(data, dict):
         raise ValueError("Unsupported user catalog schema")
-    if not isinstance(data.get("categories"), list) or not isinstance(data.get("tags"), list):
-        raise ValueError("Catalog must contain categories and tags arrays")
-    categories = data["categories"]
-    if not categories or len(categories) > MAX_CATALOG_CATEGORIES:
+    is_stored = data.get("schema") == "prompt-workbench/tag-catalog" and data.get("version") == 1
+    is_bundled = data.get("schema_version") == 1 and isinstance(data.get("major_categories"), list)
+    if not is_stored and not is_bundled:
+        raise ValueError("Unsupported user catalog schema")
+
+    category_count = 0
+    tag_count = 0
+    if is_stored:
+        if not isinstance(data.get("categories"), list) or not isinstance(data.get("tags"), list):
+            raise ValueError("Catalog must contain categories and tags arrays")
+        categories = data["categories"]
+        if not categories:
+            raise ValueError("Catalog category count is invalid")
+        for category in categories:
+            if not isinstance(category, dict):
+                raise ValueError("Every catalog category must be an object")
+            if not isinstance(category.get("id"), str) or not category["id"].strip():
+                raise ValueError("Every catalog category must have an id")
+        for item in data["tags"]:
+            if not isinstance(item, dict) or not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
+                raise ValueError("Every catalog tag must have a prompt")
+        category_count = len(categories)
+        tag_count = len(data["tags"])
+    else:
+        majors = data["major_categories"]
+        if not majors:
+            raise ValueError("Catalog category count is invalid")
+        for major in majors:
+            if not isinstance(major, dict) or not isinstance(major.get("id"), str) or not major["id"].strip():
+                raise ValueError("Every catalog category must have an id")
+            mediums = major.get("medium_categories")
+            if not isinstance(mediums, list):
+                raise ValueError("Every major category must contain medium_categories")
+            category_count += 1
+            for medium in mediums:
+                if not isinstance(medium, dict) or not isinstance(medium.get("id"), str) or not medium["id"].strip():
+                    raise ValueError("Every catalog category must have an id")
+                smalls = medium.get("small_categories")
+                if not isinstance(smalls, list):
+                    raise ValueError("Every medium category must contain small_categories")
+                category_count += 1
+                for small in smalls:
+                    if not isinstance(small, dict) or not isinstance(small.get("id"), str) or not small["id"].strip():
+                        raise ValueError("Every catalog category must have an id")
+                    items = small.get("tags")
+                    if not isinstance(items, list):
+                        raise ValueError("Every small category must contain tags")
+                    category_count += 1
+                    for item in items:
+                        if not isinstance(item, dict) or not isinstance(item.get("name"), str) or not item["name"].strip():
+                            raise ValueError("Every catalog tag must have a name")
+                    tag_count += len(items)
+
+    if category_count > MAX_CATALOG_CATEGORIES:
         raise ValueError("Catalog category count is invalid")
-    for category in categories:
-        if not isinstance(category, dict):
-            raise ValueError("Every catalog category must be an object")
-        if not isinstance(category.get("id"), str) or not category["id"].strip():
-            raise ValueError("Every catalog category must have an id")
-    tags = data["tags"]
-    if len(tags) > MAX_CATALOG_TAGS:
+    if tag_count > MAX_CATALOG_TAGS:
         raise ValueError("Catalog contains too many tags")
-    for item in tags:
-        if not isinstance(item, dict) or not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
-            raise ValueError("Every catalog tag must have a prompt")
     encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     if len(encoded) > MAX_CATALOG_BYTES:
         raise ValueError("Catalog exceeds the 4 MB limit")
@@ -229,6 +271,35 @@ def save_user_catalog(name, data, storage_directory=None):
         if created and target.exists():
             target.unlink()
         raise
+    return target
+
+
+def overwrite_user_catalog(name, data, storage_directory=None):
+    catalog = validate_user_catalog(data)
+    target = user_catalog_path(name, storage_directory)
+    if not target.is_file():
+        raise FileNotFoundError(target.name)
+    serialized = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            newline="\n",
+            dir=target.parent,
+            prefix=f".{target.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as output:
+            temporary_path = Path(output.name)
+            output.write(serialized)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary_path, target)
+        temporary_path = None
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
     return target
 
 
@@ -512,6 +583,19 @@ def register_routes():
             return web.json_response({"name": target.stem, "filename": target.name}, status=201)
         except FileExistsError:
             return web.json_response({"error": "A catalog with this name already exists"}, status=409)
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.put("/prompt_all_in_one/catalogs")
+    async def put_catalog(request):
+        if request.content_length and request.content_length > MAX_CATALOG_BYTES:
+            return web.json_response({"error": "Catalog request is too large"}, status=413)
+        try:
+            body = await request.json()
+            target = overwrite_user_catalog(body.get("name"), body.get("catalog"))
+            return web.json_response({"name": target.stem, "filename": target.name})
+        except FileNotFoundError:
+            return web.json_response({"error": "The selected catalog no longer exists"}, status=404)
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
 

@@ -25,6 +25,7 @@ import {
   buildTagLibrary,
   deleteCategoryEdit,
   deleteTagEdit,
+  libraryToBundledCatalog,
   libraryToStoredCatalog,
   reorderTagEdits,
   saveCategoryEdit,
@@ -37,6 +38,12 @@ const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
+const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
+const CATALOG_FILE_PICKER_TYPES = [{
+  description: "JSONタグファイル",
+  accept: { "application/json": [".json"] },
+}];
+const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
 const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
 const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
@@ -120,6 +127,79 @@ export async function fetchExampleCatalog(api, libraryFile = "") {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || `タグファイルの読込に失敗しました (${response.status})`);
   return body;
+}
+
+export function catalogNameFromFileName(fileName) {
+  let name = String(fileName || "").normalize("NFKC").replace(/\.json$/iu, "");
+  name = name.replace(/[^\p{L}\p{N}_ -]+/gu, "_").replace(/\s+/gu, " ").trim();
+  name = name.slice(0, 64).trim();
+  if (!name) name = "imported_tags";
+  if (/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/iu.test(name)) name = `${name}_catalog`;
+  return name.slice(0, 64);
+}
+
+export function suggestedCatalogFileName(fileName, now = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+  const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  return `${catalogNameFromFileName(fileName || "tag_catalog")}_${date}_${time}.json`;
+}
+
+export async function upsertCatalogCopy(api, fileName, catalog, options = {}) {
+  const requestedName = catalogNameFromFileName(fileName);
+  const listResponse = await api.fetchApi("/prompt_all_in_one/catalogs");
+  const listBody = await listResponse.json().catch(() => ({}));
+  if (!listResponse.ok) throw new Error(listBody.error || `保存済みファイルの確認に失敗しました (${listResponse.status})`);
+  const existingName = (listBody.files || []).find((name) => String(name).toLocaleLowerCase() === requestedName.toLocaleLowerCase());
+  const send = async (method, name) => {
+    const response = await api.fetchApi("/prompt_all_in_one/catalogs", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, catalog }),
+    });
+    const body = await response.json().catch(() => ({}));
+    return { response, body };
+  };
+  let result = await send(existingName ? "PUT" : "POST", existingName || requestedName);
+  if (!existingName && result.response.status === 409) result = await send("PUT", requestedName);
+  if (result.response.status === 405) {
+    if (existingName && options.allowLoadFallback) {
+      return { name: existingName, filename: `${existingName}.json`, compatibilityFallback: true };
+    }
+    throw new Error("この保存機能を有効にするにはComfyUIを再起動してください");
+  }
+  if (!result.response.ok) throw new Error(result.body.error || `タグファイルの保存に失敗しました (${result.response.status})`);
+  return result.body;
+}
+
+export async function writeCatalogFile(handle, catalog) {
+  const writable = await handle.createWritable();
+  try {
+    await writable.write(`${JSON.stringify(catalog, null, 2)}\n`);
+    await writable.close();
+  } catch (error) {
+    await writable.abort?.().catch(() => {});
+    throw error;
+  }
+}
+
+export async function buildCompleteCatalogForSave(loadSource, edits) {
+  const completeSource = await loadSource();
+  return libraryToBundledCatalog(buildTagLibrary(completeSource, edits), completeSource);
+}
+
+export function parseImportedCatalogText(value) {
+  const parsed = JSON.parse(String(value || ""));
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("タグファイルの内容が正しくありません");
+  }
+  const library = buildTagLibrary(parsed);
+  if (!library.categories.length) throw new Error("読み込めるカテゴリーがありません");
+  const categoryIds = new Set(library.categories.map((category) => category.id));
+  if (library.tags.some((tag) => !tag.prompt || !categoryIds.has(tag.categoryId))) {
+    throw new Error("タグファイルのカテゴリー構造が正しくありません");
+  }
+  return libraryToBundledCatalog(library, parsed);
 }
 
 export function containsJapaneseText(value) {
@@ -711,10 +791,10 @@ export class PromptEditor {
     const heading = element("div", { className: "paio-library-heading" }, [
       element("div", {}, [element("h4", { text: "タグ管理" }), element("p", { text: "大分類 → 中分類 → 小分類 → タグの順で整理します。" })]),
     ]);
-    const fileSelect = element("select", { className: "paio-select", ariaLabel: "使用するタグファイル" });
-    const fileName = element("input", { className: "paio-search" });
-    fileName.placeholder = "新しいファイル名";
-    fileName.maxLength = 64;
+    const fileInput = element("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json,application/json";
+    fileInput.hidden = true;
     const fileStatus = element("span", { className: "paio-library-file-status", text: "保存先を確認中…" });
     const body = element("div", { className: "paio-library-body" });
     const treePane = element("section", { className: "paio-library-tree" });
@@ -725,112 +805,180 @@ export class PromptEditor {
     let edits = sanitizeLibraryEdits(this.settings.libraryEdits);
     let selectedId = "";
     let serial = 0;
+    let currentCatalogFileHandle = null;
+    let currentSourceFileName = this.settings.libraryFile ? `${this.settings.libraryFile}.json` : "tag_catalog.json";
     const collapsedCategoryIds = new Set();
     const source = () => this.exampleData || { categories: [] };
     const getLibrary = () => buildTagLibrary(source(), edits);
     const hasEdits = () => edits.categories.length > 0 || edits.tags.length > 0;
-    const refreshFileList = async () => {
+    let overwriteButton;
+    const refreshFileStatus = async () => {
       try {
         const query = this.settings.libraryFile ? `?selected=${encodeURIComponent(this.settings.libraryFile)}` : "";
         const response = await this.api.fetchApi(`/prompt_all_in_one/catalogs${query}`);
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(body.error || `ファイル一覧の取得に失敗しました (${response.status})`);
-        fileSelect.replaceChildren();
-        const defaultOption = element("option", { text: "デフォルト" });
-        defaultOption.value = "";
-        fileSelect.append(defaultOption);
-        for (const name of body.files || []) {
-          const option = element("option", { text: name });
-          option.value = name;
-          fileSelect.append(option);
-        }
-        if (this.settings.libraryFile && ![...fileSelect.options].some((option) => option.value === this.settings.libraryFile)) {
-          const missing = element("option", { text: `${this.settings.libraryFile}（見つかりません）` });
-          missing.value = this.settings.libraryFile;
-          fileSelect.append(missing);
-        }
-        fileSelect.value = this.settings.libraryFile || "";
+        const responseBody = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(responseBody.error || `ファイル情報の取得に失敗しました (${response.status})`);
+        const canOverwrite = Boolean(this.settings.libraryFile && responseBody.exists);
+        overwriteButton.disabled = !canOverwrite;
+        overwriteButton.title = canOverwrite ? `${this.settings.libraryFile}.json を上書き保存` : "デフォルトは上書きできません。別名で保存してください";
         fileStatus.classList.remove("is-error");
         fileStatus.textContent = this.settings.libraryFile
-          ? (body.exists ? `使用中: ${this.settings.libraryFile}.json` : "指定ファイルがないためデフォルトを使用中")
+          ? (responseBody.exists ? `使用中: ${this.settings.libraryFile}.json` : "指定ファイルがないためデフォルトを使用中")
           : "使用中: デフォルト";
       } catch (error) {
+        overwriteButton.disabled = true;
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
       }
     };
-    let loadButton;
-    const loadSelectedFile = async () => {
-      const selectedFile = fileSelect.value;
-      if (hasEdits()) {
-        const message = "編集中の内容を別名保存してから読み込んでください";
-        fileStatus.textContent = message;
-        fileStatus.classList.add("is-error");
-        return this.setStatus(message, true);
-      }
+    const loadSelectedCatalog = async (selectedFile, fileHandle = null) => {
       loadButton.disabled = true;
-      fileStatus.textContent = selectedFile ? `${selectedFile}.json を読み込み中…` : "デフォルトのタグを読み込み中…";
+      loadButton.textContent = "読み込み中…";
+      fileStatus.textContent = `${selectedFile.name} を確認中…`;
       fileStatus.classList.remove("is-error");
       try {
-        const catalog = await fetchExampleCatalog(this.api, selectedFile);
+        if (selectedFile.size > MAX_CATALOG_FILE_BYTES) throw new Error("タグファイルは4 MB以下にしてください");
+        if (!selectedFile.name.toLocaleLowerCase().endsWith(".json")) throw new Error("JSONファイルを選択してください");
+        const catalog = parseImportedCatalogText(await selectedFile.text());
+        const saved = await upsertCatalogCopy(this.api, selectedFile.name, catalog, { allowLoadFallback: true });
         this.pushUndo();
-        this.settings.libraryFile = selectedFile;
+        this.settings.libraryFile = saved.name;
         this.settings.libraryEdits = { categories: [], tags: [] };
         edits = sanitizeLibraryEdits({});
         this.exampleData = catalog;
         this.exampleLoadPromise = Promise.resolve(catalog);
+        currentCatalogFileHandle = fileHandle;
+        currentSourceFileName = selectedFile.name;
         this.syncToWidgets();
         render();
         this.refreshExamplesPanel?.();
-        await refreshFileList();
-        this.setStatus(selectedFile ? `${selectedFile}.json を読み込みました` : "デフォルトのタグを読み込みました");
+        await refreshFileStatus();
+        this.setStatus(saved.compatibilityFallback
+          ? `${selectedFile.name} を読み込みました。同名コピーの更新にはComfyUIの再起動が必要です`
+          : `${selectedFile.name} を読み込みました`);
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
       } finally {
         loadButton.disabled = false;
+        loadButton.textContent = "ファイルを選んで読み込む";
+        fileInput.value = "";
       }
     };
-    const saveAsNewFile = async () => {
-      const name = fileName.value.trim();
-      if (!name) return this.setStatus("新しいファイル名を入力してください", true);
-      const catalog = libraryToStoredCatalog(getLibrary());
+    const openCatalogFile = async () => {
+      if (hasEdits()) {
+        const confirmed = window.confirm("編集内容は保存されていません。破棄して別のタグファイルを読み込みますか？");
+        if (!confirmed) {
+          const message = "読み込みをキャンセルしました。編集内容は保持されています";
+          fileStatus.textContent = message;
+          fileStatus.classList.remove("is-error");
+          return this.setStatus(message);
+        }
+      }
+      if (typeof window.showOpenFilePicker !== "function") {
+        fileInput.value = "";
+        fileInput.click();
+        return;
+      }
       try {
-        const response = await this.api.fetchApi("/prompt_all_in_one/catalogs", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, catalog }),
+        const [fileHandle] = await window.showOpenFilePicker({
+          id: CATALOG_FILE_PICKER_ID,
+          multiple: false,
+          types: CATALOG_FILE_PICKER_TYPES,
         });
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(body.error || `タグファイルの保存に失敗しました (${response.status})`);
-        this.pushUndo();
-        this.settings.libraryFile = body.name;
-        this.settings.libraryEdits = { categories: [], tags: [] };
-        edits = sanitizeLibraryEdits({});
-        this.exampleData = catalog;
-        this.exampleLoadPromise = Promise.resolve(catalog);
-        fileName.value = "";
-        this.syncToWidgets();
-        render();
-        this.refreshExamplesPanel?.();
-        await refreshFileList();
-        this.setStatus(`${body.filename} に別名保存しました`);
+        await loadSelectedCatalog(await fileHandle.getFile(), fileHandle);
       } catch (error) {
+        if (error?.name === "AbortError") return this.setStatus("読み込みをキャンセルしました");
+        fileStatus.textContent = error.message;
+        fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
       }
     };
-    loadButton = button("読み込む", loadSelectedFile);
+    const loadButton = button("ファイルを選んで読み込む", openCatalogFile, "JSONタグファイルを選んで読み込む");
+    fileInput.addEventListener("change", async () => {
+      const selectedFile = fileInput.files?.[0];
+      if (!selectedFile) return;
+      await loadSelectedCatalog(selectedFile);
+    });
+    const applySavedCatalog = async (catalog, responseBody, message) => {
+      this.pushUndo();
+      this.settings.libraryFile = responseBody.name;
+      this.settings.libraryEdits = { categories: [], tags: [] };
+      edits = sanitizeLibraryEdits({});
+      this.exampleData = catalog;
+      this.exampleLoadPromise = Promise.resolve(catalog);
+      this.syncToWidgets();
+      render();
+      this.refreshExamplesPanel?.();
+      await refreshFileStatus();
+      this.setStatus(message);
+    };
+    let saveAsButton;
+    const saveAsNewFile = async () => {
+      const suggestedName = suggestedCatalogFileName(currentSourceFileName);
+      saveAsButton.disabled = true;
+      try {
+        const catalog = await buildCompleteCatalogForSave(() => this.loadExampleData(), edits);
+        let savedFileName = suggestedName;
+        let savedFileHandle = null;
+        if (typeof window.showSaveFilePicker === "function") {
+          const pickerOptions = {
+            id: CATALOG_FILE_PICKER_ID,
+            suggestedName,
+            types: CATALOG_FILE_PICKER_TYPES,
+          };
+          if (currentCatalogFileHandle) pickerOptions.startIn = currentCatalogFileHandle;
+          savedFileHandle = await window.showSaveFilePicker(pickerOptions);
+          savedFileName = savedFileHandle.name;
+          await writeCatalogFile(savedFileHandle, catalog);
+        } else {
+          download(savedFileName, `${JSON.stringify(catalog, null, 2)}\n`, "application/json");
+        }
+        const responseBody = await upsertCatalogCopy(this.api, savedFileName, catalog);
+        currentCatalogFileHandle = savedFileHandle;
+        currentSourceFileName = savedFileName;
+        await applySavedCatalog(catalog, responseBody, `${savedFileName} に別名保存しました`);
+      } catch (error) {
+        if (error?.name === "AbortError") return this.setStatus("別名保存をキャンセルしました");
+        fileStatus.textContent = error.message;
+        fileStatus.classList.add("is-error");
+        this.setStatus(error.message, true);
+      } finally {
+        saveAsButton.disabled = false;
+      }
+    };
+    const overwriteCurrentFile = async () => {
+      const name = this.settings.libraryFile;
+      if (!name) return this.setStatus("デフォルトは上書きできません。別名で保存してください", true);
+      const targetName = currentCatalogFileHandle?.name || `${name}.json`;
+      if (!window.confirm(`${targetName} を上書き保存しますか？`)) return this.setStatus("上書き保存をキャンセルしました");
+      overwriteButton.disabled = true;
+      try {
+        const catalog = await buildCompleteCatalogForSave(() => this.loadExampleData(), edits);
+        if (currentCatalogFileHandle) await writeCatalogFile(currentCatalogFileHandle, catalog);
+        const responseBody = await upsertCatalogCopy(this.api, targetName, catalog);
+        await applySavedCatalog(catalog, responseBody, `${targetName} を上書き保存しました`);
+      } catch (error) {
+        fileStatus.textContent = error.message;
+        fileStatus.classList.add("is-error");
+        this.setStatus(error.message, true);
+      }
+    };
+    overwriteButton = button("上書き保存", overwriteCurrentFile);
+    overwriteButton.disabled = !this.settings.libraryFile;
+    saveAsButton = button("別名で保存", saveAsNewFile);
+    saveAsButton.classList.add("is-primary");
     const fileBar = element("section", { className: "paio-library-filebar" }, [
       element("div", { className: "paio-library-file-controls" }, [
-        this.labeled("使用するファイル", fileSelect),
-        loadButton,
-      ]),
-      element("div", { className: "paio-library-file-controls" }, [
-        this.labeled("編集結果を別名で保存", fileName),
-        button("別名で保存", saveAsNewFile),
+        this.labeled("タグファイル", loadButton),
+        fileInput,
       ]),
       fileStatus,
+    ]);
+    const saveBar = element("section", { className: "paio-library-savebar" }, [
+      element("span", { className: "paio-hint", text: "タグとカテゴリーの変更をJSONへ保存" }),
+      element("div", { className: "paio-library-save-actions" }, [overwriteButton, saveAsButton]),
     ]);
     const createCategory = (level) => {
       const library = getLibrary();
@@ -948,10 +1096,10 @@ export class PromptEditor {
     };
     search.addEventListener("input", render);
     body.append(treePane, detailPane);
-    root.append(heading, fileBar, body);
+    root.append(heading, fileBar, body, saveBar);
     this.loadExampleData().then(render).catch(render);
-    refreshFileList();
-    return { root, getEdits: () => sanitizeLibraryEdits(edits), refresh: () => { render(); refreshFileList(); } };
+    refreshFileStatus();
+    return { root, getEdits: () => sanitizeLibraryEdits(edits), refresh: () => { render(); refreshFileStatus(); } };
   }
 
   buildTagEditor(library, category, getEdits, setEdits) {
