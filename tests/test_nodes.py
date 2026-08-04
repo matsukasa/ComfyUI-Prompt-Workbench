@@ -113,6 +113,25 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
 
 
 class CatalogRouteTests(unittest.TestCase):
+    @staticmethod
+    def bundled_catalog(tag_name="solo"):
+        return {
+            "schema_version": 1,
+            "major_categories": [{
+                "id": "people",
+                "label_ja": "人物",
+                "medium_categories": [{
+                    "id": "composition",
+                    "label_ja": "構成",
+                    "small_categories": [{
+                        "id": "count",
+                        "label_ja": "人数",
+                        "tags": [{"id": "tag-1", "name": tag_name, "translation_ja": "一人"}],
+                    }],
+                }],
+            }],
+        }
+
     def test_examples_path_falls_back_without_a_bundled_catalog(self):
         with tempfile.TemporaryDirectory() as directory:
             data_directory = Path(directory)
@@ -161,6 +180,39 @@ class CatalogRouteTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 routes.save_user_catalog("my catalog.json", {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "other"}], "tags": []}, storage_directory)
             self.assertEqual(target.read_bytes(), original)
+
+    def test_named_catalog_can_be_atomically_overwritten(self):
+        with tempfile.TemporaryDirectory() as storage_directory:
+            original = {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "original"}], "tags": []}
+            replacement = {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "replacement"}], "tags": []}
+            target = routes.save_user_catalog("my catalog", original, storage_directory)
+            routes.overwrite_user_catalog("my catalog.json", replacement, storage_directory)
+            self.assertEqual(json.loads(target.read_text(encoding="utf-8")), replacement)
+            self.assertEqual(list(Path(storage_directory).glob("*.tmp")), [])
+
+    def test_bundled_tag_editor_catalog_can_be_saved_and_loaded(self):
+        with tempfile.TemporaryDirectory() as data_directory, tempfile.TemporaryDirectory() as storage_directory:
+            data_path = Path(data_directory)
+            data_path.joinpath("prompt_examples.json").write_text('{"categories":[]}', encoding="utf-8")
+            catalog = self.bundled_catalog()
+            target = routes.save_user_catalog("nested catalog", catalog, storage_directory)
+            self.assertEqual(json.loads(target.read_text(encoding="utf-8")), catalog)
+            self.assertEqual(
+                routes.load_examples_catalog(data_path, "nested catalog", storage_directory),
+                catalog,
+            )
+
+    def test_bundled_catalog_rejects_a_small_category_without_tags(self):
+        catalog = self.bundled_catalog()
+        del catalog["major_categories"][0]["medium_categories"][0]["small_categories"][0]["tags"]
+        with self.assertRaisesRegex(ValueError, "small category"):
+            routes.validate_user_catalog(catalog)
+
+    def test_named_catalog_overwrite_requires_an_existing_file(self):
+        with tempfile.TemporaryDirectory() as storage_directory:
+            catalog = {"schema": "prompt-workbench/tag-catalog", "version": 1, "categories": [{"id": "custom"}], "tags": []}
+            with self.assertRaises(FileNotFoundError):
+                routes.overwrite_user_catalog("missing", catalog, storage_directory)
 
     def test_catalog_names_cannot_escape_storage_directory(self):
         with tempfile.TemporaryDirectory() as storage_directory:

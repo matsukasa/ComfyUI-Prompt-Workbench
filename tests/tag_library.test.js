@@ -5,6 +5,7 @@ import {
   deleteCategoryEdit,
   deleteTagEdit,
   libraryToExampleData,
+  libraryToBundledCatalog,
   libraryToStoredCatalog,
   reorderTagEdits,
   saveCategoryEdit,
@@ -128,4 +129,31 @@ test("stored catalog round-trip preserves hierarchy, order, and Japanese transla
     restored.tags.map(({ id, categoryId, prompt, ja, order }) => ({ id, categoryId, prompt, ja, order })),
     original.tags.map(({ id, categoryId, prompt, ja }, order) => ({ id, categoryId, prompt, ja, order })),
   );
+});
+
+test("bundled catalog uses the tag editor hierarchy and preserves source metadata", () => {
+  const bundledSource = { schema_version: 1, stats: { tags: 2 }, major_categories: [{
+    id: "people", label_ja: "人物", description_ja: "説明", medium_categories: [{
+      id: "appearance", label_ja: "外見", small_categories: [{
+        id: "hair", label_ja: "髪", extra_small: true, tags: [
+          { id: 10, name: "long_hair", translation_ja: "長い髪", aliases: ["longhair"], post_count: 100, source: "local" },
+          { id: 11, name: "short_hair", translation_ja: "短い髪" },
+        ],
+      }],
+    }],
+  }] };
+  const library = buildTagLibrary(bundledSource, {
+    categories: [],
+    tags: [{ id: "danbooru-tag:10", categoryId: "danbooru:hair", prompt: "very_long_hair", ja: "とても長い髪" }],
+  });
+  const saved = libraryToBundledCatalog(library, bundledSource);
+  const small = saved.major_categories[0].medium_categories[0].small_categories[0];
+  assert.equal(saved.schema_version, 1);
+  assert.equal(saved.stats.tags, 2);
+  assert.equal(saved.major_categories[0].description_ja, "説明");
+  assert.equal(small.extra_small, true);
+  assert.deepEqual(small.tags.map((item) => item.name), ["very_long_hair", "short_hair"]);
+  assert.deepEqual(small.tags[0].aliases, ["longhair"]);
+  assert.equal(small.tags[0].post_count, 100);
+  assert.equal(small.tags[0].source, "local");
 });

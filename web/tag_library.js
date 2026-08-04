@@ -340,3 +340,95 @@ export function libraryToStoredCatalog(library) {
     })),
   };
 }
+
+export function libraryToBundledCatalog(library, source = {}) {
+  const categories = Array.isArray(library?.categories) ? library.categories : [];
+  const tags = Array.isArray(library?.tags) ? library.tags : [];
+  const sourceCategories = new Map();
+  const sourceTags = new Map();
+  const hasBundledSource = Array.isArray(source?.major_categories);
+
+  if (hasBundledSource) {
+    for (const major of source.major_categories) {
+      sourceCategories.set(`danbooru:${text(major?.id, 100)}`, major);
+      for (const medium of major?.medium_categories || []) {
+        sourceCategories.set(`danbooru:${text(medium?.id, 100)}`, medium);
+        for (const small of medium?.small_categories || []) {
+          sourceCategories.set(`danbooru:${text(small?.id, 100)}`, small);
+          for (const [index, item] of (small?.tags || []).entries()) {
+            const officialId = text(item?.id, 80) || `${small?.id}:${index}`;
+            sourceTags.set(`danbooru-tag:${officialId}`, item);
+          }
+        }
+      }
+    }
+  }
+
+  const categoriesByParent = new Map();
+  for (const category of categories) {
+    const children = categoriesByParent.get(category.parentId) || [];
+    children.push(category);
+    categoriesByParent.set(category.parentId, children);
+  }
+  const tagsByCategory = new Map();
+  for (const tag of tags) {
+    const children = tagsByCategory.get(tag.categoryId) || [];
+    children.push(tag);
+    tagsByCategory.set(tag.categoryId, children);
+  }
+
+  const categoryObject = (category, childKey, children) => {
+    const original = sourceCategories.get(category.id) || {};
+    const output = {
+      ...original,
+      id: original.id ?? category.id,
+      label_ja: text(category.ja),
+    };
+    if (category.en || Object.hasOwn(original, "label_en")) output.label_en = text(category.en);
+    output[childKey] = children;
+    return output;
+  };
+  const tagObject = (tag) => {
+    const original = sourceTags.get(tag.id) || {};
+    const output = {
+      ...original,
+      id: original.id ?? tag.id,
+      name: text(tag.prompt, 10000),
+    };
+    if (tag.ja || Object.hasOwn(original, "translation_ja")) output.translation_ja = text(tag.ja, 10000);
+    if (tag.aliases?.length || Object.hasOwn(original, "aliases")) output.aliases = [...(tag.aliases || [])];
+    if (Number.isInteger(tag.postCount) || Object.hasOwn(original, "post_count")) output.post_count = Number.isInteger(tag.postCount) ? tag.postCount : 0;
+    return output;
+  };
+  const smallObject = (small) => categoryObject(
+    small,
+    "tags",
+    (tagsByCategory.get(small.id) || []).map(tagObject),
+  );
+  const mediumObject = (medium) => categoryObject(
+    medium,
+    "small_categories",
+    (categoriesByParent.get(medium.id) || []).filter((item) => item.level === "small").map(smallObject),
+  );
+  const majorCategories = (categoriesByParent.get("") || [])
+    .filter((item) => item.level === "large")
+    .map((major) => categoryObject(
+      major,
+      "medium_categories",
+      (categoriesByParent.get(major.id) || []).filter((item) => item.level === "medium").map(mediumObject),
+    ));
+
+  const output = hasBundledSource ? { ...source } : { schema_version: 1 };
+  output.schema_version = Number.isInteger(source?.schema_version) ? source.schema_version : 1;
+  output.major_categories = majorCategories;
+  if (output.stats && typeof output.stats === "object" && !Array.isArray(output.stats)) {
+    output.stats = {
+      ...output.stats,
+      tags: tags.length,
+      major_categories: categories.filter((item) => item.level === "large").length,
+      medium_categories: categories.filter((item) => item.level === "medium").length,
+      small_categories: categories.filter((item) => item.level === "small").length,
+    };
+  }
+  return output;
+}

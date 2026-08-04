@@ -4,6 +4,8 @@ import test from "node:test";
 import {
   applySmartTranslationResult,
   appendPresentChildren,
+  buildCompleteCatalogForSave,
+  catalogNameFromFileName,
   clampExampleListHeight,
   cleanTranslation,
   compactNodeWidgetLayout,
@@ -13,12 +15,16 @@ import {
   filterExampleLibraryTags,
   getTagDisplayText,
   hideWidgetForGood,
+  parseImportedCatalogText,
   removeUnlinkedWidgetInput,
   removeWidgetFromLayout,
   replaceTagTextPreservingSyntax,
   resolveExampleCategoryPath,
+  suggestedCatalogFileName,
   translatableTagText,
   translationBatchTimeoutMs,
+  upsertCatalogCopy,
+  writeCatalogFile,
 } from "../web/prompt_editor.js";
 
 test("catalog loader reloads default and named files and reports errors", async () => {
@@ -43,6 +49,97 @@ test("catalog loader reloads default and named files and reports errors", async 
     fetchExampleCatalog({ fetchApi: async () => new Response(JSON.stringify({ error: "読込失敗" }), { status: 500 }) }, "broken"),
     /読込失敗/u,
   );
+});
+
+test("catalog file picker normalizes names and validates imported JSON", () => {
+  assert.equal(catalogNameFromFileName("私の.タグ.json"), "私の_タグ");
+  assert.equal(catalogNameFromFileName("CON.json"), "CON_catalog");
+  assert.equal(suggestedCatalogFileName("tags.json", new Date(2026, 7, 4, 22, 15, 9)), "tags_20260804_221509.json");
+  const catalog = parseImportedCatalogText(JSON.stringify({
+    schema: "prompt-workbench/tag-catalog",
+    version: 1,
+    categories: [
+      { id: "large", level: "large", parentId: "", en: "People", ja: "人物" },
+      { id: "medium", level: "medium", parentId: "large", en: "Body", ja: "身体" },
+      { id: "small", level: "small", parentId: "medium", en: "General", ja: "一般" },
+    ],
+    tags: [{ id: "tag", categoryId: "small", prompt: "solo", ja: "一人", order: 0 }],
+  }));
+  assert.equal(catalog.schema_version, 1);
+  assert.equal(catalog.major_categories[0].medium_categories[0].small_categories[0].tags[0].name, "solo");
+  assert.throws(() => parseImportedCatalogText("{}"), /カテゴリー/u);
+});
+
+test("loading the same catalog updates its existing copy without adding a number", async () => {
+  const requests = [];
+  const api = {
+    async fetchApi(path, options = {}) {
+      requests.push({ path, method: options.method || "GET", body: options.body });
+      if (!options.method) return new Response(JSON.stringify({ files: ["tags", "tags 2"] }), { status: 200 });
+      return new Response(JSON.stringify({ name: "tags", filename: "tags.json" }), { status: 200 });
+    },
+  };
+  const result = await upsertCatalogCopy(api, "tags.json", { categories: [], tags: [] });
+  assert.equal(result.filename, "tags.json");
+  assert.deepEqual(requests.map((item) => item.method), ["GET", "PUT"]);
+  assert.equal(JSON.parse(requests[1].body).name, "tags");
+});
+
+test("catalog loading tolerates an old server that rejects PUT", async () => {
+  const api = {
+    async fetchApi(_path, options = {}) {
+      if (!options.method) return new Response(JSON.stringify({ files: ["tags"] }), { status: 200 });
+      return new Response(JSON.stringify({}), { status: 405 });
+    },
+  };
+  const fallback = await upsertCatalogCopy(api, "tags.json", { categories: [], tags: [] }, { allowLoadFallback: true });
+  assert.equal(fallback.filename, "tags.json");
+  assert.equal(fallback.compatibilityFallback, true);
+  await assert.rejects(
+    upsertCatalogCopy(api, "tags.json", { categories: [], tags: [] }),
+    /ComfyUIを再起動/u,
+  );
+});
+
+test("catalog file handle receives formatted JSON and closes", async () => {
+  const calls = [];
+  const handle = {
+    async createWritable() {
+      return {
+        async write(value) { calls.push(["write", value]); },
+        async close() { calls.push(["close"]); },
+      };
+    },
+  };
+  await writeCatalogFile(handle, { schema: "prompt-workbench/tag-catalog", version: 1 });
+  assert.match(calls[0][1], /"schema": "prompt-workbench\/tag-catalog"/u);
+  assert.deepEqual(calls[1], ["close"]);
+});
+
+test("catalog save includes untouched categories after loading the complete source", async () => {
+  const source = {
+    schema: "prompt-workbench/tag-catalog",
+    version: 1,
+    categories: [
+      { id: "large", level: "large", parentId: "", en: "People", ja: "人物" },
+      { id: "medium", level: "medium", parentId: "large", en: "Body", ja: "身体" },
+      { id: "edited", level: "small", parentId: "medium", en: "Edited", ja: "編集対象" },
+      { id: "untouched", level: "small", parentId: "medium", en: "Untouched", ja: "未変更" },
+    ],
+    tags: [
+      { id: "edited-tag", categoryId: "edited", prompt: "solo", ja: "一人", order: 0 },
+      { id: "untouched-tag", categoryId: "untouched", prompt: "smile", ja: "笑顔", order: 0 },
+    ],
+  };
+  const saved = await buildCompleteCatalogForSave(async () => source, {
+    categories: [],
+    tags: [{ id: "edited-tag", categoryId: "edited", prompt: "solo", ja: "単独", custom: false }],
+  });
+  assert.equal(saved.schema_version, 1);
+  const smallCategories = saved.major_categories[0].medium_categories[0].small_categories;
+  assert.deepEqual(smallCategories.map((item) => item.id), ["edited", "untouched"]);
+  assert.equal(smallCategories[0].tags[0].translation_ja, "単独");
+  assert.equal(smallCategories[1].tags[0].translation_ja, "笑顔");
 });
 
 test("closed settings dialog stays hidden", () => {
@@ -250,13 +347,31 @@ test("tag manager exposes a dedicated drag handle and drop position feedback", (
   assert.match(css, /\.paio-tag-edit-row\.is-drop-after/u);
 });
 
-test("tag manager exposes named catalog load and save without an overwrite action", () => {
+test("tag manager opens a JSON file picker and puts save actions at the bottom", () => {
   const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
-  assert.match(source, /使用するファイル/u);
-  assert.match(source, /編集結果を別名で保存/u);
-  assert.match(source, /button\("読み込む"/u);
-  assert.match(source, /button\("別名で保存"/u);
-  assert.doesNotMatch(source, /button\("上書き保存"/u);
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.match(source, /fileInput\.type = "file"/u);
+  assert.match(source, /fileInput\.accept = "\.json,application\/json"/u);
+  assert.match(source, /fileInput\.click\(\)/u);
+  assert.match(source, /window\.confirm\("編集内容は保存されていません。破棄して別のタグファイルを読み込みますか？"\)/u);
+  assert.match(source, /読み込みをキャンセルしました。編集内容は保持されています/u);
+  assert.match(source, /ファイルを選んで読み込む/u);
+  assert.doesNotMatch(source, /使用するファイル/u);
+  assert.doesNotMatch(source, /編集結果を別名で保存/u);
+  assert.match(source, /button\("上書き保存", overwriteCurrentFile\)/u);
+  assert.match(source, /button\("別名で保存", saveAsNewFile\)/u);
+  assert.match(source, /existingName \? "PUT" : "POST"/u);
+  assert.match(source, /window\.showOpenFilePicker/u);
+  assert.match(source, /window\.showSaveFilePicker\(pickerOptions\)/u);
+  assert.match(source, /const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save"/u);
+  assert.equal(source.match(/id: CATALOG_FILE_PICKER_ID/gu)?.length, 2);
+  assert.doesNotMatch(source, /prompt-workbench-catalog-open/u);
+  assert.match(source, /pickerOptions\.startIn = currentCatalogFileHandle/u);
+  assert.match(source, /suggestedCatalogFileName\(currentSourceFileName\)/u);
+  assert.equal(source.match(/await buildCompleteCatalogForSave\(\(\) => this\.loadExampleData\(\), edits\)/gu)?.length, 2);
+  assert.doesNotMatch(source, /availableCatalogName/u);
+  assert.match(css, /\.paio-library-savebar\s*\{/u);
+  assert.match(source, /root\.append\(heading, fileBar, body, saveBar\)/u);
 });
 
 test("large translation batches receive a longer bounded timeout", () => {
