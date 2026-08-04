@@ -214,6 +214,25 @@ function roundWeight(value) {
   return Number(Number(value).toFixed(2));
 }
 
+export function getTagWeight(value) {
+  const text = String(value || "").trim();
+  if (!text || /^<(lora|lyco):/i.test(text)) return null;
+  return parseExplicitWeight(text)?.weight ?? 1;
+}
+
+export function setTagWeight(value, weight, min = 0.05, max = 2) {
+  const text = String(value || "").trim();
+  if (!text || /^<(lora|lyco):/i.test(text)) return text;
+  const numericWeight = Number(weight);
+  if (!Number.isFinite(numericWeight)) return text;
+  const parsed = parseExplicitWeight(text);
+  const next = Math.min(max, Math.max(min, roundWeight(numericWeight)));
+  if (next === 1) return parsed ? parsed.body.trim() : text;
+  const formatted = next.toFixed(2);
+  if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;
+  return `(${text}:${formatted})`;
+}
+
 export function adjustTagWeight(value, delta, min = 0.05, max = 2) {
   const text = String(value || "").trim();
   if (!text || /^<(lora|lyco):/i.test(text)) return text;
