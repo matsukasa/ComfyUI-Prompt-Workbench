@@ -9,6 +9,7 @@ import {
   compactNodeWidgetLayout,
   containsJapaneseText,
   containNodeContextMenu,
+  fetchExampleCatalog,
   filterExampleLibraryTags,
   getTagDisplayText,
   hideWidgetForGood,
@@ -19,6 +20,30 @@ import {
   translatableTagText,
   translationBatchTimeoutMs,
 } from "../web/prompt_editor.js";
+
+test("catalog loader reloads default and named files and reports errors", async () => {
+  const requested = [];
+  const api = {
+    async fetchApi(path) {
+      requested.push(path);
+      return new Response(JSON.stringify({ source: path }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+  };
+  assert.deepEqual(await fetchExampleCatalog(api), { source: "/prompt_all_in_one/examples" });
+  assert.deepEqual(await fetchExampleCatalog(api, "私のタグ"), { source: "/prompt_all_in_one/examples?file=%E7%A7%81%E3%81%AE%E3%82%BF%E3%82%B0" });
+  assert.deepEqual(requested, [
+    "/prompt_all_in_one/examples",
+    "/prompt_all_in_one/examples?file=%E7%A7%81%E3%81%AE%E3%82%BF%E3%82%B0",
+  ]);
+
+  await assert.rejects(
+    fetchExampleCatalog({ fetchApi: async () => new Response(JSON.stringify({ error: "読込失敗" }), { status: 500 }) }, "broken"),
+    /読込失敗/u,
+  );
+});
 
 test("closed settings dialog stays hidden", () => {
   const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
