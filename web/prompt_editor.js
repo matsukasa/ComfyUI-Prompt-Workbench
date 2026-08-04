@@ -114,6 +114,14 @@ export function cleanTranslation(value) {
     .filter((token) => !/^(null|undefined)$/iu.test(token)).join(" ").trim();
 }
 
+export async function fetchExampleCatalog(api, libraryFile = "") {
+  const query = libraryFile ? `?file=${encodeURIComponent(libraryFile)}` : "";
+  const response = await api.fetchApi(`/prompt_all_in_one/examples${query}`);
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || `タグファイルの読込に失敗しました (${response.status})`);
+  return body;
+}
+
 export function containsJapaneseText(value) {
   return /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(String(value || ""));
 }
@@ -742,6 +750,7 @@ export class PromptEditor {
           fileSelect.append(missing);
         }
         fileSelect.value = this.settings.libraryFile || "";
+        fileStatus.classList.remove("is-error");
         fileStatus.textContent = this.settings.libraryFile
           ? (body.exists ? `使用中: ${this.settings.libraryFile}.json` : "指定ファイルがないためデフォルトを使用中")
           : "使用中: デフォルト";
@@ -750,25 +759,37 @@ export class PromptEditor {
         fileStatus.classList.add("is-error");
       }
     };
+    let loadButton;
     const loadSelectedFile = async () => {
       const selectedFile = fileSelect.value;
-      if (selectedFile === this.settings.libraryFile) return this.setStatus("このタグファイルは既に使用中です");
-      if (hasEdits()) return this.setStatus("編集中の内容を別名保存してからファイルを切り替えてください", true);
-      this.pushUndo();
-      this.settings.libraryFile = selectedFile;
-      this.settings.libraryEdits = { categories: [], tags: [] };
-      edits = sanitizeLibraryEdits({});
-      this.exampleData = null;
-      this.exampleLoadPromise = null;
+      if (hasEdits()) {
+        const message = "編集中の内容を別名保存してから読み込んでください";
+        fileStatus.textContent = message;
+        fileStatus.classList.add("is-error");
+        return this.setStatus(message, true);
+      }
+      loadButton.disabled = true;
+      fileStatus.textContent = selectedFile ? `${selectedFile}.json を読み込み中…` : "デフォルトのタグを読み込み中…";
+      fileStatus.classList.remove("is-error");
       try {
-        await this.loadExampleData();
+        const catalog = await fetchExampleCatalog(this.api, selectedFile);
+        this.pushUndo();
+        this.settings.libraryFile = selectedFile;
+        this.settings.libraryEdits = { categories: [], tags: [] };
+        edits = sanitizeLibraryEdits({});
+        this.exampleData = catalog;
+        this.exampleLoadPromise = Promise.resolve(catalog);
         this.syncToWidgets();
         render();
         this.refreshExamplesPanel?.();
         await refreshFileList();
         this.setStatus(selectedFile ? `${selectedFile}.json を読み込みました` : "デフォルトのタグを読み込みました");
       } catch (error) {
+        fileStatus.textContent = error.message;
+        fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
+      } finally {
+        loadButton.disabled = false;
       }
     };
     const saveAsNewFile = async () => {
@@ -799,10 +820,11 @@ export class PromptEditor {
         this.setStatus(error.message, true);
       }
     };
+    loadButton = button("読み込む", loadSelectedFile);
     const fileBar = element("section", { className: "paio-library-filebar" }, [
       element("div", { className: "paio-library-file-controls" }, [
         this.labeled("使用するファイル", fileSelect),
-        button("読み込む", loadSelectedFile),
+        loadButton,
       ]),
       element("div", { className: "paio-library-file-controls" }, [
         this.labeled("編集結果を別名で保存", fileName),
@@ -1011,12 +1033,12 @@ export class PromptEditor {
   loadExampleData() {
     if (this.exampleData) return Promise.resolve(this.exampleData);
     if (!this.exampleLoadPromise) {
-      const query = this.settings.libraryFile ? `?file=${encodeURIComponent(this.settings.libraryFile)}` : "";
-      this.exampleLoadPromise = this.api.fetchApi(`/prompt_all_in_one/examples${query}`).then(async (response) => {
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(body.error || `タグファイルの読込に失敗しました (${response.status})`);
+      this.exampleLoadPromise = fetchExampleCatalog(this.api, this.settings.libraryFile).then((body) => {
         this.exampleData = body;
         return body;
+      }).catch((error) => {
+        this.exampleLoadPromise = null;
+        throw error;
       });
     }
     return this.exampleLoadPromise;
