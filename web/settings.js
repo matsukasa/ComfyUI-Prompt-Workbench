@@ -14,13 +14,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   blacklistAction: "warn",
   tagColors: {},
   filter: "all",
-<<<<<<< HEAD
   libraryFile: "",
   libraryEdits: { categories: [], tags: [] },
   exampleListHeight: 118,
-=======
-  libraryEdits: { categories: [], tags: [] },
->>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
@@ -63,15 +59,12 @@ export function sanitizeSettings(input = {}) {
     }
   }
   settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
-<<<<<<< HEAD
   if (typeof input.libraryFile === "string") {
     settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);
   }
   if (Number.isFinite(Number(input.exampleListHeight))) {
     settings.exampleListHeight = Math.min(520, Math.max(96, Math.round(Number(input.exampleListHeight))));
   }
-=======
->>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   return settings;
 }
 

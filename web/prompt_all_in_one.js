@@ -1,10 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-<<<<<<< HEAD
 import { PromptEditor } from "./prompt_editor.js?v=20260804-bundled-catalog-save-1";
-=======
-import { PromptEditor } from "./prompt_editor.js?v=20260801-category-manager-1";
->>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
@@ -14,11 +10,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-<<<<<<< HEAD
   link.href = new URL("./prompt_all_in_one.css?v=20260804-bottom-save-actions-1", import.meta.url).href;
-=======
-  link.href = new URL("./prompt_all_in_one.css?v=20260801-dialog-visibility-1", import.meta.url).href;
->>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   document.head.append(link);
 }
 
