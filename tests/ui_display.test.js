@@ -405,6 +405,12 @@ test("single translation button replaces Japanese prompt tags and preserves weig
   assert.equal(englishTag.translation, "1人の女の子");
 });
 
+test("closed settings dialog stays hidden", () => {
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.match(css, /\.paio-settings-dialog:not\(\[open\]\)\s*\{\s*display:\s*none;/u);
+  assert.match(css, /\.paio-settings-dialog\[open\]\s*\{\s*display:\s*flex;/u);
+});
+
 test("tag button never displays null tokens from a composite translation", () => {
   const tag = { value: "1girl", translation: "1girl null", translatedTo: "ja" };
   assert.equal(cleanTranslation(tag.translation), "1girl");
