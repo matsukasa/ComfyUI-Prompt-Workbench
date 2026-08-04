@@ -27,6 +27,7 @@ export function sanitizeLibraryEdits(input = {}) {
       deleted: Boolean(entry?.deleted),
       custom: Boolean(entry?.custom),
     })).filter((entry) => entry.id),
+<<<<<<< HEAD
     tags: tags.slice(0, MAX_EDITS).map((entry) => {
       const sanitized = {
         id: text(entry?.id, 160),
@@ -39,6 +40,16 @@ export function sanitizeLibraryEdits(input = {}) {
       if (Number.isInteger(entry?.order) && entry.order >= 0) sanitized.order = Math.min(entry.order, MAX_EDITS);
       return sanitized;
     }).filter((entry) => entry.id),
+=======
+    tags: tags.slice(0, MAX_EDITS).map((entry) => ({
+      id: text(entry?.id, 160),
+      categoryId: text(entry?.categoryId, 120),
+      prompt: text(entry?.prompt, 10000),
+      ja: text(entry?.ja, 10000),
+      deleted: Boolean(entry?.deleted),
+      custom: Boolean(entry?.custom),
+    })).filter((entry) => entry.id),
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   };
 }
 
@@ -59,6 +70,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
   const categories = new Map();
   const tags = new Map();
   const largeIds = new Map();
+<<<<<<< HEAD
   const isDanbooruCatalog = Array.isArray(source.major_categories);
   const isStoredCatalog = source.schema === "prompt-workbench/tag-catalog" && source.version === 1;
 
@@ -122,6 +134,10 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
   }
 
   for (const group of (isDanbooruCatalog || isStoredCatalog) ? [] : (source.categories || [])) {
+=======
+
+  for (const group of source.categories || []) {
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const parentKey = `${text(group.parent?.en)}\u0000${text(group.parent?.ja)}`;
     let largeId = largeIds.get(parentKey);
     if (!largeId) {
@@ -150,23 +166,31 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       const id = `tag:${text(group.id, 80)}:${index}`;
       tags.set(id, {
         id, categoryId: smallId, prompt: text(item.prompt, 10000),
+<<<<<<< HEAD
         ja: text(item.translation?.ja, 10000), order: index, builtin: true,
+=======
+        ja: text(item.translation?.ja, 10000), builtin: true,
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       });
     });
   }
 
+<<<<<<< HEAD
   const customCategoryIds = new Set(edits.categories.filter((edit) => edit.custom && !edit.deleted).map((edit) => edit.id));
   const ensureCustomFallback = () => {
     if (!categories.has("custom:root")) categories.set("custom:root", { id: "custom:root", level: "large", parentId: "", en: "User", ja: "ユーザー定義", builtin: false, custom: true });
     if (!categories.has("custom:medium")) categories.set("custom:medium", { id: "custom:medium", level: "medium", parentId: "custom:root", en: "Custom", ja: "独自カテゴリー", builtin: false, custom: true });
     if (!categories.has("custom:small")) categories.set("custom:small", { id: "custom:small", level: "small", parentId: "custom:medium", en: "Tags", ja: "独自タグ", builtin: false, custom: true });
   };
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   for (const edit of edits.categories) {
     if (edit.deleted) {
       categories.delete(edit.id);
       continue;
     }
     const existing = categories.get(edit.id);
+<<<<<<< HEAD
     if (isDanbooruCatalog && !existing && !edit.custom) continue;
     const adjusted = { ...edit };
     if (isDanbooruCatalog && edit.custom && edit.parentId && !categories.has(edit.parentId) && !customCategoryIds.has(edit.parentId)) {
@@ -175,6 +199,10 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     }
     categories.set(adjusted.id, {
       ...(existing || {}), ...adjusted,
+=======
+    categories.set(edit.id, {
+      ...(existing || {}), ...edit,
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       builtin: existing?.builtin || !edit.custom,
     });
   }
@@ -184,6 +212,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       continue;
     }
     const existing = tags.get(edit.id);
+<<<<<<< HEAD
     if (isDanbooruCatalog && !existing && !edit.custom) continue;
     const adjusted = { ...edit };
     if (isDanbooruCatalog && edit.custom && !categories.has(edit.categoryId)) {
@@ -192,6 +221,10 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     }
     tags.set(edit.id, {
       ...(existing || {}), ...adjusted,
+=======
+    tags.set(edit.id, {
+      ...(existing || {}), ...edit,
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       builtin: existing?.builtin || !edit.custom,
     });
   }
@@ -210,6 +243,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     if (!tag.prompt || !categories.has(tag.categoryId)) tags.delete(tag.id);
   }
 
+<<<<<<< HEAD
   const categoryList = [...categories.values()];
   const categoryOrder = new Map(categoryList.map((category, index) => [category.id, index]));
   const tagList = [...tags.values()];
@@ -219,6 +253,9 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     return (Number.isInteger(left.order) ? left.order : MAX_EDITS) - (Number.isInteger(right.order) ? right.order : MAX_EDITS);
   });
   return { categories: categoryList, tags: tagList };
+=======
+  return { categories: [...categories.values()], tags: [...tags.values()] };
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 }
 
 function upsert(list, entry) {
@@ -239,6 +276,7 @@ export function saveCategoryEdit(rawEdits, category) {
 
 export function saveTagEdit(rawEdits, tag) {
   const edits = cloneEdits(sanitizeLibraryEdits(rawEdits));
+<<<<<<< HEAD
   const entry = {
     id: text(tag.id, 160), categoryId: text(tag.categoryId, 120),
     prompt: text(tag.prompt, 10000), ja: text(tag.ja, 10000),
@@ -265,6 +303,14 @@ export function reorderTagEdits(rawEdits, categoryTags, draggedId, targetId, pos
     edits = saveTagEdit(edits, { ...tag, order, custom: !tag.builtin });
   });
   return edits;
+=======
+  upsert(edits.tags, {
+    id: text(tag.id, 160), categoryId: text(tag.categoryId, 120),
+    prompt: text(tag.prompt, 10000), ja: text(tag.ja, 10000),
+    deleted: false, custom: Boolean(tag.custom),
+  });
+  return sanitizeLibraryEdits(edits);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 }
 
 export function deleteTagEdit(rawEdits, tag) {
@@ -319,6 +365,7 @@ export function libraryToExampleData(library) {
   });
   return { categories };
 }
+<<<<<<< HEAD
 
 export function libraryToStoredCatalog(library) {
   return {
@@ -432,3 +479,5 @@ export function libraryToBundledCatalog(library, source = {}) {
   }
   return output;
 }
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d

@@ -12,7 +12,10 @@ import {
   parseExplicitWeight,
   parsePrompt,
   serializePrompt,
+<<<<<<< HEAD
   setTagWeight,
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 } from "./prompt_parser.js";
 import {
   DEFAULT_SETTINGS,
@@ -25,9 +28,13 @@ import {
   buildTagLibrary,
   deleteCategoryEdit,
   deleteTagEdit,
+<<<<<<< HEAD
   libraryToBundledCatalog,
   libraryToStoredCatalog,
   reorderTagEdits,
+=======
+  libraryToExampleData,
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   saveCategoryEdit,
   saveTagEdit,
   sanitizeLibraryEdits,
@@ -37,6 +44,7 @@ const STATE_KEY = "promptAllInOneState";
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
+<<<<<<< HEAD
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
 const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
 const CATALOG_FILE_PICKER_TYPES = [{
@@ -49,6 +57,8 @@ const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
 const BASE_DOM_WIDGET_HEIGHT = 690;
 const BASE_NODE_HEIGHT = 760;
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 const COLOR_DEFAULTS = {
   normal: "#7b8794", disabled: "#6b7280", lora: "#3b82f6", lycoris: "#a855f7",
   embedding: "#14b8a6", wildcard: "#eab308", duplicate: "#f59e0b",
@@ -121,6 +131,7 @@ export function cleanTranslation(value) {
     .filter((token) => !/^(null|undefined)$/iu.test(token)).join(" ").trim();
 }
 
+<<<<<<< HEAD
 export async function fetchExampleCatalog(api, libraryFile = "") {
   const query = libraryFile ? `?file=${encodeURIComponent(libraryFile)}` : "";
   const response = await api.fetchApi(`/prompt_all_in_one/examples${query}`);
@@ -249,6 +260,8 @@ export function applySmartTranslationResult(tag, translatedValue, target, localL
   return true;
 }
 
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 export function getTagDisplayText(tag, settings) {
   const translation = cleanTranslation(tag?.translation);
   const displayMode = settings?.translationDisplay || "original";
@@ -258,12 +271,17 @@ export function getTagDisplayText(tag, settings) {
   return { primary, secondary };
 }
 
+<<<<<<< HEAD
 export function hideWidgetForGood(widget, suffix = "") {
+=======
+function hideWidgetForGood(widget, suffix = "") {
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   if (!widget) return;
   if (!Object.hasOwn(widget, "paioOriginalType")) {
     widget.paioOriginalType = widget.type;
     widget.paioOriginalComputeSize = widget.computeSize;
     widget.paioOriginalDraw = widget.draw;
+<<<<<<< HEAD
     widget.paioOriginalSerializeValue = widget.serializeValue;
   }
   widget.hidden = true;
@@ -364,6 +382,16 @@ export function clampExampleListHeight(value) {
   return Math.min(MAX_EXAMPLE_LIST_HEIGHT, Math.max(MIN_EXAMPLE_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_EXAMPLE_LIST_HEIGHT)));
 }
 
+=======
+  }
+  widget.hidden = true;
+  widget.computeSize = () => [0, -4];
+  widget.draw = () => {};
+  widget.type = `converted-widget${suffix}`;
+  for (const linked of widget.linkedWidgets || []) hideWidgetForGood(linked, `:${widget.name}`);
+}
+
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 export class PromptEditor {
   constructor(node, widgets, api) {
     this.node = node;
@@ -388,7 +416,10 @@ export class PromptEditor {
     this.exampleData = null;
     this.exampleLoadPromise = null;
     this.refreshExamplesPanel = null;
+<<<<<<< HEAD
     this.domWidget = null;
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     this.restore();
     this.root = this.build();
     this.attach();
@@ -500,7 +531,10 @@ export class PromptEditor {
   build() {
     const root = element("section", { className: "paio-editor" });
     root.setAttribute("aria-label", "Prompt Workbench editor");
+<<<<<<< HEAD
     containNodeContextMenu(root);
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
 
     const promptHeader = element("div", { className: "paio-section-header" }, [
       element("strong", { text: "プロンプト本文" }),
@@ -510,7 +544,11 @@ export class PromptEditor {
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
     this.promptTextarea.rows = 4;
+<<<<<<< HEAD
     this.promptTextarea.placeholder = "プロンプトを入力するか、下のタグ追加から選んでください";
+=======
+    this.promptTextarea.placeholder = "プロンプトを入力するか、下の例から追加してください";
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     this.promptTextarea.setAttribute("aria-label", "現在のプロンプト本文");
     this.promptTextarea.addEventListener("input", () => {
       this.promptDirty = true;
@@ -523,7 +561,14 @@ export class PromptEditor {
       }
     });
     this.applyPromptButton = button("タグへ反映", () => this.applyPromptText(), "本文を解析してタグへ反映（Ctrl+Enter）");
+<<<<<<< HEAD
     const promptActions = element("div", { className: "paio-prompt-actions" }, [this.applyPromptButton]);
+=======
+    const promptActions = element("div", { className: "paio-prompt-actions" }, [
+      element("span", { className: "paio-hint", text: "無効タグも表示します" }),
+      this.applyPromptButton,
+    ]);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     this.translationBar = this.buildTranslationBar();
 
     this.addInput = element("textarea", { className: "paio-add-input" });
@@ -607,16 +652,25 @@ export class PromptEditor {
   }
 
   attach() {
+<<<<<<< HEAD
     const promptWidget = this.widgets.prompt;
     hideWidgetForGood(promptWidget, ":prompt");
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
+=======
+    for (const widget of Object.values(this.widgets)) {
+      hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
+    }
+    const domWidget = this.node.addDOMWidget("prompt_editor", "div", this.root, {
+      serialize: false,
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       hideOnZoom: false,
       getValue: () => String(promptWidget?.value || ""),
       setValue: (value) => {
         if (promptWidget) promptWidget.value = String(value || "");
       },
     });
+<<<<<<< HEAD
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
@@ -627,6 +681,10 @@ export class PromptEditor {
       Math.max(this.node.size?.[0] || 0, 540),
       Math.max(this.node.size?.[1] || 0, BASE_NODE_HEIGHT + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT),
     ]);
+=======
+    domWidget.computeSize = (width) => [width, 690];
+    this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), Math.max(this.node.size?.[1] || 0, 760)]);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
       clearInterval(this.pollTimer);
@@ -637,6 +695,7 @@ export class PromptEditor {
     this.render();
   }
 
+<<<<<<< HEAD
   stabilizeLayout() {
     removeUnlinkedWidgetInput(this.node, "prompt");
     compactNodeWidgetLayout(this.node);
@@ -650,6 +709,8 @@ export class PromptEditor {
     this.node.graph?.setDirtyCanvas?.(true, true);
   }
 
+=======
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   buildTranslationBar() {
     const bar = element("div", { className: "paio-translation-bar" });
     const label = element("span", { className: "paio-translation-label", text: "表示" });
@@ -668,9 +729,38 @@ export class PromptEditor {
       modes.append(control);
     }
 
+<<<<<<< HEAD
     this.translateButton = button("翻訳", () => this.translatePrompt(), "日本語タグを英語へ置換し、英語タグへ日本語訳を追加");
     this.translateButton.classList.add("paio-translate-button");
     bar.append(label, modes, this.translateButton);
+=======
+    this.translationMenu = element("details", { className: "paio-translation-menu" });
+    const summary = element("summary", { className: "paio-button paio-translation-summary", text: "翻訳" });
+    summary.setAttribute("aria-label", "翻訳操作を開く");
+    const menu = element("div", { className: "paio-translation-popover" });
+    menu.setAttribute("role", "menu");
+    this.translationSelectionButtons = [];
+    const menuAction = (text, action, selectionOnly = false) => {
+      const control = button(text, () => {
+        this.translationMenu.open = false;
+        action();
+      });
+      control.className = "paio-translation-action";
+      control.setAttribute("role", "menuitem");
+      if (selectionOnly) this.translationSelectionButtons.push(control);
+      return control;
+    };
+    menu.append(
+      menuAction("選択タグを日本語へ", () => this.translateSelection(this.settings.localLanguage), true),
+      menuAction("選択タグを英語へ", () => this.translateSelection("en"), true),
+      element("hr", { className: "paio-menu-separator" }),
+      menuAction("全タグを日本語へ", () => this.translateAll(this.settings.localLanguage)),
+      menuAction("全タグを英語へ", () => this.translateAll("en")),
+      menuAction("失敗した翻訳を再試行", () => this.retryFailedTranslations()),
+    );
+    this.translationMenu.append(summary, menu);
+    bar.append(label, modes, this.translationMenu);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     return bar;
   }
 
@@ -749,7 +839,11 @@ export class PromptEditor {
       element("h4", { text: "翻訳" }),
       this.labeled("翻訳プロバイダー", provider),
       this.labeled("入力時に自動翻訳", auto),
+<<<<<<< HEAD
       element("p", { className: "paio-settings-help", text: "上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。" }),
+=======
+      element("p", { className: "paio-settings-help", text: "翻訳操作は上部の「翻訳」メニューから、選択中または全タグを対象に実行できます。" }),
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     );
     const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.root);
     const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, libraryPanel]);
@@ -791,17 +885,22 @@ export class PromptEditor {
     const heading = element("div", { className: "paio-library-heading" }, [
       element("div", {}, [element("h4", { text: "タグ管理" }), element("p", { text: "大分類 → 中分類 → 小分類 → タグの順で整理します。" })]),
     ]);
+<<<<<<< HEAD
     const fileInput = element("input");
     fileInput.type = "file";
     fileInput.accept = ".json,application/json";
     fileInput.hidden = true;
     const fileStatus = element("span", { className: "paio-library-file-status", text: "保存先を確認中…" });
+=======
+    const modeTabs = element("div", { className: "paio-library-tabs" });
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const body = element("div", { className: "paio-library-body" });
     const treePane = element("section", { className: "paio-library-tree" });
     const detailPane = element("section", { className: "paio-library-detail" });
     const search = element("input", { className: "paio-search" });
     search.type = "search";
     search.placeholder = "カテゴリーやタグを検索";
+<<<<<<< HEAD
     let edits = sanitizeLibraryEdits(this.settings.libraryEdits);
     let selectedId = "";
     let serial = 0;
@@ -980,6 +1079,14 @@ export class PromptEditor {
       element("span", { className: "paio-hint", text: "タグとカテゴリーの変更をJSONへ保存" }),
       element("div", { className: "paio-library-save-actions" }, [overwriteButton, saveAsButton]),
     ]);
+=======
+    let mode = "category";
+    let edits = sanitizeLibraryEdits(this.settings.libraryEdits);
+    let selectedId = "";
+    let serial = 0;
+    const source = () => this.exampleData || { categories: [] };
+    const getLibrary = () => buildTagLibrary(source(), edits);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const createCategory = (level) => {
       const library = getLibrary();
       let parentId = "";
@@ -1001,11 +1108,18 @@ export class PromptEditor {
       if (!category) return detailPane.append(element("p", { className: "paio-empty", text: "左からカテゴリーを選択してください" }));
       const en = element("input", { className: "paio-search" }); en.value = category.en;
       const ja = element("input", { className: "paio-search" }); ja.value = category.ja;
+<<<<<<< HEAD
       const stageCategoryName = () => {
         edits = saveCategoryEdit(edits, { ...category, en: en.value, ja: ja.value, custom: !category.builtin });
       };
       en.addEventListener("input", stageCategoryName);
       ja.addEventListener("input", stageCategoryName);
+=======
+      const save = button("名称を保存", () => {
+        edits = saveCategoryEdit(edits, { ...category, en: en.value, ja: ja.value, custom: !category.builtin });
+        render();
+      });
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       const destination = element("select", { className: "paio-select" });
       const empty = element("option", { text: "移動先を選択" }); empty.value = ""; destination.append(empty);
       for (const small of library.categories.filter((item) => item.level === "small" && item.id !== category.id)) {
@@ -1021,9 +1135,15 @@ export class PromptEditor {
       remove.classList.add("is-danger");
       detailPane.append(
         element("div", { className: "paio-library-detail-title" }, [element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大分類", medium: "中分類", small: "小分類" }[category.level] }), element("strong", { text: category.ja })]),
+<<<<<<< HEAD
         this.labeled("英語名", en), this.labeled("日本語名", ja),
       );
       if (category.level === "small") detailPane.append(this.buildTagEditor(library, category, () => edits, (value, shouldRender = true) => { edits = value; if (shouldRender) render(); }));
+=======
+        this.labeled("英語名", en), this.labeled("日本語名", ja), save,
+      );
+      if (category.level === "small") detailPane.append(this.buildTagEditor(library, category, () => edits, (value) => { edits = value; render(); }));
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       detailPane.append(element("div", { className: "paio-library-danger" }, [
         element("strong", { text: "カテゴリー削除" }),
         element("p", { text: "配下のタグがある場合は、小分類の移動先を選択してください。" }), destination, remove,
@@ -1034,6 +1154,7 @@ export class PromptEditor {
       const query = search.value.trim().toLocaleLowerCase();
       treePane.replaceChildren(search, addBar);
       detailPane.replaceChildren();
+<<<<<<< HEAD
       const categoriesById = new Map(library.categories.map((category) => [category.id, category]));
       const childrenByParent = new Map();
       for (const category of library.categories) {
@@ -1080,12 +1201,24 @@ export class PromptEditor {
         });
         row.className = `paio-library-tree-row is-${category.level}${selectedId === category.id ? " is-selected" : ""}`;
         if (foldable) row.setAttribute("aria-expanded", String(!collapsed));
+=======
+      const visible = library.categories.filter((category) => {
+        if (mode === "tag" && category.level !== "small") return false;
+        if (!query) return true;
+        if (`${category.en} ${category.ja}`.toLocaleLowerCase().includes(query)) return true;
+        return library.tags.some((tag) => tag.categoryId === category.id && `${tag.prompt} ${tag.ja}`.toLocaleLowerCase().includes(query));
+      });
+      for (const category of visible) {
+        const row = button(`${category.ja}  ${category.en}`, () => { selectedId = category.id; render(); });
+        row.className = `paio-library-tree-row is-${category.level}${selectedId === category.id ? " is-selected" : ""}`;
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
         row.prepend(element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大", medium: "中", small: "小" }[category.level] }));
         treePane.append(row);
         if (category.level === "small") {
           const tags = library.tags.filter((tag) => tag.categoryId === category.id).slice(0, 8);
           if (tags.length) treePane.append(element("div", { className: "paio-tree-tag-preview" }, tags.map((tag) => element("span", { text: tag.prompt }))));
         }
+<<<<<<< HEAD
         if (!collapsed || query) {
           for (const child of childrenByParent.get(category.id) || []) appendCategory(child);
         }
@@ -1107,11 +1240,32 @@ export class PromptEditor {
       element("strong", { text: "タグ" }),
       element("span", { className: "paio-hint", text: "⋮⋮をドラッグして表示順を変更" }),
     ]);
+=======
+      }
+      if (!visible.some((item) => item.id === selectedId)) selectedId = visible[0]?.id || "";
+      showCategoryDetail(library, library.categories.find((item) => item.id === selectedId));
+    };
+    search.addEventListener("input", render);
+    for (const [id, label] of [["tag", "タグ"], ["category", "カテゴリー"]]) {
+      const tab = button(label, () => { mode = id; modeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === tab)); render(); });
+      if (id === mode) tab.classList.add("is-active");
+      modeTabs.append(tab);
+    }
+    body.append(treePane, detailPane);
+    root.append(heading, modeTabs, body);
+    this.loadExampleData().then(render).catch(render);
+    return { root, getEdits: () => sanitizeLibraryEdits(edits), refresh: render };
+  }
+
+  buildTagEditor(library, category, getEdits, setEdits) {
+    const section = element("div", { className: "paio-tag-editor" }, [element("strong", { text: "タグ" })]);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const prompt = element("input", { className: "paio-search" }); prompt.placeholder = "英語タグ";
     const ja = element("input", { className: "paio-search" }); ja.placeholder = "日本語訳";
     section.append(element("div", { className: "paio-tag-add" }, [prompt, ja, button("追加", () => {
       if (!prompt.value.trim()) return this.setStatus("タグを入力してください", true);
       const id = `custom-tag-${Date.now()}`;
+<<<<<<< HEAD
       const order = library.tags.filter((item) => item.categoryId === category.id).length;
       setEdits(saveTagEdit(getEdits(), { id, categoryId: category.id, prompt: prompt.value, ja: ja.value, order, custom: true }));
     })]));
@@ -1172,6 +1326,15 @@ export class PromptEditor {
         clearDropState();
         moveTag(movedId, tag.id, position);
       });
+=======
+      setEdits(saveTagEdit(getEdits(), { id, categoryId: category.id, prompt: prompt.value, ja: ja.value, custom: true }));
+    })]));
+    for (const tag of library.tags.filter((item) => item.categoryId === category.id)) {
+      const tagPrompt = element("input", { className: "paio-search" }); tagPrompt.value = tag.prompt;
+      const tagJa = element("input", { className: "paio-search" }); tagJa.value = tag.ja;
+      const row = element("div", { className: "paio-tag-edit-row" }, [tagPrompt, tagJa]);
+      row.append(button("保存", () => setEdits(saveTagEdit(getEdits(), { ...tag, prompt: tagPrompt.value, ja: tagJa.value, custom: !tag.builtin }))));
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       const remove = button("削除", () => setEdits(deleteTagEdit(getEdits(), tag))); remove.classList.add("is-danger"); row.append(remove);
       section.append(row);
     }
@@ -1181,12 +1344,18 @@ export class PromptEditor {
   loadExampleData() {
     if (this.exampleData) return Promise.resolve(this.exampleData);
     if (!this.exampleLoadPromise) {
+<<<<<<< HEAD
       this.exampleLoadPromise = fetchExampleCatalog(this.api, this.settings.libraryFile).then((body) => {
         this.exampleData = body;
         return body;
       }).catch((error) => {
         this.exampleLoadPromise = null;
         throw error;
+=======
+      this.exampleLoadPromise = this.api.fetchApi("/prompt_all_in_one/examples").then((response) => response.json()).then((body) => {
+        this.exampleData = body;
+        return body;
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       });
     }
     return this.exampleLoadPromise;
@@ -1200,6 +1369,7 @@ export class PromptEditor {
     const panel = element("details", { className: "paio-examples" });
     panel.open = true;
     const summary = element("summary", { className: "paio-examples-summary" });
+<<<<<<< HEAD
     const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
     disclosure.setAttribute("aria-hidden", "true");
     summary.append(disclosure, element("strong", { text: "タグを追加" }));
@@ -1373,10 +1543,86 @@ export class PromptEditor {
           renderLimit += EXAMPLE_PAGE_SIZE;
           redraw();
         }));
+=======
+    summary.append(
+      element("strong", { text: "例から追加" }),
+      element("span", { className: "paio-hint", text: "クリックで追加" }),
+    );
+    const search = element("input", { className: "paio-search" });
+    search.type = "search";
+    search.placeholder = "英語・日本語を検索";
+    search.setAttribute("aria-label", "内蔵例を検索");
+    const category = element("select", { className: "paio-select" });
+    const list = element("div", { className: "paio-example-list" });
+    list.setAttribute("aria-live", "polite");
+    const resultStatus = element("span", { className: "paio-example-count", text: "読み込み中…" });
+    const selected = new Set();
+    let data = null;
+    let renderLimit = INITIAL_EXAMPLE_LIMIT;
+    const redraw = () => {
+      list.replaceChildren();
+      if (!data) {
+        list.append(element("p", { className: "paio-empty", text: "内蔵例を読み込んでいます…" }));
+        return;
+      }
+      const query = search.value.trim().toLocaleLowerCase();
+      const matches = [];
+      for (const group of data.categories || []) {
+        if (category.value && category.value !== group.id) continue;
+        for (const item of group.items || []) {
+          const label = `${item.prompt} ${item.translation?.ja || ""}`;
+          if (query && !label.toLocaleLowerCase().includes(query)) continue;
+          matches.push(item);
+        }
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
+      }
+      resultStatus.textContent = `${matches.length}件`;
+      for (const item of matches.slice(0, renderLimit)) {
+        const translation = item.translation?.ja || "";
+        const chip = button(`＋ ${item.prompt}`, (event) => {
+          if (event.ctrlKey || event.metaKey) {
+            if (selected.has(item.prompt)) selected.delete(item.prompt);
+            else selected.add(item.prompt);
+            chip.classList.toggle("is-selected", selected.has(item.prompt));
+            chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
+            this.exampleBulkButton.hidden = selected.size === 0;
+            this.exampleBulkButton.textContent = `選択した${selected.size}件を追加`;
+            return;
+          }
+          this.pushUndo();
+          this.addValues([item.prompt]);
+          this.setStatus(`${item.prompt} を追加しました`);
+        }, translation ? `${item.prompt} — ${translation}` : item.prompt);
+        chip.classList.add("paio-example-chip");
+        chip.classList.toggle("is-selected", selected.has(item.prompt));
+        chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
+        list.append(chip);
+      }
+      if (!matches.length) list.append(element("p", { className: "paio-empty", text: "一致する例はありません" }));
+      if (matches.length > renderLimit) {
+        list.append(button(`さらに表示（残り ${matches.length - renderLimit}）`, () => {
+          renderLimit += EXAMPLE_PAGE_SIZE;
+          redraw();
+        }));
       }
     };
     const populate = () => {
+<<<<<<< HEAD
       library = buildTagLibrary(this.exampleData || { categories: [] }, this.settings.libraryEdits);
+=======
+      data = libraryToExampleData(buildTagLibrary(this.exampleData || { categories: [] }, this.settings.libraryEdits));
+      const previous = category.value;
+      category.replaceChildren();
+      const all = element("option", { text: "全カテゴリー" });
+      all.value = "";
+      category.append(all);
+      for (const group of data.categories || []) {
+        const option = element("option", { text: `${group.label?.ja || group.id} / ${group.label?.en || ""}` });
+        option.value = group.id;
+        category.append(option);
+      }
+      if ([...category.options].some((option) => option.value === previous)) category.value = previous;
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       redraw();
     };
     this.refreshExamplesPanel = populate;
@@ -1386,12 +1632,17 @@ export class PromptEditor {
         populate();
       })
       .catch(() => {
+<<<<<<< HEAD
         library = { categories: [], tags: [] };
+=======
+        data = { categories: [] };
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
         resultStatus.textContent = "読込失敗";
         list.replaceChildren(element("p", { className: "paio-empty paio-error", text: "内蔵例を読み込めませんでした" }));
         this.setStatus("内蔵例を読み込めませんでした", true);
       });
     search.addEventListener("input", () => { renderLimit = INITIAL_EXAMPLE_LIMIT; redraw(); });
+<<<<<<< HEAD
     this.exampleBulkButton = button("選択した0件を追加", () => {
       if (!selected.size) return;
       this.pushUndo();
@@ -1400,11 +1651,19 @@ export class PromptEditor {
         const translation = cleanTranslation(item?.ja);
         return { value: prompt, translation, translatedTo: translation ? this.settings.localLanguage : "" };
       }));
+=======
+    category.addEventListener("change", () => { renderLimit = INITIAL_EXAMPLE_LIMIT; redraw(); });
+    this.exampleBulkButton = button("選択した0件を追加", () => {
+      if (!selected.size) return;
+      this.pushUndo();
+      this.addValues([...selected]);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       selected.clear();
       redraw();
       this.setStatus("内蔵例を追加しました");
     });
     this.exampleBulkButton.hidden = true;
+<<<<<<< HEAD
     const resetCategories = button("リセット", () => {
       categoryPath = { largeId: "", mediumId: "", smallId: "" };
       search.value = "";
@@ -1417,12 +1676,19 @@ export class PromptEditor {
       categoryBands,
     ]);
     const controls = element("div", { className: "paio-example-controls" }, [search]);
+=======
+    const controls = element("div", { className: "paio-example-controls" }, [category, search]);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     const footer = element("div", { className: "paio-example-footer" }, [
       resultStatus,
       element("span", { className: "paio-hint", text: "Ctrl+クリックで複数選択" }),
       this.exampleBulkButton,
     ]);
+<<<<<<< HEAD
     panel.append(summary, navigation, controls, list, resizeHandle, footer);
+=======
+    panel.append(summary, controls, list, footer);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     redraw();
     return panel;
   }
@@ -1542,6 +1808,11 @@ export class PromptEditor {
       control.classList.toggle("is-active", active);
       control.setAttribute("aria-pressed", String(active));
     }
+<<<<<<< HEAD
+=======
+    const hasSelection = this.currentTags.some((tag) => tag.selected);
+    for (const control of this.translationSelectionButtons || []) control.disabled = !hasSelection;
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
   }
 
   renderBulk() {
@@ -1594,7 +1865,11 @@ export class PromptEditor {
     if (!rows.length) {
       const message = this.currentTags.length
         ? "検索・絞り込みに一致するタグはありません"
+<<<<<<< HEAD
         : "プロンプトがありません。上の本文へ入力するか、下のタグ追加から選んでください";
+=======
+        : "プロンプトがありません。上の本文へ入力するか、下の例から追加してください";
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       this.tagList.append(element("p", { className: "paio-empty", text: message }));
     } else if (rows.length > this.renderLimit) {
       this.tagList.append(button(`さらに表示（残り ${rows.length - this.renderLimit}）`, () => {
@@ -1628,7 +1903,11 @@ export class PromptEditor {
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
+<<<<<<< HEAD
     const stateMark = element("span", { className: "paio-state-mark", text: "" });
+=======
+    const stateMark = element("span", { className: "paio-state-mark", text: tag.enabled ? "" : "⊘" });
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     stateMark.setAttribute("aria-hidden", "true");
     const content = element("span", { className: "paio-tag-content" }, [
       element("span", { className: "paio-tag-label", text: primaryText }),
@@ -1761,6 +2040,7 @@ export class PromptEditor {
       control.setAttribute("role", "menuitem");
       return control;
     };
+<<<<<<< HEAD
     const title = element("strong", { className: "paio-context-title", text: tag.value || "空タグ" });
     const currentWeight = getTagWeight(tag.value);
     const weightInput = element("input", { className: "paio-context-weight-input" });
@@ -1818,18 +2098,32 @@ export class PromptEditor {
     menu.append(
       title,
       weightPanel,
+=======
+    menu.append(
+      element("strong", { className: "paio-context-title", text: tag.value || "空タグ" }),
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       action("編集", () => {
         const row = [...this.tagList.children].find((item) => item.dataset?.tagIndex === String(index));
         if (row) this.beginInlineEdit(row, tag, index);
       }),
+<<<<<<< HEAD
+=======
+      action("重みを上げる", () => this.weightOne(index, 1)),
+      action("重みを下げる", () => this.weightOne(index, -1)),
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       action("英語へ翻訳", () => this.translateIndexes([index], "en")),
       action("日本語へ翻訳", () => this.translateIndexes([index], this.settings.localLanguage)),
       action(tag.enabled ? "無効にする" : "有効にする", () => this.toggleOne(index)),
       action("コピー", async () => { await copyText(tag.value); this.setStatus("タグをコピーしました"); }),
       action("削除", () => this.deleteOne(index), "is-danger"),
     );
+<<<<<<< HEAD
     menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
     menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 420))}px`;
+=======
+    menu.style.left = `${Math.min(event.clientX, window.innerWidth - 210)}px`;
+    menu.style.top = `${Math.min(event.clientY, window.innerHeight - 330)}px`;
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     document.body.append(menu);
     this.contextMenu = menu;
     window.setTimeout(() => {
@@ -1893,7 +2187,11 @@ export class PromptEditor {
     this.render();
     if (this.settings.autoTranslate) {
       const indexes = target.map((tag, index) => ({ tag, index })).filter(({ tag }) => !cleanTranslation(tag.translation)).map(({ index }) => index);
+<<<<<<< HEAD
       this.translateIndexes(indexes, this.settings.localLanguage);
+=======
+      this.translateIndexes(indexes, "en", side);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
     }
   }
 
@@ -2033,13 +2331,21 @@ export class PromptEditor {
         const translated = cleanTranslation(result?.translated);
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
+<<<<<<< HEAD
         tag.translationError = translated ? "" : (result?.error || "翻訳結果が空でした");
+=======
+        tag.translationError = translated ? "" : "翻訳結果が空でした";
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
         tag.translationErrorTarget = translated ? "" : target;
         if (!translated) emptyCount += 1;
       });
       this.syncToWidgets();
       this.render();
+<<<<<<< HEAD
       if (emptyCount) this.setStatus(`${emptyCount}件の翻訳結果が空でした。翻訳ボタンから再試行できます`, true);
+=======
+      if (emptyCount) this.setStatus(`${emptyCount}件の翻訳結果が空でした。翻訳メニューから再試行できます`, true);
+>>>>>>> 6370d6dc927602ebddc0a04713de4d385119ea2d
       else this.setStatus("翻訳しました");
     } catch (error) {
       unique.forEach((index) => {
