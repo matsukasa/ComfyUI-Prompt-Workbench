@@ -2,16 +2,21 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  applySmartTranslationResult,
   appendPresentChildren,
   clampExampleListHeight,
   cleanTranslation,
   compactNodeWidgetLayout,
+  containsJapaneseText,
   containNodeContextMenu,
   filterExampleLibraryTags,
   getTagDisplayText,
   hideWidgetForGood,
   removeUnlinkedWidgetInput,
+  removeWidgetFromLayout,
+  replaceTagTextPreservingSyntax,
   resolveExampleCategoryPath,
+  translatableTagText,
   translationBatchTimeoutMs,
 } from "../web/prompt_editor.js";
 
@@ -51,7 +56,7 @@ test("native prompt widget is fully hidden but remains serializable", async () =
   assert.equal(widget.y, 0);
   assert.equal(widget.last_y, 0);
   assert.equal(widget.computedHeight, 0);
-  assert.equal(widget.type, "text");
+  assert.equal(widget.type, "converted-widget:prompt");
   assert.equal(widget.options.hidden, true);
   assert.equal(inputEl.style.display, "none");
   assert.equal(removed, true);
@@ -74,6 +79,19 @@ test("stale unlinked prompt input is removed without disconnecting linked inputs
   ]);
 });
 
+test("native prompt widget is detached from layout while the DOM widget keeps serialization", async () => {
+  const nativeWidget = { name: "prompt", value: "1girl" };
+  const domWidget = {
+    name: "prompt",
+    serialize: true,
+    serializeValue: async () => nativeWidget.value,
+  };
+  const node = { widgets: [nativeWidget, domWidget] };
+  assert.equal(removeWidgetFromLayout(node, nativeWidget), true);
+  assert.deepEqual(node.widgets, [domWidget]);
+  assert.equal(await node.widgets[0].serializeValue(), "1girl");
+});
+
 test("custom editor starts at the top of the node widget area", () => {
   const node = { widgets_start_y: 96 };
   compactNodeWidgetLayout(node);
@@ -82,9 +100,12 @@ test("custom editor starts at the top of the node widget area", () => {
 
 test("workflow reload reapplies the compact widget layout after configuration", () => {
   const source = readFileSync(new URL("../web/prompt_all_in_one.js", import.meta.url), "utf8");
+  const editorSource = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
   assert.match(source, /nodeType\.prototype\.onConfigure/u);
   assert.match(source, /queueMicrotask\(stabilize\)/u);
   assert.match(source, /requestAnimationFrame\(stabilize\)/u);
+  assert.match(editorSource, /addDOMWidget\("prompt", "div"/u);
+  assert.match(editorSource, /removeWidgetFromLayout\(this\.node, promptWidget\)/u);
 });
 
 test("tag context menu exposes the compact weight stepper", () => {
@@ -165,8 +186,12 @@ test("example tags display English prompt and Japanese translation together", ()
   const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
   assert.match(source, /paio-example-chip-prompt/u);
   assert.match(source, /paio-example-chip-translation/u);
+  assert.match(source, /className: "paio-example-chip-prompt", text: item\.prompt/u);
+  assert.doesNotMatch(source, /className: "paio-example-chip-prompt", text: [`'"]?[＋+]/u);
   assert.doesNotMatch(source, /投稿数:|エイリアス:/u);
   assert.match(css, /\.paio-example-chip\s*\{[^}]*flex-direction:\s*column;[^}]*align-items:\s*flex-start;[^}]*min-height:\s*44px;/su);
+  assert.match(css, /\.paio-example-chip-prompt\s*\{[^}]*color:\s*#f4f6f8;/su);
+  assert.match(css, /\.paio-example-chip-translation\s*\{[^}]*color:\s*#afc7e8;/su);
 });
 
 test("tag addition is an obvious disclosure and tag management is unified", () => {
@@ -213,6 +238,31 @@ test("large translation batches receive a longer bounded timeout", () => {
   assert.equal(translationBatchTimeoutMs(1), 12000);
   assert.equal(translationBatchTimeoutMs(40), 20000);
   assert.equal(translationBatchTimeoutMs(100), 30000);
+});
+
+test("single translation button replaces Japanese prompt tags and preserves weight syntax", () => {
+  const source = readFileSync(new URL("../web/prompt_editor.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/prompt_all_in_one.css", import.meta.url), "utf8");
+  assert.match(source, /this\.translateButton = button\("翻訳", \(\) => this\.translatePrompt\(\)/u);
+  assert.match(source, /this\.syncToWidgets\(\);[\s\S]*this\.render\(\);/u);
+  assert.doesNotMatch(source, /translationMenu|paio-translation-summary|選択タグを日本語へ|全タグを英語へ/u);
+  assert.match(css, /\.paio-translate-button\s*\{[^}]*margin-inline-start:\s*auto;/su);
+
+  assert.equal(containsJapaneseText("(背中:1.20)"), true);
+  assert.equal(containsJapaneseText("back"), false);
+  assert.equal(translatableTagText("(背中:1.20)"), "背中");
+  assert.equal(replaceTagTextPreservingSyntax("(背中:1.20)", "back"), "(back:1.20)");
+
+  const japaneseTag = { value: "(背中:1.20)", translation: "", translatedTo: "", type: "normal" };
+  assert.equal(applySmartTranslationResult(japaneseTag, "back", "en", "ja"), true);
+  assert.equal(japaneseTag.value, "(back:1.20)");
+  assert.equal(japaneseTag.translation, "背中");
+  assert.equal(japaneseTag.translatedTo, "ja");
+
+  const englishTag = { value: "1girl", translation: "", translatedTo: "", type: "normal" };
+  assert.equal(applySmartTranslationResult(englishTag, "1人の女の子", "ja", "ja"), true);
+  assert.equal(englishTag.value, "1girl");
+  assert.equal(englishTag.translation, "1人の女の子");
 });
 
 test("tag button never displays null tokens from a composite translation", () => {

@@ -80,6 +80,12 @@ class TranslationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(spaced, "振り返る")
         self.assertEqual(weighted, "ダイナミックな角度")
 
+    async def test_local_dictionary_translates_back_in_both_directions(self):
+        english, _ = await routes.translate_text("offline", "背中", target="en")
+        japanese, _ = await routes.translate_text("offline", "back", target="ja")
+        self.assertEqual(english, "back")
+        self.assertEqual(japanese, "背中")
+
     def test_free_translation_normalizes_prompt_tag_underscores(self):
         self.assertEqual(routes._mymemory_query("looking_at_viewer"), "looking at viewer")
 
