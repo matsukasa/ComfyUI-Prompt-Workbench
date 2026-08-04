@@ -1,7 +1,7 @@
 [project]
-name = "comfyui-prompt-all-in-one"
+name = "comfyui-prompt-workbench"
 version = "0.1.0"
-description = "Structured positive and negative prompt editor for ComfyUI"
+description = "Structured prompt workbench for ComfyUI"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

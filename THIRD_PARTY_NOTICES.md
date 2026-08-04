@@ -1,5 +1,24 @@
 # Third-party notices
 
+## qdlabs/danbooru-tags
+
+- Dataset: <https://huggingface.co/datasets/qdlabs/danbooru-tags>
+- License declared by the dataset card: Apache-2.0
+- Files used: `tags.parquet`, or `tags.jsonl` when no Parquet reader is available
+
+This dataset was used to prepare the bundled static tag-catalog snapshot.
+Raw source files and acquisition tools are not distributed with the node.
+
+## a1111-sd-webui-tagcomplete
+
+- Project: <https://github.com/DominikDoom/a1111-sd-webui-tagcomplete>
+- File used: `tags/danbooru.csv`
+- Audited main commit: `4170882f90b47be130a0ff9314f663c230b9153d`
+- License: MIT
+
+The TagComplete CSV was used only to supplement aliases in the bundled static
+snapshot. The CSV and its acquisition tools are not distributed with the node.
+
 ## sd-webui-prompt-all-in-one
 
 - Project: <https://github.com/Physton/sd-webui-prompt-all-in-one>
@@ -7,15 +26,20 @@
 - License: MIT
 - Copyright: Copyright (c) 2023 Physton
 
-The following source data was adapted:
+The following source data remains as the local compatibility fallback:
 
-- `group_tags/ja_JP.yaml` -> `data/prompt_examples.json`
-- selected English/Japanese tag pairs -> `data/translations.json`
+- `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
+  entries in `data/prompt_examples.json`; the 62-entry
+  `人物 / 二次元キャラクター` group is intentionally excluded
+- selected English/Japanese tag pairs -> the offline translation helper in
+  `data/translations.json`
 
-The data was converted to a smaller JSON schema, category labels were
-normalized for the ComfyUI editor, and unsafe or adult-oriented entries were
-not included in the starter set. No JavaScript, Vue, CSS, icon, Python
-translator, history or favorite implementation was copied.
+The prompt-group data was converted to JSON and second-level groups were
+flattened into bilingual categories for the ComfyUI editor. Entries retain the
+upstream order, grouping and translations. The single group named above is the
+only content exclusion.
+No JavaScript, Vue, CSS, icon, Python translator, history or favorite
+implementation was copied.
 
 The upstream MIT license follows:
 

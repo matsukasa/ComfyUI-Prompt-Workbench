@@ -5,28 +5,23 @@ class PromptAllInOne:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "positive_prompt": (
-                    "STRING",
-                    {"default": "", "multiline": True, "dynamicPrompts": True},
-                ),
-                "negative_prompt": (
+                "prompt": (
                     "STRING",
                     {"default": "", "multiline": True, "dynamicPrompts": True},
                 ),
             }
         }
 
-    RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("positive", "negative")
-    FUNCTION = "emit_prompts"
-    CATEGORY = "prompt/Prompt All-in-One"
-    DESCRIPTION = "Edit positive and negative prompts as structured tags."
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("prompt",)
+    FUNCTION = "emit_prompt"
+    CATEGORY = "prompt/Prompt Workbench"
+    DESCRIPTION = "Edit one prompt as structured tags and pass it through as STRING."
 
-    def emit_prompts(self, positive_prompt="", negative_prompt=""):
-        positive = "" if positive_prompt is None else str(positive_prompt)
-        negative = "" if negative_prompt is None else str(negative_prompt)
-        return (positive, negative)
+    def emit_prompt(self, prompt=""):
+        value = "" if prompt is None else str(prompt)
+        return (value,)
 
 
 NODE_CLASS_MAPPINGS = {"PromptAllInOne": PromptAllInOne}
-NODE_DISPLAY_NAME_MAPPINGS = {"PromptAllInOne": "Prompt All-in-One"}
+NODE_DISPLAY_NAME_MAPPINGS = {"PromptAllInOne": "Prompt Workbench"}
