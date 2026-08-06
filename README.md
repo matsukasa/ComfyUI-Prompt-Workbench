@@ -5,13 +5,11 @@
 並べ替え・無効化・重み調整・翻訳・検索などの編集UIを追加します。
 
 > [!IMPORTANT]
-> 本プロジェクトは `sd-webui-prompt-all-in-one` の作者によるComfyUI版では
-> ありません。ユーザー体験を調査し、ComfyUI向けに独立して再設計したものです。
-
-## スクリーンショット
-
-スクリーンショットはまだ収録していません。ComfyUI実機での最終確認後、
-`docs/images/prompt-all-in-one.png` へ追加する予定です。
+> 本プロジェクトは、[Physton氏](https://github.com/Physton)が開発した
+> [sd-webui-prompt-all-in-one](https://github.com/Physton/sd-webui-prompt-all-in-one)の
+> 公式ComfyUI版ではありません。直感的で強力なプロンプト編集体験を公開してくださった
+> Physton氏に、心より感謝いたします。そのユーザー体験を調査し、ComfyUI向けに独立して
+> 再設計したものです。
 
 ## 主な機能
 
@@ -35,6 +33,22 @@
 
 プロンプト履歴、お気に入り、お気に入りフォルダ、それらの保存データやUIは
 意図的に実装していません。
+
+## タグカタログエディター
+
+タグや大・中・小分類を直感的に編集できる専用のローカルWebアプリ
+[ComfyUI Prompt Workbench Tag Editor](https://github.com/matsukasa/ComfyUI-Prompt-Workbench-Tag-Editor)
+も用意しています。タグのドラッグ移動・並べ替え、分類名やタグ名の直接編集、複数選択、
+Undo／Redo、検索、重複検出、変更内容の確認、上書き・別名保存に対応しています。
+
+このPCでは、次の隣接フォルダにあります。
+
+```text
+D:\自作ComfyUIカスタムノード\ComfyUI-Prompt-Workbench-Tag-Editor
+```
+
+`start-dev.bat`をダブルクリックすると起動できます。ComfyUI本体とは独立して動作するため、
+ComfyUIを起動していなくても`data/tag_catalog.json`などの対応JSONを開いて編集できます。
 
 ## インストール
 
