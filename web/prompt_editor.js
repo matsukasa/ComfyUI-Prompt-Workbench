@@ -1763,6 +1763,7 @@ export class PromptEditor {
     };
     const title = element("strong", { className: "paio-context-title", text: tag.value || "空タグ" });
     const currentWeight = getTagWeight(tag.value);
+    const weightLabel = tag.type === "lora" ? "LoRA強度" : tag.type === "lycoris" ? "LyCORIS強度" : "重み";
     const weightInput = element("input", { className: "paio-context-weight-input" });
     weightInput.type = "number";
     weightInput.min = String(this.settings.weightMin);
@@ -1771,7 +1772,7 @@ export class PromptEditor {
     weightInput.value = currentWeight === null ? "" : currentWeight.toFixed(2);
     weightInput.inputMode = "decimal";
     weightInput.disabled = currentWeight === null;
-    weightInput.setAttribute("aria-label", "タグの重み");
+    weightInput.setAttribute("aria-label", weightLabel);
     const applyWeight = (requestedWeight) => {
       const appliedWeight = this.setWeightOne(index, requestedWeight);
       if (appliedWeight === null) return;
@@ -1795,13 +1796,13 @@ export class PromptEditor {
     const weightPanel = element("div", { className: "paio-context-weight" }, [
       element("span", {
         className: "paio-context-weight-label",
-        text: currentWeight === null ? "重み（タグ編集で変更）" : `重み・刻み ${this.settings.weightStep}`,
+        text: currentWeight === null ? `${weightLabel}（タグ編集で変更）` : `${weightLabel}・刻み ${this.settings.weightStep}`,
       }),
       weightControls,
       resetWeight,
     ]);
     weightPanel.setAttribute("role", "group");
-    weightPanel.setAttribute("aria-label", "重みを変更");
+    weightPanel.setAttribute("aria-label", `${weightLabel}を変更`);
     weightInput.addEventListener("change", () => {
       const requestedWeight = weightInput.valueAsNumber;
       if (Number.isFinite(requestedWeight)) applyWeight(requestedWeight);

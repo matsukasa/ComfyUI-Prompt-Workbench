@@ -210,23 +210,40 @@ export function parseExplicitWeight(value) {
   };
 }
 
+export function parseAdapterStrength(value) {
+  const text = String(value || "").trim();
+  const match = text.match(/^<(lora|lyco):([^:<>]+):\s*(\d+(?:\.\d+)?)>$/iu);
+  if (!match || !match[2].trim()) return null;
+  return {
+    type: match[1],
+    name: match[2],
+    weight: Number(match[3]),
+  };
+}
+
 function roundWeight(value) {
   return Number(Number(value).toFixed(2));
 }
 
 export function getTagWeight(value) {
   const text = String(value || "").trim();
-  if (!text || /^<(lora|lyco):/i.test(text)) return null;
+  if (!text) return null;
+  const adapter = parseAdapterStrength(text);
+  if (adapter) return adapter.weight;
+  if (/^<(lora|lyco):/i.test(text)) return null;
   return parseExplicitWeight(text)?.weight ?? 1;
 }
 
 export function setTagWeight(value, weight, min = 0.05, max = 2) {
   const text = String(value || "").trim();
-  if (!text || /^<(lora|lyco):/i.test(text)) return text;
+  if (!text) return text;
   const numericWeight = Number(weight);
   if (!Number.isFinite(numericWeight)) return text;
-  const parsed = parseExplicitWeight(text);
   const next = Math.min(max, Math.max(min, roundWeight(numericWeight)));
+  const adapter = parseAdapterStrength(text);
+  if (adapter) return `<${adapter.type}:${adapter.name}:${next.toFixed(2)}>`;
+  if (/^<(lora|lyco):/i.test(text)) return text;
+  const parsed = parseExplicitWeight(text);
   if (next === 1) return parsed ? parsed.body.trim() : text;
   const formatted = next.toFixed(2);
   if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;
@@ -235,11 +252,14 @@ export function setTagWeight(value, weight, min = 0.05, max = 2) {
 
 export function adjustTagWeight(value, delta, min = 0.05, max = 2) {
   const text = String(value || "").trim();
-  if (!text || /^<(lora|lyco):/i.test(text)) return text;
+  if (!text) return text;
+  const adapter = parseAdapterStrength(text);
+  if (!adapter && /^<(lora|lyco):/i.test(text)) return text;
   const parsed = parseExplicitWeight(text);
-  const current = parsed ? parsed.weight : 1;
+  const current = adapter?.weight ?? (parsed ? parsed.weight : 1);
   const next = Math.min(max, Math.max(min, roundWeight(current + Number(delta || 0))));
   const formatted = next.toFixed(2);
+  if (adapter) return `<${adapter.type}:${adapter.name}:${formatted}>`;
   if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;
   return `(${text}:${formatted})`;
 }
