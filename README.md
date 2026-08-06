@@ -182,15 +182,6 @@ OSのファイル選択画面が開き、選択したJSONを検証してComfyUI�
 - 翻訳URLはサーバー管理者が設定したHTTP(S)環境変数だけを使用
 - `eval`、`new Function`、任意コード実行機構は不使用
 
-## テスト
-
-```powershell
-npm.cmd test
-python -m unittest discover -s tests -p 'test_*.py' -v
-```
-
-Node.jsは本体の実行には不要で、JavaScriptテストを実行するときだけ必要です。
-
 ## 既知の制限
 
 - ComfyUIのモデル一覧形式は構成により異なります。取得に失敗しても編集は使えますが、

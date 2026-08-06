@@ -1,3 +1,19 @@
 .cache/
 __pycache__/
 user_data/
+
+# Local development and promotional material
+/artifacts/
+/promotion/
+/tests/
+/DESIGN.md
+/PRODUCT.md
+/SOURCE_AUDIT.md
+/design-qa.md
+/docs/architecture.md
+/docs/manual-test-checklist.md
+/docs/source-mapping.md
+/package.json
+/scripts/convert_prompt_examples.py
+/data/prompt_examples_20??????_??????.json
+**/chrome-profile*/
