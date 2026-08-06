@@ -31,21 +31,12 @@
 - TXT / 状態JSONのインポート・エクスポート（1 MB上限）
 - ComfyUIのライト / ダークテーマ追従とタグ種別ごとの色設定
 
-プロンプト履歴、お気に入り、お気に入りフォルダ、それらの保存データやUIは
-意図的に実装していません。
-
 ## タグカタログエディター
 
 タグや大・中・小分類を直感的に編集できる専用のローカルWebアプリ
 [ComfyUI Prompt Workbench Tag Editor](https://github.com/matsukasa/ComfyUI-Prompt-Workbench-Tag-Editor)
 も用意しています。タグのドラッグ移動・並べ替え、分類名やタグ名の直接編集、複数選択、
 Undo／Redo、検索、重複検出、変更内容の確認、上書き・別名保存に対応しています。
-
-このPCでは、次の隣接フォルダにあります。
-
-```text
-D:\自作ComfyUIカスタムノード\ComfyUI-Prompt-Workbench-Tag-Editor
-```
 
 `start-dev.bat`をダブルクリックすると起動できます。ComfyUI本体とは独立して動作するため、
 ComfyUIを起動していなくても`data/tag_catalog.json`などの対応JSONを開いて編集できます。
