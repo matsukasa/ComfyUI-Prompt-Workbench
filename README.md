@@ -45,6 +45,21 @@ ComfyUIを起動していなくても`data/tag_catalog.json`などの対応JSON�
 
 ## インストール
 
+### ComfyUI Managerから（推奨）
+
+1. ComfyUIを起動し、`Manager`を開きます。
+2. `Custom Nodes Manager`を開きます。
+3. `ComfyUI Prompt Workbench`または`prompt-workbench`を検索します。
+4. 検索結果の`Install`を押します。
+5. インストール完了後、ComfyUIを再起動します。
+
+通常はComfyUI Managerからのインストールを推奨します。ただし、開発中の変更を含む最新版は
+[GitHubの`main`ブランチ](https://github.com/matsukasa/ComfyUI-Prompt-Workbench)です。
+Manager版はRegistryへの反映により、GitHub版より更新が遅れる場合があります。
+
+Registryの公開ページは[ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench)です。
+追加依存関係はありません。
+
 ### 通常のComfyUI
 
 このフォルダを次の位置へ配置し、ComfyUIを再起動します。
@@ -73,12 +88,6 @@ ComfyUI_windows_portable/ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/
 4. Stability MatrixからComfyUIを再起動します。
 
 Packageごとに`custom_nodes`が分かれるため、実際に起動するPackageへ入れてください。
-
-### ComfyUI Manager登録前の手動インストール
-
-まだManagerレジストリへ登録していません。公開Git URLがある場合は
-`custom_nodes`でcloneし、ない場合はフォルダを手動コピーしてください。
-`requirements.txt`の追加インストールは不要です。
 
 ## 使い方
 

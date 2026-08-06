@@ -50,6 +50,23 @@ ComfyUI.
 
 ## Installation
 
+### ComfyUI Manager (recommended)
+
+1. Start ComfyUI and open `Manager`.
+2. Open `Custom Nodes Manager`.
+3. Search for `ComfyUI Prompt Workbench` or `prompt-workbench`.
+4. Select `Install` in the search result.
+5. Restart ComfyUI after the installation completes.
+
+Installation through ComfyUI Manager is recommended for normal use. However, the latest version,
+including changes still under development, is available from the
+[`main` branch on GitHub](https://github.com/matsukasa/ComfyUI-Prompt-Workbench). Registry updates
+may appear in ComfyUI Manager later than the GitHub version.
+
+The Registry listing is available at
+[ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench). No additional
+dependencies are required.
+
 ### Standard ComfyUI
 
 Place this folder at the following location, then restart ComfyUI:
@@ -79,12 +96,6 @@ Then restart ComfyUI using your usual launcher, such as `run_nvidia_gpu.bat`.
 4. Restart ComfyUI from Stability Matrix.
 
 Each package has its own `custom_nodes` directory, so install it into the package you actually run.
-
-### Manual installation before ComfyUI Manager registration
-
-This node is not yet registered with the Manager registry. If a public Git URL is available, clone
-it under `custom_nodes`; otherwise copy the folder manually. No additional installation from
-`requirements.txt` is required.
 
 ## Usage
 
