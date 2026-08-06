@@ -1,5 +1,16 @@
+import re
+
+
+def normalize_output_prompt(prompt):
+    value = "" if prompt is None else str(prompt)
+    value = re.sub(r"[ \t]*,?[ \t]*(?:\r\n|\r|\n)+[ \t]*", ", ", value).strip()
+    value = re.sub(r"^(?:,\s*)+", "", value)
+    value = re.sub(r"(?:,\s*)+$", "", value).rstrip()
+    return f"{value}," if value else ""
+
+
 class PromptWorkbench:
-    """Headless-safe STRING pass-through for the browser prompt editor."""
+    """Normalize the edited prompt before passing it to the next node."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -16,11 +27,10 @@ class PromptWorkbench:
     RETURN_NAMES = ("prompt",)
     FUNCTION = "emit_prompt"
     CATEGORY = "prompt/Prompt Workbench"
-    DESCRIPTION = "Edit one prompt as structured tags and pass it through as STRING."
+    DESCRIPTION = "Edit structured tags and pass a flat, comma-terminated prompt as STRING."
 
     def emit_prompt(self, prompt=""):
-        value = "" if prompt is None else str(prompt)
-        return (value,)
+        return (normalize_output_prompt(prompt),)
 
 
 NODE_CLASS_MAPPINGS = {"PromptWorkbench": PromptWorkbench}
