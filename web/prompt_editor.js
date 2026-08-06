@@ -1346,8 +1346,15 @@ export class PromptEditor {
     const selected = new Set();
     let library = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
+    const categoryScrollPositions = new Map();
     let renderLimit = INITIAL_EXAMPLE_LIMIT;
     const selectCategory = (level, id) => {
+      if (level === "large") {
+        categoryScrollPositions.delete("medium");
+        categoryScrollPositions.delete("small");
+      } else if (level === "medium") {
+        categoryScrollPositions.delete("small");
+      }
       categoryPath = {
         largeId: level === "large" ? id : categoryPath.largeId,
         mediumId: level === "medium" ? id : (level === "large" ? "" : categoryPath.mediumId),
@@ -1365,6 +1372,9 @@ export class PromptEditor {
       ];
       for (const [level, label, options, activeId] of definitions) {
         const chips = element("div", { className: "paio-example-category-chips" });
+        chips.addEventListener("scroll", () => {
+          categoryScrollPositions.set(level, { left: chips.scrollLeft, top: chips.scrollTop });
+        }, { passive: true });
         for (const category of options) {
           const chip = button(category.ja || category.en, () => selectCategory(level, category.id), category.en || category.ja);
           chip.classList.add("paio-example-category-chip", `is-${level}`);
@@ -1373,6 +1383,11 @@ export class PromptEditor {
           chips.append(chip);
         }
         if (!options.length) chips.append(element("span", { className: "paio-hint", text: t("分類がありません") }));
+        const scrollPosition = categoryScrollPositions.get(level);
+        if (scrollPosition) {
+          chips.scrollLeft = scrollPosition.left;
+          chips.scrollTop = scrollPosition.top;
+        }
         categoryBands.append(element("div", { className: `paio-example-category-band is-${level}` }, [
           element("strong", { className: "paio-example-category-label", text: t(label) }),
           chips,
