@@ -11,6 +11,7 @@ import {
   outputPrompt,
   parseExplicitWeight,
   parsePrompt,
+  serializeEditorPrompt,
   serializePrompt,
   setTagWeight,
 } from "./prompt_parser.js";
@@ -370,6 +371,10 @@ export function clampExampleListHeight(value) {
   return Math.min(MAX_EXAMPLE_LIST_HEIGHT, Math.max(MIN_EXAMPLE_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_EXAMPLE_LIST_HEIGHT)));
 }
 
+export function tagsWithoutTrailingPlaceholder(parsed) {
+  return [...(parsed?.tags || [])].filter((tag) => String(tag?.value || "").trim());
+}
+
 export class PromptEditor {
   constructor(node, widgets, api) {
     this.node = node;
@@ -387,6 +392,7 @@ export class PromptEditor {
     this.clickTimer = null;
     this.renderLimit = MAX_RENDERED_TAGS;
     this.promptDirty = false;
+    this.trailingSeparator = false;
     this.contextMenu = null;
     this.modelRegistry = { loras: null, embeddings: null };
     this.syncing = false;
@@ -407,13 +413,16 @@ export class PromptEditor {
   }
 
   promptEditorValue() {
-    return serializePrompt(this.tags, { includeDisabled: true });
+    return serializeEditorPrompt(this.tags, {
+      includeDisabled: true,
+      trailingSeparator: this.trailingSeparator,
+    });
   }
 
   snapshot() {
     return typeof structuredClone === "function"
-      ? structuredClone({ tags: this.tags, settings: this.settings })
-      : JSON.parse(JSON.stringify({ tags: this.tags, settings: this.settings }));
+      ? structuredClone({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator })
+      : JSON.parse(JSON.stringify({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator }));
   }
 
   pushUndo() {
@@ -425,6 +434,7 @@ export class PromptEditor {
   restoreSnapshot(snapshot) {
     this.tags = snapshot.tags;
     this.settings = snapshot.settings;
+    this.trailingSeparator = Boolean(snapshot.trailingSeparator);
     this.promptDirty = false;
     this.syncToWidgets();
     this.render();
@@ -446,15 +456,20 @@ export class PromptEditor {
 
   restore() {
     const widgetValue = String(this.widgets.prompt?.value || "");
+    const parsedWidget = parsePrompt(widgetValue);
+    this.trailingSeparator = parsedWidget.trailingSeparator;
     const saved = this.node.properties?.[STATE_KEY];
     if (saved?.version === 1) {
       const state = sanitizeEditorState(saved);
       this.settings = state.settings;
       this.tags = state.tags.map((tag) => createTag(tag.value, tag));
-      const savedValue = outputPrompt(this.tags, this.settings.outputLanguage);
-      if (widgetValue !== savedValue) this.tags = parsePrompt(widgetValue).tags;
+      const savedValue = outputPrompt(this.tags, this.settings.outputLanguage, {
+        trailingSeparator: true,
+        stripLineBreaks: true,
+      });
+      if (widgetValue !== savedValue) this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
     } else {
-      this.tags = parsePrompt(widgetValue).tags;
+      this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
     }
     this.lastWidgetValue = widgetValue;
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
@@ -472,7 +487,10 @@ export class PromptEditor {
 
   syncToWidgets() {
     this.syncing = true;
-    const value = outputPrompt(this.tags, this.settings.outputLanguage);
+    const value = outputPrompt(this.tags, this.settings.outputLanguage, {
+      trailingSeparator: true,
+      stripLineBreaks: true,
+    });
     const widget = this.widgets.prompt;
     if (widget && widget.value !== value) {
       widget.value = value;
@@ -492,7 +510,9 @@ export class PromptEditor {
     const value = String(this.widgets.prompt?.value || "");
     const changed = value !== this.lastWidgetValue;
     if (changed) {
-      this.tags = parsePrompt(value, this.tags).tags;
+      const parsed = parsePrompt(value, this.tags);
+      this.tags = tagsWithoutTrailingPlaceholder(parsed);
+      this.trailingSeparator = parsed.trailingSeparator;
       this.lastWidgetValue = value;
     }
     if (changed) {
@@ -1390,7 +1410,10 @@ export class PromptEditor {
             return;
           }
           this.pushUndo();
-          this.addValues([{ value: item.prompt, translation: translation, translatedTo: translation ? this.settings.localLanguage : "" }]);
+          this.addValues(
+            [{ value: item.prompt, translation: translation, translatedTo: translation ? this.settings.localLanguage : "" }],
+            { trailingSeparator: true },
+          );
           this.setStatus(t("{tag} を追加しました", { tag: item.prompt }));
         }, [
           translation ? `${item.prompt} — ${translation}` : item.prompt,
@@ -1432,11 +1455,14 @@ export class PromptEditor {
     this.exampleBulkButton = button(t("選択した{count}件を追加", { count: 0 }), () => {
       if (!selected.size) return;
       this.pushUndo();
-      this.addValues([...selected].map((prompt) => {
-        const item = library?.tags.find((tag) => tag.prompt === prompt);
-        const translation = cleanTranslation(item?.ja);
-        return { value: prompt, translation, translatedTo: translation ? this.settings.localLanguage : "" };
-      }));
+      this.addValues(
+        [...selected].map((prompt) => {
+          const item = library?.tags.find((tag) => tag.prompt === prompt);
+          const translation = cleanTranslation(item?.ja);
+          return { value: prompt, translation, translatedTo: translation ? this.settings.localLanguage : "" };
+        }),
+        { trailingSeparator: true },
+      );
       selected.clear();
       redraw();
       this.setStatus(t("内蔵例を追加しました"));
@@ -1532,7 +1558,7 @@ export class PromptEditor {
       button(t("プロンプトをコピー"), () => this.copyPrompt()),
       button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
       button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
-      button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage), "text/plain;charset=utf-8")),
+      button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage, { trailingSeparator: true, stripLineBreaks: true }), "text/plain;charset=utf-8")),
       button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
@@ -1559,7 +1585,8 @@ export class PromptEditor {
     if (!this.promptTextarea || !this.promptDirty) return;
     this.pushUndo();
     const parsed = parsePrompt(this.promptTextarea.value, this.currentTags);
-    this.tags = parsed.tags;
+    this.tags = tagsWithoutTrailingPlaceholder(parsed);
+    this.trailingSeparator = parsed.trailingSeparator;
     this.promptDirty = false;
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
     this.syncToWidgets();
@@ -1909,7 +1936,7 @@ export class PromptEditor {
     else this.setStatus(t("タグを追加しました"));
   }
 
-  addValues(values) {
+  addValues(values, options = {}) {
     this.commitPromptBeforeAction();
     const target = this.tags;
     for (const raw of values) {
@@ -1934,6 +1961,9 @@ export class PromptEditor {
         translation,
         translatedTo: translation ? (descriptor.translatedTo || this.settings.localLanguage) : "",
       }));
+    }
+    if (options.trailingSeparator !== undefined) {
+      this.trailingSeparator = Boolean(options.trailingSeparator);
     }
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
     this.syncToWidgets();
@@ -2223,7 +2253,7 @@ export class PromptEditor {
   }
 
   async copyPrompt() {
-    await copyText(outputPrompt(this.tags, this.settings.outputLanguage));
+    await copyText(outputPrompt(this.tags, this.settings.outputLanguage, { trailingSeparator: true, stripLineBreaks: true }));
     this.setStatus(t("プロンプトをコピーしました"));
   }
 

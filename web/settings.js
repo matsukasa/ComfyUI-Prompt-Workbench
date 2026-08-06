@@ -85,6 +85,7 @@ function sanitizeTag(tag) {
     translation: translation.slice(0, 10000),
     translatedTo: String(tag?.translatedTo || "").slice(0, 16),
     type: String(tag?.type || "normal").slice(0, 32),
+    lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(tag?.lineBreakAfter) || 0))),
   };
 }
 

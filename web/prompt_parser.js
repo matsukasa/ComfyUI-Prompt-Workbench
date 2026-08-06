@@ -38,6 +38,7 @@ export function createTag(raw, overrides = {}) {
     translationError: String(overrides.translationError || ""),
     translationErrorTarget: String(overrides.translationErrorTarget || ""),
     type: overrides.type || classifyTag(value),
+    lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(overrides.lineBreakAfter) || 0))),
     missingModel: Boolean(overrides.missingModel),
     blacklistMatch: Boolean(overrides.blacklistMatch),
   };
@@ -45,9 +46,10 @@ export function createTag(raw, overrides = {}) {
 
 export function splitPrompt(text) {
   const input = String(text ?? "");
-  if (!input.length) return { values: [], errors: [], trailingSeparator: false };
+  if (!input.length) return { values: [], separators: [], errors: [], trailingSeparator: false };
 
   const values = [];
+  const separators = [];
   const errors = [];
   const stack = [];
   let buffer = "";
@@ -55,8 +57,9 @@ export function splitPrompt(text) {
   let escaped = false;
   let lastWasSeparator = false;
 
-  const push = () => {
+  const push = (separator) => {
     values.push(buffer.trim());
+    separators.push(separator);
     buffer = "";
     lastWasSeparator = true;
   };
@@ -106,7 +109,7 @@ export function splitPrompt(text) {
     }
     if (([",", "，", "、", "；", "。", "．", "\n", "\r"].includes(character)) && stack.length === 0) {
       if (character === "\r" && input[index + 1] === "\n") index += 1;
-      push();
+      push(character === "\r" ? "\n" : character);
       continue;
     }
     buffer += character;
@@ -119,21 +122,32 @@ export function splitPrompt(text) {
     errors.push({ index: input.length, message: `Unclosed bracket: ${open}` });
   }
 
-  if (buffer.length || lastWasSeparator) values.push(buffer.trim());
-  return { values, errors, trailingSeparator: lastWasSeparator };
+  if (buffer.length || lastWasSeparator) {
+    values.push(buffer.trim());
+    separators.push("");
+  }
+  return { values, separators, errors, trailingSeparator: lastWasSeparator };
 }
 
 export function parsePrompt(text, previousTags = []) {
   const parsed = splitPrompt(text);
+  const lineBreaksAfter = new Array(parsed.values.length).fill(0);
+  let lastNonEmptyIndex = -1;
+  for (const [index, value] of parsed.values.entries()) {
+    if (String(value).trim()) lastNonEmptyIndex = index;
+    if (parsed.separators[index] === "\n" && lastNonEmptyIndex >= 0) {
+      lineBreaksAfter[lastNonEmptyIndex] += 1;
+    }
+  }
   const reusable = new Map();
   for (const tag of previousTags) {
     const key = tag.value;
     if (!reusable.has(key)) reusable.set(key, []);
     reusable.get(key).push(tag);
   }
-  const tags = parsed.values.map((value) => {
+  const tags = parsed.values.map((value, index) => {
     const old = reusable.get(value)?.shift();
-    return createTag(value, old || {});
+    return createTag(value, { ...(old || {}), lineBreakAfter: lineBreaksAfter[index] });
   });
   return { tags, errors: parsed.errors, trailingSeparator: parsed.trailingSeparator };
 }
@@ -141,14 +155,43 @@ export function parsePrompt(text, previousTags = []) {
 export function serializePrompt(tags, options = {}) {
   const includeDisabled = Boolean(options.includeDisabled);
   const preserveEmpty = Boolean(options.preserveEmpty);
-  return (tags || [])
+  const value = (tags || [])
     .filter((tag) => includeDisabled || tag.enabled !== false)
-    .map((tag) => String(tag.value ?? "").trim())
+    .map((tag) => {
+      const value = String(tag.value ?? "").trim();
+      return options.stripLineBreaks ? value.replace(/[\r\n]+/gu, " ") : value;
+    })
     .filter((value) => preserveEmpty || value.length > 0)
     .join(", ");
+  return value && options.trailingSeparator ? `${value},` : value;
 }
 
-export function outputPrompt(tags, outputLanguage = "en") {
+export function serializeEditorPrompt(tags, options = {}) {
+  const includeDisabled = Boolean(options.includeDisabled);
+  const entries = (tags || [])
+    .filter((tag) => includeDisabled || tag.enabled !== false)
+    .map((tag) => ({
+      value: String(tag.value ?? "").trim(),
+      lineBreakAfter: Math.max(0, Math.floor(Number(tag.lineBreakAfter) || 0)),
+    }))
+    .filter((entry) => entry.value.length > 0);
+  let result = "";
+  for (const [index, entry] of entries.entries()) {
+    const isLast = index === entries.length - 1;
+    result += entry.value;
+    if (entry.lineBreakAfter > 0) {
+      if (!isLast || options.trailingSeparator) result += ",";
+      result += "\n".repeat(entry.lineBreakAfter);
+    } else if (!isLast) {
+      result += ", ";
+    } else if (options.trailingSeparator) {
+      result += ",";
+    }
+  }
+  return result;
+}
+
+export function outputPrompt(tags, outputLanguage = "en", options = {}) {
   return serializePrompt(
     (tags || []).map((tag) => ({
       ...tag,
@@ -157,6 +200,7 @@ export function outputPrompt(tags, outputLanguage = "en") {
           ? normalizeTranslationText(tag.translation)
           : tag.value,
     })),
+    options,
   );
 }
 
