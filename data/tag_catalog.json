@@ -29,11 +29,11 @@
       "medium_categories": [
         {
           "id": "legacy_medium:01:subject_composition",
-          "label_ja": "人数構成",
+          "label_ja": "人数・職業・年齢",
           "small_categories": [
             {
               "id": "legacy_small:01-001",
-              "label_ja": "キャラクター",
+              "label_ja": "人数・人物タイプ",
               "tags": [
                 {
                   "id": 470575,
@@ -128,6 +128,15 @@
                   "translation_ja": "一人"
                 },
                 {
+                  "id": "legacy:4010759cf847ac7b",
+                  "name": "little_girl",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "小さな女の子",
+                  "rank": 11
+                },
+                {
                   "id": 566835,
                   "name": "multiple_girls",
                   "post_count": 1740003,
@@ -136,15 +145,6 @@
                   ],
                   "rank": 10,
                   "translation_ja": "複数の女の子"
-                },
-                {
-                  "id": "legacy:4010759cf847ac7b",
-                  "name": "little_girl",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "小さな女の子",
-                  "rank": 11
                 },
                 {
                   "id": "legacy:2a61ce91e2622976",
@@ -319,7 +319,7 @@
             },
             {
               "id": "legacy_small:01-002",
-              "label_ja": "身分",
+              "label_ja": "職業・役柄",
               "tags": [
                 {
                   "id": "legacy:12f4bf417a5e2aa0",
@@ -1008,11 +1008,11 @@
         },
         {
           "id": "legacy_medium:01:subject_type",
-          "label_ja": "主体属性",
+          "label_ja": "肌・翼",
           "small_categories": [
             {
               "id": "legacy_small:01-005",
-              "label_ja": "皮膚",
+              "label_ja": "肌の色・状態",
               "tags": [
                 {
                   "id": 391297,
@@ -1328,7 +1328,7 @@
           "small_categories": [
             {
               "id": "legacy_small:01-006",
-              "label_ja": "体型",
+              "label_ja": "体型・身長",
               "tags": [
                 {
                   "id": "legacy:689b8c7e6ce0d7e3",
@@ -1451,7 +1451,7 @@
         },
         {
           "id": "legacy_medium:01:facial_features",
-          "label_ja": "顔",
+          "label_ja": "顔・目・口",
           "small_categories": [
             {
               "id": "legacy_small:01-007",
@@ -1551,7 +1551,7 @@
             },
             {
               "id": "legacy_small:01-009",
-              "label_ja": "顔",
+              "label_ja": "メイク・顔の特徴",
               "tags": [
                 {
                   "id": 9312,
@@ -2765,7 +2765,7 @@
             },
             {
               "id": "legacy_small:01-013",
-              "label_ja": "瞳孔",
+              "label_ja": "瞳・瞳孔",
               "tags": [
                 {
                   "id": "legacy:3d005778d4d28e93",
@@ -3524,7 +3524,7 @@
             },
             {
               "id": "legacy_small:01-016",
-              "label_ja": "歯",
+              "label_ja": "歯・牙",
               "tags": [
                 {
                   "id": 6054,
@@ -3676,7 +3676,7 @@
             },
             {
               "id": "legacy_small:01-017",
-              "label_ja": "舌",
+              "label_ja": "舌・口内",
               "tags": [
                 {
                   "id": "legacy:d9cc1aaf88e557d6",
@@ -3756,11 +3756,11 @@
         },
         {
           "id": "legacy_medium:01:hair",
-          "label_ja": "髪",
+          "label_ja": "髪型・髪色",
           "small_categories": [
             {
               "id": "legacy_small:01-008",
-              "label_ja": "髪の毛",
+              "label_ja": "髪型・髪色・髪質",
               "tags": [
                 {
                   "id": "legacy:a4bbb39e35cab9ee",
@@ -4406,11 +4406,11 @@
         },
         {
           "id": "legacy_medium:01:body_parts",
-          "label_ja": "身体部位",
+          "label_ja": "身体の部位",
           "small_categories": [
             {
               "id": "legacy_small:01-018",
-              "label_ja": "爪",
+              "label_ja": "爪・ネイル",
               "tags": [
                 {
                   "id": "legacy:16047412a5bfb7d9",
@@ -4524,7 +4524,7 @@
             },
             {
               "id": "legacy_small:01-019",
-              "label_ja": "肩",
+              "label_ja": "肩・鎖骨・脇",
               "tags": [
                 {
                   "id": "legacy:631d099b149327f6",
@@ -4568,7 +4568,7 @@
             },
             {
               "id": "legacy_small:01-020",
-              "label_ja": "胸部",
+              "label_ja": "胸・胸の形",
               "tags": [
                 {
                   "id": "legacy:be3ee18195b6baa6",
@@ -4718,7 +4718,7 @@
             },
             {
               "id": "legacy_small:01-021",
-              "label_ja": "腰",
+              "label_ja": "腰回り",
               "tags": [
                 {
                   "id": "legacy:0f604bf6a249d70d",
@@ -4742,7 +4742,7 @@
             },
             {
               "id": "legacy_small:01-022",
-              "label_ja": "腹部",
+              "label_ja": "お腹・へそ",
               "tags": [
                 {
                   "id": 9843,
@@ -4803,11 +4803,11 @@
         },
         {
           "id": "legacy_medium:01:official:body_build",
-          "label_ja": "体格",
+          "label_ja": "肌の色・傷・ほくろ",
           "small_categories": [
             {
               "id": "legacy_official_small:01:skin_marks",
-              "label_ja": "肌・身体特徴（公式追加）",
+              "label_ja": "肌の色・傷・ほくろ",
               "tags": [
                 {
                   "id": 633894,
@@ -4892,11 +4892,11 @@
         },
         {
           "id": "legacy_medium:01:official:hair",
-          "label_ja": "髪",
+          "label_ja": "髪色",
           "small_categories": [
             {
               "id": "legacy_official_small:01:hair_color",
-              "label_ja": "髪色（公式追加）",
+              "label_ja": "髪色",
               "tags": [
                 {
                   "id": 87788,
@@ -5108,16 +5108,16 @@
     },
     {
       "id": "legacy_major:02",
-      "label_ja": "衣服や装飾品",
+      "label_ja": "衣服・装飾品",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:02:clothing",
-          "label_ja": "衣服",
+          "label_ja": "衣装・服",
           "small_categories": [
             {
               "id": "legacy_small:02-001",
-              "label_ja": "正装",
+              "label_ja": "制服・正装・民族衣装",
               "tags": [
                 {
                   "id": "legacy:338ad11a14ea55f9",
@@ -5494,7 +5494,7 @@
             },
             {
               "id": "legacy_small:02-002",
-              "label_ja": "スタイル",
+              "label_ja": "衣装の系統・コスチューム",
               "tags": [
                 {
                   "id": "legacy:824df7a44ede784e",
@@ -5782,7 +5782,7 @@
             },
             {
               "id": "legacy_small:02-003",
-              "label_ja": "カジュアルウェア",
+              "label_ja": "普段着・部屋着",
               "tags": [
                 {
                   "id": "legacy:7b664f70da8a35f2",
@@ -5995,7 +5995,7 @@
             },
             {
               "id": "legacy_small:02-004",
-              "label_ja": "スポーツウェア",
+              "label_ja": "スポーツ衣装",
               "tags": [
                 {
                   "id": "legacy:a4c00ea085286da9",
@@ -6100,7 +6100,7 @@
             },
             {
               "id": "legacy_small:02-006",
-              "label_ja": "制服",
+              "label_ja": "制服・組織衣装",
               "tags": [
                 {
                   "id": "legacy:8cd581eb2600e5d6",
@@ -6619,7 +6619,7 @@
             },
             {
               "id": "legacy_small:02-007",
-              "label_ja": "上着物",
+              "label_ja": "トップス・シャツ",
               "tags": [
                 {
                   "id": "legacy:b7cf5b95fe0197b3",
@@ -7268,7 +7268,7 @@
             },
             {
               "id": "legacy_small:02-008",
-              "label_ja": "コート",
+              "label_ja": "コート・ジャケット",
               "tags": [
                 {
                   "id": "legacy:3dd239573c69034e",
@@ -7706,7 +7706,7 @@
             },
             {
               "id": "legacy_small:02-009",
-              "label_ja": "その他",
+              "label_ja": "服の状態・特殊衣装",
               "tags": [
                 {
                   "id": "legacy:038e6f38d030592b",
@@ -7892,7 +7892,7 @@
             },
             {
               "id": "legacy_small:02-010",
-              "label_ja": "腰部",
+              "label_ja": "エプロン・腰回りの衣装",
               "tags": [
                 {
                   "id": 273,
@@ -8005,7 +8005,7 @@
             },
             {
               "id": "legacy_small:02-011",
-              "label_ja": "よろい",
+              "label_ja": "鎧・防具",
               "tags": [
                 {
                   "id": 4659,
@@ -8174,7 +8174,7 @@
             },
             {
               "id": "legacy_small:02-012",
-              "label_ja": "スカート",
+              "label_ja": "ドレス・スカート",
               "tags": [
                 {
                   "id": 2241,
@@ -8805,7 +8805,7 @@
             },
             {
               "id": "legacy_small:02-013",
-              "label_ja": "スカートとのインタラクション",
+              "label_ja": "スカートの着脱・動作",
               "tags": [
                 {
                   "id": "legacy:2f06502655b42913",
@@ -8889,7 +8889,7 @@
             },
             {
               "id": "legacy_small:02-014",
-              "label_ja": "パンツ",
+              "label_ja": "パンツ・ショートパンツ",
               "tags": [
                 {
                   "id": "legacy:3796431708de017f",
@@ -9245,7 +9245,7 @@
             },
             {
               "id": "legacy_small:02-015",
-              "label_ja": "パンツとのインタラクション",
+              "label_ja": "パンツの着脱・状態",
               "tags": [
                 {
                   "id": 615735,
@@ -9333,7 +9333,7 @@
         },
         {
           "id": "legacy_medium:02:wearables",
-          "label_ja": "身につける物",
+          "label_ja": "服飾小物・装身具",
           "small_categories": [
             {
               "id": "legacy_small:02-005",
@@ -9865,7 +9865,7 @@
             },
             {
               "id": "legacy_small:02-016",
-              "label_ja": "靴下",
+              "label_ja": "靴下・レッグウェア",
               "tags": [
                 {
                   "id": "legacy:ebbcd668fe118c3b",
@@ -10329,7 +10329,7 @@
             },
             {
               "id": "legacy_small:02-017",
-              "label_ja": "靴下とのインタラクション",
+              "label_ja": "靴下・レッグウェアの着脱",
               "tags": [
                 {
                   "id": "legacy:d081592a6edb698c",
@@ -10398,7 +10398,7 @@
             },
             {
               "id": "legacy_small:02-018",
-              "label_ja": "その他",
+              "label_ja": "脚・腕の装飾",
               "tags": [
                 {
                   "id": "legacy:68ff0f0aba85ae74",
@@ -10526,7 +10526,7 @@
             },
             {
               "id": "legacy_small:02-019",
-              "label_ja": "素材",
+              "label_ja": "衣服の素材",
               "tags": [
                 {
                   "id": "legacy:c1740b86d8a8bc3e",
@@ -10613,7 +10613,7 @@
             },
             {
               "id": "legacy_small:02-020",
-              "label_ja": "装飾",
+              "label_ja": "衣服の装飾",
               "tags": [
                 {
                   "id": "legacy:48521f9ba9d1ea57",
@@ -10934,7 +10934,7 @@
             },
             {
               "id": "legacy_small:02-021",
-              "label_ja": "パターン",
+              "label_ja": "柄・模様",
               "tags": [
                 {
                   "id": "legacy:113aae750afa216f",
@@ -11777,7 +11777,7 @@
             },
             {
               "id": "legacy_small:02-022",
-              "label_ja": "靴",
+              "label_ja": "靴・裸足",
               "tags": [
                 {
                   "id": 11826,
@@ -12341,7 +12341,7 @@
             },
             {
               "id": "legacy_small:02-025",
-              "label_ja": "襟元",
+              "label_ja": "襟・ネクタイ・首飾り",
               "tags": [
                 {
                   "id": "legacy:ada78d792012e35f",
@@ -12951,7 +12951,7 @@
             },
             {
               "id": "legacy_small:02-026",
-              "label_ja": "スカーフ",
+              "label_ja": "スカーフ・首巻き",
               "tags": [
                 {
                   "id": "legacy:1923b6cf5146037b",
@@ -13611,7 +13611,7 @@
             },
             {
               "id": "legacy_small:02-029",
-              "label_ja": "腕",
+              "label_ja": "袖・腕飾り",
               "tags": [
                 {
                   "id": 383159,
@@ -13986,7 +13986,7 @@
             },
             {
               "id": "legacy_small:02-030",
-              "label_ja": "手",
+              "label_ja": "手首・腕の装飾",
               "tags": [
                 {
                   "id": "legacy:210ff27742509908",
@@ -14390,7 +14390,7 @@
             },
             {
               "id": "legacy_small:02-032",
-              "label_ja": "耳飾り",
+              "label_ja": "イヤリング・耳飾り",
               "tags": [
                 {
                   "id": "legacy:d1fee372cb39497d",
@@ -14509,7 +14509,7 @@
             },
             {
               "id": "legacy_small:02-033",
-              "label_ja": "頭飾り",
+              "label_ja": "頭部アクセサリー",
               "tags": [
                 {
                   "id": "legacy:33b1eac210971fb0",
@@ -16425,7 +16425,7 @@
             },
             {
               "id": "legacy_small:02-036",
-              "label_ja": "小装飾品",
+              "label_ja": "指輪・小さな装飾品",
               "tags": [
                 {
                   "id": "legacy:5c7d283db5846bba",
@@ -16794,16 +16794,16 @@
     },
     {
       "id": "legacy_major:03",
-      "label_ja": "表情動作",
+      "label_ja": "表情・ポーズ・動作",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:03:emotion",
-          "label_ja": "感情表現",
+          "label_ja": "表情・感情",
           "small_categories": [
             {
               "id": "legacy_small:03-001",
-              "label_ja": "笑",
+              "label_ja": "笑顔",
               "tags": [
                 {
                   "id": 1815,
@@ -16988,7 +16988,7 @@
             },
             {
               "id": "legacy_small:03-002",
-              "label_ja": "泣き",
+              "label_ja": "涙・泣き顔",
               "tags": [
                 {
                   "id": 5157,
@@ -17092,7 +17092,7 @@
             },
             {
               "id": "legacy_small:03-003",
-              "label_ja": "不幸",
+              "label_ja": "悲しみ・落胆",
               "tags": [
                 {
                   "id": "legacy:9bcaa08fdf3a9ce0",
@@ -17172,7 +17172,7 @@
             },
             {
               "id": "legacy_small:03-004",
-              "label_ja": "軽蔑",
+              "label_ja": "嫌悪・軽蔑",
               "tags": [
                 {
                   "id": 541262,
@@ -17268,7 +17268,7 @@
             },
             {
               "id": "legacy_small:03-005",
-              "label_ja": "怒り",
+              "label_ja": "怒り・苛立ち",
               "tags": [
                 {
                   "id": 3508,
@@ -17353,7 +17353,7 @@
             },
             {
               "id": "legacy_small:03-006",
-              "label_ja": "その他表情",
+              "label_ja": "その他の表情・感情",
               "tags": [
                 {
                   "id": 419938,
@@ -17688,11 +17688,11 @@
         },
         {
           "id": "legacy_medium:03:pose",
-          "label_ja": "姿勢",
+          "label_ja": "姿勢・手の動作",
           "small_categories": [
             {
               "id": "legacy_small:03-007",
-              "label_ja": "基本動作",
+              "label_ja": "基本姿勢・全身動作",
               "tags": [
                 {
                   "id": 15675,
@@ -19062,7 +19062,7 @@
             },
             {
               "id": "legacy_small:03-008",
-              "label_ja": "手の動き",
+              "label_ja": "腕・手のポーズ",
               "tags": [
                 {
                   "id": 475775,
@@ -20313,7 +20313,7 @@
             },
             {
               "id": "legacy_small:03-010",
-              "label_ja": "手の動き（場所に置いている）",
+              "label_ja": "手を置く・触れる",
               "tags": [
                 {
                   "id": "legacy:532c86367297a729",
@@ -20696,7 +20696,7 @@
             },
             {
               "id": "legacy_small:03-011",
-              "label_ja": "手の動き（何かをつかんでいる）",
+              "label_ja": "つかむ動作",
               "tags": [
                 {
                   "id": "legacy:9db8c445e7d38816",
@@ -20812,11 +20812,11 @@
         },
         {
           "id": "legacy_medium:03:action",
-          "label_ja": "動作",
+          "label_ja": "物を持つ・脚の動き・対人動作",
           "small_categories": [
             {
               "id": "legacy_small:03-009",
-              "label_ja": "手の動き（何かを持っている）",
+              "label_ja": "物を持つ動作",
               "tags": [
                 {
                   "id": 375387,
@@ -21571,7 +21571,7 @@
             },
             {
               "id": "legacy_small:03-012",
-              "label_ja": "脚の動き",
+              "label_ja": "脚のポーズ・動作",
               "tags": [
                 {
                   "id": 380540,
@@ -22301,7 +22301,7 @@
             },
             {
               "id": "legacy_small:03-013",
-              "label_ja": "その他の動作",
+              "label_ja": "人物同士の動作",
               "tags": [
                 {
                   "id": "legacy:e4236aca2ed4c9bf",
@@ -22559,11 +22559,11 @@
         },
         {
           "id": "legacy_medium:03:official:gaze_face_action",
-          "label_ja": "視線・顔動作",
+          "label_ja": "視線・顔の反応",
           "small_categories": [
             {
               "id": "legacy_official_small:03:gaze",
-              "label_ja": "視線・目の動き（公式追加）",
+              "label_ja": "視線・目の動き",
               "tags": [
                 {
                   "id": 643561,
@@ -22701,7 +22701,7 @@
             },
             {
               "id": "legacy_official_small:03:face_reactions",
-              "label_ja": "赤面・汗・涙（公式追加）",
+              "label_ja": "赤面・汗・涙",
               "tags": [
                 {
                   "id": 465619,
@@ -22842,16 +22842,16 @@
     },
     {
       "id": "legacy_major:04",
-      "label_ja": "画面",
+      "label_ja": "画質・作風・演出",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:04:presentation_format",
-          "label_ja": "画面表現",
+          "label_ja": "画質・画像形式",
           "small_categories": [
             {
               "id": "legacy_small:04-001",
-              "label_ja": "画質",
+              "label_ja": "画質・画像形式",
               "tags": [
                 {
                   "id": "legacy:9d0d39312db12868",
@@ -22943,11 +22943,11 @@
         },
         {
           "id": "legacy_medium:04:medium_style",
-          "label_ja": "表現媒体",
+          "label_ja": "作風・画材",
           "small_categories": [
             {
               "id": "legacy_small:04-002",
-              "label_ja": "芸術スタイル",
+              "label_ja": "作品形式・作風",
               "tags": [
                 {
                   "id": "legacy:1f9e5a3939a78060",
@@ -23593,7 +23593,7 @@
             },
             {
               "id": "legacy_small:04-003",
-              "label_ja": "芸術の種類",
+              "label_ja": "絵画技法・画材",
               "tags": [
                 {
                   "id": 2833,
@@ -23790,7 +23790,7 @@
             },
             {
               "id": "legacy_small:04-004",
-              "label_ja": "芸術派",
+              "label_ja": "美術様式",
               "tags": [
                 {
                   "id": "legacy:b1642fde5a24c696",
@@ -23850,7 +23850,7 @@
             },
             {
               "id": "legacy_small:04-005",
-              "label_ja": "アーティストのスタイル",
+              "label_ja": "特定作家風",
               "tags": [
                 {
                   "id": "legacy:87129f9b19eda7ad",
@@ -23874,7 +23874,7 @@
             },
             {
               "id": "legacy_small:04-007",
-              "label_ja": "リアル",
+              "label_ja": "写実・写真表現",
               "tags": [
                 {
                   "id": "legacy:3078a1b63725d48a",
@@ -23916,7 +23916,7 @@
             },
             {
               "id": "legacy_small:04-008",
-              "label_ja": "スケッチ",
+              "label_ja": "色調・輪郭表現",
               "tags": [
                 {
                   "id": 432914,
@@ -24010,7 +24010,7 @@
             },
             {
               "id": "legacy_small:04-009",
-              "label_ja": "ペン",
+              "label_ja": "画材・描画道具",
               "tags": [
                 {
                   "id": "legacy:7ee7c28046798d5b",
@@ -24136,11 +24136,11 @@
         },
         {
           "id": "legacy_medium:04:lighting",
-          "label_ja": "照明",
+          "label_ja": "光・照明",
           "small_categories": [
             {
               "id": "legacy_small:04-006",
-              "label_ja": "照明",
+              "label_ja": "光・照明効果",
               "tags": [
                 {
                   "id": "legacy:c06c71010fb70503",
@@ -24392,11 +24392,11 @@
         },
         {
           "id": "legacy_medium:04:color_design",
-          "label_ja": "色彩",
+          "label_ja": "色・配色",
           "small_categories": [
             {
               "id": "legacy_small:04-010",
-              "label_ja": "色",
+              "label_ja": "色・配色",
               "tags": [
                 {
                   "id": "legacy:ef0ebbb77298e1fb",
@@ -25695,11 +25695,11 @@
         },
         {
           "id": "legacy_medium:04:natural_environment",
-          "label_ja": "自然環境",
+          "label_ja": "背景表現",
           "small_categories": [
             {
               "id": "legacy_small:04-011",
-              "label_ja": "背景",
+              "label_ja": "背景・画面効果",
               "tags": [
                 {
                   "id": "legacy:ec1e111db30c9cca",
@@ -26150,12 +26150,12 @@
     },
     {
       "id": "legacy_major:05",
-      "label_ja": "環境",
+      "label_ja": "自然・天候・行事",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:05:time_weather",
-          "label_ja": "時間・天候",
+          "label_ja": "季節・時間・天候",
           "small_categories": [
             {
               "id": "legacy_small:05-001",
@@ -26210,7 +26210,7 @@
             },
             {
               "id": "legacy_small:05-002",
-              "label_ja": "天気",
+              "label_ja": "時間帯・天候",
               "tags": [
                 {
                   "id": 435324,
@@ -26467,11 +26467,11 @@
         },
         {
           "id": "legacy_medium:05:natural_environment",
-          "label_ja": "自然環境",
+          "label_ja": "自然風景",
           "small_categories": [
             {
               "id": "legacy_small:05-003",
-              "label_ja": "自然",
+              "label_ja": "自然風景・地形",
               "tags": [
                 {
                   "id": 5648,
@@ -26803,7 +26803,7 @@
             },
             {
               "id": "legacy_small:05-004",
-              "label_ja": "水",
+              "label_ja": "水面・水の表現",
               "tags": [
                 {
                   "id": 392034,
@@ -26854,7 +26854,7 @@
             },
             {
               "id": "legacy_small:05-005",
-              "label_ja": "空",
+              "label_ja": "空・月・星",
               "tags": [
                 {
                   "id": 684190,
@@ -26985,7 +26985,7 @@
             },
             {
               "id": "legacy_small:05-006",
-              "label_ja": "雲",
+              "label_ja": "雲の種類",
               "tags": [
                 {
                   "id": "legacy:d4b3ae043adfd1d8",
@@ -27425,11 +27425,11 @@
         },
         {
           "id": "legacy_medium:05:lighting",
-          "label_ja": "照明",
+          "label_ja": "行事・背景演出",
           "small_categories": [
             {
               "id": "legacy_small:05-007",
-              "label_ja": "雰囲気",
+              "label_ja": "行事・背景演出",
               "tags": [
                 {
                   "id": "legacy:40da12f07a89e150",
@@ -27755,16 +27755,16 @@
     },
     {
       "id": "legacy_major:06",
-      "label_ja": "シーン",
+      "label_ja": "場所・背景・人物接触",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:06:natural_environment",
-          "label_ja": "自然環境",
+          "label_ja": "建物・施設・場所",
           "small_categories": [
             {
               "id": "legacy_small:06-001",
-              "label_ja": "屋外",
+              "label_ja": "建物・施設・場所",
               "tags": [
                 {
                   "id": 389066,
@@ -28708,11 +28708,11 @@
         },
         {
           "id": "legacy_medium:06:built_environment",
-          "label_ja": "人工環境",
+          "label_ja": "街並み・室内",
           "small_categories": [
             {
               "id": "legacy_small:06-002",
-              "label_ja": "都市",
+              "label_ja": "街路・都市景観",
               "tags": [
                 {
                   "id": "legacy:248191c5112ac54d",
@@ -28861,7 +28861,7 @@
             },
             {
               "id": "legacy_small:06-003",
-              "label_ja": "屋内",
+              "label_ja": "室内の場所",
               "tags": [
                 {
                   "id": "legacy:227980c20ada8087",
@@ -29015,7 +29015,7 @@
             },
             {
               "id": "legacy_small:06-004",
-              "label_ja": "床",
+              "label_ja": "床・舗装",
               "tags": [
                 {
                   "id": "legacy:3684c9d3c05e7bee",
@@ -29038,7 +29038,7 @@
             },
             {
               "id": "legacy_small:06-005",
-              "label_ja": "家具",
+              "label_ja": "家具・建具",
               "tags": [
                 {
                   "id": "legacy:c658370e759671f4",
@@ -29235,7 +29235,7 @@
             },
             {
               "id": "legacy_small:06-006",
-              "label_ja": "寝具",
+              "label_ja": "寝具・室内小物",
               "tags": [
                 {
                   "id": 478565,
@@ -29340,7 +29340,7 @@
             },
             {
               "id": "legacy_small:06-007",
-              "label_ja": "浴室",
+              "label_ja": "浴室・水回り",
               "tags": [
                 {
                   "id": "legacy:d23d1d6032910223",
@@ -29412,11 +29412,11 @@
         },
         {
           "id": "legacy_medium:06:official:physical_contact",
-          "label_ja": "身体接触",
+          "label_ja": "人物同士の接触",
           "small_categories": [
             {
               "id": "legacy_official_small:06:hand_arm_contact",
-              "label_ja": "手・腕の接触（公式追加）",
+              "label_ja": "手・腕で触れる",
               "tags": [
                 {
                   "id": 656167,
@@ -29505,7 +29505,7 @@
             },
             {
               "id": "legacy_official_small:06:embrace_kiss_restraint",
-              "label_ja": "抱擁・キス・拘束（公式追加）",
+              "label_ja": "抱擁・キス・拘束",
               "tags": [
                 {
                   "id": 466226,
@@ -29617,16 +29617,16 @@
     },
     {
       "id": "legacy_major:07",
-      "label_ja": "アイテム",
+      "label_ja": "小物・食べ物・生き物",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:07:daily_objects",
-          "label_ja": "生活物",
+          "label_ja": "日用品・食べ物",
           "small_categories": [
             {
               "id": "legacy_small:07-001",
-              "label_ja": "学習用具",
+              "label_ja": "本・学用品",
               "tags": [
                 {
                   "id": "legacy:5280933cbca1c1af",
@@ -29719,7 +29719,7 @@
             },
             {
               "id": "legacy_small:07-002",
-              "label_ja": "デジタル機器",
+              "label_ja": "パソコン・携帯・ゲーム機",
               "tags": [
                 {
                   "id": "legacy:c60266a8adad2f8e",
@@ -29824,7 +29824,7 @@
             },
             {
               "id": "legacy_small:07-003",
-              "label_ja": "食器",
+              "label_ja": "食器・調理器具",
               "tags": [
                 {
                   "id": "legacy:cb79bd0ce2a8c435",
@@ -30000,7 +30000,7 @@
             },
             {
               "id": "legacy_small:07-005",
-              "label_ja": "その他のアイテム",
+              "label_ja": "日用品・その他の小物",
               "tags": [
                 {
                   "id": 481383,
@@ -30436,7 +30436,7 @@
             },
             {
               "id": "legacy_small:07-007",
-              "label_ja": "食べ物",
+              "label_ja": "食べ物・飲み物",
               "tags": [
                 {
                   "id": "legacy:86b1d4640a907993",
@@ -30944,11 +30944,11 @@
         },
         {
           "id": "legacy_medium:07:tools_transport",
-          "label_ja": "道具・移動",
+          "label_ja": "楽器・武器・植物",
           "small_categories": [
             {
               "id": "legacy_small:07-004",
-              "label_ja": "楽器",
+              "label_ja": "楽器・音楽",
               "tags": [
                 {
                   "id": 1757,
@@ -30997,7 +30997,7 @@
             },
             {
               "id": "legacy_small:07-006",
-              "label_ja": "武器",
+              "label_ja": "武器・武具",
               "tags": [
                 {
                   "id": 11449,
@@ -31416,7 +31416,7 @@
             },
             {
               "id": "legacy_small:07-009",
-              "label_ja": "植物",
+              "label_ja": "花・植物",
               "tags": [
                 {
                   "id": 464573,
@@ -31702,11 +31702,11 @@
         },
         {
           "id": "legacy_medium:07:subject_type",
-          "label_ja": "主体属性",
+          "label_ja": "動物・生き物",
           "small_categories": [
             {
               "id": "legacy_small:07-008",
-              "label_ja": "動物",
+              "label_ja": "動物・生き物",
               "tags": [
                 {
                   "id": "legacy:9e2f86633d910574",
@@ -32028,16 +32028,16 @@
     },
     {
       "id": "legacy_major:08",
-      "label_ja": "レンズ",
+      "label_ja": "構図・カメラ",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:08:camera",
-          "label_ja": "カメラ",
+          "label_ja": "撮影範囲・角度",
           "small_categories": [
             {
               "id": "legacy_small:08-001",
-              "label_ja": "レンズ",
+              "label_ja": "撮影範囲・人物の大きさ",
               "tags": [
                 {
                   "id": "legacy:e9320025f7f46abb",
@@ -32122,7 +32122,7 @@
             },
             {
               "id": "legacy_small:08-002",
-              "label_ja": "クローズアップ",
+              "label_ja": "接写・部位の強調",
               "tags": [
                 {
                   "id": 10902,
@@ -32358,7 +32358,7 @@
             },
             {
               "id": "legacy_small:08-004",
-              "label_ja": "カメラの角度",
+              "label_ja": "カメラアングル",
               "tags": [
                 {
                   "id": "legacy:fb5d6ded1a272276",
@@ -32482,11 +32482,11 @@
         },
         {
           "id": "legacy_medium:08:framing",
-          "label_ja": "画面構成",
+          "label_ja": "構図・視線",
           "small_categories": [
             {
               "id": "legacy_small:08-003",
-              "label_ja": "他の構図",
+              "label_ja": "特殊な構図・視点",
               "tags": [
                 {
                   "id": "legacy:658455a5f2974f2b",
@@ -32545,7 +32545,7 @@
             },
             {
               "id": "legacy_small:08-006",
-              "label_ja": "主人公の動作",
+              "label_ja": "視線・見る方向",
               "tags": [
                 {
                   "id": 469576,
@@ -32774,11 +32774,11 @@
         },
         {
           "id": "legacy_medium:08:visual_effects",
-          "label_ja": "視覚効果",
+          "label_ja": "撮影・視覚効果",
           "small_categories": [
             {
               "id": "legacy_small:08-005",
-              "label_ja": "効果",
+              "label_ja": "レンズ・動きの効果",
               "tags": [
                 {
                   "id": "legacy:a93270a2554d9f19",
@@ -32958,16 +32958,16 @@
     },
     {
       "id": "legacy_major:10",
-      "label_ja": "ネガティブなプロンプト",
+      "label_ja": "ネガティブ指定",
       "description_ja": "旧タグ集の分類を基準にしたカテゴリー。",
       "medium_categories": [
         {
           "id": "legacy_medium:10:legacy_other",
-          "label_ja": "その他",
+          "label_ja": "画像・人物の除外指定",
           "small_categories": [
             {
               "id": "legacy_small:10-001",
-              "label_ja": "画像",
+              "label_ja": "画質・文字・透かしの除外",
               "tags": [
                 {
                   "id": "legacy:b42a65e89d216941",
@@ -33108,7 +33108,7 @@
             },
             {
               "id": "legacy_small:10-002",
-              "label_ja": "人物",
+              "label_ja": "人物・身体崩れの除外",
               "tags": [
                 {
                   "id": "legacy:ebfe61c29baed738",
@@ -33411,7 +33411,7 @@
             },
             {
               "id": "legacy_small:10-003",
-              "label_ja": "Embeddings",
+              "label_ja": "ネガティブ埋め込み",
               "tags": [
                 {
                   "id": "legacy:fa9737e18dbe99dc",
@@ -33479,7 +33479,7 @@
           "small_categories": [
             {
               "id": "explicit_exposure",
-              "label_ja": "性的な身体露出",
+              "label_ja": "身体の露出・体液",
               "description_ja": "胸部や性器などの露出。",
               "tags": [
                 {
