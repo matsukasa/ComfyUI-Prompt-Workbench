@@ -1,7 +1,15 @@
 [project]
-name = "comfyui-prompt-workbench"
-version = "0.1.0"
+name = "prompt-workbench"
+version = "1.0.0"
 description = "Structured prompt workbench for ComfyUI"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT" }
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/matsukasa/ComfyUI-Prompt-Workbench"
+
+[tool.comfy]
+PublisherId = "matsukasa"
+DisplayName = "ComfyUI Prompt Workbench"
