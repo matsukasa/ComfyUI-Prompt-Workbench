@@ -4,7 +4,7 @@
   "nodes": [
     {
       "id": 1,
-      "type": "PromptAllInOne",
+      "type": "PromptWorkbench",
       "pos": [80, 120],
       "size": [520, 620],
       "flags": {},
@@ -15,8 +15,8 @@
         { "name": "prompt", "type": "STRING", "links": [1], "slot_index": 0 }
       ],
       "properties": {
-        "Node name for S&R": "PromptAllInOne",
-        "promptAllInOneState": {
+        "Node name for S&R": "PromptWorkbench",
+        "promptWorkbenchState": {
           "version": 1,
           "tags": [
             { "id": "example-positive-1", "value": "masterpiece", "enabled": true, "translation": "傑作", "translatedTo": "ja", "type": "normal" },

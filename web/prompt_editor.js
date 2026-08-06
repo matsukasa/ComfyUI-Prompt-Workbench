@@ -39,7 +39,7 @@ import {
   sanitizeLibraryEdits,
 } from "./tag_library.js";
 
-const STATE_KEY = "promptAllInOneState";
+const STATE_KEY = "promptWorkbenchState";
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
@@ -129,7 +129,7 @@ export function cleanTranslation(value) {
 
 export async function fetchExampleCatalog(api, libraryFile = "") {
   const query = libraryFile ? `?file=${encodeURIComponent(libraryFile)}` : "";
-  const response = await api.fetchApi(`/prompt_all_in_one/examples${query}`);
+  const response = await api.fetchApi(`/prompt_workbench/examples${query}`);
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || t("タグファイルの読込に失敗しました ({status})", { status: response.status }));
   return body;
@@ -153,12 +153,12 @@ export function suggestedCatalogFileName(fileName, now = new Date()) {
 
 export async function upsertCatalogCopy(api, fileName, catalog, options = {}) {
   const requestedName = catalogNameFromFileName(fileName);
-  const listResponse = await api.fetchApi("/prompt_all_in_one/catalogs");
+  const listResponse = await api.fetchApi("/prompt_workbench/catalogs");
   const listBody = await listResponse.json().catch(() => ({}));
   if (!listResponse.ok) throw new Error(listBody.error || t("保存済みファイルの確認に失敗しました ({status})", { status: listResponse.status }));
   const existingName = (listBody.files || []).find((name) => String(name).toLocaleLowerCase() === requestedName.toLocaleLowerCase());
   const send = async (method, name) => {
-    const response = await api.fetchApi("/prompt_all_in_one/catalogs", {
+    const response = await api.fetchApi("/prompt_workbench/catalogs", {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, catalog }),
@@ -740,12 +740,26 @@ export class PromptEditor {
       embedding: "Embedding", wildcard: "ワイルドカード", duplicate: "重複",
       blacklist: "ブラックリスト", missing: "モデルなし", error: "翻訳エラー",
     };
+    const colorDescriptions = {
+      normal: "通常タグの背景色", disabled: "無効タグの背景色",
+      lora: "LoRAタグの背景色", lycoris: "LyCORISタグの背景色",
+      embedding: "Embeddingタグの背景色", wildcard: "特殊構文タグの背景色",
+      duplicate: "重複タグの枠線色", blacklist: "ブラックリスト一致タグの背景色",
+      missing: "モデル未検出タグの枠線色", error: "翻訳エラータグの枠線色",
+    };
     for (const [key, label] of Object.entries(colorLabels)) {
       const input = element("input");
       input.type = "color";
       input.value = this.settings.tagColors?.[key] || COLOR_DEFAULTS[key];
+      input.setAttribute("aria-label", t("{label}の色", { label: t(label) }));
       colorInputs[key] = input;
-      colorGrid.append(this.labeled(t(label), input));
+      colorGrid.append(element("label", { className: "paio-color-field" }, [
+        input,
+        element("span", { className: "paio-color-copy" }, [
+          element("strong", { text: t(label) }),
+          element("small", { text: t(colorDescriptions[key]) }),
+        ]),
+      ]));
     }
     const libraryManager = this.buildLibraryManager();
     const generalPanel = element("section", { className: "paio-settings-panel is-active", dataset: { panel: "general" } });
@@ -834,7 +848,7 @@ export class PromptEditor {
     const refreshFileStatus = async () => {
       try {
         const query = this.settings.libraryFile ? `?selected=${encodeURIComponent(this.settings.libraryFile)}` : "";
-        const response = await this.api.fetchApi(`/prompt_all_in_one/catalogs${query}`);
+        const response = await this.api.fetchApi(`/prompt_workbench/catalogs${query}`);
         const responseBody = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(responseBody.error || t("ファイル情報の取得に失敗しました ({status})", { status: response.status }));
         const canOverwrite = Boolean(this.settings.libraryFile && responseBody.exists);
@@ -1519,7 +1533,7 @@ export class PromptEditor {
       button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
       button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
       button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage), "text/plain;charset=utf-8")),
-      button(t("状態JSONを書き出す"), () => download("prompt_all_in_one_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
+      button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
     return dialog;

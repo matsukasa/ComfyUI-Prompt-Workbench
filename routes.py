@@ -320,26 +320,26 @@ def provider_status():
         {
             "id": "libretranslate",
             "label": "LibreTranslate-compatible",
-            "available": bool(os.getenv("PROMPT_AIO_LIBRE_URL")),
+            "available": bool(os.getenv("PROMPT_WORKBENCH_LIBRE_URL")),
             "api_key_required": False,
-            "reason": "PROMPT_AIO_LIBRE_URL is not set",
+            "reason": "PROMPT_WORKBENCH_LIBRE_URL is not set",
         },
         {
             "id": "deepl",
             "label": "DeepL",
-            "available": bool(os.getenv("PROMPT_AIO_DEEPL_API_KEY")),
+            "available": bool(os.getenv("PROMPT_WORKBENCH_DEEPL_API_KEY")),
             "api_key_required": True,
-            "reason": "PROMPT_AIO_DEEPL_API_KEY is not set",
+            "reason": "PROMPT_WORKBENCH_DEEPL_API_KEY is not set",
         },
         {
             "id": "openai",
             "label": "OpenAI-compatible",
             "available": bool(
-                os.getenv("PROMPT_AIO_OPENAI_API_KEY")
-                and os.getenv("PROMPT_AIO_OPENAI_MODEL")
+                os.getenv("PROMPT_WORKBENCH_OPENAI_API_KEY")
+                and os.getenv("PROMPT_WORKBENCH_OPENAI_MODEL")
             ),
             "api_key_required": True,
-            "reason": "PROMPT_AIO_OPENAI_API_KEY or PROMPT_AIO_OPENAI_MODEL is not set",
+            "reason": "PROMPT_WORKBENCH_OPENAI_API_KEY or PROMPT_WORKBENCH_OPENAI_MODEL is not set",
         },
     ]
 
@@ -479,19 +479,19 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12)
         if provider == "local":
             result = await _translate_mymemory(session, text, source, target)
         elif provider == "libretranslate":
-            base_url = _validate_url(os.getenv("PROMPT_AIO_LIBRE_URL", ""))
+            base_url = _validate_url(os.getenv("PROMPT_WORKBENCH_LIBRE_URL", ""))
             payload = {"q": text, "source": source, "target": target, "format": "text"}
-            api_key = os.getenv("PROMPT_AIO_LIBRE_API_KEY")
+            api_key = os.getenv("PROMPT_WORKBENCH_LIBRE_API_KEY")
             if api_key:
                 payload["api_key"] = api_key
             data = await _post_json(session, f"{base_url}/translate", payload)
             result = data.get("translatedText")
         elif provider == "deepl":
-            api_key = os.getenv("PROMPT_AIO_DEEPL_API_KEY")
+            api_key = os.getenv("PROMPT_WORKBENCH_DEEPL_API_KEY")
             if not api_key:
                 raise TranslationError("DeepL API key is not configured")
             base_url = _validate_url(
-                os.getenv("PROMPT_AIO_DEEPL_URL", "https://api-free.deepl.com/v2")
+                os.getenv("PROMPT_WORKBENCH_DEEPL_URL", "https://api-free.deepl.com/v2")
             )
             payload = {"text": [text], "target_lang": target.upper()}
             if source.lower() != "auto":
@@ -505,13 +505,13 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12)
             translations = data.get("translations") or []
             result = translations[0].get("text") if translations else None
         else:
-            api_key = os.getenv("PROMPT_AIO_OPENAI_API_KEY")
+            api_key = os.getenv("PROMPT_WORKBENCH_OPENAI_API_KEY")
             if not api_key:
                 raise TranslationError("OpenAI-compatible API key is not configured")
             base_url = _validate_url(
-                os.getenv("PROMPT_AIO_OPENAI_BASE_URL", "https://api.openai.com/v1")
+                os.getenv("PROMPT_WORKBENCH_OPENAI_BASE_URL", "https://api.openai.com/v1")
             )
-            model = os.getenv("PROMPT_AIO_OPENAI_MODEL")
+            model = os.getenv("PROMPT_WORKBENCH_OPENAI_MODEL")
             if not model:
                 raise TranslationError("OpenAI-compatible model is not configured")
             payload = {
@@ -554,7 +554,7 @@ def register_routes():
 
     routes = PromptServer.instance.routes
 
-    @routes.get("/prompt_all_in_one/examples")
+    @routes.get("/prompt_workbench/examples")
     async def get_examples(request):
         try:
             requested_name = request.rel_url.query.get("file", "")
@@ -563,7 +563,7 @@ def register_routes():
             return web.json_response({"error": "Prompt examples are unavailable"}, status=500)
         return web.json_response(data)
 
-    @routes.get("/prompt_all_in_one/catalogs")
+    @routes.get("/prompt_workbench/catalogs")
     async def get_catalogs(request):
         selected = request.rel_url.query.get("selected", "")
         try:
@@ -573,7 +573,7 @@ def register_routes():
             return web.json_response({"error": str(exc)}, status=400)
         return web.json_response({"files": files, "selected": selected, "exists": exists})
 
-    @routes.post("/prompt_all_in_one/catalogs")
+    @routes.post("/prompt_workbench/catalogs")
     async def post_catalog(request):
         if request.content_length and request.content_length > MAX_CATALOG_BYTES:
             return web.json_response({"error": "Catalog request is too large"}, status=413)
@@ -586,7 +586,7 @@ def register_routes():
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
 
-    @routes.put("/prompt_all_in_one/catalogs")
+    @routes.put("/prompt_workbench/catalogs")
     async def put_catalog(request):
         if request.content_length and request.content_length > MAX_CATALOG_BYTES:
             return web.json_response({"error": "Catalog request is too large"}, status=413)
@@ -599,11 +599,11 @@ def register_routes():
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
 
-    @routes.get("/prompt_all_in_one/providers")
+    @routes.get("/prompt_workbench/providers")
     async def get_providers(_request):
         return web.json_response({"providers": provider_status()})
 
-    @routes.post("/prompt_all_in_one/translate")
+    @routes.post("/prompt_workbench/translate")
     async def post_translate(request):
         if request.content_length and request.content_length > MAX_REQUEST_BYTES:
             return web.json_response({"error": "Request is too large"}, status=413)

@@ -125,7 +125,7 @@ Tag buttons and add actions are immediately synchronized to the corresponding st
 widget. Direct edits in the main text area require an explicit apply action to avoid parsing text
 during IME composition. The editor also detects and reparses STRING changes caused by workflow
 loading or external operations. Complete tag state is stored in the versioned
-`node.properties.promptAllInOneState`, separately from the executable STRING.
+`node.properties.promptWorkbenchState`, separately from the executable STRING.
 
 ## Translation Settings
 
@@ -146,14 +146,14 @@ variables for the process that starts ComfyUI.
 | Provider | Environment variables |
 | --- | --- |
 | Local dictionary | None |
-| LibreTranslate | `PROMPT_AIO_LIBRE_URL`; optionally `PROMPT_AIO_LIBRE_API_KEY` |
-| DeepL | `PROMPT_AIO_DEEPL_API_KEY`; optionally `PROMPT_AIO_DEEPL_URL` |
-| OpenAI-compatible | `PROMPT_AIO_OPENAI_API_KEY`, `PROMPT_AIO_OPENAI_MODEL`; optionally `PROMPT_AIO_OPENAI_BASE_URL` |
+| LibreTranslate | `PROMPT_WORKBENCH_LIBRE_URL`; optionally `PROMPT_WORKBENCH_LIBRE_API_KEY` |
+| DeepL | `PROMPT_WORKBENCH_DEEPL_API_KEY`; optionally `PROMPT_WORKBENCH_DEEPL_URL` |
+| OpenAI-compatible | `PROMPT_WORKBENCH_OPENAI_API_KEY`, `PROMPT_WORKBENCH_OPENAI_MODEL`; optionally `PROMPT_WORKBENCH_OPENAI_BASE_URL` |
 
 PowerShell example that configures only the current process (do not display or commit the value):
 
 ```powershell
-$env:PROMPT_AIO_DEEPL_API_KEY = "your-key"
+$env:PROMPT_WORKBENCH_DEEPL_API_KEY = "your-key"
 ```
 
 Start ComfyUI from the same PowerShell session after setting the variable. The implementation

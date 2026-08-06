@@ -1,4 +1,4 @@
-class PromptAllInOne:
+class PromptWorkbench:
     """Headless-safe STRING pass-through for the browser prompt editor."""
 
     @classmethod
@@ -23,5 +23,5 @@ class PromptAllInOne:
         return (value,)
 
 
-NODE_CLASS_MAPPINGS = {"PromptAllInOne": PromptAllInOne}
-NODE_DISPLAY_NAME_MAPPINGS = {"PromptAllInOne": "Prompt Workbench"}
+NODE_CLASS_MAPPINGS = {"PromptWorkbench": PromptWorkbench}
+NODE_DISPLAY_NAME_MAPPINGS = {"PromptWorkbench": "Prompt Workbench"}

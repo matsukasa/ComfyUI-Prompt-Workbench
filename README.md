@@ -115,7 +115,7 @@ UI文言は`web/locales/`にあります。`en.json`が全翻訳キーを含む�
 タグボタンや追加操作は対応する標準STRINGウィジェットへ即時反映されます。本文欄を
 直接編集した場合は、IME入力中の誤解析を避けるため明示的な反映操作を行います。ワークフロー
 読込や外部操作でSTRING値が変わった場合も、エディターが変更を検出して再解析します。
-完全なタグ状態はバージョン付き`node.properties.promptAllInOneState`へ保存され、
+完全なタグ状態はバージョン付き`node.properties.promptWorkbenchState`へ保存され、
 実行用STRINGとは分離されます。
 
 ## 翻訳設定
@@ -135,14 +135,14 @@ APIキーはノード、ワークフロー、ブラウザ設定へ保存しま�
 | Provider | Environment variables |
 | --- | --- |
 | Local dictionary | 不要 |
-| LibreTranslate | `PROMPT_AIO_LIBRE_URL`、任意で`PROMPT_AIO_LIBRE_API_KEY` |
-| DeepL | `PROMPT_AIO_DEEPL_API_KEY`、任意で`PROMPT_AIO_DEEPL_URL` |
-| OpenAI互換 | `PROMPT_AIO_OPENAI_API_KEY`、`PROMPT_AIO_OPENAI_MODEL`、任意で`PROMPT_AIO_OPENAI_BASE_URL` |
+| LibreTranslate | `PROMPT_WORKBENCH_LIBRE_URL`、任意で`PROMPT_WORKBENCH_LIBRE_API_KEY` |
+| DeepL | `PROMPT_WORKBENCH_DEEPL_API_KEY`、任意で`PROMPT_WORKBENCH_DEEPL_URL` |
+| OpenAI互換 | `PROMPT_WORKBENCH_OPENAI_API_KEY`、`PROMPT_WORKBENCH_OPENAI_MODEL`、任意で`PROMPT_WORKBENCH_OPENAI_BASE_URL` |
 
 PowerShellで現在の起動プロセスだけへ設定する例（値は表示・Git保存しないでください）：
 
 ```powershell
-$env:PROMPT_AIO_DEEPL_API_KEY = "your-key"
+$env:PROMPT_WORKBENCH_DEEPL_API_KEY = "your-key"
 ```
 
 設定後、同じPowerShellからComfyUIを起動します。入力サイズ制限、30秒以内の

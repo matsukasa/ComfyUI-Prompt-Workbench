@@ -108,7 +108,7 @@ export function parseImportedState(text) {
   } catch {
     throw new Error("Import JSON is invalid");
   }
-  if (!parsed || parsed.schema !== "prompt-all-in-one/editor-state" || parsed.version !== 1) {
+  if (!parsed || parsed.schema !== "prompt-workbench/editor-state" || parsed.version !== 1) {
     throw new Error("Unsupported editor-state schema");
   }
   return sanitizeEditorState(parsed.state);
@@ -117,7 +117,7 @@ export function parseImportedState(text) {
 export function exportEditorState(state) {
   return JSON.stringify(
     {
-      schema: "prompt-all-in-one/editor-state",
+      schema: "prompt-workbench/editor-state",
       version: 1,
       state: sanitizeEditorState(state),
     },

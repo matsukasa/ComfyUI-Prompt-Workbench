@@ -1,5 +1,5 @@
 export async function getTranslationProviders(api) {
-  const response = await api.fetchApi("/prompt_all_in_one/providers");
+  const response = await api.fetchApi("/prompt_workbench/providers");
   if (!response.ok) throw new Error(`Provider lookup failed (${response.status})`);
   const body = await response.json();
   return Array.isArray(body.providers) ? body.providers : [];
@@ -10,7 +10,7 @@ export async function translateTags(api, texts, options = {}) {
   const timeoutMs = Math.max(3000, Math.min(Number(options.timeoutMs || 12000), 30000));
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await api.fetchApi("/prompt_all_in_one/translate", {
+    const response = await api.fetchApi("/prompt_workbench/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
