@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20260804-bundled-catalog-save-1";
+import { PromptEditor } from "./prompt_editor.js?v=20260806-i18n-context-menu-1";
+import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-all-in-one";
 
@@ -18,6 +19,7 @@ app.registerExtension({
   name: EXTENSION_NAME,
   async setup() {
     ensureStyles();
+    await initializeUiLanguage();
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (nodeData.name !== "PromptAllInOne") return;

@@ -1,3 +1,5 @@
+import { translateUi as t } from "./i18n.js";
+
 const LEVELS = ["large", "medium", "small"];
 const MAX_EDITS = 4000;
 
@@ -289,7 +291,7 @@ export function deleteCategoryEdit(source, rawEdits, categoryId, destinationSmal
   const affectedTags = library.tags.filter((tag) => removedIds.has(tag.categoryId));
   const destination = library.categories.find((category) => category.id === destinationSmallId && category.level === "small");
   if (affectedTags.length && (!destination || removedIds.has(destination.id))) {
-    throw new Error("配下のタグがあるため、削除前に移動先の小分類を選択してください");
+    throw new Error(t("配下のタグがあるため、削除前に移動先の小分類を選択してください"));
   }
 
   let edits = cloneEdits(sanitizeLibraryEdits(rawEdits));

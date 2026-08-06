@@ -1,0 +1,6 @@
+{
+  "locales": [
+    { "code": "ja", "label": "日本語", "file": "ja.json" },
+    { "code": "en", "label": "English", "file": "en.json" }
+  ]
+}

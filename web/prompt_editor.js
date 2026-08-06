@@ -22,6 +22,12 @@ import {
 } from "./settings.js";
 import { translateTags } from "./translation.js";
 import {
+  getAvailableUiLanguages,
+  getUiLanguage,
+  saveUiLanguage,
+  translateUi as t,
+} from "./i18n.js";
+import {
   buildTagLibrary,
   deleteCategoryEdit,
   deleteTagEdit,
@@ -40,7 +46,7 @@ const EXAMPLE_PAGE_SIZE = 24;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
 const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
 const CATALOG_FILE_PICKER_TYPES = [{
-  description: "JSONタグファイル",
+  description: t("JSONタグファイル"),
   accept: { "application/json": [".json"] },
 }];
 const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
@@ -125,7 +131,7 @@ export async function fetchExampleCatalog(api, libraryFile = "") {
   const query = libraryFile ? `?file=${encodeURIComponent(libraryFile)}` : "";
   const response = await api.fetchApi(`/prompt_all_in_one/examples${query}`);
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || `タグファイルの読込に失敗しました (${response.status})`);
+  if (!response.ok) throw new Error(body.error || t("タグファイルの読込に失敗しました ({status})", { status: response.status }));
   return body;
 }
 
@@ -149,7 +155,7 @@ export async function upsertCatalogCopy(api, fileName, catalog, options = {}) {
   const requestedName = catalogNameFromFileName(fileName);
   const listResponse = await api.fetchApi("/prompt_all_in_one/catalogs");
   const listBody = await listResponse.json().catch(() => ({}));
-  if (!listResponse.ok) throw new Error(listBody.error || `保存済みファイルの確認に失敗しました (${listResponse.status})`);
+  if (!listResponse.ok) throw new Error(listBody.error || t("保存済みファイルの確認に失敗しました ({status})", { status: listResponse.status }));
   const existingName = (listBody.files || []).find((name) => String(name).toLocaleLowerCase() === requestedName.toLocaleLowerCase());
   const send = async (method, name) => {
     const response = await api.fetchApi("/prompt_all_in_one/catalogs", {
@@ -166,9 +172,9 @@ export async function upsertCatalogCopy(api, fileName, catalog, options = {}) {
     if (existingName && options.allowLoadFallback) {
       return { name: existingName, filename: `${existingName}.json`, compatibilityFallback: true };
     }
-    throw new Error("この保存機能を有効にするにはComfyUIを再起動してください");
+    throw new Error(t("この保存機能を有効にするにはComfyUIを再起動してください"));
   }
-  if (!result.response.ok) throw new Error(result.body.error || `タグファイルの保存に失敗しました (${result.response.status})`);
+  if (!result.response.ok) throw new Error(result.body.error || t("タグファイルの保存に失敗しました ({status})", { status: result.response.status }));
   return result.body;
 }
 
@@ -191,13 +197,13 @@ export async function buildCompleteCatalogForSave(loadSource, edits) {
 export function parseImportedCatalogText(value) {
   const parsed = JSON.parse(String(value || ""));
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("タグファイルの内容が正しくありません");
+    throw new Error(t("タグファイルの内容が正しくありません"));
   }
   const library = buildTagLibrary(parsed);
-  if (!library.categories.length) throw new Error("読み込めるカテゴリーがありません");
+  if (!library.categories.length) throw new Error(t("読み込めるカテゴリーがありません"));
   const categoryIds = new Set(library.categories.map((category) => category.id));
   if (library.tags.some((tag) => !tag.prompt || !categoryIds.has(tag.categoryId))) {
-    throw new Error("タグファイルのカテゴリー構造が正しくありません");
+    throw new Error(t("タグファイルのカテゴリー構造が正しくありません"));
   }
   return libraryToBundledCatalog(library, parsed);
 }
@@ -253,7 +259,7 @@ export function getTagDisplayText(tag, settings) {
   const translation = cleanTranslation(tag?.translation);
   const displayMode = settings?.translationDisplay || "original";
   const localTranslation = translation && tag?.translatedTo === settings?.localLanguage ? translation : "";
-  const primary = displayMode === "local" && localTranslation ? localTranslation : (tag?.value || "空タグ");
+  const primary = displayMode === "local" && localTranslation ? localTranslation : (tag?.value || t("空タグ"));
   const secondary = displayMode === "both" && translation && translation !== tag?.value ? translation : "";
   return { primary, secondary };
 }
@@ -426,14 +432,14 @@ export class PromptEditor {
 
   undo() {
     const snapshot = this.undoStack.pop();
-    if (!snapshot) return this.setStatus("元に戻す操作はありません");
+    if (!snapshot) return this.setStatus(t("元に戻す操作はありません"));
     this.redoStack.push(this.snapshot());
     this.restoreSnapshot(snapshot);
   }
 
   redo() {
     const snapshot = this.redoStack.pop();
-    if (!snapshot) return this.setStatus("やり直す操作はありません");
+    if (!snapshot) return this.setStatus(t("やり直す操作はありません"));
     this.undoStack.push(this.snapshot());
     this.restoreSnapshot(snapshot);
   }
@@ -493,7 +499,7 @@ export class PromptEditor {
       this.applyBlacklist(this.settings.blacklistAction !== "warn");
       this.persist();
       this.render();
-      this.setStatus("STRINGウィジェットの変更を反映しました");
+      this.setStatus(t("STRINGウィジェットの変更を反映しました"));
     }
   }
 
@@ -503,15 +509,15 @@ export class PromptEditor {
     containNodeContextMenu(root);
 
     const promptHeader = element("div", { className: "paio-section-header" }, [
-      element("strong", { text: "プロンプト本文" }),
+      element("strong", { text: t("プロンプト本文") }),
     ]);
-    this.syncBadge = element("span", { className: "paio-sync-badge", text: "同期済み" });
+    this.syncBadge = element("span", { className: "paio-sync-badge", text: t("同期済み") });
     promptHeader.append(this.syncBadge);
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
     this.promptTextarea.rows = 4;
-    this.promptTextarea.placeholder = "プロンプトを入力するか、下のタグ追加から選んでください";
-    this.promptTextarea.setAttribute("aria-label", "現在のプロンプト本文");
+    this.promptTextarea.placeholder = t("プロンプトを入力するか、下のタグ追加から選んでください");
+    this.promptTextarea.setAttribute("aria-label", t("現在のプロンプト本文"));
     this.promptTextarea.addEventListener("input", () => {
       this.promptDirty = true;
       this.renderSyncState();
@@ -522,14 +528,14 @@ export class PromptEditor {
         this.applyPromptText();
       }
     });
-    this.applyPromptButton = button("タグへ反映", () => this.applyPromptText(), "本文を解析してタグへ反映（Ctrl+Enter）");
+    this.applyPromptButton = button(t("タグへ反映"), () => this.applyPromptText(), t("本文を解析してタグへ反映（Ctrl+Enter）"));
     const promptActions = element("div", { className: "paio-prompt-actions" }, [this.applyPromptButton]);
     this.translationBar = this.buildTranslationBar();
 
     this.addInput = element("textarea", { className: "paio-add-input" });
     this.addInput.rows = 1;
-    this.addInput.placeholder = "タグを追加（Enter）";
-    this.addInput.setAttribute("aria-label", "追加するプロンプトタグ");
+    this.addInput.placeholder = t("タグを追加（Enter）");
+    this.addInput.setAttribute("aria-label", t("追加するプロンプトタグ"));
     this.addInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
@@ -538,7 +544,7 @@ export class PromptEditor {
     });
     this.searchInput = element("input", { className: "paio-search" });
     this.searchInput.type = "search";
-    this.searchInput.placeholder = "原文・翻訳を検索";
+    this.searchInput.placeholder = t("原文・翻訳を検索");
     this.searchInput.addEventListener("input", () => {
       this.filterText = this.searchInput.value;
       this.renderTags();
@@ -551,7 +557,7 @@ export class PromptEditor {
       ["untranslated", "未翻訳"],
     ];
     for (const [value, label] of filters) {
-      const option = element("option", { text: label });
+      const option = element("option", { text: t(label) });
       option.value = value;
       this.filterSelect.append(option);
     }
@@ -562,24 +568,24 @@ export class PromptEditor {
 
     const addRow = element("div", { className: "paio-add-row" }, [
       this.addInput,
-      button("追加", () => this.addFromInput()),
+      button(t("追加"), () => this.addFromInput()),
     ]);
     const tools = element("div", { className: "paio-toolbar" }, [
       this.searchInput,
       this.filterSelect,
-      button("↶", () => this.undo(), "元に戻す"),
-      button("↷", () => this.redo(), "やり直す"),
-      button("整形", () => this.normalize(false)),
-      button("重複削除", () => this.normalize(true)),
-      button("禁止", () => openDialog(this.blacklistDialog), "ブラックリスト"),
-      button("設定", () => openDialog(this.settingsDialog)),
+      button("↶", () => this.undo(), t("元に戻す")),
+      button("↷", () => this.redo(), t("やり直す")),
+      button(t("整形"), () => this.normalize(false)),
+      button(t("重複削除"), () => this.normalize(true)),
+      button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
+      button(t("設定"), () => openDialog(this.settingsDialog)),
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
     this.tagSummary = element("div", { className: "paio-tag-summary" });
     this.tagList = element("div", { className: "paio-tags" });
     this.tagList.setAttribute("role", "list");
-    this.status = element("p", { className: "paio-status", text: "準備完了" });
+    this.status = element("p", { className: "paio-status", text: t("準備完了") });
     this.status.setAttribute("aria-live", "polite");
 
     this.settingsDialog = this.buildSettingsDialog();
@@ -652,11 +658,11 @@ export class PromptEditor {
 
   buildTranslationBar() {
     const bar = element("div", { className: "paio-translation-bar" });
-    const label = element("span", { className: "paio-translation-label", text: "表示" });
+    const label = element("span", { className: "paio-translation-label", text: t("表示") });
     const modes = element("div", { className: "paio-segmented" });
     this.translationDisplayButtons = new Map();
     for (const [value, text] of [["original", "原文"], ["local", "日本語"], ["both", "両方"]]) {
-      const control = button(text, () => {
+      const control = button(t(text), () => {
         this.settings.translationDisplay = value;
         this.persist();
         this.renderTranslationControls();
@@ -668,7 +674,7 @@ export class PromptEditor {
       modes.append(control);
     }
 
-    this.translateButton = button("翻訳", () => this.translatePrompt(), "日本語タグを英語へ置換し、英語タグへ日本語訳を追加");
+    this.translateButton = button(t("翻訳"), () => this.translatePrompt(), t("日本語タグを英語へ置換し、英語タグへ日本語訳を追加"));
     this.translateButton.classList.add("paio-translate-button");
     bar.append(label, modes, this.translateButton);
     return bar;
@@ -676,8 +682,8 @@ export class PromptEditor {
 
   buildDialog(title) {
     const dialog = element("dialog", { className: "paio-dialog" });
-    const heading = element("h3", { text: title });
-    const close = button("閉じる", () => closeDialog(dialog));
+    const heading = element("h3", { text: t(title) });
+    const close = button(t("閉じる"), () => closeDialog(dialog));
     const body = element("div", { className: "paio-dialog-body" });
     dialog.append(heading, body, element("div", { className: "paio-dialog-footer" }, close));
     dialog.addEventListener("click", (event) => {
@@ -699,27 +705,34 @@ export class PromptEditor {
     step.value = String(this.settings.weightStep);
     const duplicate = element("select", { className: "paio-select" });
     for (const [value, label] of [["allow", "許可"], ["skip", "追加しない"], ["move", "末尾へ移動"]]) {
-      const option = element("option", { text: label });
+      const option = element("option", { text: t(label) });
       option.value = value;
       duplicate.append(option);
     }
     duplicate.value = this.settings.duplicatePolicy;
     const provider = element("select", { className: "paio-select" });
     for (const [value, label] of [["local", "無料翻訳（辞書→MyMemory）"], ["offline", "ローカル辞書のみ"], ["libretranslate", "LibreTranslate"], ["deepl", "DeepL"], ["openai", "OpenAI互換"]]) {
-      const option = element("option", { text: label });
+      const option = element("option", { text: t(label) });
       option.value = value;
       provider.append(option);
     }
     provider.value = this.settings.translationProvider;
     const output = element("select", { className: "paio-select" });
     for (const [value, label] of [["en", "英語"], ["ja", "日本語"]]) {
-      const option = element("option", { text: label });
+      const option = element("option", { text: t(label) });
       option.value = value;
       output.append(option);
     }
     output.value = this.settings.outputLanguage;
     const auto = element("input", { type: "checkbox" });
     auto.checked = this.settings.autoTranslate;
+    const uiLanguage = element("select", { className: "paio-select" });
+    for (const { code, label } of getAvailableUiLanguages()) {
+      const option = element("option", { text: label });
+      option.value = code;
+      uiLanguage.append(option);
+    }
+    uiLanguage.value = getUiLanguage();
     const colorGrid = element("div", { className: "paio-color-grid" });
     const colorInputs = {};
     const colorLabels = {
@@ -732,30 +745,32 @@ export class PromptEditor {
       input.type = "color";
       input.value = this.settings.tagColors?.[key] || COLOR_DEFAULTS[key];
       colorInputs[key] = input;
-      colorGrid.append(this.labeled(label, input));
+      colorGrid.append(this.labeled(t(label), input));
     }
     const libraryManager = this.buildLibraryManager();
     const generalPanel = element("section", { className: "paio-settings-panel is-active", dataset: { panel: "general" } });
     generalPanel.append(
-      element("h4", { text: "一般" }),
-      this.labeled("重み刻み", step),
-      this.labeled("重複時", duplicate),
-      this.labeled("出力言語", output),
-      element("p", { className: "paio-settings-caption", text: "タグ状態の色" }),
+      element("h4", { text: t("一般") }),
+      this.labeled(t("UI言語"), uiLanguage),
+      element("p", { className: "paio-settings-help", text: t("UI言語はComfyUIの再読み込み後に反映されます") }),
+      this.labeled(t("重み刻み"), step),
+      this.labeled(t("重複時"), duplicate),
+      this.labeled(t("出力言語"), output),
+      element("p", { className: "paio-settings-caption", text: t("タグ状態の色") }),
       colorGrid,
     );
     const translationPanel = element("section", { className: "paio-settings-panel", dataset: { panel: "translation" } });
     translationPanel.append(
-      element("h4", { text: "翻訳" }),
-      this.labeled("翻訳プロバイダー", provider),
-      this.labeled("入力時に自動翻訳", auto),
-      element("p", { className: "paio-settings-help", text: "上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。" }),
+      element("h4", { text: t("翻訳") }),
+      this.labeled(t("翻訳プロバイダー"), provider),
+      this.labeled(t("入力時に自動翻訳"), auto),
+      element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。") }),
     );
     const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.root);
     const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, libraryPanel]);
-    const navigation = element("nav", { className: "paio-settings-nav", ariaLabel: "設定項目" });
+    const navigation = element("nav", { className: "paio-settings-nav", ariaLabel: t("設定項目") });
     for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["library", "タグ管理"]]) {
-      const navButton = button(label, () => {
+      const navButton = button(t(label), () => {
         navigation.querySelectorAll(".paio-button").forEach((item) => item.classList.toggle("is-active", item === navButton));
         content.querySelectorAll(".paio-settings-panel").forEach((item) => item.classList.toggle("is-active", item.dataset.panel === id));
         if (id === "library") libraryManager.refresh();
@@ -764,7 +779,7 @@ export class PromptEditor {
       if (id === "general") navButton.classList.add("is-active");
       navigation.append(navButton);
     }
-    const save = button("変更を保存", () => {
+    const save = button(t("変更を保存"), () => {
       this.pushUndo();
       this.settings.weightStep = Number(step.value);
       this.settings.duplicatePolicy = duplicate.value;
@@ -773,12 +788,16 @@ export class PromptEditor {
       this.settings.autoTranslate = auto.checked;
       this.settings.tagColors = Object.fromEntries(Object.entries(colorInputs).map(([key, input]) => [key, input.value]));
       this.settings.libraryEdits = libraryManager.getEdits();
+      const previousUiLanguage = getUiLanguage();
+      const nextUiLanguage = saveUiLanguage(uiLanguage.value);
       this.applyCustomColors();
       this.syncToWidgets();
       this.render();
       this.refreshExamplesPanel?.();
       closeDialog(dialog);
-      this.setStatus("設定を保存しました。APIキーはワークフローに保存されません");
+      this.setStatus(t(previousUiLanguage === nextUiLanguage
+        ? "設定を保存しました。APIキーはワークフローに保存されません"
+        : "設定を保存しました。UI言語はComfyUIの再読み込み後に反映されます"));
     });
     const shell = element("div", { className: "paio-settings-shell" }, [navigation, content]);
     dialog.body.append(shell);
@@ -789,19 +808,19 @@ export class PromptEditor {
   buildLibraryManager() {
     const root = element("div", { className: "paio-library-manager" });
     const heading = element("div", { className: "paio-library-heading" }, [
-      element("div", {}, [element("h4", { text: "タグ管理" }), element("p", { text: "大分類 → 中分類 → 小分類 → タグの順で整理します。" })]),
+      element("div", {}, [element("h4", { text: t("タグ管理") }), element("p", { text: t("大分類 → 中分類 → 小分類 → タグの順で整理します。") })]),
     ]);
     const fileInput = element("input");
     fileInput.type = "file";
     fileInput.accept = ".json,application/json";
     fileInput.hidden = true;
-    const fileStatus = element("span", { className: "paio-library-file-status", text: "保存先を確認中…" });
+    const fileStatus = element("span", { className: "paio-library-file-status", text: t("保存先を確認中…") });
     const body = element("div", { className: "paio-library-body" });
     const treePane = element("section", { className: "paio-library-tree" });
     const detailPane = element("section", { className: "paio-library-detail" });
     const search = element("input", { className: "paio-search" });
     search.type = "search";
-    search.placeholder = "カテゴリーやタグを検索";
+    search.placeholder = t("カテゴリーやタグを検索");
     let edits = sanitizeLibraryEdits(this.settings.libraryEdits);
     let selectedId = "";
     let serial = 0;
@@ -817,14 +836,18 @@ export class PromptEditor {
         const query = this.settings.libraryFile ? `?selected=${encodeURIComponent(this.settings.libraryFile)}` : "";
         const response = await this.api.fetchApi(`/prompt_all_in_one/catalogs${query}`);
         const responseBody = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(responseBody.error || `ファイル情報の取得に失敗しました (${response.status})`);
+        if (!response.ok) throw new Error(responseBody.error || t("ファイル情報の取得に失敗しました ({status})", { status: response.status }));
         const canOverwrite = Boolean(this.settings.libraryFile && responseBody.exists);
         overwriteButton.disabled = !canOverwrite;
-        overwriteButton.title = canOverwrite ? `${this.settings.libraryFile}.json を上書き保存` : "デフォルトは上書きできません。別名で保存してください";
+        overwriteButton.title = canOverwrite
+          ? t("{file} を上書き保存", { file: `${this.settings.libraryFile}.json` })
+          : t("デフォルトは上書きできません。別名で保存してください");
         fileStatus.classList.remove("is-error");
         fileStatus.textContent = this.settings.libraryFile
-          ? (responseBody.exists ? `使用中: ${this.settings.libraryFile}.json` : "指定ファイルがないためデフォルトを使用中")
-          : "使用中: デフォルト";
+          ? (responseBody.exists
+            ? t("使用中: {file}", { file: `${this.settings.libraryFile}.json` })
+            : t("指定ファイルがないためデフォルトを使用中"))
+          : t("使用中: デフォルト");
       } catch (error) {
         overwriteButton.disabled = true;
         fileStatus.textContent = error.message;
@@ -833,12 +856,12 @@ export class PromptEditor {
     };
     const loadSelectedCatalog = async (selectedFile, fileHandle = null) => {
       loadButton.disabled = true;
-      loadButton.textContent = "読み込み中…";
-      fileStatus.textContent = `${selectedFile.name} を確認中…`;
+      loadButton.textContent = t("読み込み中…");
+      fileStatus.textContent = t("{file} を確認中…", { file: selectedFile.name });
       fileStatus.classList.remove("is-error");
       try {
-        if (selectedFile.size > MAX_CATALOG_FILE_BYTES) throw new Error("タグファイルは4 MB以下にしてください");
-        if (!selectedFile.name.toLocaleLowerCase().endsWith(".json")) throw new Error("JSONファイルを選択してください");
+        if (selectedFile.size > MAX_CATALOG_FILE_BYTES) throw new Error(t("タグファイルは4 MB以下にしてください"));
+        if (!selectedFile.name.toLocaleLowerCase().endsWith(".json")) throw new Error(t("JSONファイルを選択してください"));
         const catalog = parseImportedCatalogText(await selectedFile.text());
         const saved = await upsertCatalogCopy(this.api, selectedFile.name, catalog, { allowLoadFallback: true });
         this.pushUndo();
@@ -854,23 +877,23 @@ export class PromptEditor {
         this.refreshExamplesPanel?.();
         await refreshFileStatus();
         this.setStatus(saved.compatibilityFallback
-          ? `${selectedFile.name} を読み込みました。同名コピーの更新にはComfyUIの再起動が必要です`
-          : `${selectedFile.name} を読み込みました`);
+          ? t("{file} を読み込みました。同名コピーの更新にはComfyUIの再起動が必要です", { file: selectedFile.name })
+          : t("{file} を読み込みました", { file: selectedFile.name }));
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
       } finally {
         loadButton.disabled = false;
-        loadButton.textContent = "ファイルを選んで読み込む";
+        loadButton.textContent = t("ファイルを選んで読み込む");
         fileInput.value = "";
       }
     };
     const openCatalogFile = async () => {
       if (hasEdits()) {
-        const confirmed = window.confirm("編集内容は保存されていません。破棄して別のタグファイルを読み込みますか？");
+        const confirmed = window.confirm(t("編集内容は保存されていません。破棄して別のタグファイルを読み込みますか？"));
         if (!confirmed) {
-          const message = "読み込みをキャンセルしました。編集内容は保持されています";
+          const message = t("読み込みをキャンセルしました。編集内容は保持されています");
           fileStatus.textContent = message;
           fileStatus.classList.remove("is-error");
           return this.setStatus(message);
@@ -889,13 +912,13 @@ export class PromptEditor {
         });
         await loadSelectedCatalog(await fileHandle.getFile(), fileHandle);
       } catch (error) {
-        if (error?.name === "AbortError") return this.setStatus("読み込みをキャンセルしました");
+        if (error?.name === "AbortError") return this.setStatus(t("読み込みをキャンセルしました"));
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
       }
     };
-    const loadButton = button("ファイルを選んで読み込む", openCatalogFile, "JSONタグファイルを選んで読み込む");
+    const loadButton = button(t("ファイルを選んで読み込む"), openCatalogFile, t("JSONタグファイルを選んで読み込む"));
     fileInput.addEventListener("change", async () => {
       const selectedFile = fileInput.files?.[0];
       if (!selectedFile) return;
@@ -938,9 +961,9 @@ export class PromptEditor {
         const responseBody = await upsertCatalogCopy(this.api, savedFileName, catalog);
         currentCatalogFileHandle = savedFileHandle;
         currentSourceFileName = savedFileName;
-        await applySavedCatalog(catalog, responseBody, `${savedFileName} に別名保存しました`);
+        await applySavedCatalog(catalog, responseBody, t("{file} に別名保存しました", { file: savedFileName }));
       } catch (error) {
-        if (error?.name === "AbortError") return this.setStatus("別名保存をキャンセルしました");
+        if (error?.name === "AbortError") return this.setStatus(t("別名保存をキャンセルしました"));
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
@@ -950,34 +973,34 @@ export class PromptEditor {
     };
     const overwriteCurrentFile = async () => {
       const name = this.settings.libraryFile;
-      if (!name) return this.setStatus("デフォルトは上書きできません。別名で保存してください", true);
+      if (!name) return this.setStatus(t("デフォルトは上書きできません。別名で保存してください"), true);
       const targetName = currentCatalogFileHandle?.name || `${name}.json`;
-      if (!window.confirm(`${targetName} を上書き保存しますか？`)) return this.setStatus("上書き保存をキャンセルしました");
+      if (!window.confirm(t("{file} を上書き保存しますか？", { file: targetName }))) return this.setStatus(t("上書き保存をキャンセルしました"));
       overwriteButton.disabled = true;
       try {
         const catalog = await buildCompleteCatalogForSave(() => this.loadExampleData(), edits);
         if (currentCatalogFileHandle) await writeCatalogFile(currentCatalogFileHandle, catalog);
         const responseBody = await upsertCatalogCopy(this.api, targetName, catalog);
-        await applySavedCatalog(catalog, responseBody, `${targetName} を上書き保存しました`);
+        await applySavedCatalog(catalog, responseBody, t("{file} を上書き保存しました", { file: targetName }));
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
         this.setStatus(error.message, true);
       }
     };
-    overwriteButton = button("上書き保存", overwriteCurrentFile);
+    overwriteButton = button(t("上書き保存"), overwriteCurrentFile);
     overwriteButton.disabled = !this.settings.libraryFile;
-    saveAsButton = button("別名で保存", saveAsNewFile);
+    saveAsButton = button(t("別名で保存"), saveAsNewFile);
     saveAsButton.classList.add("is-primary");
     const fileBar = element("section", { className: "paio-library-filebar" }, [
       element("div", { className: "paio-library-file-controls" }, [
-        this.labeled("タグファイル", loadButton),
+        this.labeled(t("タグファイル"), loadButton),
         fileInput,
       ]),
       fileStatus,
     ]);
     const saveBar = element("section", { className: "paio-library-savebar" }, [
-      element("span", { className: "paio-hint", text: "タグとカテゴリーの変更をJSONへ保存" }),
+      element("span", { className: "paio-hint", text: t("タグとカテゴリーの変更をJSONへ保存") }),
       element("div", { className: "paio-library-save-actions" }, [overwriteButton, saveAsButton]),
     ]);
     const createCategory = (level) => {
@@ -986,19 +1009,19 @@ export class PromptEditor {
       const selected = library.categories.find((item) => item.id === selectedId);
       if (level === "medium") parentId = selected?.level === "large" ? selected.id : selected?.level === "medium" ? selected.parentId : library.categories.find((item) => item.level === "large")?.id || "";
       if (level === "small") parentId = selected?.level === "medium" ? selected.id : selected?.level === "small" ? selected.parentId : library.categories.find((item) => item.level === "medium")?.id || "";
-      if (level !== "large" && !parentId) return this.setStatus("先に親カテゴリーを作成してください", true);
+      if (level !== "large" && !parentId) return this.setStatus(t("先に親カテゴリーを作成してください"), true);
       const id = `custom-category-${Date.now()}-${serial++}`;
       edits = saveCategoryEdit(edits, { id, level, parentId, en: "New category", ja: "新しいカテゴリー", custom: true });
       selectedId = id;
       render();
     };
     const addBar = element("div", { className: "paio-library-addbar" }, [
-      button("＋ 大分類", () => createCategory("large")),
-      button("＋ 中分類", () => createCategory("medium")),
-      button("＋ 小分類", () => createCategory("small")),
+      button(t("＋ 大分類"), () => createCategory("large")),
+      button(t("＋ 中分類"), () => createCategory("medium")),
+      button(t("＋ 小分類"), () => createCategory("small")),
     ]);
     const showCategoryDetail = (library, category) => {
-      if (!category) return detailPane.append(element("p", { className: "paio-empty", text: "左からカテゴリーを選択してください" }));
+      if (!category) return detailPane.append(element("p", { className: "paio-empty", text: t("左からカテゴリーを選択してください") }));
       const en = element("input", { className: "paio-search" }); en.value = category.en;
       const ja = element("input", { className: "paio-search" }); ja.value = category.ja;
       const stageCategoryName = () => {
@@ -1007,11 +1030,11 @@ export class PromptEditor {
       en.addEventListener("input", stageCategoryName);
       ja.addEventListener("input", stageCategoryName);
       const destination = element("select", { className: "paio-select" });
-      const empty = element("option", { text: "移動先を選択" }); empty.value = ""; destination.append(empty);
+      const empty = element("option", { text: t("移動先を選択") }); empty.value = ""; destination.append(empty);
       for (const small of library.categories.filter((item) => item.level === "small" && item.id !== category.id)) {
         const option = element("option", { text: `${small.ja} / ${small.en}` }); option.value = small.id; destination.append(option);
       }
-      const remove = button("カテゴリーを削除", () => {
+      const remove = button(t("カテゴリーを削除"), () => {
         try {
           edits = deleteCategoryEdit(source(), edits, category.id, destination.value);
           selectedId = "";
@@ -1020,13 +1043,13 @@ export class PromptEditor {
       });
       remove.classList.add("is-danger");
       detailPane.append(
-        element("div", { className: "paio-library-detail-title" }, [element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大分類", medium: "中分類", small: "小分類" }[category.level] }), element("strong", { text: category.ja })]),
-        this.labeled("英語名", en), this.labeled("日本語名", ja),
+        element("div", { className: "paio-library-detail-title" }, [element("span", { className: `paio-level-badge is-${category.level}`, text: t({ large: "大分類", medium: "中分類", small: "小分類" }[category.level]) }), element("strong", { text: category.ja })]),
+        this.labeled(t("英語名"), en), this.labeled(t("日本語名"), ja),
       );
       if (category.level === "small") detailPane.append(this.buildTagEditor(library, category, () => edits, (value, shouldRender = true) => { edits = value; if (shouldRender) render(); }));
       detailPane.append(element("div", { className: "paio-library-danger" }, [
-        element("strong", { text: "カテゴリー削除" }),
-        element("p", { text: "配下のタグがある場合は、小分類の移動先を選択してください。" }), destination, remove,
+        element("strong", { text: t("カテゴリー削除") }),
+        element("p", { text: t("配下のタグがある場合は、小分類の移動先を選択してください。") }), destination, remove,
       ]));
     };
     const render = () => {
@@ -1080,7 +1103,7 @@ export class PromptEditor {
         });
         row.className = `paio-library-tree-row is-${category.level}${selectedId === category.id ? " is-selected" : ""}`;
         if (foldable) row.setAttribute("aria-expanded", String(!collapsed));
-        row.prepend(element("span", { className: `paio-level-badge is-${category.level}`, text: { large: "大", medium: "中", small: "小" }[category.level] }));
+        row.prepend(element("span", { className: `paio-level-badge is-${category.level}`, text: t({ large: "大", medium: "中", small: "小" }[category.level]) }));
         treePane.append(row);
         if (category.level === "small") {
           const tags = library.tags.filter((tag) => tag.categoryId === category.id).slice(0, 8);
@@ -1104,13 +1127,13 @@ export class PromptEditor {
 
   buildTagEditor(library, category, getEdits, setEdits) {
     const section = element("div", { className: "paio-tag-editor" }, [
-      element("strong", { text: "タグ" }),
-      element("span", { className: "paio-hint", text: "⋮⋮をドラッグして表示順を変更" }),
+      element("strong", { text: t("タグ") }),
+      element("span", { className: "paio-hint", text: t("⋮⋮をドラッグして表示順を変更") }),
     ]);
-    const prompt = element("input", { className: "paio-search" }); prompt.placeholder = "英語タグ";
-    const ja = element("input", { className: "paio-search" }); ja.placeholder = "日本語訳";
-    section.append(element("div", { className: "paio-tag-add" }, [prompt, ja, button("追加", () => {
-      if (!prompt.value.trim()) return this.setStatus("タグを入力してください", true);
+    const prompt = element("input", { className: "paio-search" }); prompt.placeholder = t("英語タグ");
+    const ja = element("input", { className: "paio-search" }); ja.placeholder = t("日本語訳");
+    section.append(element("div", { className: "paio-tag-add" }, [prompt, ja, button(t("追加"), () => {
+      if (!prompt.value.trim()) return this.setStatus(t("タグを入力してください"), true);
       const id = `custom-tag-${Date.now()}`;
       const order = library.tags.filter((item) => item.categoryId === category.id).length;
       setEdits(saveTagEdit(getEdits(), { id, categoryId: category.id, prompt: prompt.value, ja: ja.value, order, custom: true }));
@@ -1128,10 +1151,10 @@ export class PromptEditor {
     for (const [index, tag] of categoryTags.entries()) {
       const tagPrompt = element("input", { className: "paio-search" }); tagPrompt.value = tag.prompt;
       const tagJa = element("input", { className: "paio-search" }); tagJa.value = tag.ja;
-      const dragHandle = button("⋮⋮", () => {}, "ドラッグ、または上下矢印キーで表示順を変更");
+      const dragHandle = button("⋮⋮", () => {}, t("ドラッグ、または上下矢印キーで表示順を変更"));
       dragHandle.classList.add("paio-tag-drag-handle");
       dragHandle.draggable = true;
-      dragHandle.setAttribute("aria-label", `${tag.prompt} の表示順を変更`);
+      dragHandle.setAttribute("aria-label", t("{tag} の表示順を変更", { tag: tag.prompt }));
       const row = element("div", { className: "paio-tag-edit-row" }, [dragHandle, tagPrompt, tagJa]);
       row.dataset.tagId = tag.id;
       const stageTag = () => setEdits(saveTagEdit(getEdits(), { ...tag, prompt: tagPrompt.value, ja: tagJa.value, custom: !tag.builtin }), false);
@@ -1172,7 +1195,7 @@ export class PromptEditor {
         clearDropState();
         moveTag(movedId, tag.id, position);
       });
-      const remove = button("削除", () => setEdits(deleteTagEdit(getEdits(), tag))); remove.classList.add("is-danger"); row.append(remove);
+      const remove = button(t("削除"), () => setEdits(deleteTagEdit(getEdits(), tag))); remove.classList.add("is-danger"); row.append(remove);
       section.append(row);
     }
     return section;
@@ -1202,25 +1225,25 @@ export class PromptEditor {
     const summary = element("summary", { className: "paio-examples-summary" });
     const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
     disclosure.setAttribute("aria-hidden", "true");
-    summary.append(disclosure, element("strong", { text: "タグを追加" }));
+    summary.append(disclosure, element("strong", { text: t("タグを追加") }));
     const search = element("input", { className: "paio-search" });
     search.type = "search";
-    search.placeholder = "英語・日本語でタグを検索";
-    search.setAttribute("aria-label", "内蔵例を検索");
+    search.placeholder = t("英語・日本語でタグを検索");
+    search.setAttribute("aria-label", t("内蔵例を検索"));
     const categoryBands = element("div", { className: "paio-example-category-bands" });
-    const pathStatus = element("span", { className: "paio-example-path", text: "分類を読み込み中…" });
+    const pathStatus = element("span", { className: "paio-example-path", text: t("分類を読み込み中…") });
     const list = element("div", { className: "paio-example-list" });
     list.setAttribute("aria-live", "polite");
     list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
     const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
       element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-      element("span", { text: "ドラッグで高さ変更" }),
+      element("span", { text: t("ドラッグで高さ変更") }),
     ]);
     resizeHandle.tabIndex = 0;
     resizeHandle.setAttribute("role", "separator");
     resizeHandle.setAttribute("aria-orientation", "horizontal");
-    resizeHandle.setAttribute("aria-label", "タグ一覧の高さを変更");
-    resizeHandle.title = "上下にドラッグしてタグ一覧の高さを変更（ダブルクリックでリセット）";
+    resizeHandle.setAttribute("aria-label", t("タグ一覧の高さを変更"));
+    resizeHandle.title = t("上下にドラッグしてタグ一覧の高さを変更（ダブルクリックでリセット）");
     const applyListHeight = (height, nodeHeight = null, persist = false) => {
       const nextHeight = clampExampleListHeight(height);
       this.settings.exampleListHeight = nextHeight;
@@ -1285,7 +1308,7 @@ export class PromptEditor {
       const applied = clampExampleListHeight(nextHeight);
       applyListHeight(applied, currentNodeHeight + applied - currentHeight, true);
     });
-    const resultStatus = element("span", { className: "paio-example-count", text: "読み込み中…" });
+    const resultStatus = element("span", { className: "paio-example-count", text: t("読み込み中…") });
     const selected = new Set();
     let library = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
@@ -1315,18 +1338,18 @@ export class PromptEditor {
           chip.setAttribute("aria-pressed", String(category.id === activeId));
           chips.append(chip);
         }
-        if (!options.length) chips.append(element("span", { className: "paio-hint", text: "分類がありません" }));
+        if (!options.length) chips.append(element("span", { className: "paio-hint", text: t("分類がありません") }));
         categoryBands.append(element("div", { className: `paio-example-category-band is-${level}` }, [
-          element("strong", { className: "paio-example-category-label", text: label }),
+          element("strong", { className: "paio-example-category-label", text: t(label) }),
           chips,
         ]));
       }
-      pathStatus.textContent = [resolved.large?.ja, resolved.medium?.ja, resolved.small?.ja].filter(Boolean).join(" › ") || "分類がありません";
+      pathStatus.textContent = [resolved.large?.ja, resolved.medium?.ja, resolved.small?.ja].filter(Boolean).join(" › ") || t("分類がありません");
     };
     const redraw = () => {
       list.replaceChildren();
       if (!library) {
-        list.append(element("p", { className: "paio-empty", text: "内蔵例を読み込んでいます…" }));
+        list.append(element("p", { className: "paio-empty", text: t("内蔵例を読み込んでいます…") }));
         return;
       }
       const resolved = resolveExampleCategoryPath(library, categoryPath);
@@ -1338,7 +1361,7 @@ export class PromptEditor {
       renderCategoryBands(resolved);
       const query = search.value.trim().toLocaleLowerCase();
       const matches = filterExampleLibraryTags(library, resolved.small?.id, query);
-      resultStatus.textContent = `${matches.length}件`;
+      resultStatus.textContent = t("{count}件", { count: matches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
       for (const item of matches.slice(0, visibleLimit)) {
         const translation = cleanTranslation(item.ja);
@@ -1349,12 +1372,12 @@ export class PromptEditor {
             chip.classList.toggle("is-selected", selected.has(item.prompt));
             chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
             this.exampleBulkButton.hidden = selected.size === 0;
-            this.exampleBulkButton.textContent = `選択した${selected.size}件を追加`;
+            this.exampleBulkButton.textContent = t("選択した{count}件を追加", { count: selected.size });
             return;
           }
           this.pushUndo();
           this.addValues([{ value: item.prompt, translation: translation, translatedTo: translation ? this.settings.localLanguage : "" }]);
-          this.setStatus(`${item.prompt} を追加しました`);
+          this.setStatus(t("{tag} を追加しました", { tag: item.prompt }));
         }, [
           translation ? `${item.prompt} — ${translation}` : item.prompt,
         ].filter(Boolean).join("\n"));
@@ -1367,9 +1390,9 @@ export class PromptEditor {
         chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
         list.append(chip);
       }
-      if (!matches.length) list.append(element("p", { className: "paio-empty", text: "一致する例はありません" }));
+      if (!matches.length) list.append(element("p", { className: "paio-empty", text: t("一致する例はありません") }));
       if (!query && matches.length > renderLimit) {
-        list.append(button(`さらに表示（残り ${matches.length - renderLimit}）`, () => {
+        list.append(button(t("さらに表示（残り {count}）", { count: matches.length - renderLimit }), () => {
           renderLimit += EXAMPLE_PAGE_SIZE;
           redraw();
         }));
@@ -1387,12 +1410,12 @@ export class PromptEditor {
       })
       .catch(() => {
         library = { categories: [], tags: [] };
-        resultStatus.textContent = "読込失敗";
-        list.replaceChildren(element("p", { className: "paio-empty paio-error", text: "内蔵例を読み込めませんでした" }));
-        this.setStatus("内蔵例を読み込めませんでした", true);
+        resultStatus.textContent = t("読込失敗");
+        list.replaceChildren(element("p", { className: "paio-empty paio-error", text: t("内蔵例を読み込めませんでした") }));
+        this.setStatus(t("内蔵例を読み込めませんでした"), true);
       });
     search.addEventListener("input", () => { renderLimit = INITIAL_EXAMPLE_LIMIT; redraw(); });
-    this.exampleBulkButton = button("選択した0件を追加", () => {
+    this.exampleBulkButton = button(t("選択した{count}件を追加", { count: 0 }), () => {
       if (!selected.size) return;
       this.pushUndo();
       this.addValues([...selected].map((prompt) => {
@@ -1402,10 +1425,10 @@ export class PromptEditor {
       }));
       selected.clear();
       redraw();
-      this.setStatus("内蔵例を追加しました");
+      this.setStatus(t("内蔵例を追加しました"));
     });
     this.exampleBulkButton.hidden = true;
-    const resetCategories = button("リセット", () => {
+    const resetCategories = button(t("リセット"), () => {
       categoryPath = { largeId: "", mediumId: "", smallId: "" };
       search.value = "";
       renderLimit = INITIAL_EXAMPLE_LIMIT;
@@ -1419,7 +1442,7 @@ export class PromptEditor {
     const controls = element("div", { className: "paio-example-controls" }, [search]);
     const footer = element("div", { className: "paio-example-footer" }, [
       resultStatus,
-      element("span", { className: "paio-hint", text: "Ctrl+クリックで複数選択" }),
+      element("span", { className: "paio-hint", text: t("Ctrl+クリックで複数選択") }),
       this.exampleBulkButton,
     ]);
     panel.append(summary, navigation, controls, list, resizeHandle, footer);
@@ -1429,17 +1452,17 @@ export class PromptEditor {
 
   buildBlacklistDialog() {
     const dialog = this.buildDialog("ブラックリスト");
-    const help = element("p", { text: "1行ごとに exact:tag / iexact:tag / contains:tag / regex:pattern" });
+    const help = element("p", { text: t("1行ごとに exact:tag / iexact:tag / contains:tag / regex:pattern") });
     const textarea = element("textarea", { className: "paio-dialog-textarea" });
     textarea.value = this.settings.blacklist.map((item) => `${item.mode}:${item.pattern}`).join("\n");
     const action = element("select", { className: "paio-select" });
     for (const [value, label] of [["warn", "警告のみ"], ["disable", "無効化"], ["delete", "削除"]]) {
-      const option = element("option", { text: label });
+      const option = element("option", { text: t(label) });
       option.value = value;
       action.append(option);
     }
     action.value = this.settings.blacklistAction;
-    const save = button("適用", () => {
+    const save = button(t("適用"), () => {
       const entries = textarea.value.split(/\r?\n/u).filter(Boolean).slice(0, 200).map((line) => {
         const separator = line.indexOf(":");
         if (separator < 0) return { mode: "exact", pattern: line.trim() };
@@ -1448,7 +1471,7 @@ export class PromptEditor {
       const compiled = compileBlacklist(entries);
       const errors = compiled.filter((entry) => entry.error);
       if (errors.length) {
-        this.setStatus(`無効な正規表現: ${errors[0].error}`, true);
+        this.setStatus(t("無効な正規表現: {error}", { error: errors[0].error }), true);
         return;
       }
       this.pushUndo();
@@ -1459,7 +1482,7 @@ export class PromptEditor {
       this.render();
       closeDialog(dialog);
     });
-    dialog.body.append(help, textarea, this.labeled("一致時の処理", action), save);
+    dialog.body.append(help, textarea, this.labeled(t("一致時の処理"), action), save);
     return dialog;
   }
 
@@ -1471,7 +1494,7 @@ export class PromptEditor {
     file.addEventListener("change", async () => {
       const selected = file.files?.[0];
       if (!selected) return;
-      if (selected.size > 1024 * 1024) return this.setStatus("ファイルは1 MB以下にしてください", true);
+      if (selected.size > 1024 * 1024) return this.setStatus(t("ファイルは1 MB以下にしてください"), true);
       const text = await selected.text();
       this.pushUndo();
       try {
@@ -1486,17 +1509,17 @@ export class PromptEditor {
         this.syncToWidgets();
         this.render();
         closeDialog(dialog);
-        this.setStatus("インポートしました");
+        this.setStatus(t("インポートしました"));
       } catch (error) {
         this.setStatus(error.message, true);
       }
     });
     const controls = [
-      button("プロンプトをコピー", () => this.copyPrompt()),
-      button("表示言語込みで選択をコピー", () => this.copySelected(true)),
-      button("選択を英語でコピー", () => this.copySelectedLanguage("en")),
-      button("TXTを書き出す", () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage), "text/plain;charset=utf-8")),
-      button("状態JSONを書き出す", () => download("prompt_all_in_one_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
+      button(t("プロンプトをコピー"), () => this.copyPrompt()),
+      button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
+      button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
+      button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage), "text/plain;charset=utf-8")),
+      button(t("状態JSONを書き出す"), () => download("prompt_all_in_one_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
     return dialog;
@@ -1513,7 +1536,7 @@ export class PromptEditor {
 
   renderSyncState() {
     if (!this.syncBadge || !this.applyPromptButton) return;
-    this.syncBadge.textContent = this.promptDirty ? "未反映" : "同期済み";
+    this.syncBadge.textContent = t(this.promptDirty ? "未反映" : "同期済み");
     this.syncBadge.classList.toggle("is-dirty", this.promptDirty);
     this.applyPromptButton.disabled = !this.promptDirty;
   }
@@ -1527,8 +1550,8 @@ export class PromptEditor {
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
     this.syncToWidgets();
     this.render();
-    if (parsed.errors.length) this.setStatus(`本文を反映しましたが構文警告が${parsed.errors.length}件あります`, true);
-    else this.setStatus("本文をタグへ反映しました");
+    if (parsed.errors.length) this.setStatus(t("本文を反映しましたが構文警告が{count}件あります", { count: parsed.errors.length }), true);
+    else this.setStatus(t("本文をタグへ反映しました"));
   }
 
   commitPromptBeforeAction() {
@@ -1553,13 +1576,13 @@ export class PromptEditor {
     }
     this.bulkBar.hidden = false;
     const actions = [
-      button(`${selected.length}件選択`, () => this.clearSelection()),
-      button("有効", () => this.bulkMutate((tag) => { tag.enabled = true; })),
-      button("無効", () => this.bulkMutate((tag) => { tag.enabled = false; })),
-      button("＋", () => this.bulkWeight(1), "重みを上げる"),
-      button("－", () => this.bulkWeight(-1), "重みを下げる"),
-      button("コピー", () => this.copySelected(false)),
-      button("削除", () => this.deleteSelected()),
+      button(t("{count}件選択", { count: selected.length }), () => this.clearSelection()),
+      button(t("有効"), () => this.bulkMutate((tag) => { tag.enabled = true; })),
+      button(t("無効"), () => this.bulkMutate((tag) => { tag.enabled = false; })),
+      button("＋", () => this.bulkWeight(1), t("重みを上げる")),
+      button("－", () => this.bulkWeight(-1), t("重みを下げる")),
+      button(t("コピー"), () => this.copySelected(false)),
+      button(t("削除"), () => this.deleteSelected()),
     ];
     this.bulkBar.append(...actions);
   }
@@ -1585,7 +1608,7 @@ export class PromptEditor {
     this.tagList.replaceChildren();
     const rows = this.filteredTags();
     const disabledCount = this.currentTags.filter((tag) => !tag.enabled).length;
-    this.tagSummary.textContent = `${this.currentTags.length}件中 ${disabledCount}件無効`;
+    this.tagSummary.textContent = t("{total}件中 {disabled}件無効", { total: this.currentTags.length, disabled: disabledCount });
     const duplicates = findDuplicateKeys(this.currentTags);
     for (const { tag, index } of rows.slice(0, this.renderLimit)) {
       const duplicate = duplicates.has(canonicalTagKey(tag.value));
@@ -1593,11 +1616,11 @@ export class PromptEditor {
     }
     if (!rows.length) {
       const message = this.currentTags.length
-        ? "検索・絞り込みに一致するタグはありません"
-        : "プロンプトがありません。上の本文へ入力するか、下のタグ追加から選んでください";
+        ? t("検索・絞り込みに一致するタグはありません")
+        : t("プロンプトがありません。上の本文へ入力するか、下のタグ追加から選んでください");
       this.tagList.append(element("p", { className: "paio-empty", text: message }));
     } else if (rows.length > this.renderLimit) {
-      this.tagList.append(button(`さらに表示（残り ${rows.length - this.renderLimit}）`, () => {
+      this.tagList.append(button(t("さらに表示（残り {count}）", { count: rows.length - this.renderLimit }), () => {
         this.renderLimit += MAX_RENDERED_TAGS;
         this.renderTags();
       }));
@@ -1610,7 +1633,11 @@ export class PromptEditor {
     row.setAttribute("aria-pressed", String(tag.enabled));
     const translation = cleanTranslation(tag.translation);
     const { primary: primaryText, secondary: secondaryText } = getTagDisplayText(tag, this.settings);
-    row.setAttribute("aria-label", `${primaryText}${secondaryText ? `、翻訳 ${secondaryText}` : ""}、${tag.enabled ? "有効" : "無効"}`);
+    row.setAttribute("aria-label", t("{primary}{translation}、{state}", {
+      primary: primaryText,
+      translation: secondaryText ? t("、翻訳 {translation}", { translation: secondaryText }) : "",
+      state: t(tag.enabled ? "有効" : "無効"),
+    }));
     row.tabIndex = 0;
     row.draggable = true;
     row.classList.toggle("is-disabled", !tag.enabled);
@@ -1620,11 +1647,11 @@ export class PromptEditor {
     row.classList.toggle("is-missing", tag.missingModel);
     row.classList.toggle("has-error", Boolean(tag.translationError));
     const notices = [];
-    if (duplicate) notices.push("重複");
-    if (tag.blacklistMatch) notices.push("ブラックリスト一致");
-    if (tag.missingModel) notices.push("モデルが見つかりません");
+    if (duplicate) notices.push(t("重複"));
+    if (tag.blacklistMatch) notices.push(t("ブラックリスト一致"));
+    if (tag.missingModel) notices.push(t("モデルが見つかりません"));
     if (tag.translationError) notices.push(tag.translationError);
-    row.title = [translation, ...notices, "クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作"].filter(Boolean).join("\n");
+    row.title = [translation, ...notices, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作")].filter(Boolean).join("\n");
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
@@ -1716,7 +1743,7 @@ export class PromptEditor {
     }
     const editor = element("input", { className: "paio-tag-input" });
     editor.value = tag.value;
-    editor.setAttribute("aria-label", "タグを編集");
+    editor.setAttribute("aria-label", t("タグを編集"));
     let finished = false;
     const finish = (save) => {
       if (finished) return;
@@ -1761,9 +1788,9 @@ export class PromptEditor {
       control.setAttribute("role", "menuitem");
       return control;
     };
-    const title = element("strong", { className: "paio-context-title", text: tag.value || "空タグ" });
+    const title = element("strong", { className: "paio-context-title", text: tag.value || t("空タグ") });
     const currentWeight = getTagWeight(tag.value);
-    const weightLabel = tag.type === "lora" ? "LoRA強度" : tag.type === "lycoris" ? "LyCORIS強度" : "重み";
+    const weightLabel = tag.type === "lora" ? t("LoRA強度") : tag.type === "lycoris" ? t("LyCORIS強度") : t("重み");
     const weightInput = element("input", { className: "paio-context-weight-input" });
     weightInput.type = "number";
     weightInput.min = String(this.settings.weightMin);
@@ -1777,7 +1804,7 @@ export class PromptEditor {
       const appliedWeight = this.setWeightOne(index, requestedWeight);
       if (appliedWeight === null) return;
       weightInput.value = appliedWeight.toFixed(2);
-      title.textContent = this.currentTags[index]?.value || "空タグ";
+      title.textContent = this.currentTags[index]?.value || t("空タグ");
     };
     const weightButton = (label, requestedWeight, ariaLabel) => {
       const control = button(label, () => applyWeight(requestedWeight()));
@@ -1787,47 +1814,49 @@ export class PromptEditor {
       return control;
     };
     const weightControls = element("div", { className: "paio-context-weight-controls" }, [
-      weightButton("−", () => Number(weightInput.value) - this.settings.weightStep, "重みを下げる"),
+      weightButton("−", () => Number(weightInput.value) - this.settings.weightStep, t("重みを下げる")),
       weightInput,
-      weightButton("＋", () => Number(weightInput.value) + this.settings.weightStep, "重みを上げる"),
+      weightButton("＋", () => Number(weightInput.value) + this.settings.weightStep, t("重みを上げる")),
     ]);
-    const resetWeight = weightButton("1.00へ戻す", () => 1, "重みを1.00へ戻す");
+    const resetWeight = weightButton(t("1.00へ戻す"), () => 1, t("重みを1.00へ戻す"));
     resetWeight.classList.add("is-reset");
     const weightPanel = element("div", { className: "paio-context-weight" }, [
       element("span", {
         className: "paio-context-weight-label",
-        text: currentWeight === null ? `${weightLabel}（タグ編集で変更）` : `${weightLabel}・刻み ${this.settings.weightStep}`,
+        text: currentWeight === null
+          ? t("{label}（タグ編集で変更）", { label: weightLabel })
+          : t("{label}・刻み {step}", { label: weightLabel, step: this.settings.weightStep }),
       }),
       weightControls,
       resetWeight,
     ]);
     weightPanel.setAttribute("role", "group");
-    weightPanel.setAttribute("aria-label", `${weightLabel}を変更`);
-    weightInput.addEventListener("change", () => {
+    weightPanel.setAttribute("aria-label", t("{label}を変更", { label: weightLabel }));
+    const commitWeightInput = () => {
       const requestedWeight = weightInput.valueAsNumber;
       if (Number.isFinite(requestedWeight)) applyWeight(requestedWeight);
       else weightInput.value = (getTagWeight(this.currentTags[index]?.value) ?? 1).toFixed(2);
-    });
+    };
+    weightInput.addEventListener("change", commitWeightInput);
     weightInput.addEventListener("keydown", (inputEvent) => {
       if (inputEvent.key === "Enter") {
         inputEvent.preventDefault();
-        const requestedWeight = weightInput.valueAsNumber;
-        if (Number.isFinite(requestedWeight)) applyWeight(requestedWeight);
+        commitWeightInput();
         weightInput.select();
       }
     });
     menu.append(
       title,
       weightPanel,
-      action("編集", () => {
+      action(t("編集"), () => {
         const row = [...this.tagList.children].find((item) => item.dataset?.tagIndex === String(index));
         if (row) this.beginInlineEdit(row, tag, index);
       }),
-      action("英語へ翻訳", () => this.translateIndexes([index], "en")),
-      action("日本語へ翻訳", () => this.translateIndexes([index], this.settings.localLanguage)),
-      action(tag.enabled ? "無効にする" : "有効にする", () => this.toggleOne(index)),
-      action("コピー", async () => { await copyText(tag.value); this.setStatus("タグをコピーしました"); }),
-      action("削除", () => this.deleteOne(index), "is-danger"),
+      action(t("英語へ翻訳"), () => this.translateIndexes([index], "en")),
+      action(t("日本語へ翻訳"), () => this.translateIndexes([index], this.settings.localLanguage)),
+      action(t(tag.enabled ? "無効にする" : "有効にする"), () => this.toggleOne(index)),
+      action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
+      action(t("削除"), () => this.deleteOne(index), "is-danger"),
     );
     menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
     menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 420))}px`;
@@ -1836,8 +1865,11 @@ export class PromptEditor {
     window.setTimeout(() => {
       this.contextMenuAbort = new AbortController();
       document.addEventListener("pointerdown", (pointerEvent) => {
-        if (!menu.contains(pointerEvent.target)) this.closeContextMenu();
-      }, { signal: this.contextMenuAbort.signal });
+        if (!menu.contains(pointerEvent.target)) {
+          commitWeightInput();
+          this.closeContextMenu();
+        }
+      }, { capture: true, signal: this.contextMenuAbort.signal });
       document.addEventListener("keydown", (keyEvent) => {
         if (keyEvent.key === "Escape") this.closeContextMenu();
       }, { signal: this.contextMenuAbort.signal });
@@ -1859,8 +1891,8 @@ export class PromptEditor {
     const parsed = parsePrompt(value);
     this.addValues(parsed.tags.map((tag) => tag.value));
     this.addInput.value = "";
-    if (parsed.errors.length) this.setStatus(`追加しましたが構文警告が${parsed.errors.length}件あります`, true);
-    else this.setStatus("タグを追加しました");
+    if (parsed.errors.length) this.setStatus(t("追加しましたが構文警告が{count}件あります", { count: parsed.errors.length }), true);
+    else this.setStatus(t("タグを追加しました"));
   }
 
   addValues(values) {
@@ -1990,7 +2022,7 @@ export class PromptEditor {
     this.currentTags.splice(index, 1);
     this.syncToWidgets();
     this.render();
-    this.setStatus("タグを削除しました。元に戻せます");
+    this.setStatus(t("タグを削除しました。元に戻せます"));
   }
 
   deleteSelected() {
@@ -1999,7 +2031,7 @@ export class PromptEditor {
     this.tags = this.currentTags.filter((tag) => !tag.selected);
     this.syncToWidgets();
     this.render();
-    this.setStatus("選択タグを削除しました。元に戻せます");
+    this.setStatus(t("選択タグを削除しました。元に戻せます"));
   }
 
   normalize(removeDuplicates) {
@@ -2008,7 +2040,7 @@ export class PromptEditor {
     this.tags = normalizePromptTags(this.currentTags, { removeEmpty: true, removeDuplicates });
     this.syncToWidgets();
     this.render();
-    this.setStatus(removeDuplicates ? "空タグと重複を整理しました。元に戻せます" : "区切りと空白を整形しました。元に戻せます");
+    this.setStatus(t(removeDuplicates ? "空タグと重複を整理しました。元に戻せます" : "区切りと空白を整形しました。元に戻せます"));
   }
 
   async translateIndexes(indexes, target) {
@@ -2018,7 +2050,7 @@ export class PromptEditor {
     if (!unique.length) return;
     const values = unique.map((index) => this.tags[index].value);
     unique.forEach((index) => { this.tags[index].translationError = ""; });
-    this.setStatus(`${values.length}件を翻訳中…`);
+    this.setStatus(t("{count}件を翻訳中…", { count: values.length }));
     try {
       const results = await translateTags(this.api, values, {
         provider: this.settings.translationProvider,
@@ -2034,14 +2066,14 @@ export class PromptEditor {
         const translated = cleanTranslation(result?.translated);
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
-        tag.translationError = translated ? "" : (result?.error || "翻訳結果が空でした");
+        tag.translationError = translated ? "" : (result?.error || t("翻訳結果が空でした"));
         tag.translationErrorTarget = translated ? "" : target;
         if (!translated) emptyCount += 1;
       });
       this.syncToWidgets();
       this.render();
-      if (emptyCount) this.setStatus(`${emptyCount}件の翻訳結果が空でした。翻訳ボタンから再試行できます`, true);
-      else this.setStatus("翻訳しました");
+      if (emptyCount) this.setStatus(t("{count}件の翻訳結果が空でした。翻訳ボタンから再試行できます", { count: emptyCount }), true);
+      else this.setStatus(t("翻訳しました"));
     } catch (error) {
       unique.forEach((index) => {
         this.tags[index].translationError = error.message;
@@ -2049,7 +2081,7 @@ export class PromptEditor {
       });
       this.persist();
       this.render();
-      this.setStatus(`${error.message}。同じ翻訳ボタンで再試行できます`, true);
+      this.setStatus(t("{error}。同じ翻訳ボタンで再試行できます", { error: error.message }), true);
     }
   }
 
@@ -2068,19 +2100,19 @@ export class PromptEditor {
     }
 
     const taskCount = japaneseTasks.length + localTasks.length;
-    if (!taskCount) return this.setStatus("翻訳が必要なタグはありません");
+    if (!taskCount) return this.setStatus(t("翻訳が必要なタグはありません"));
 
     this.translationBusy = true;
     if (this.translateButton) {
       this.translateButton.disabled = true;
-      this.translateButton.textContent = "翻訳中…";
+      this.translateButton.textContent = t("翻訳中…");
     }
     this.pushUndo();
     [...japaneseTasks, ...localTasks].forEach((task) => {
       const tag = this.tags.find((item) => item.id === task.id);
       if (tag) tag.translationError = "";
     });
-    this.setStatus(`${taskCount}件を翻訳中…`);
+    this.setStatus(t("{count}件を翻訳中…", { count: taskCount }));
 
     const execute = async (tasks, target) => {
       if (!tasks.length) return [];
@@ -2113,7 +2145,7 @@ export class PromptEditor {
           if (target === "en") replaced += 1;
           else supplemented += 1;
         } else {
-          tag.translationError = result?.error || "翻訳結果が空でした";
+          tag.translationError = result?.error || t("翻訳結果が空でした");
           tag.translationErrorTarget = target;
           failed += 1;
         }
@@ -2121,18 +2153,18 @@ export class PromptEditor {
       this.applyBlacklist(this.settings.blacklistAction !== "warn");
       this.syncToWidgets();
       this.render();
-      const completed = [`日本語${replaced}件を英語へ置換`, `日本語訳${supplemented}件を追加`].join("、");
-      if (failed) this.setStatus(`${completed}。${failed}件は翻訳できませんでした。翻訳ボタンで再試行できます`, true);
-      else this.setStatus(`${completed}しました`);
+      const completed = t("日本語{replaced}件を英語へ置換、日本語訳{supplemented}件を追加", { replaced, supplemented });
+      if (failed) this.setStatus(t("{completed}。{failed}件は翻訳できませんでした。翻訳ボタンで再試行できます", { completed, failed }), true);
+      else this.setStatus(t("{completed}しました", { completed }));
     } catch (error) {
       this.persist();
       this.render();
-      this.setStatus(`${error.message}。翻訳ボタンで再試行できます`, true);
+      this.setStatus(t("{error}。翻訳ボタンで再試行できます", { error: error.message }), true);
     } finally {
       this.translationBusy = false;
       if (this.translateButton) {
         this.translateButton.disabled = false;
-        this.translateButton.textContent = "翻訳";
+        this.translateButton.textContent = t("翻訳");
       }
     }
   }
@@ -2150,7 +2182,7 @@ export class PromptEditor {
     const failures = this.currentTags
       .map((tag, index) => ({ tag, index }))
       .filter(({ tag }) => tag.translationError);
-    if (!failures.length) return this.setStatus("再試行が必要な翻訳はありません");
+    if (!failures.length) return this.setStatus(t("再試行が必要な翻訳はありません"));
     const english = failures.filter(({ tag }) => tag.translationErrorTarget === "en").map(({ index }) => index);
     const local = failures.filter(({ tag }) => tag.translationErrorTarget !== "en").map(({ index }) => index);
     if (english.length) await this.translateIndexes(english, "en");
@@ -2163,7 +2195,7 @@ export class PromptEditor {
       ? selected.map((tag) => cleanTranslation(tag.translation) ? `${tag.value} (${cleanTranslation(tag.translation)})` : tag.value).join(", ")
       : outputPrompt(selected, this.settings.outputLanguage);
     await copyText(value);
-    this.setStatus("選択タグをコピーしました");
+    this.setStatus(t("選択タグをコピーしました"));
   }
 
   async copySelectedLanguage(language) {
@@ -2173,12 +2205,12 @@ export class PromptEditor {
       return translation && tag.translatedTo === language ? translation : tag.value;
     }).join(", ");
     await copyText(value);
-    this.setStatus(`${language.toUpperCase()}形式で選択タグをコピーしました`);
+    this.setStatus(t("{language}形式で選択タグをコピーしました", { language: language.toUpperCase() }));
   }
 
   async copyPrompt() {
     await copyText(outputPrompt(this.tags, this.settings.outputLanguage));
-    this.setStatus("プロンプトをコピーしました");
+    this.setStatus(t("プロンプトをコピーしました"));
   }
 
   applyBlacklist(mutate) {
