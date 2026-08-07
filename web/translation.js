@@ -17,6 +17,7 @@ export async function translateTags(api, texts, options = {}) {
         provider: options.provider || "local",
         source: options.source || "auto",
         target: options.target || "en",
+        catalog: options.catalog || "",
         timeout: Math.ceil(timeoutMs / 1000),
         texts,
       }),

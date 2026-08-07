@@ -2147,6 +2147,13 @@ export class PromptEditor {
   async translatePrompt() {
     if (this.translationBusy) return;
     this.commitPromptBeforeAction();
+    this.exampleData = null;
+    this.exampleLoadPromise = null;
+    try {
+      await this.loadExampleData();
+    } catch (error) {
+      return this.setStatus(t("タグ設定ファイルを再読み込みできませんでした: {error}", { error: error.message }), true);
+    }
     const specialTypes = new Set(["lora", "lycoris", "embedding", "wildcard", "dynamic"]);
     const japaneseTasks = [];
     const localTasks = [];
@@ -2180,6 +2187,7 @@ export class PromptEditor {
           provider: this.settings.translationProvider,
           source: "auto",
           target,
+          catalog: this.settings.libraryFile,
           timeoutMs: translationBatchTimeoutMs(tasks.length),
         });
         return tasks.map((task, index) => ({ task, target, result: results[index] || {} }));

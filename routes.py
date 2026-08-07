@@ -55,7 +55,7 @@ def _iter_catalog_translations(value):
         return
 
     prompt = value.get("prompt") or value.get("name")
-    translation = value.get("translation_ja")
+    translation = value.get("translation_ja") or value.get("ja")
     if not translation and isinstance(value.get("translation"), dict):
         translation = value["translation"].get("ja")
     if isinstance(prompt, str) and isinstance(translation, str) and translation.strip():
@@ -67,57 +67,84 @@ def _iter_catalog_translations(value):
             yield from _iter_catalog_translations(child)
 
 
-def _load_dictionary():
-    global _DICTIONARY_CACHE_SIGNATURE, _DICTIONARY_CACHE_VALUE
-
+def _dictionary_paths(requested_name="", storage_directory=None):
     data_directory = Path(__file__).with_name("data")
     paths = [
         data_directory / "prompt_examples.json",
         data_directory / "tag_catalog.json",
         data_directory / "translations.json",
     ]
-    signature = tuple(
+    if requested_name:
+        paths.append(user_catalog_path(requested_name, storage_directory))
+    return paths
+
+
+def _dictionary_signature(requested_name="", storage_directory=None):
+    return tuple(
         (str(path), path.stat().st_mtime_ns, path.stat().st_size)
-        for path in paths
+        for path in _dictionary_paths(requested_name, storage_directory)
         if path.is_file()
     )
-    if signature == _DICTIONARY_CACHE_SIGNATURE:
-        return _DICTIONARY_CACHE_VALUE
 
-    dictionary = {"ja": {}, "en": {}}
-    for path in paths[:2]:
+
+def _load_dictionary(requested_name="", storage_directory=None):
+    global _DICTIONARY_CACHE_SIGNATURE, _DICTIONARY_CACHE_VALUE
+
+    paths = _dictionary_paths()
+    signature = _dictionary_signature()
+    if signature == _DICTIONARY_CACHE_SIGNATURE:
+        dictionary = _DICTIONARY_CACHE_VALUE
+    else:
+        dictionary = {"ja": {}, "en": {}}
+        for path in paths[:2]:
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            for prompt, translation, aliases in _iter_catalog_translations(data):
+                canonical_key = _translation_lookup_key(prompt)
+                if not canonical_key:
+                    continue
+                dictionary["ja"][canonical_key] = translation
+                dictionary["en"][_translation_lookup_key(translation)] = prompt
+                for alias in aliases:
+                    alias_key = _translation_lookup_key(alias)
+                    if alias_key:
+                        dictionary["ja"][alias_key] = translation
+
+        explicit_path = paths[2]
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
+            explicit = json.loads(explicit_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
-            continue
-        for prompt, translation, aliases in _iter_catalog_translations(data):
+            explicit = {}
+        if isinstance(explicit, dict):
+            for language, table in explicit.items():
+                if not isinstance(language, str) or not isinstance(table, dict):
+                    continue
+                normalized_table = dictionary.setdefault(language.casefold(), {})
+                for source, translated in table.items():
+                    key = _translation_lookup_key(source)
+                    if key and isinstance(translated, str) and translated.strip():
+                        normalized_table[key] = translated.strip()
+
+        _DICTIONARY_CACHE_SIGNATURE = signature
+        _DICTIONARY_CACHE_VALUE = dictionary
+    if requested_name:
+        dictionary = {language: table.copy() for language, table in dictionary.items()}
+        catalog = load_examples_catalog(
+            requested_name=requested_name,
+            storage_directory=storage_directory,
+        )
+        for prompt, translation, aliases in _iter_catalog_translations(catalog):
             canonical_key = _translation_lookup_key(prompt)
             if not canonical_key:
                 continue
-            dictionary["ja"][canonical_key] = translation
-            dictionary["en"][_translation_lookup_key(translation)] = prompt
+            dictionary.setdefault("ja", {})[canonical_key] = translation
+            dictionary.setdefault("en", {})[_translation_lookup_key(translation)] = prompt
             for alias in aliases:
                 alias_key = _translation_lookup_key(alias)
                 if alias_key:
                     dictionary["ja"][alias_key] = translation
-
-    explicit_path = paths[2]
-    try:
-        explicit = json.loads(explicit_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        explicit = {}
-    if isinstance(explicit, dict):
-        for language, table in explicit.items():
-            if not isinstance(language, str) or not isinstance(table, dict):
-                continue
-            normalized_table = dictionary.setdefault(language.casefold(), {})
-            for source, translated in table.items():
-                key = _translation_lookup_key(source)
-                if key and isinstance(translated, str) and translated.strip():
-                    normalized_table[key] = translated.strip()
-
-    _DICTIONARY_CACHE_SIGNATURE = signature
-    _DICTIONARY_CACHE_VALUE = dictionary
     return dictionary
 
 
@@ -353,8 +380,8 @@ def _validate_url(url):
     return url.rstrip("/")
 
 
-def _cache_key(provider, source, target, text):
-    return (provider, source.lower(), target.lower(), text)
+def _cache_key(provider, source, target, text, dictionary_signature=()):
+    return (provider, source.lower(), target.lower(), text, dictionary_signature)
 
 
 def _cache_get(key):
@@ -382,8 +409,8 @@ def _rate_limit(client_id):
     bucket.append(now)
 
 
-def _local_translate(text, target):
-    dictionary = _load_dictionary()
+def _local_translate(text, target, catalog_name=""):
+    dictionary = _load_dictionary(catalog_name)
     target_language = target.casefold()
     table = dictionary.get(target_language) or dictionary.get(target_language.split("-", 1)[0], {})
     return table.get(_translation_lookup_key(text), text)
@@ -446,7 +473,7 @@ async def _translate_mymemory(session, text, source, target):
     return _parse_mymemory_result(data, query)
 
 
-async def translate_text(provider, text, source="auto", target="en", timeout=12):
+async def translate_text(provider, text, source="auto", target="en", timeout=12, catalog_name=""):
     if not isinstance(text, str) or not text.strip():
         raise TranslationError("Translation text is empty")
     if len(text) > MAX_TEXT_LENGTH:
@@ -454,12 +481,13 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12)
     if provider not in SUPPORTED_PROVIDERS:
         raise TranslationError("Unknown translation provider")
 
-    key = _cache_key(provider, source, target, text)
+    dictionary_signature = _dictionary_signature(catalog_name)
+    key = _cache_key(provider, source, target, text, dictionary_signature)
     cached = _cache_get(key)
     if cached is not None:
         return cached, True
 
-    local_result = _local_translate(text, target)
+    local_result = _local_translate(text, target, catalog_name)
     if target.lower().startswith("ja") and local_result != text:
         _cache_set(key, local_result)
         return local_result, False
@@ -618,10 +646,13 @@ def register_routes():
             _rate_limit(request.remote or "local")
             source = str(body.get("source", "auto"))[:16]
             target = str(body.get("target", "en"))[:16]
+            catalog_name = normalize_catalog_name(body.get("catalog", "")) if body.get("catalog") else ""
             timeout = body.get("timeout", 12)
             async def translate_item(item):
                 try:
-                    translated, cached = await translate_text(provider, item, source, target, timeout)
+                    translated, cached = await translate_text(
+                        provider, item, source, target, timeout, catalog_name
+                    )
                     return {"source": item, "translated": translated, "cached": cached}
                 except (TranslationError, asyncio.TimeoutError) as exc:
                     message = "Translation timed out" if isinstance(exc, asyncio.TimeoutError) else str(exc)

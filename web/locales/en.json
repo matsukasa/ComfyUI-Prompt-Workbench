@@ -214,6 +214,7 @@
     "{error}。同じ翻訳ボタンで再試行できます": "{error}. Use the same translation button to retry.",
     "翻訳が必要なタグはありません": "No tags need translation",
     "翻訳中…": "Translating…",
+    "タグ設定ファイルを再読み込みできませんでした: {error}": "Could not reload the tag settings file: {error}",
     "日本語{replaced}件を英語へ置換、日本語訳{supplemented}件を追加": "Replaced {replaced} Japanese tags with English and added {supplemented} Japanese translations",
     "{completed}。{failed}件は翻訳できませんでした。翻訳ボタンで再試行できます": "{completed}. {failed} items could not be translated. Use Translate to retry.",
     "{completed}しました": "{completed}.",
