@@ -16,4 +16,5 @@ user_data/
 /package.json
 /scripts/convert_prompt_examples.py
 /data/prompt_examples_20??????_??????.json
+/data/tag_catalog_before_*.json
 **/chrome-profile*/
