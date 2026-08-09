@@ -15,8 +15,8 @@
     "legacy_internal_duplicates": 190,
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
-    "translated_tags": 3549,
-    "tags": 3549,
+    "translated_tags": 3526,
+    "tags": 3526,
     "major_categories": 10,
     "medium_categories": 33,
     "small_categories": 125
@@ -3641,15 +3641,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "口の端に唾液の滴状の欠け",
                   "rank": 43
-                },
-                {
-                  "id": "manual:20260810:o3o",
-                  "name": "o3o",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "唇を尖らせる",
-                  "rank": 44
                 }
               ]
             },
@@ -4228,60 +4219,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "髪のフラップ",
                   "rank": 57
-                },
-                {
-                  "id": "manual:20260810:absurdly_long_hair",
-                  "name": "absurdly_long_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "足よりも長い髪",
-                  "rank": 58
-                },
-                {
-                  "id": "manual:20260810:very_short_hair",
-                  "name": "very_short_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "超短髪",
-                  "rank": 59
-                },
-                {
-                  "id": "manual:20260810:short_twintails",
-                  "name": "short_twintails",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "短めのツインテール",
-                  "rank": 60
-                },
-                {
-                  "id": "manual:20260810:single_braid",
-                  "name": "single_braid",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "三つ編み（一つだけ）",
-                  "rank": 61
-                },
-                {
-                  "id": "manual:20260810:half_updo",
-                  "name": "half_updo",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "ハーフアップ",
-                  "rank": 62
-                },
-                {
-                  "id": "manual:20260810:dreadlocks",
-                  "name": "dreadlocks",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "ドレッドヘア",
-                  "rank": 63
                 }
               ]
             },
@@ -4432,61 +4369,13 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "茶髪",
                   "rank": 11
-                },
-                {
-                  "id": "manual:20260810:pink_hair",
-                  "name": "pink_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "ピンク色の髪",
-                  "rank": 12
-                },
-                {
-                  "id": "manual:20260810:colored_inner_hair",
-                  "name": "colored_inner_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "内側の色が違う髪",
-                  "rank": 13
-                },
-                {
-                  "id": "manual:20260810:auburn_hair",
-                  "name": "auburn_hair",
-                  "post_count": 0,
-                  "aliases": [
-                    "reddish_brown_hair"
-                  ],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "えんじ色の髪",
-                  "rank": 14
                 }
               ]
             },
             {
               "id": "custom:small:d341842c-4db2-43f9-9ec1-69c8136094b1",
               "label_ja": "髪質",
-              "tags": [
-                {
-                  "id": "manual:20260810:thin_hair",
-                  "name": "thin_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "細い髪の毛",
-                  "rank": 1
-                },
-                {
-                  "id": "manual:20260810:shiny_hair",
-                  "name": "shiny_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "光沢のある髪",
-                  "rank": 2
-                }
-              ]
+              "tags": []
             }
           ]
         },
@@ -17094,33 +16983,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "嫌いな目つき",
                   "rank": 35
-                },
-                {
-                  "id": "manual:20260810:feeling_weak",
-                  "name": "feeling_weak",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "脱力",
-                  "rank": 36
-                },
-                {
-                  "id": "manual:20260810:worried",
-                  "name": "worried",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "心配",
-                  "rank": 37
-                },
-                {
-                  "id": "manual:20260810:panicking",
-                  "name": "panicking",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "パニック",
-                  "rank": 38
                 }
               ]
             }
@@ -18470,33 +18332,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "隠れる",
                   "rank": 149
-                },
-                {
-                  "id": "manual:20260810:seductive_pose",
-                  "name": "seductive_pose",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "官能的なポーズ",
-                  "rank": 150
-                },
-                {
-                  "id": "manual:20260810:contrapposto",
-                  "name": "contrapposto",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "コントラポストポーズ",
-                  "rank": 151
-                },
-                {
-                  "id": "manual:20260810:faux_figurine",
-                  "name": "faux_figurine",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "フィギュアのようなポーズ",
-                  "rank": 152
                 }
               ]
             },
@@ -19730,15 +19565,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "水着の調整",
                   "rank": 135
-                },
-                {
-                  "id": "manual:20260810:blowing_kiss",
-                  "name": "blowing_kiss",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "投げキッス",
-                  "rank": 136
                 }
               ]
             },
@@ -23801,15 +23627,6 @@
                   "aliases": [],
                   "rank": 29,
                   "translation_ja": "発光する蝶"
-                },
-                {
-                  "id": "manual:20260810:underlighting",
-                  "name": "underlighting",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "下からの光",
-                  "rank": 30
                 }
               ]
             }
@@ -33323,24 +33140,6 @@
                   "aliases": [],
                   "rank": 20,
                   "translation_ja": "服の下でのパイズリ"
-                },
-                {
-                  "id": "manual:20260810:breast_press",
-                  "name": "breast_press",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "胸を押し付ける",
-                  "rank": 21
-                },
-                {
-                  "id": "manual:20260810:breast_rest",
-                  "name": "breast_rest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "胸を何かの上に乗せる",
-                  "rank": 22
                 }
               ]
             },
@@ -33556,15 +33355,6 @@
                   "aliases": [],
                   "rank": 20,
                   "translation_ja": "触手との性行為"
-                },
-                {
-                  "id": "manual:20260810:fucked_silly",
-                  "name": "fucked_silly",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "性的に激しく乱された状態",
-                  "rank": 21
                 }
               ]
             }
