@@ -46,6 +46,7 @@ const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
 const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
+const TAG_SINGLE_CLICK_DELAY_MS = 450;
 const CATALOG_FILE_PICKER_TYPES = [{
   description: t("JSONタグファイル"),
   accept: { "application/json": [".json"] },
@@ -1731,7 +1732,7 @@ export class PromptEditor {
         return;
       }
       clearTimeout(this.clickTimer);
-      this.clickTimer = window.setTimeout(() => this.toggleOne(index), 180);
+      this.clickTimer = window.setTimeout(() => this.toggleOne(index), TAG_SINGLE_CLICK_DELAY_MS);
     });
     row.addEventListener("dblclick", (event) => {
       event.preventDefault();
@@ -1816,6 +1817,7 @@ export class PromptEditor {
     editor.addEventListener("click", (event) => event.stopPropagation());
     editor.addEventListener("dblclick", (event) => event.stopPropagation());
     editor.addEventListener("keydown", (event) => {
+      event.stopPropagation();
       if (event.key === "Enter") { event.preventDefault(); finish(true); }
       if (event.key === "Escape") { event.preventDefault(); finish(false); }
     });
