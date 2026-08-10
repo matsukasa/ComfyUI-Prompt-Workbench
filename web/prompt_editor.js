@@ -616,13 +616,11 @@ export class PromptEditor {
     this.tagList.style.height = `${clampTagListHeight(this.settings.tagListHeight)}px`;
     const tagListResizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-list-resize-handle" }, [
       element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-      element("span", { text: t("ドラッグで現在のタグ一覧の高さを変更") }),
     ]);
     tagListResizeHandle.tabIndex = 0;
     tagListResizeHandle.setAttribute("role", "separator");
     tagListResizeHandle.setAttribute("aria-orientation", "horizontal");
     tagListResizeHandle.setAttribute("aria-label", t("現在のタグ一覧の高さを変更"));
-    tagListResizeHandle.title = t("上下にドラッグして現在のタグ一覧の高さを変更（ダブルクリックでリセット）");
     const applyTagListHeight = (height, nodeHeight = null, persist = false) => {
       const nextHeight = clampTagListHeight(height);
       this.settings.tagListHeight = nextHeight;
@@ -1357,13 +1355,11 @@ export class PromptEditor {
     list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
     const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
       element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-      element("span", { text: t("ドラッグで高さ変更") }),
     ]);
     resizeHandle.tabIndex = 0;
     resizeHandle.setAttribute("role", "separator");
     resizeHandle.setAttribute("aria-orientation", "horizontal");
     resizeHandle.setAttribute("aria-label", t("タグ一覧の高さを変更"));
-    resizeHandle.title = t("上下にドラッグしてタグ一覧の高さを変更（ダブルクリックでリセット）");
     const applyListHeight = (height, nodeHeight = null, persist = false) => {
       const nextHeight = clampExampleListHeight(height);
       this.settings.exampleListHeight = nextHeight;
