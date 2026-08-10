@@ -419,10 +419,10 @@
 .paio-tag-drag-handle { width: 30px; min-width: 30px; padding-inline: 0; color: var(--paio-muted); cursor: grab; touch-action: none; }
 .paio-tag-drag-handle:active { cursor: grabbing; }
 .paio-tag-edit-row.is-dragging { opacity: 0.48; }
-.paio-tag-edit-row.is-drop-before, .paio-tag-edit-row.is-drop-after { --paio-drop-indicator: color-mix(in srgb, var(--paio-primary) 58%, var(--paio-ink)); background: color-mix(in srgb, var(--paio-drop-indicator) 9%, transparent); }
-.paio-tag-edit-row.is-drop-before::before, .paio-tag-edit-row.is-drop-after::before { content: ""; position: absolute; z-index: 1; left: 4px; right: 4px; height: 8px; pointer-events: none; background: radial-gradient(circle at 4px 50%, var(--paio-drop-indicator) 0 4px, transparent 4.5px), radial-gradient(circle at calc(100% - 4px) 50%, var(--paio-drop-indicator) 0 4px, transparent 4.5px), linear-gradient(var(--paio-drop-indicator), var(--paio-drop-indicator)) center / calc(100% - 12px) 3px no-repeat; }
-.paio-tag-edit-row.is-drop-before::before { top: -4px; }
-.paio-tag-edit-row.is-drop-after::before { bottom: -4px; }
+.paio-tag-edit-row.is-drop-before, .paio-tag-edit-row.is-drop-after { --paio-drop-indicator: color-mix(in srgb, var(--paio-primary) 78%, var(--paio-ink)); background: color-mix(in srgb, var(--paio-drop-indicator) 14%, transparent); }
+.paio-tag-edit-row.is-drop-before::before, .paio-tag-edit-row.is-drop-after::before { content: ""; position: absolute; z-index: 1; left: 4px; right: 4px; height: 10px; pointer-events: none; background: radial-gradient(circle at 5px 50%, var(--paio-drop-indicator) 0 5px, transparent 5.5px), radial-gradient(circle at calc(100% - 5px) 50%, var(--paio-drop-indicator) 0 5px, transparent 5.5px), linear-gradient(var(--paio-drop-indicator), var(--paio-drop-indicator)) center / calc(100% - 14px) 4px no-repeat; }
+.paio-tag-edit-row.is-drop-before::before { top: -5px; }
+.paio-tag-edit-row.is-drop-after::before { bottom: -5px; }
 .paio-library-danger { display: grid; grid-template-columns: minmax(180px, 1fr) auto; gap: 7px; align-items: center; margin-top: auto; padding: 10px; border: 1px solid color-mix(in srgb, var(--paio-danger) 40%, var(--paio-line)); border-radius: 8px; background: color-mix(in srgb, var(--paio-danger) 7%, transparent); }
 .paio-library-danger strong, .paio-library-danger p { grid-column: 1 / -1; margin: 0; }
 .paio-library-danger p { color: var(--paio-muted); }
