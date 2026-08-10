@@ -132,13 +132,14 @@
 .paio-tag-summary { justify-content: flex-end; color: var(--paio-muted); min-height: 18px; padding-inline: 2px; }
 
 .paio-tags {
+  position: relative;
   display: flex;
   align-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 6px;
   min-height: 62px;
-  max-height: 260px;
+  max-height: 720px;
   overflow: auto;
   scrollbar-gutter: stable;
   padding: 3px;
@@ -162,6 +163,23 @@
   cursor: grab;
   user-select: none;
 }
+.paio-tag.is-drop-before, .paio-tag.is-drop-after {
+  --paio-drop-indicator: color-mix(in srgb, var(--paio-primary) 76%, white);
+  position: relative;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--paio-drop-indicator) 50%, transparent);
+}
+.paio-tag.is-drop-before::before, .paio-tag.is-drop-after::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -4px;
+  bottom: -4px;
+  width: 10px;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 5px, var(--paio-drop-indicator) 0 4px, transparent 4.5px), radial-gradient(circle at 50% calc(100% - 5px), var(--paio-drop-indicator) 0 4px, transparent 4.5px), linear-gradient(var(--paio-drop-indicator), var(--paio-drop-indicator)) center / 3px calc(100% - 12px) no-repeat;
+}
+.paio-tag.is-drop-before::before { left: -6px; }
+.paio-tag.is-drop-after::before { right: -6px; }
 .paio-tag:hover { background: color-mix(in srgb, var(--paio-tag-fill, var(--paio-blue)) 90%, black); }
 .paio-tag:active { cursor: grabbing; }
 .paio-tag[data-type="lora"] { --paio-tag-fill: var(--paio-color-lora, var(--paio-purple)); }
@@ -341,6 +359,7 @@
   user-select: none;
 }
 .paio-example-resize-handle:hover, .paio-example-resize-handle.is-dragging { color: var(--paio-ink); background: var(--paio-raised); }
+.paio-tag-list-resize-handle { margin-top: 0; margin-bottom: 1px; }
 .paio-example-resize-handle:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
 .paio-example-resize-mark { font-size: 18px; line-height: 0.5; letter-spacing: 2px; transform: rotate(90deg); }
 .paio-example-chip { display: inline-flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 44px; border-radius: 6px; overflow: hidden; white-space: nowrap; }

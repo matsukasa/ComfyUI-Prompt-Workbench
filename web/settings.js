@@ -16,6 +16,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   filter: "all",
   libraryFile: "",
   libraryEdits: { categories: [], tags: [] },
+  tagListHeight: 260,
   exampleListHeight: 118,
 });
 
@@ -64,6 +65,9 @@ export function sanitizeSettings(input = {}) {
   }
   if (Number.isFinite(Number(input.exampleListHeight))) {
     settings.exampleListHeight = Math.min(520, Math.max(96, Math.round(Number(input.exampleListHeight))));
+  }
+  if (Number.isFinite(Number(input.tagListHeight))) {
+    settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));
   }
   return settings;
 }

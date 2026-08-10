@@ -55,6 +55,9 @@ const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
 const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
 const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
+const DEFAULT_TAG_LIST_HEIGHT = 260;
+const MIN_TAG_LIST_HEIGHT = 96;
+const MAX_TAG_LIST_HEIGHT = 720;
 const BASE_DOM_WIDGET_HEIGHT = 690;
 const BASE_NODE_HEIGHT = 760;
 const COLOR_DEFAULTS = {
@@ -62,6 +65,10 @@ const COLOR_DEFAULTS = {
   embedding: "#14b8a6", wildcard: "#eab308", duplicate: "#f59e0b",
   blacklist: "#ef4444", missing: "#ef4444", error: "#dc2626",
 };
+
+export function clampTagListHeight(value) {
+  return Math.min(MAX_TAG_LIST_HEIGHT, Math.max(MIN_TAG_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_LIST_HEIGHT)));
+}
 
 function element(tagName, options = {}, children = []) {
   const node = document.createElement(tagName);
@@ -606,6 +613,77 @@ export class PromptEditor {
     this.tagSummary = element("div", { className: "paio-tag-summary" });
     this.tagList = element("div", { className: "paio-tags" });
     this.tagList.setAttribute("role", "list");
+    this.tagList.style.height = `${clampTagListHeight(this.settings.tagListHeight)}px`;
+    const tagListResizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-list-resize-handle" }, [
+      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
+      element("span", { text: t("ドラッグで現在のタグ一覧の高さを変更") }),
+    ]);
+    tagListResizeHandle.tabIndex = 0;
+    tagListResizeHandle.setAttribute("role", "separator");
+    tagListResizeHandle.setAttribute("aria-orientation", "horizontal");
+    tagListResizeHandle.setAttribute("aria-label", t("現在のタグ一覧の高さを変更"));
+    tagListResizeHandle.title = t("上下にドラッグして現在のタグ一覧の高さを変更（ダブルクリックでリセット）");
+    const applyTagListHeight = (height, nodeHeight = null, persist = false) => {
+      const nextHeight = clampTagListHeight(height);
+      this.settings.tagListHeight = nextHeight;
+      this.tagList.style.height = `${nextHeight}px`;
+      tagListResizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_LIST_HEIGHT));
+      tagListResizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_LIST_HEIGHT));
+      tagListResizeHandle.setAttribute("aria-valuenow", String(nextHeight));
+      if (this.node && nodeHeight !== null) {
+        this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), nodeHeight]);
+      }
+      this.node?.graph?.setDirtyCanvas?.(true, true);
+      if (persist) this.persist();
+      return nextHeight;
+    };
+    applyTagListHeight(this.settings.tagListHeight);
+    tagListResizeHandle.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      const startY = event.clientY;
+      const startHeight = this.settings.tagListHeight;
+      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      tagListResizeHandle.classList.add("is-dragging");
+      tagListResizeHandle.setPointerCapture?.(pointerId);
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        const nextHeight = clampTagListHeight(startHeight + moveEvent.clientY - startY);
+        applyTagListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        tagListResizeHandle.removeEventListener("pointermove", move);
+        tagListResizeHandle.removeEventListener("pointerup", finish);
+        tagListResizeHandle.removeEventListener("pointercancel", finish);
+        tagListResizeHandle.releasePointerCapture?.(pointerId);
+        tagListResizeHandle.classList.remove("is-dragging");
+        applyTagListHeight(this.settings.tagListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
+      };
+      tagListResizeHandle.addEventListener("pointermove", move);
+      tagListResizeHandle.addEventListener("pointerup", finish);
+      tagListResizeHandle.addEventListener("pointercancel", finish);
+    });
+    tagListResizeHandle.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const currentHeight = this.settings.tagListHeight;
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyTagListHeight(DEFAULT_TAG_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_LIST_HEIGHT - currentHeight, true);
+    });
+    tagListResizeHandle.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const currentHeight = this.settings.tagListHeight;
+      const nextHeight = event.key === "Home"
+        ? DEFAULT_TAG_LIST_HEIGHT
+        : currentHeight + (event.key === "ArrowDown" ? 20 : -20);
+      const applied = clampTagListHeight(nextHeight);
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyTagListHeight(applied, currentNodeHeight + applied - currentHeight, true);
+    });
     this.status = element("p", { className: "paio-status", text: t("準備完了") });
     this.status.setAttribute("aria-live", "polite");
 
@@ -624,6 +702,7 @@ export class PromptEditor {
       this.bulkBar,
       this.tagSummary,
       this.tagList,
+      tagListResizeHandle,
       this.status,
       this.examplesPanel,
       this.settingsDialog,
@@ -647,12 +726,18 @@ export class PromptEditor {
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
-    domWidget.computeSize = (width) => [width, BASE_DOM_WIDGET_HEIGHT + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT];
+    domWidget.computeSize = (width) => [width,
+      BASE_DOM_WIDGET_HEIGHT
+      + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
+      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
     this.node.setSize([
       Math.max(this.node.size?.[0] || 0, 540),
-      Math.max(this.node.size?.[1] || 0, BASE_NODE_HEIGHT + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT),
+      Math.max(this.node.size?.[1] || 0,
+        BASE_NODE_HEIGHT
+        + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
+        + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT),
     ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
@@ -1766,12 +1851,23 @@ export class PromptEditor {
     });
     row.addEventListener("dragend", () => {
       row.classList.remove("is-dragging");
+      this.tagList.querySelectorAll(".paio-tag").forEach((item) => item.classList.remove("is-drop-before", "is-drop-after"));
+      this.dragIndex = null;
       window.setTimeout(() => { this.didDrag = false; }, 0);
     });
-    row.addEventListener("dragover", (event) => event.preventDefault());
+    row.addEventListener("dragover", (event) => {
+      if (this.dragIndex === null || this.dragIndex === index) return;
+      event.preventDefault();
+      this.tagList.querySelectorAll(".paio-tag").forEach((item) => item.classList.remove("is-drop-before", "is-drop-after"));
+      const bounds = row.getBoundingClientRect();
+      const position = event.clientX >= bounds.left + bounds.width / 2 ? "after" : "before";
+      row.classList.add(position === "after" ? "is-drop-after" : "is-drop-before");
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+    });
     row.addEventListener("drop", (event) => {
       event.preventDefault();
       if (this.dragIndex === null || this.dragIndex === index) return;
+      const position = row.classList.contains("is-drop-after") ? "after" : "before";
       const movedId = this.currentTags[this.dragIndex]?.id;
       const targetId = this.currentTags[index]?.id;
       this.commitPromptBeforeAction();
@@ -1780,8 +1876,9 @@ export class PromptEditor {
       if (movedIndex < 0 || targetIndex < 0 || movedIndex === targetIndex) return;
       this.pushUndo();
       const [moved] = this.currentTags.splice(movedIndex, 1);
-      const target = movedIndex < targetIndex ? targetIndex - 1 : targetIndex;
-      this.currentTags.splice(target, 0, moved);
+      const remainingTargetIndex = this.currentTags.findIndex((item) => item.id === targetId);
+      const insertionIndex = remainingTargetIndex + (position === "after" ? 1 : 0);
+      this.currentTags.splice(insertionIndex, 0, moved);
       this.dragIndex = null;
       this.syncToWidgets();
       this.render();
