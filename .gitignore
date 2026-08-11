@@ -2,6 +2,11 @@
 __pycache__/
 user_data/
 
+# Codex/local workspace configuration
+/.codex/
+/tools/
+/unused/
+
 # Local development and promotional material
 /artifacts/
 /promotion/
