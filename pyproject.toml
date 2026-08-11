@@ -1,6 +1,6 @@
 [project]
 name = "prompt-workbench"
-version = "1.1.4"
+version = "1.1.5"
 description = "Structured prompt workbench for ComfyUI"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -13,4 +13,5 @@ Repository = "https://github.com/matsukasa/ComfyUI-Prompt-Workbench"
 [tool.comfy]
 PublisherId = "matsukasa"
 DisplayName = "ComfyUI Prompt Workbench"
+Icon = "https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/icon.png"
 Banner = "https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/banner.png"
