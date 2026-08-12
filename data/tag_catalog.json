@@ -15,11 +15,11 @@
     "legacy_internal_duplicates": 190,
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
-    "translated_tags": 3549,
-    "tags": 3549,
+    "translated_tags": 3557,
+    "tags": 3552,
     "major_categories": 10,
-    "medium_categories": 36,
-    "small_categories": 144
+    "medium_categories": 37,
+    "small_categories": 147
   },
   "major_categories": [
     {
@@ -45,6 +45,17 @@
                   ],
                   "rank": 1,
                   "translation_ja": "1人の女の子"
+                },
+                {
+                  "id": 212816,
+                  "name": "solo",
+                  "post_count": 5728252,
+                  "aliases": [
+                    "female_solo",
+                    "solo_female"
+                  ],
+                  "rank": 9,
+                  "translation_ja": "一人"
                 },
                 {
                   "id": 540830,
@@ -115,17 +126,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "男の子",
                   "rank": 8
-                },
-                {
-                  "id": 212816,
-                  "name": "solo",
-                  "post_count": 5728252,
-                  "aliases": [
-                    "female_solo",
-                    "solo_female"
-                  ],
-                  "rank": 9,
-                  "translation_ja": "一人"
                 },
                 {
                   "id": "legacy:4010759cf847ac7b",
@@ -322,6 +322,47 @@
               "label_ja": "職業・役柄",
               "tags": [
                 {
+                  "id": 59,
+                  "name": "maid",
+                  "post_count": 171167,
+                  "aliases": [
+                    "maid_costume",
+                    "maid_dress",
+                    "maid_outfit",
+                    "maids",
+                    "maid_uniform"
+                  ],
+                  "rank": 31,
+                  "translation_ja": "メイド"
+                },
+                {
+                  "id": "legacy:f677b1c732516693",
+                  "name": "wa_maid",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "和風メイド",
+                  "rank": 59
+                },
+                {
+                  "id": "legacy:31c8610f9c0560ab",
+                  "name": "housemaid",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "メイド",
+                  "rank": 50
+                },
+                {
+                  "id": "legacy:204036a1ef6e7360",
+                  "name": "student",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "学生",
+                  "rank": 11
+                },
+                {
                   "id": "legacy:12f4bf417a5e2aa0",
                   "name": "lifeguard",
                   "post_count": 0,
@@ -400,15 +441,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "スチュワーデス",
                   "rank": 10
-                },
-                {
-                  "id": "legacy:204036a1ef6e7360",
-                  "name": "student",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "学生",
-                  "rank": 11
                 },
                 {
                   "id": "legacy:1aed88e4a7e5cd30",
@@ -529,7 +561,7 @@
                 },
                 {
                   "id": "legacy:74fe916f736c76f4",
-                  "name": "dancing girl",
+                  "name": "dancing_girl",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -583,20 +615,6 @@
                   "translation_ja": "人形"
                 },
                 {
-                  "id": 59,
-                  "name": "maid",
-                  "post_count": 171167,
-                  "aliases": [
-                    "maid_costume",
-                    "maid_dress",
-                    "maid_outfit",
-                    "maids",
-                    "maid_uniform"
-                  ],
-                  "rank": 31,
-                  "translation_ja": "メイド"
-                },
-                {
                   "id": "legacy:eec7121ebf641c6e",
                   "name": "pilot",
                   "post_count": 0,
@@ -616,7 +634,7 @@
                 },
                 {
                   "id": "legacy:fe38e30d043ef267",
-                  "name": "bar censor",
+                  "name": "bar_censor",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -698,7 +716,7 @@
                 },
                 {
                   "id": "legacy:e5e612baf84f38a4",
-                  "name": "the hermit",
+                  "name": "the_hermit",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -758,15 +776,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "騎士",
                   "rank": 49
-                },
-                {
-                  "id": "legacy:31c8610f9c0560ab",
-                  "name": "housemaid",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "メイド",
-                  "rank": 50
                 },
                 {
                   "id": "legacy:a6b4f3a5d5ff51dc",
@@ -838,15 +847,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "聖職者（キリスト教）",
                   "rank": 58
-                },
-                {
-                  "id": "legacy:f677b1c732516693",
-                  "name": "wa_maid",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "和風メイド",
-                  "rank": 59
                 },
                 {
                   "id": 1568,
@@ -959,7 +959,7 @@
                 },
                 {
                   "id": "legacy:8cd90378b790be70",
-                  "name": "early teen",
+                  "name": "early_teen",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1133,181 +1133,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "オイリー",
                   "rank": 13
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:01-023",
-              "label_ja": "翼",
-              "tags": [
-                {
-                  "id": 2866,
-                  "name": "wings",
-                  "post_count": 502496,
-                  "aliases": [
-                    "wing"
-                  ],
-                  "rank": 1,
-                  "translation_ja": "翼"
-                },
-                {
-                  "id": 15737,
-                  "name": "bat_wings",
-                  "post_count": 65397,
-                  "aliases": [
-                    "batwing"
-                  ],
-                  "rank": 2,
-                  "translation_ja": "バットウィング"
-                },
-                {
-                  "id": "legacy:074b8a261a5d4153",
-                  "name": "butterfly_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "バタフライウィング",
-                  "rank": 3
-                },
-                {
-                  "id": 376923,
-                  "name": "black_wings",
-                  "post_count": 54532,
-                  "aliases": [
-                    "black_wing",
-                    "dark_wings"
-                  ],
-                  "rank": 4,
-                  "translation_ja": "黒い翼"
-                },
-                {
-                  "id": 388067,
-                  "name": "demon_wings",
-                  "post_count": 51717,
-                  "aliases": [
-                    "devil_wings"
-                  ],
-                  "rank": 5,
-                  "translation_ja": "悪魔の翼"
-                },
-                {
-                  "id": "legacy:085163b9a53947b4",
-                  "name": "asymmetrical_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "非対称の翼",
-                  "rank": 6
-                },
-                {
-                  "id": "legacy:f09c881355d09d16",
-                  "name": "detached_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "本体から離れた翼",
-                  "rank": 7
-                },
-                {
-                  "id": 453768,
-                  "name": "fairy_wings",
-                  "post_count": 21502,
-                  "aliases": [],
-                  "rank": 8,
-                  "translation_ja": "妖精の翼"
-                },
-                {
-                  "id": "legacy:cb39962fa612c808",
-                  "name": "fake_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "偽の翼",
-                  "rank": 9
-                },
-                {
-                  "id": "legacy:c0ab0c39c80498df",
-                  "name": "fiery_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "燃えるような翼",
-                  "rank": 10
-                },
-                {
-                  "id": "legacy:8880c2592309c6c1",
-                  "name": "insect_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "昆虫の翼",
-                  "rank": 11
-                },
-                {
-                  "id": "legacy:d300c6cc12b436cb",
-                  "name": "large_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大きな翼",
-                  "rank": 12
-                },
-                {
-                  "id": 580906,
-                  "name": "low_wings",
-                  "post_count": 32030,
-                  "aliases": [
-                    "hip_wings",
-                    "lower_back_wings",
-                    "waist_wings"
-                  ],
-                  "rank": 13,
-                  "translation_ja": "腰の位置にある翼"
-                },
-                {
-                  "id": "legacy:99b562d9922bf571",
-                  "name": "mini_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ミニ翼",
-                  "rank": 14
-                },
-                {
-                  "id": "legacy:8cb2d4ea86977e45",
-                  "name": "multicolored_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "多色の翼",
-                  "rank": 15
-                },
-                {
-                  "id": "legacy:884d63af12148bee",
-                  "name": "multiple_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "複数の翼",
-                  "rank": 16
-                },
-                {
-                  "id": "legacy:10a9396cc27914f2",
-                  "name": "no_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "翼がない",
-                  "rank": 17
-                },
-                {
-                  "id": "legacy:4c0cc0c8f21e9892",
-                  "name": "winged_helmet",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "翼のついたヘルメット",
-                  "rank": 18
                 }
               ]
             }
@@ -1555,7 +1380,7 @@
               "tags": [
                 {
                   "id": "legacy:631d099b149327f6",
-                  "name": "bare shoulders",
+                  "name": "bare_shoulders",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1608,7 +1433,7 @@
                 },
                 {
                   "id": "legacy:8a662adaa22a4260",
-                  "name": "flat chest",
+                  "name": "flat_chest",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1626,7 +1451,7 @@
                 },
                 {
                   "id": "legacy:d2d6ce96d005cc4d",
-                  "name": "medium breasts",
+                  "name": "medium_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1635,7 +1460,7 @@
                 },
                 {
                   "id": "legacy:0ce05a0510de3bea",
-                  "name": "big breasts",
+                  "name": "big_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1644,7 +1469,7 @@
                 },
                 {
                   "id": "legacy:23340d72c3c0582d",
-                  "name": "huge breasts",
+                  "name": "huge_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1653,7 +1478,7 @@
                 },
                 {
                   "id": "legacy:b87eba35ac96f8fe",
-                  "name": "gigantic breasts",
+                  "name": "gigantic_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1661,12 +1486,12 @@
                   "rank": 7
                 },
                 {
-                  "name": "perky breasts",
+                  "name": "perky_breasts",
                   "translation_ja": "上向きの胸"
                 },
                 {
                   "id": "legacy:62903d8970247821",
-                  "name": "breasts apart",
+                  "name": "breasts_apart",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1675,7 +1500,7 @@
                 },
                 {
                   "id": "legacy:d7111740a02001ba",
-                  "name": "hanging breasts",
+                  "name": "hanging_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1684,7 +1509,7 @@
                 },
                 {
                   "id": "legacy:a2b9e4f1af21360e",
-                  "name": "bouncing breasts",
+                  "name": "bouncing_breasts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -1873,6 +1698,181 @@
               ]
             },
             {
+              "id": "legacy_small:01-023",
+              "label_ja": "翼",
+              "tags": [
+                {
+                  "id": 2866,
+                  "name": "wings",
+                  "post_count": 502496,
+                  "aliases": [
+                    "wing"
+                  ],
+                  "rank": 1,
+                  "translation_ja": "翼"
+                },
+                {
+                  "id": 15737,
+                  "name": "bat_wings",
+                  "post_count": 65397,
+                  "aliases": [
+                    "batwing"
+                  ],
+                  "rank": 2,
+                  "translation_ja": "バットウィング"
+                },
+                {
+                  "id": "legacy:074b8a261a5d4153",
+                  "name": "butterfly_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "バタフライウィング",
+                  "rank": 3
+                },
+                {
+                  "id": 376923,
+                  "name": "black_wings",
+                  "post_count": 54532,
+                  "aliases": [
+                    "black_wing",
+                    "dark_wings"
+                  ],
+                  "rank": 4,
+                  "translation_ja": "黒い翼"
+                },
+                {
+                  "id": 388067,
+                  "name": "demon_wings",
+                  "post_count": 51717,
+                  "aliases": [
+                    "devil_wings"
+                  ],
+                  "rank": 5,
+                  "translation_ja": "悪魔の翼"
+                },
+                {
+                  "id": "legacy:085163b9a53947b4",
+                  "name": "asymmetrical_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "非対称の翼",
+                  "rank": 6
+                },
+                {
+                  "id": "legacy:f09c881355d09d16",
+                  "name": "detached_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "本体から離れた翼",
+                  "rank": 7
+                },
+                {
+                  "id": 453768,
+                  "name": "fairy_wings",
+                  "post_count": 21502,
+                  "aliases": [],
+                  "rank": 8,
+                  "translation_ja": "妖精の翼"
+                },
+                {
+                  "id": "legacy:cb39962fa612c808",
+                  "name": "fake_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "偽の翼",
+                  "rank": 9
+                },
+                {
+                  "id": "legacy:c0ab0c39c80498df",
+                  "name": "fiery_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "燃えるような翼",
+                  "rank": 10
+                },
+                {
+                  "id": "legacy:8880c2592309c6c1",
+                  "name": "insect_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "昆虫の翼",
+                  "rank": 11
+                },
+                {
+                  "id": "legacy:d300c6cc12b436cb",
+                  "name": "large_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大きな翼",
+                  "rank": 12
+                },
+                {
+                  "id": 580906,
+                  "name": "low_wings",
+                  "post_count": 32030,
+                  "aliases": [
+                    "hip_wings",
+                    "lower_back_wings",
+                    "waist_wings"
+                  ],
+                  "rank": 13,
+                  "translation_ja": "腰の位置にある翼"
+                },
+                {
+                  "id": "legacy:99b562d9922bf571",
+                  "name": "mini_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ミニ翼",
+                  "rank": 14
+                },
+                {
+                  "id": "legacy:8cb2d4ea86977e45",
+                  "name": "multicolored_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "多色の翼",
+                  "rank": 15
+                },
+                {
+                  "id": "legacy:884d63af12148bee",
+                  "name": "multiple_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "複数の翼",
+                  "rank": 16
+                },
+                {
+                  "id": "legacy:10a9396cc27914f2",
+                  "name": "no_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "翼がない",
+                  "rank": 17
+                },
+                {
+                  "id": "legacy:4c0cc0c8f21e9892",
+                  "name": "winged_helmet",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "翼のついたヘルメット",
+                  "rank": 18
+                }
+              ]
+            },
+            {
               "id": "audit_body_limbs",
               "label_ja": "腕・手・脚・足",
               "description_ja": "腕、手、脚、足とその身体的特徴。",
@@ -2030,7 +2030,7 @@
               "tags": [
                 {
                   "id": "legacy:8cb2b313e2438063",
-                  "name": "slender face",
+                  "name": "slender_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2039,7 +2039,7 @@
                 },
                 {
                   "id": "legacy:4b9ecd5aad5c8157",
-                  "name": "round face",
+                  "name": "round_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2048,7 +2048,7 @@
                 },
                 {
                   "id": "legacy:1616b3386e05a5f4",
-                  "name": "oval face",
+                  "name": "oval_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2057,7 +2057,7 @@
                 },
                 {
                   "id": "legacy:d2bf020c996c5a5c",
-                  "name": "baby face",
+                  "name": "baby_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2066,7 +2066,7 @@
                 },
                 {
                   "id": "legacy:88fa8b4bdc268deb",
-                  "name": "inverted triangle face",
+                  "name": "inverted_triangle_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2075,7 +2075,7 @@
                 },
                 {
                   "id": "legacy:85b56a04a93c4cc7",
-                  "name": "heart shaped face",
+                  "name": "heart_shaped_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2084,7 +2084,7 @@
                 },
                 {
                   "id": "legacy:a8b3f855a2528ff3",
-                  "name": "diamond face",
+                  "name": "diamond_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2093,7 +2093,7 @@
                 },
                 {
                   "id": "legacy:def98592fd6790a5",
-                  "name": "square face",
+                  "name": "square_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2102,7 +2102,7 @@
                 },
                 {
                   "id": "legacy:ba8619fc450e240a",
-                  "name": "long face",
+                  "name": "long_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2111,7 +2111,7 @@
                 },
                 {
                   "id": "legacy:4a9db0602ecab8cc",
-                  "name": "triangular face",
+                  "name": "triangular_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2206,18 +2206,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "カラフルなまつげ",
                   "rank": 10
-                },
-                {
-                  "id": 3389,
-                  "name": "blush",
-                  "post_count": 3352533,
-                  "aliases": [
-                    "blushing",
-                    "flush",
-                    "flushed"
-                  ],
-                  "rank": 11,
-                  "translation_ja": "ブラッシュ"
                 },
                 {
                   "id": 1388933,
@@ -2370,7 +2358,7 @@
               "tags": [
                 {
                   "id": "legacy:ae78a72e330749ae",
-                  "name": "elf ears",
+                  "name": "elf_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2379,7 +2367,7 @@
                 },
                 {
                   "id": "legacy:c88a2b57097676a2",
-                  "name": "wolf ears",
+                  "name": "wolf_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2388,7 +2376,7 @@
                 },
                 {
                   "id": "legacy:1c874c321300e8aa",
-                  "name": "cow ears",
+                  "name": "cow_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2397,7 +2385,7 @@
                 },
                 {
                   "id": "legacy:140eb551350a45fb",
-                  "name": "pig ears",
+                  "name": "pig_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2406,7 +2394,7 @@
                 },
                 {
                   "id": "legacy:b488efede51b7e05",
-                  "name": "sheep ears",
+                  "name": "sheep_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2415,7 +2403,7 @@
                 },
                 {
                   "id": "legacy:6e65a5340f8bc304",
-                  "name": "deer ears",
+                  "name": "deer_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2424,7 +2412,7 @@
                 },
                 {
                   "id": "legacy:f3a07252241a0941",
-                  "name": "goat ears",
+                  "name": "goat_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2433,7 +2421,7 @@
                 },
                 {
                   "id": "legacy:5864a665f748257a",
-                  "name": "antelope ears",
+                  "name": "antelope_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2442,7 +2430,7 @@
                 },
                 {
                   "id": "legacy:7ede9ad26c691ca5",
-                  "name": "rhino ears",
+                  "name": "rhino_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2451,7 +2439,7 @@
                 },
                 {
                   "id": "legacy:3666218f44ec9d39",
-                  "name": "elephant ears",
+                  "name": "elephant_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2460,7 +2448,7 @@
                 },
                 {
                   "id": "legacy:62d0e0f4634fc985",
-                  "name": "dragon ears",
+                  "name": "dragon_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2469,7 +2457,7 @@
                 },
                 {
                   "id": "legacy:f3c27836e60e10d6",
-                  "name": "demon ears",
+                  "name": "demon_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2478,7 +2466,7 @@
                 },
                 {
                   "id": "legacy:3122569e7a4713a8",
-                  "name": "angel ears",
+                  "name": "angel_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2487,20 +2475,12 @@
                 },
                 {
                   "id": "legacy:c8c275a3dc7011d8",
-                  "name": "alien ears",
+                  "name": "alien_ears",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
                   "translation_ja": "宇宙人の耳",
                   "rank": 23
-                },
-                {
-                  "id": 582833,
-                  "name": "ear_blush",
-                  "post_count": 14515,
-                  "aliases": [],
-                  "rank": 24,
-                  "translation_ja": "耳の紅潮"
                 },
                 {
                   "id": "legacy:97abf69c9189732f",
@@ -2771,7 +2751,7 @@
               "tags": [
                 {
                   "id": "legacy:c8d5265b2c5ee49b",
-                  "name": "thick eyebrows",
+                  "name": "thick_eyebrows",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2780,7 +2760,7 @@
                 },
                 {
                   "id": "legacy:8767f9c6ca790c3b",
-                  "name": "cocked eyebrow",
+                  "name": "cocked_eyebrow",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2789,7 +2769,7 @@
                 },
                 {
                   "id": "legacy:1444a3a218c4dd45",
-                  "name": "short eyebrows",
+                  "name": "short_eyebrows",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2798,7 +2778,7 @@
                 },
                 {
                   "id": "legacy:8bf23aa326bf285c",
-                  "name": "v-shaped eyebrows",
+                  "name": "v-shaped_eyebrows",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2813,7 +2793,7 @@
               "tags": [
                 {
                   "id": "legacy:a13b81e797e5eab1",
-                  "name": "blue eyes",
+                  "name": "blue_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2822,7 +2802,7 @@
                 },
                 {
                   "id": "legacy:351591d6a0e201bb",
-                  "name": "red eyes",
+                  "name": "red_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2831,7 +2811,7 @@
                 },
                 {
                   "id": "legacy:cb65d802668e7743",
-                  "name": "brown eyes",
+                  "name": "brown_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2840,7 +2820,7 @@
                 },
                 {
                   "id": "legacy:ab59633a37bef8ed",
-                  "name": "green eyes",
+                  "name": "green_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2849,7 +2829,7 @@
                 },
                 {
                   "id": "legacy:addbb126ead81a10",
-                  "name": "purple eyes",
+                  "name": "purple_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2858,7 +2838,7 @@
                 },
                 {
                   "id": "legacy:68715a8c25c012e3",
-                  "name": "yellow eyes",
+                  "name": "yellow_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2867,7 +2847,7 @@
                 },
                 {
                   "id": "legacy:5c289c1060732730",
-                  "name": "pink eyes",
+                  "name": "pink_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2876,7 +2856,7 @@
                 },
                 {
                   "id": "legacy:8e7549eb9f629cb8",
-                  "name": "black eyes",
+                  "name": "black_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2885,7 +2865,7 @@
                 },
                 {
                   "id": "legacy:7eef5b6ae62bb9fd",
-                  "name": "aqua eyes",
+                  "name": "aqua_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2894,7 +2874,7 @@
                 },
                 {
                   "id": "legacy:c7d25ab2d118d917",
-                  "name": "orange eyes",
+                  "name": "orange_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2903,7 +2883,7 @@
                 },
                 {
                   "id": "legacy:3a14f6ad850c74a2",
-                  "name": "grey eyes",
+                  "name": "grey_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2912,7 +2892,7 @@
                 },
                 {
                   "id": "legacy:b66081fa578f07cb",
-                  "name": "multicolored eyes",
+                  "name": "multicolored_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2921,7 +2901,7 @@
                 },
                 {
                   "id": "legacy:fa7a712ae48e1d25",
-                  "name": "white eyes",
+                  "name": "white_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2930,7 +2910,7 @@
                 },
                 {
                   "id": "legacy:6eebdf68b8b44a54",
-                  "name": "gradient eyes",
+                  "name": "gradient_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2939,7 +2919,7 @@
                 },
                 {
                   "id": "legacy:ad3f99cdfe725679",
-                  "name": "narrowed eyes",
+                  "name": "narrowed_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2948,7 +2928,7 @@
                 },
                 {
                   "id": "legacy:79b70670995b0163",
-                  "name": "hidden eyes",
+                  "name": "hidden_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2957,7 +2937,7 @@
                 },
                 {
                   "id": "legacy:d0330fa2bf33ab4d",
-                  "name": "heart-shaped eyes",
+                  "name": "heart-shaped_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2966,7 +2946,7 @@
                 },
                 {
                   "id": "legacy:7772387d4ab58d60",
-                  "name": "button eyes",
+                  "name": "button_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2975,7 +2955,7 @@
                 },
                 {
                   "id": "legacy:d9c25baa8bab9e08",
-                  "name": "cephalopod eyes",
+                  "name": "cephalopod_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2984,7 +2964,7 @@
                 },
                 {
                   "id": "legacy:84b477092dc15eeb",
-                  "name": "blank eyes",
+                  "name": "blank_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -2993,7 +2973,7 @@
                 },
                 {
                   "id": "legacy:78e5d187ff415bb1",
-                  "name": "no eyes",
+                  "name": "no_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3002,7 +2982,7 @@
                 },
                 {
                   "id": "legacy:b569a37783b88477",
-                  "name": "extra eyes",
+                  "name": "extra_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3011,7 +2991,7 @@
                 },
                 {
                   "id": "legacy:2fb30d41d2b0c229",
-                  "name": "crazy eyes",
+                  "name": "crazy_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3020,7 +3000,7 @@
                 },
                 {
                   "id": "legacy:b11d3661154090f4",
-                  "name": "solid circle eyes",
+                  "name": "solid_circle_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3029,7 +3009,7 @@
                 },
                 {
                   "id": "legacy:cd8873ca903cbebd",
-                  "name": "solid oval eyes",
+                  "name": "solid_oval_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3038,7 +3018,7 @@
                 },
                 {
                   "id": "legacy:7c2a2262bb9be821",
-                  "name": "uneven eyes",
+                  "name": "uneven_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3047,7 +3027,7 @@
                 },
                 {
                   "id": "legacy:d7655841e90741b1",
-                  "name": "blood from eyes",
+                  "name": "blood_from_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3336,7 +3316,7 @@
               "tags": [
                 {
                   "id": "legacy:597b926757c80fcb",
-                  "name": "pointed nose",
+                  "name": "pointed_nose",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3345,7 +3325,7 @@
                 },
                 {
                   "id": "legacy:bbd8416f070d370e",
-                  "name": "small nose",
+                  "name": "small_nose",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3354,7 +3334,7 @@
                 },
                 {
                   "id": "legacy:ec5afade184366c2",
-                  "name": "big nose",
+                  "name": "big_nose",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3432,7 +3412,7 @@
               "tags": [
                 {
                   "id": "legacy:24863c42268f53bc",
-                  "name": "thick lips",
+                  "name": "thick_lips",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3441,7 +3421,7 @@
                 },
                 {
                   "id": "legacy:877755a30cc806a7",
-                  "name": "puffy lips",
+                  "name": "puffy_lips",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3450,7 +3430,7 @@
                 },
                 {
                   "id": "legacy:99708e000aa3ced3",
-                  "name": "heart-shaped mouth",
+                  "name": "heart-shaped_mouth",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -3690,7 +3670,7 @@
                 },
                 {
                   "id": "legacy:750f516390b48d8b",
-                  "name": "Pouted lips",
+                  "name": "Pouted_lips",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4011,7 +3991,7 @@
                 },
                 {
                   "id": "legacy:af2a3e6ee5052514",
-                  "name": "short hair",
+                  "name": "short_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4020,7 +4000,7 @@
                 },
                 {
                   "id": "legacy:d51f80ea85ea5d1a",
-                  "name": "curly hair",
+                  "name": "curly_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4029,7 +4009,7 @@
                 },
                 {
                   "id": "legacy:8989b5946622d362",
-                  "name": "long hair",
+                  "name": "long_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4055,7 +4035,7 @@
                 },
                 {
                   "id": "legacy:1d370a92f2356315",
-                  "name": "high ponytail",
+                  "name": "high_ponytail",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4077,7 +4057,7 @@
                 },
                 {
                   "id": "legacy:2da475de013aa1f9",
-                  "name": "braided ponytail",
+                  "name": "braided_ponytail",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4097,7 +4077,7 @@
                 },
                 {
                   "id": "legacy:af2c153b18e4b5b4",
-                  "name": "short ponytail",
+                  "name": "short_ponytail",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4106,7 +4086,7 @@
                 },
                 {
                   "id": "legacy:e093f94369f0c28d",
-                  "name": "twin braids",
+                  "name": "twin_braids",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4115,7 +4095,7 @@
                 },
                 {
                   "id": "legacy:59af68420d29edea",
-                  "name": "medium hair",
+                  "name": "medium_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4124,7 +4104,7 @@
                 },
                 {
                   "id": "legacy:a6026d1d6a9e9b93",
-                  "name": "very long hair",
+                  "name": "very_long_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4133,7 +4113,7 @@
                 },
                 {
                   "id": "legacy:0a9bce121e702cea",
-                  "name": "braided bangs",
+                  "name": "braided_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4142,7 +4122,7 @@
                 },
                 {
                   "id": "legacy:69146e234829f5e7",
-                  "name": "swept bangs",
+                  "name": "swept_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4151,7 +4131,7 @@
                 },
                 {
                   "id": "legacy:9cfdddb111ea8a5d",
-                  "name": "hair between eyes",
+                  "name": "hair_between_eyes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4160,7 +4140,7 @@
                 },
                 {
                   "id": "legacy:2586e5fb21ab67c6",
-                  "name": "hime cut",
+                  "name": "hime_cut",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4169,7 +4149,7 @@
                 },
                 {
                   "id": "legacy:2363ce3d0671c7d5",
-                  "name": "crossed bangs",
+                  "name": "crossed_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4187,7 +4167,7 @@
                 },
                 {
                   "id": "legacy:a418eb3518efd5e2",
-                  "name": "blunt bangs",
+                  "name": "blunt_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4196,7 +4176,7 @@
                 },
                 {
                   "id": "legacy:2a7cc73826677c0f",
-                  "name": "air bangs",
+                  "name": "air_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4205,7 +4185,7 @@
                 },
                 {
                   "id": "legacy:d869640aef792442",
-                  "name": "hair wings",
+                  "name": "hair_wings",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4214,7 +4194,7 @@
                 },
                 {
                   "id": "legacy:27ce5aec75b69eed",
-                  "name": "long bangs",
+                  "name": "long_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4232,7 +4212,7 @@
                 },
                 {
                   "id": "legacy:f7096a1ae81d1397",
-                  "name": "centre parting bangs",
+                  "name": "centre_parting_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4241,7 +4221,7 @@
                 },
                 {
                   "id": "legacy:ce8cecce1ee6f372",
-                  "name": "asymmetric bangs",
+                  "name": "asymmetric_bangs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4250,7 +4230,7 @@
                 },
                 {
                   "id": "legacy:3810f41b3928276f",
-                  "name": "disheveled hair",
+                  "name": "disheveled_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4259,7 +4239,7 @@
                 },
                 {
                   "id": "legacy:a1805c0e246f811b",
-                  "name": "wavy hair",
+                  "name": "wavy_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4268,7 +4248,7 @@
                 },
                 {
                   "id": "legacy:e50ffc8a015b07f0",
-                  "name": "hair in takes",
+                  "name": "hair_in_takes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4277,7 +4257,7 @@
                 },
                 {
                   "id": "legacy:efa61e40dc83eb62",
-                  "name": "hair pink flowers",
+                  "name": "hair_pink_flowers",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4294,7 +4274,7 @@
                 },
                 {
                   "id": "legacy:3fb55cfb413428e9",
-                  "name": "antenna hair",
+                  "name": "antenna_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4303,7 +4283,7 @@
                 },
                 {
                   "id": "legacy:255b2df26b27367d",
-                  "name": "Side ponytail",
+                  "name": "Side_ponytail",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4321,7 +4301,7 @@
                 },
                 {
                   "id": "legacy:5c48e94da42143a9",
-                  "name": "drill hair",
+                  "name": "drill_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4330,7 +4310,7 @@
                 },
                 {
                   "id": "legacy:d819a1a04ffb7561",
-                  "name": "messy hair",
+                  "name": "messy_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4527,7 +4507,7 @@
               "tags": [
                 {
                   "id": "legacy:a42875324bdae332",
-                  "name": "streaked hair",
+                  "name": "streaked_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4536,7 +4516,7 @@
                 },
                 {
                   "id": "legacy:0ba26cc4d7dc118e",
-                  "name": "grey gradient hair",
+                  "name": "grey_gradient_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4545,7 +4525,7 @@
                 },
                 {
                   "id": "legacy:5c4f8ed3c1f8cee3",
-                  "name": "light brown hair",
+                  "name": "light_brown_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4553,8 +4533,17 @@
                   "rank": 20
                 },
                 {
+                  "id": "manual:20260810:colored_inner_hair",
+                  "name": "colored_inner_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "manual_candidate_addition",
+                  "translation_ja": "内側の色が違う髪",
+                  "rank": 13
+                },
+                {
                   "id": "legacy:f76befe812af5b5c",
-                  "name": "two-tone hair",
+                  "name": "two-tone_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4563,7 +4552,7 @@
                 },
                 {
                   "id": "legacy:7bc664e9684fa33e",
-                  "name": "multicolored hair",
+                  "name": "multicolored_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4572,7 +4561,7 @@
                 },
                 {
                   "id": "legacy:a4bbb39e35cab9ee",
-                  "name": "white hair",
+                  "name": "white_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4581,7 +4570,7 @@
                 },
                 {
                   "id": "legacy:711af0dac3b87702",
-                  "name": "blonde hair",
+                  "name": "blonde_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4590,7 +4579,7 @@
                 },
                 {
                   "id": "legacy:3e74f73b28cf4ca9",
-                  "name": "silver hair",
+                  "name": "silver_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4599,7 +4588,7 @@
                 },
                 {
                   "id": "legacy:4f44e1040fa30f9b",
-                  "name": "grey hair",
+                  "name": "grey_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4608,7 +4597,7 @@
                 },
                 {
                   "id": "legacy:1968b7e1c9ccdbd3",
-                  "name": "purple hair",
+                  "name": "purple_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4617,7 +4606,7 @@
                 },
                 {
                   "id": "legacy:c03cd290c3ff77f8",
-                  "name": "red hair",
+                  "name": "red_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4626,7 +4615,7 @@
                 },
                 {
                   "id": "legacy:833a1de842e7a58a",
-                  "name": "yellow hair",
+                  "name": "yellow_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4635,7 +4624,7 @@
                 },
                 {
                   "id": "legacy:904986c3f1df0659",
-                  "name": "green hair",
+                  "name": "green_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4644,7 +4633,7 @@
                 },
                 {
                   "id": "legacy:57581761f9643b37",
-                  "name": "blue hair",
+                  "name": "blue_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4653,7 +4642,7 @@
                 },
                 {
                   "id": "legacy:3fafddacf79d881a",
-                  "name": "black hair",
+                  "name": "black_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4662,7 +4651,7 @@
                 },
                 {
                   "id": "legacy:8f1adc2c0fbc8e73",
-                  "name": "brown hair",
+                  "name": "brown_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -4677,15 +4666,6 @@
                   "source": "manual_candidate_addition",
                   "translation_ja": "ピンク色の髪",
                   "rank": 12
-                },
-                {
-                  "id": "manual:20260810:colored_inner_hair",
-                  "name": "colored_inner_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "内側の色が違う髪",
-                  "rank": 13
                 },
                 {
                   "id": "manual:20260810:auburn_hair",
@@ -5624,7 +5604,7 @@
                 },
                 {
                   "id": "legacy:3017d6e9029d35f3",
-                  "name": "Taoist robe",
+                  "name": "Taoist_robe",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -6391,7 +6371,7 @@
                 },
                 {
                   "id": "legacy:36886410ef18e837",
-                  "name": "casual T-shirts",
+                  "name": "casual_T-shirts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -6400,7 +6380,7 @@
                 },
                 {
                   "id": "legacy:e535f51e85c42932",
-                  "name": "short sleeve T-shirts",
+                  "name": "short_sleeve_T-shirts",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -6463,7 +6443,7 @@
                 },
                 {
                   "id": "legacy:9fd0d72757435ac0",
-                  "name": "Impossible shirt",
+                  "name": "Impossible_shirt",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -6789,7 +6769,7 @@
                 },
                 {
                   "id": "legacy:2d631c93d3c3851c",
-                  "name": "unbuttoned shirt",
+                  "name": "unbuttoned_shirt",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -7413,7 +7393,7 @@
               "tags": [
                 {
                   "id": "legacy:afd34cf126b190d7",
-                  "name": "unbuttoned clothes",
+                  "name": "unbuttoned_clothes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -7634,7 +7614,7 @@
                 },
                 {
                   "id": "legacy:6074407d97f22074",
-                  "name": "bow tied at the waist",
+                  "name": "bow_tied_at_the_waist",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -8278,7 +8258,7 @@
                 },
                 {
                   "id": "legacy:ab90480b89611fdc",
-                  "name": "Medium length skirt",
+                  "name": "Medium_length_skirt",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -16291,7 +16271,7 @@
               "tags": [
                 {
                   "id": "legacy:f8da689d255497d3",
-                  "name": "metal collar",
+                  "name": "metal_collar",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -16327,7 +16307,7 @@
                 },
                 {
                   "id": "legacy:702a7c19779dddef",
-                  "name": "pearl bracelet",
+                  "name": "pearl_bracelet",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -16336,7 +16316,7 @@
                 },
                 {
                   "id": "legacy:02eb77b488878736",
-                  "name": "drop earrings",
+                  "name": "drop_earrings",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -16345,7 +16325,7 @@
                 },
                 {
                   "id": "legacy:5e3731850b7d1a05",
-                  "name": "puppet rings",
+                  "name": "puppet_rings",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -16363,7 +16343,7 @@
                 },
                 {
                   "id": "legacy:da117bad639b1eed",
-                  "name": "sapphire brooch",
+                  "name": "sapphire_brooch",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -17055,14 +17035,6 @@
                   "translation_ja": "怖がっている"
                 },
                 {
-                  "id": 442577,
-                  "name": "ahegao",
-                  "post_count": 22683,
-                  "aliases": [],
-                  "rank": 14,
-                  "translation_ja": "アヘ顔"
-                },
-                {
                   "id": "legacy:eee856f0d316b796",
                   "name": "endured_face",
                   "post_count": 0,
@@ -17278,6 +17250,24 @@
               "id": "legacy_small:03-007",
               "label_ja": "基本姿勢・全身動作",
               "tags": [
+                {
+                  "id": "manual:20260810:contrapposto",
+                  "name": "contrapposto",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "manual_candidate_addition",
+                  "translation_ja": "コントラポストポーズ",
+                  "rank": 151
+                },
+                {
+                  "id": "manual:20260810:faux_figurine",
+                  "name": "faux_figurine",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "manual_candidate_addition",
+                  "translation_ja": "フィギュアのようなポーズ",
+                  "rank": 152
+                },
                 {
                   "id": 555432,
                   "name": "head_down",
@@ -17861,24 +17851,6 @@
                   "rank": 149
                 },
                 {
-                  "id": "manual:20260810:contrapposto",
-                  "name": "contrapposto",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "コントラポストポーズ",
-                  "rank": 151
-                },
-                {
-                  "id": "manual:20260810:faux_figurine",
-                  "name": "faux_figurine",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "フィギュアのようなポーズ",
-                  "rank": 152
-                },
-                {
                   "id": "legacy:8b5241c71bbdffec",
                   "name": "caught",
                   "post_count": 0,
@@ -18385,7 +18357,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "見ている人を指さす",
+                  "translation_ja": "こちらを指さす",
                   "rank": 57
                 },
                 {
@@ -20113,6 +20085,32 @@
                   "translation_ja": "何かを持っている"
                 },
                 {
+                  "id": "legacy:4d1a96299faeca07",
+                  "name": "holding_bouquet",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "花束を手に持っている",
+                  "rank": 10
+                },
+                {
+                  "name": "holding_oversized_bouquet",
+                  "translation_ja": "大きな花束を持っている"
+                },
+                {
+                  "id": "legacy:1f8678b165621fe0",
+                  "name": "holding_pillow",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "枕を抱えている",
+                  "rank": 55
+                },
+                {
+                  "name": "holding_stuffed_cute_animal",
+                  "translation_ja": "動物のぬいぐるみを持っている"
+                },
+                {
                   "id": "legacy:6356ba72987a8899",
                   "name": "holding_animal",
                   "post_count": 0,
@@ -20183,15 +20181,6 @@
                   "aliases": [],
                   "rank": 9,
                   "translation_ja": "ボトルを持っている"
-                },
-                {
-                  "id": "legacy:4d1a96299faeca07",
-                  "name": "holding_bouquet",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "花束を手に持っている",
-                  "rank": 10
                 },
                 {
                   "id": "legacy:2b5a953708405f8d",
@@ -20309,15 +20298,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "衣類を持っている",
                   "rank": 23
-                },
-                {
-                  "id": "legacy:c3b6f1ee7abf84d9",
-                  "name": "holding_condom",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "コンドームを手に持っている",
-                  "rank": 24
                 },
                 {
                   "id": 704500,
@@ -20469,15 +20449,6 @@
                   "rank": 40
                 },
                 {
-                  "id": "legacy:6aca89d89c04f749",
-                  "name": "holding_innertube",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "インナーチューブを持っている",
-                  "rank": 41
-                },
-                {
                   "id": 1382120,
                   "name": "holding_instrument",
                   "post_count": 22808,
@@ -20594,15 +20565,6 @@
                   "translation_ja": "携帯電話を持っている"
                 },
                 {
-                  "id": "legacy:1f8678b165621fe0",
-                  "name": "holding_pillow",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "枕を抱えている",
-                  "rank": 55
-                },
-                {
                   "id": "legacy:df5a6ebc4f5edc0f",
                   "name": "holding_pipe",
                   "post_count": 0,
@@ -20628,25 +20590,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "皿を持っている",
                   "rank": 58
-                },
-                {
-                  "id": 661340,
-                  "name": "holding_poke_ball",
-                  "post_count": 19777,
-                  "aliases": [
-                    "holding_pokeball"
-                  ],
-                  "rank": 59,
-                  "translation_ja": "ポケモンのモンスターボールを持っている"
-                },
-                {
-                  "id": "legacy:33405863736384b3",
-                  "name": "holding_pokemon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ポケモンを抱いている",
-                  "rank": 60
                 },
                 {
                   "id": 1420938,
@@ -20866,7 +20809,7 @@
                 },
                 {
                   "id": "legacy:5fd25b78efb43999",
-                  "name": "spread legs",
+                  "name": "spread_legs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -21277,15 +21220,6 @@
                   "translation_ja": "（強調）両脚の間"
                 },
                 {
-                  "id": "legacy:0bbd15c6e2263970",
-                  "name": "k/da_(league_of_legends)",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "KDA（リーグ・オブ・レジェンド）",
-                  "rank": 51
-                },
-                {
                   "id": 413672,
                   "name": "leg_up",
                   "post_count": 92757,
@@ -21605,15 +21539,6 @@
                   "rank": 23
                 },
                 {
-                  "id": "legacy:63fa08fdfd1bf5c8",
-                  "name": "special_feeling_(meme)",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "雪の中で傘をさす恋人たちのミーム",
-                  "rank": 24
-                },
-                {
                   "id": "legacy:098073c154d81091",
                   "name": "symmetrical_docking",
                   "post_count": 0,
@@ -21792,6 +21717,18 @@
               "label_ja": "赤面・汗・涙",
               "tags": [
                 {
+                  "id": 3389,
+                  "name": "blush",
+                  "post_count": 3352533,
+                  "aliases": [
+                    "blushing",
+                    "flush",
+                    "flushed"
+                  ],
+                  "rank": 11,
+                  "translation_ja": "赤面"
+                },
+                {
                   "id": 465619,
                   "name": "closed_eyes",
                   "post_count": 831397,
@@ -21935,6 +21872,14 @@
                   "aliases": [],
                   "rank": 14,
                   "translation_ja": "緊張している"
+                },
+                {
+                  "id": 582833,
+                  "name": "ear_blush",
+                  "post_count": 14515,
+                  "aliases": [],
+                  "rank": 24,
+                  "translation_ja": "耳の紅潮"
                 }
               ]
             }
@@ -21956,15 +21901,6 @@
               "label_ja": "画質・画像形式",
               "tags": [
                 {
-                  "id": "legacy:9d0d39312db12868",
-                  "name": "lowres",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "低解像度",
-                  "rank": 1
-                },
-                {
                   "id": "legacy:69e23f185c13b313",
                   "name": "highres",
                   "post_count": 0,
@@ -21984,7 +21920,7 @@
                 },
                 {
                   "id": "legacy:cf00ab2ceef49cb5",
-                  "name": "incredibly absurdres",
+                  "name": "incredibly_absurdres",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -21993,7 +21929,7 @@
                 },
                 {
                   "id": "legacy:6c7bc74a7ccc08c2",
-                  "name": "huge filesize",
+                  "name": "huge_filesize",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22031,6 +21967,16 @@
                   "translation_ja": "カラフルな"
                 }
               ]
+            },
+            {
+              "id": "custom:small:7df7d4c9-fc0f-4fc3-bf5a-9101b6edd6ec",
+              "label_ja": "Pony系",
+              "tags": [
+                {
+                  "name": "source_anime",
+                  "translation_ja": "日本のアニメ風の絵柄"
+                }
+              ]
             }
           ]
         },
@@ -22053,7 +21999,7 @@
                 },
                 {
                   "id": "legacy:f4377e94846b6d0c",
-                  "name": "game cg",
+                  "name": "game_cg",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22084,7 +22030,7 @@
                 },
                 {
                   "id": "legacy:6abd08d45d36c00a",
-                  "name": "animated gif",
+                  "name": "animated_gif",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22188,7 +22134,7 @@
                 },
                 {
                   "id": "legacy:29a7ed2f68c3145e",
-                  "name": "science fiction",
+                  "name": "science_fiction",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22217,7 +22163,7 @@
                 },
                 {
                   "id": "legacy:f965e72501441071",
-                  "name": "optical illusion",
+                  "name": "optical_illusion",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22226,7 +22172,7 @@
                 },
                 {
                   "id": "legacy:d88bf7aabedefc2f",
-                  "name": "fine art parody",
+                  "name": "fine_art_parody",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22321,7 +22267,7 @@
                 },
                 {
                   "id": "legacy:4f77ebc048b590d8",
-                  "name": "column lineup",
+                  "name": "column_lineup",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22330,7 +22276,7 @@
                 },
                 {
                   "id": "legacy:db396816fadde83a",
-                  "name": "zoom layer",
+                  "name": "zoom_layer",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22339,7 +22285,7 @@
                 },
                 {
                   "id": "legacy:eed67f26622e1a07",
-                  "name": "8 Bit Game",
+                  "name": "8_Bit_Game",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22348,7 +22294,7 @@
                 },
                 {
                   "id": "legacy:dc413f582eb0a745",
-                  "name": "1980s anime",
+                  "name": "1980s_anime",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22357,7 +22303,7 @@
                 },
                 {
                   "id": "legacy:f8cf19f42b34de4a",
-                  "name": "disney movie",
+                  "name": "disney_movie",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22375,7 +22321,7 @@
                 },
                 {
                   "id": "legacy:e5a857f504fc7df8",
-                  "name": "80s movie",
+                  "name": "80s_movie",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22384,7 +22330,7 @@
                 },
                 {
                   "id": "legacy:c60e6c63a9dc3b84",
-                  "name": "bubble bobble",
+                  "name": "bubble_bobble",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22393,7 +22339,7 @@
                 },
                 {
                   "id": "legacy:a576324c10c3f3e3",
-                  "name": "style of Pixar",
+                  "name": "style_of_Pixar",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22402,7 +22348,7 @@
                 },
                 {
                   "id": "legacy:e150061ffe64937d",
-                  "name": "Polaroid art",
+                  "name": "Polaroid_art",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22411,7 +22357,7 @@
                 },
                 {
                   "id": "legacy:528343135534b8d9",
-                  "name": "Kaleidoscope Photography",
+                  "name": "Kaleidoscope_Photography",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22420,7 +22366,7 @@
                 },
                 {
                   "id": "legacy:046bd2781c58efd5",
-                  "name": "opal render",
+                  "name": "opal_render",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22438,7 +22384,7 @@
                 },
                 {
                   "id": "legacy:eb6b7e7f1e3c79ec",
-                  "name": "Studio Ghibli",
+                  "name": "Studio_Ghibli",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22456,7 +22402,7 @@
                 },
                 {
                   "id": "legacy:09c88e6c2c520bcf",
-                  "name": "genshin impact",
+                  "name": "genshin_impact",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22465,7 +22411,7 @@
                 },
                 {
                   "id": "legacy:3f35ce14b35172fe",
-                  "name": "azur lane",
+                  "name": "azur_lane",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22474,7 +22420,7 @@
                 },
                 {
                   "id": "legacy:d102058de2e8390f",
-                  "name": "kantai collection",
+                  "name": "kantai_collection",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22483,7 +22429,7 @@
                 },
                 {
                   "id": "legacy:317c4a10ab91d000",
-                  "name": "rebecca (cyberpunk)",
+                  "name": "rebecca_(cyberpunk)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22492,7 +22438,7 @@
                 },
                 {
                   "id": "legacy:7c9a2ecf0570c860",
-                  "name": "chainsaw man",
+                  "name": "chainsaw_man",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22501,7 +22447,7 @@
                 },
                 {
                   "id": "legacy:4f41aa5a18991b2b",
-                  "name": "Magic Vortex",
+                  "name": "Magic_Vortex",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22519,7 +22465,7 @@
                 },
                 {
                   "id": "legacy:1035d752f3f3eaf0",
-                  "name": "magazine scan",
+                  "name": "magazine_scan",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22528,7 +22474,7 @@
                 },
                 {
                   "id": "legacy:a6d2af09010eeef4",
-                  "name": "album cover",
+                  "name": "album_cover",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22546,7 +22492,7 @@
                 },
                 {
                   "id": "legacy:36db7cdf2678ebc0",
-                  "name": "(illustration),(paper figure),(lococo),((impasto)),(shiny skin)",
+                  "name": "(illustration),(paper_figure),(lococo),((impasto)),(shiny_skin)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22643,7 +22589,7 @@
                 },
                 {
                   "id": "legacy:ae59d8e952eb5342",
-                  "name": "Dalle de verre",
+                  "name": "Dalle_de_verre",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22652,7 +22598,7 @@
                 },
                 {
                   "id": "legacy:151b0bf22e306299",
-                  "name": "Encaustic painting",
+                  "name": "Encaustic_painting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22661,7 +22607,7 @@
                 },
                 {
                   "id": "legacy:fb7a338b4479e657",
-                  "name": "Ink wash painting",
+                  "name": "Ink_wash_painting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22688,7 +22634,7 @@
                 },
                 {
                   "id": "legacy:e007d6fe1b43e246",
-                  "name": "(((ink))), ((watercolor))",
+                  "name": "(((ink))),_((watercolor))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22706,7 +22652,7 @@
                 },
                 {
                   "id": "legacy:0be87e4e33613ae4",
-                  "name": "((wash painting)),((ink s...))",
+                  "name": "((wash_painting)),((ink_s...))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22715,7 +22661,7 @@
                 },
                 {
                   "id": "legacy:82472a44a49d5853",
-                  "name": "((dyeing)),((oil painting)),((impasto))",
+                  "name": "((dyeing)),((oil_painting)),((impasto))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22724,7 +22670,7 @@
                 },
                 {
                   "id": "legacy:765d03ca2432004c",
-                  "name": "(posing sketch), (monochrome)",
+                  "name": "(posing_sketch),_(monochrome)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22733,7 +22679,7 @@
                 },
                 {
                   "id": "legacy:575e6024a84e7e07",
-                  "name": "(monochrome), (gray scale), (pencil sketch lines",
+                  "name": "(monochrome),_(gray_scale),_(pencil_sketch_lines",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22742,7 +22688,7 @@
                 },
                 {
                   "id": "legacy:0d495bf94f77a060",
-                  "name": "(watercolor pencil)",
+                  "name": "(watercolor_pencil)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22841,7 +22787,7 @@
               "tags": [
                 {
                   "id": "legacy:b1642fde5a24c696",
-                  "name": "((art nouveau))",
+                  "name": "((art_nouveau))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22877,7 +22823,7 @@
                 },
                 {
                   "id": "legacy:61e026a1d4123c22",
-                  "name": "((abstract art))",
+                  "name": "((abstract_art))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22886,7 +22832,7 @@
                 },
                 {
                   "id": "legacy:908b22981153dbfe",
-                  "name": "((ASCII art))",
+                  "name": "((ASCII_art))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22901,7 +22847,7 @@
               "tags": [
                 {
                   "id": "legacy:87129f9b19eda7ad",
-                  "name": "((alphonse mucha))",
+                  "name": "((alphonse_mucha))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -22910,7 +22856,7 @@
                 },
                 {
                   "id": "legacy:382ded4ff423d427",
-                  "name": "((Monet style))",
+                  "name": "((Monet_style))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23191,7 +23137,7 @@
               "tags": [
                 {
                   "id": "legacy:c06c71010fb70503",
-                  "name": "rim light",
+                  "name": "rim_light",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23200,7 +23146,7 @@
                 },
                 {
                   "id": "legacy:f027e0df5a7a496a",
-                  "name": "Volumetric Lighting",
+                  "name": "Volumetric_Lighting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23209,7 +23155,7 @@
                 },
                 {
                   "id": "legacy:6a5e7932b7ed41b7",
-                  "name": "glowing neon lights",
+                  "name": "glowing_neon_lights",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23218,7 +23164,7 @@
                 },
                 {
                   "id": "legacy:75c6f2b70f0f63e4",
-                  "name": "Cinematic Lighting",
+                  "name": "Cinematic_Lighting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23227,7 +23173,7 @@
                 },
                 {
                   "id": "legacy:2e5ddfe66c5a0fc9",
-                  "name": "metallic luster",
+                  "name": "metallic_luster",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23236,7 +23182,7 @@
                 },
                 {
                   "id": "legacy:c4fdd617f68bbfcb",
-                  "name": "moody lighting",
+                  "name": "moody_lighting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23245,7 +23191,7 @@
                 },
                 {
                   "id": "legacy:691dd8b82cc2cfe9",
-                  "name": "Tyndall effect",
+                  "name": "Tyndall_effect",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23254,7 +23200,7 @@
                 },
                 {
                   "id": "legacy:48c943de8f8d623c",
-                  "name": "light leaks",
+                  "name": "light_leaks",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23263,7 +23209,7 @@
                 },
                 {
                   "id": "legacy:7fb84662ae7b3434",
-                  "name": "background light",
+                  "name": "background_light",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -23272,7 +23218,7 @@
                 },
                 {
                   "id": "legacy:fd2bd92eea83735a",
-                  "name": "available light",
+                  "name": "available_light",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -24818,7 +24764,11 @@
                     "focus_blur"
                   ],
                   "rank": 4,
-                  "translation_ja": "被写界深度（描写法）"
+                  "translation_ja": "被写界深度"
+                },
+                {
+                  "name": "depth_compensation",
+                  "translation_ja": "深度補正"
                 },
                 {
                   "id": 6107,
@@ -25235,7 +25185,7 @@
               "tags": [
                 {
                   "id": "legacy:08e0e43d053b531f",
-                  "name": "in spring",
+                  "name": "in_spring",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25244,7 +25194,7 @@
                 },
                 {
                   "id": "legacy:927b598c7f3d1cd5",
-                  "name": "in summer",
+                  "name": "in_summer",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25253,7 +25203,7 @@
                 },
                 {
                   "id": "legacy:21561368ab4f8fb8",
-                  "name": "in autumn",
+                  "name": "in_autumn",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25262,7 +25212,7 @@
                 },
                 {
                   "id": "legacy:20e61bb6f17847f1",
-                  "name": "in winter",
+                  "name": "in_winter",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25271,7 +25221,7 @@
                 },
                 {
                   "id": "legacy:48d39072e35d77c6",
-                  "name": "(autumn maple forest:1.3),(very few fallen leaves),(path)",
+                  "name": "(autumn_maple_forest:1.3),(very_few_fallen_leaves),(path)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25320,7 +25270,7 @@
                 },
                 {
                   "id": "legacy:b279472ab9012423",
-                  "name": "rainy days",
+                  "name": "rainy_days",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25429,7 +25379,7 @@
                 },
                 {
                   "id": "legacy:8df819db74dee3c3",
-                  "name": "meteor shower",
+                  "name": "meteor_shower",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25581,7 +25531,7 @@
                 },
                 {
                   "id": "legacy:74ef0c492da23d9a",
-                  "name": "in a meadow",
+                  "name": "in_a_meadow",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25590,7 +25540,7 @@
                 },
                 {
                   "id": "legacy:3c6bf7bbe225b49a",
-                  "name": "on the beach",
+                  "name": "on_the_beach",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25609,7 +25559,7 @@
                 },
                 {
                   "id": "legacy:d49df01b73272a38",
-                  "name": "over the sea",
+                  "name": "over_the_sea",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25627,7 +25577,7 @@
                 },
                 {
                   "id": "legacy:207d58170c37979e",
-                  "name": "on a desert",
+                  "name": "on_a_desert",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25672,7 +25622,7 @@
                 },
                 {
                   "id": "legacy:47d1b673acd96e4b",
-                  "name": "bamboo forest",
+                  "name": "bamboo_forest",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25690,7 +25640,7 @@
                 },
                 {
                   "id": "legacy:d308782bbcaca4db",
-                  "name": "floating island",
+                  "name": "floating_island",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25752,7 +25702,7 @@
                 },
                 {
                   "id": "legacy:f61515870c33b949",
-                  "name": "rice paddy",
+                  "name": "rice_paddy",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25761,7 +25711,7 @@
                 },
                 {
                   "id": "legacy:fd1ce4fecd6cdd5f",
-                  "name": "wheat field",
+                  "name": "wheat_field",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25770,7 +25720,7 @@
                 },
                 {
                   "id": "legacy:29ad5faaeeb5ad69",
-                  "name": "flower field",
+                  "name": "flower_field",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25779,7 +25729,7 @@
                 },
                 {
                   "id": "legacy:e3018eb0fb61cf9e",
-                  "name": "flower sea",
+                  "name": "flower_sea",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25827,7 +25777,7 @@
                 },
                 {
                   "id": "legacy:fbb7f2e30275cd11",
-                  "name": "flowers meadows",
+                  "name": "flowers_meadows",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -25845,7 +25795,7 @@
                 },
                 {
                   "id": "legacy:dc0233a8ecffc39a",
-                  "name": "Dreamy forest",
+                  "name": "Dreamy_forest",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26486,7 +26436,7 @@
               "tags": [
                 {
                   "id": "legacy:40da12f07a89e150",
-                  "name": "new year",
+                  "name": "new_year",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26495,7 +26445,7 @@
                 },
                 {
                   "id": "legacy:47fffafe525618f8",
-                  "name": "year of the rabbit",
+                  "name": "year_of_the_rabbit",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26517,7 +26467,7 @@
                 },
                 {
                   "id": "legacy:dbc2fee721a82c4e",
-                  "name": "lantern festival",
+                  "name": "lantern_festival",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26526,7 +26476,7 @@
                 },
                 {
                   "id": "legacy:85b0a1150a5905ce",
-                  "name": "summer festival",
+                  "name": "summer_festival",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26543,7 +26493,7 @@
                 },
                 {
                   "id": "legacy:2b911d015f166f6b",
-                  "name": "mid-autumn festival",
+                  "name": "mid-autumn_festival",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26579,7 +26529,7 @@
                 },
                 {
                   "id": "legacy:369ba2fb72c11dde",
-                  "name": "water vapor",
+                  "name": "water_vapor",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26598,7 +26548,7 @@
                 },
                 {
                   "id": "legacy:ffaa3eeec35d1dae",
-                  "name": "ceiling window",
+                  "name": "ceiling_window",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26607,7 +26557,7 @@
                 },
                 {
                   "id": "legacy:232396d1e9b62551",
-                  "name": "colourful glass",
+                  "name": "colourful_glass",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26616,7 +26566,7 @@
                 },
                 {
                   "id": "legacy:9d032e2b08500d0d",
-                  "name": "stain glass",
+                  "name": "stain_glass",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26625,7 +26575,7 @@
                 },
                 {
                   "id": "legacy:21e4cf471b1ea345",
-                  "name": "Graffiti wall",
+                  "name": "Graffiti_wall",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26634,7 +26584,7 @@
                 },
                 {
                   "id": "legacy:aab8631b79a618a4",
-                  "name": "mosaic background",
+                  "name": "mosaic_background",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26643,7 +26593,7 @@
                 },
                 {
                   "id": "legacy:5bea42347cd168de",
-                  "name": "liquid background, Sputtered water",
+                  "name": "liquid_background,_Sputtered_water",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26652,7 +26602,7 @@
                 },
                 {
                   "id": "legacy:f789d60de453a382",
-                  "name": "magic circles",
+                  "name": "magic_circles",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26661,7 +26611,7 @@
                 },
                 {
                   "id": "legacy:bc954705daa449de",
-                  "name": "fluorescent mushroom forests background",
+                  "name": "fluorescent_mushroom_forests_background",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26670,7 +26620,7 @@
                 },
                 {
                   "id": "legacy:f07d58f9c6f4fcde",
-                  "name": "(((colorful bubble)))",
+                  "name": "(((colorful_bubble)))",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26679,7 +26629,7 @@
                 },
                 {
                   "id": "legacy:7758698d0bc90ba7",
-                  "name": "in the ocean",
+                  "name": "in_the_ocean",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26688,7 +26638,7 @@
                 },
                 {
                   "id": "legacy:4c4e5227d2fa3182",
-                  "name": "against backlight at dusk",
+                  "name": "against_backlight_at_dusk",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26697,7 +26647,7 @@
                 },
                 {
                   "id": "legacy:a8772893557a1ed0",
-                  "name": "golden hour lighting",
+                  "name": "golden_hour_lighting",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26706,7 +26656,7 @@
                 },
                 {
                   "id": "legacy:281062e1acff2601",
-                  "name": "strong rim light",
+                  "name": "strong_rim_light",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26715,7 +26665,7 @@
                 },
                 {
                   "id": "legacy:9b8100e672a3b2a2",
-                  "name": "intense shadows",
+                  "name": "intense_shadows",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26865,7 +26815,7 @@
                 },
                 {
                   "id": "legacy:2bcb43266567e2bf",
-                  "name": "ferris wheel",
+                  "name": "ferris_wheel",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26892,7 +26842,7 @@
                 },
                 {
                   "id": "legacy:003a33308ccf691c",
-                  "name": "bowling alley",
+                  "name": "bowling_alley",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26901,7 +26851,7 @@
                 },
                 {
                   "id": "legacy:580e31cdf111e67b",
-                  "name": "art gallery",
+                  "name": "art_gallery",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26928,7 +26878,7 @@
                 },
                 {
                   "id": "legacy:4d0008e59ffb168b",
-                  "name": "swimming pool",
+                  "name": "swimming_pool",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26955,7 +26905,7 @@
                 },
                 {
                   "id": "legacy:5c47841652e7324a",
-                  "name": "bus stop",
+                  "name": "bus_stop",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26964,7 +26914,7 @@
                 },
                 {
                   "id": "legacy:cda0f61ff9e5ed1a",
-                  "name": "train station",
+                  "name": "train_station",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -26991,7 +26941,7 @@
                 },
                 {
                   "id": "legacy:512f9c29db7640d3",
-                  "name": "market stall",
+                  "name": "market_stall",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27000,7 +26950,7 @@
                 },
                 {
                   "id": "legacy:ff1114573e84b8de",
-                  "name": "phone booth",
+                  "name": "phone_booth",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27009,7 +26959,7 @@
                 },
                 {
                   "id": "legacy:11f9d58a78cc830d",
-                  "name": "railroad tracks",
+                  "name": "railroad_tracks",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27054,7 +27004,7 @@
                 },
                 {
                   "id": "legacy:3a9eb85eaadb8d18",
-                  "name": "greco-roman architectur",
+                  "name": "greco-roman_architectur",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27101,7 +27051,7 @@
                 },
                 {
                   "id": "legacy:959c3758a81444d3",
-                  "name": "cyberpunk city",
+                  "name": "cyberpunk_city",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27110,7 +27060,7 @@
                 },
                 {
                   "id": "legacy:52b5844de3a3c91f",
-                  "name": "chinese style architecture",
+                  "name": "chinese_style_architecture",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27127,7 +27077,7 @@
                 },
                 {
                   "id": "legacy:8361d39612194751",
-                  "name": "Bustling city",
+                  "name": "Bustling_city",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27145,7 +27095,7 @@
                 },
                 {
                   "id": "legacy:499ce732ca030d3c",
-                  "name": "coffee house",
+                  "name": "coffee_house",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27181,7 +27131,7 @@
                 },
                 {
                   "id": "legacy:878508b97236acc6",
-                  "name": "engine room",
+                  "name": "engine_room",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27199,7 +27149,7 @@
                 },
                 {
                   "id": "legacy:70396c54ae920456",
-                  "name": "neon lights",
+                  "name": "neon_lights",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27208,7 +27158,7 @@
                 },
                 {
                   "id": "legacy:37cc9c67d3901215",
-                  "name": "street lamp",
+                  "name": "street_lamp",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27225,7 +27175,7 @@
                 },
                 {
                   "id": "legacy:669fd27bf95d65aa",
-                  "name": "shanty town/slum",
+                  "name": "shanty_town/slum",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27243,7 +27193,7 @@
                 },
                 {
                   "id": "legacy:51e4c7d79ee2fc40",
-                  "name": "gothic architecture",
+                  "name": "gothic_architecture",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27279,7 +27229,7 @@
                 },
                 {
                   "id": "legacy:e229f58f83b5a57a",
-                  "name": "Industrial wind, Chinese architecture",
+                  "name": "Industrial_wind,_Chinese_architecture",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27333,7 +27283,7 @@
                 },
                 {
                   "id": "legacy:4f82600d6841e9ac",
-                  "name": "convenience store",
+                  "name": "convenience_store",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27369,7 +27319,7 @@
                 },
                 {
                   "id": "legacy:6356f05bbb8a05f8",
-                  "name": "movie theater",
+                  "name": "movie_theater",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27424,7 +27374,7 @@
                 },
                 {
                   "id": "legacy:0f4d13fb78b2c668",
-                  "name": "botanical garden",
+                  "name": "botanical_garden",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27937,7 +27887,7 @@
                 },
                 {
                   "id": "legacy:50deae2048895f76",
-                  "name": "toilet stall",
+                  "name": "toilet_stall",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -27946,7 +27896,7 @@
                 },
                 {
                   "id": "legacy:b792f6feaedfeb10",
-                  "name": "otaku room",
+                  "name": "otaku_room",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -28009,7 +27959,7 @@
                 },
                 {
                   "id": "legacy:c752e6e383ae2830",
-                  "name": "electrical room",
+                  "name": "electrical_room",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -28018,7 +27968,7 @@
                 },
                 {
                   "id": "legacy:e97b7de09b6ec624",
-                  "name": "server room",
+                  "name": "server_room",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -28036,7 +27986,7 @@
                 },
                 {
                   "id": "legacy:0816b48fa3bbce49",
-                  "name": "art room",
+                  "name": "art_room",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -30439,7 +30389,7 @@
                 },
                 {
                   "id": "legacy:5b3e8632ea3d8f35",
-                  "name": "track missiles",
+                  "name": "track_missiles",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -30448,7 +30398,7 @@
                 },
                 {
                   "id": "legacy:273a32020558a904",
-                  "name": "complex Trajectory",
+                  "name": "complex_Trajectory",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -31517,7 +31467,7 @@
               "tags": [
                 {
                   "id": "legacy:fb5d6ded1a272276",
-                  "name": "front view",
+                  "name": "front_view",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -31580,7 +31530,7 @@
                 },
                 {
                   "id": "legacy:ffc56358fe1d2fdb",
-                  "name": "from behind",
+                  "name": "from_behind",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -31607,7 +31557,7 @@
                 },
                 {
                   "id": "legacy:b9560bf257babb1c",
-                  "name": "dutch angle",
+                  "name": "dutch_angle",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -31680,7 +31630,7 @@
                 },
                 {
                   "id": "legacy:f3b8c292db63a567",
-                  "name": "mirror selfie",
+                  "name": "mirror_selfie",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -31689,7 +31639,7 @@
                 },
                 {
                   "id": "legacy:102aa9bd986e96ad",
-                  "name": "three-quarter view",
+                  "name": "three-quarter_view",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32120,15 +32070,6 @@
               "label_ja": "画質・文字・透かしの除外",
               "tags": [
                 {
-                  "id": "legacy:b42a65e89d216941",
-                  "name": "NSFW",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "仕事に適していない",
-                  "rank": 1
-                },
-                {
                   "id": "legacy:5807dd602664a565",
                   "name": "logo",
                   "post_count": 0,
@@ -32148,7 +32089,7 @@
                 },
                 {
                   "id": "legacy:6e0a264a7619e2fd",
-                  "name": "low quality",
+                  "name": "low_quality",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32157,7 +32098,7 @@
                 },
                 {
                   "id": "legacy:60c6ae151934b139",
-                  "name": "bad anatomy",
+                  "name": "bad_anatomy",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32175,7 +32116,7 @@
                 },
                 {
                   "id": "legacy:3ec4d25623517aae",
-                  "name": "normal quality",
+                  "name": "normal_quality",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32229,7 +32170,7 @@
                 },
                 {
                   "id": "legacy:4d19aefdbafa6f2a",
-                  "name": "bad proportions",
+                  "name": "bad_proportions",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32238,7 +32179,7 @@
                 },
                 {
                   "id": "legacy:05942f7443498df1",
-                  "name": "out of focus",
+                  "name": "out_of_focus",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32253,6 +32194,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ユーザー名",
                   "rank": 15
+                },
+                {
+                  "id": "legacy:9d0d39312db12868",
+                  "name": "lowres",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "低解像度",
+                  "rank": 1
                 }
               ]
             },
@@ -32280,7 +32230,7 @@
                 },
                 {
                   "id": "legacy:ebfe61c29baed738",
-                  "name": "Multiple people",
+                  "name": "Multiple_people",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32307,7 +32257,7 @@
                 },
                 {
                   "id": "legacy:eb0d0ea1ef1de7f5",
-                  "name": "bad body",
+                  "name": "bad_body",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32316,7 +32266,7 @@
                 },
                 {
                   "id": "legacy:c009e61e1fe6e4a6",
-                  "name": "long body",
+                  "name": "long_body",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32334,7 +32284,7 @@
                 },
                 {
                   "id": "legacy:9bc58996b6de8db9",
-                  "name": "long neck",
+                  "name": "long_neck",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32388,7 +32338,7 @@
                 },
                 {
                   "id": "legacy:5a89fed89c4ae488",
-                  "name": "poorly drawn face",
+                  "name": "poorly_drawn_face",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32397,7 +32347,7 @@
                 },
                 {
                   "id": "legacy:3ec15512c53e6b7e",
-                  "name": "skin blemishes",
+                  "name": "skin_blemishes",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32406,7 +32356,7 @@
                 },
                 {
                   "id": "legacy:20d5c85bf1b4a9f5",
-                  "name": "skin spots",
+                  "name": "skin_spots",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32424,7 +32374,7 @@
                 },
                 {
                   "id": "legacy:47b84801aef77815",
-                  "name": "missing limb",
+                  "name": "missing_limb",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32433,7 +32383,7 @@
                 },
                 {
                   "id": "legacy:d12d94c43acc5629",
-                  "name": "malformed limbs",
+                  "name": "malformed_limbs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32442,7 +32392,7 @@
                 },
                 {
                   "id": "legacy:67e8ea84b3b97800",
-                  "name": "floating limbs",
+                  "name": "floating_limbs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32451,7 +32401,7 @@
                 },
                 {
                   "id": "legacy:a4212da1407adf6d",
-                  "name": "disconnected limbs",
+                  "name": "disconnected_limbs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32460,7 +32410,7 @@
                 },
                 {
                   "id": "legacy:cba6243db992d2f8",
-                  "name": "extra limb",
+                  "name": "extra_limb",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32469,7 +32419,7 @@
                 },
                 {
                   "id": "legacy:10e58f6d971c0009",
-                  "name": "mutated hands",
+                  "name": "mutated_hands",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32478,7 +32428,7 @@
                 },
                 {
                   "id": "legacy:1a010953f31c1ebc",
-                  "name": "poorly drawn hands",
+                  "name": "poorly_drawn_hands",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32487,7 +32437,7 @@
                 },
                 {
                   "id": "legacy:3fd31e88b30573df",
-                  "name": "malformed hands",
+                  "name": "malformed_hands",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32496,7 +32446,7 @@
                 },
                 {
                   "id": "legacy:e73271e65f238cd2",
-                  "name": "mutated hands and fingers",
+                  "name": "mutated_hands_and_fingers",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32505,7 +32455,7 @@
                 },
                 {
                   "id": "legacy:0a7285326e327322",
-                  "name": "bad hands",
+                  "name": "bad_hands",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32514,7 +32464,7 @@
                 },
                 {
                   "id": "legacy:c53a937f26a5a484",
-                  "name": "missing fingers",
+                  "name": "missing_fingers",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32523,7 +32473,7 @@
                 },
                 {
                   "id": "legacy:a1b92ddecdacf825",
-                  "name": "fused fingers",
+                  "name": "fused_fingers",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32532,7 +32482,7 @@
                 },
                 {
                   "id": "legacy:750acfdbaa70524a",
-                  "name": "too many fingers",
+                  "name": "too_many_fingers",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32541,7 +32491,7 @@
                 },
                 {
                   "id": "legacy:b0f26e2220e7ee4a",
-                  "name": "extra legs",
+                  "name": "extra_legs",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32550,7 +32500,7 @@
                 },
                 {
                   "id": "legacy:a3943bac48b6500a",
-                  "name": "bad feet",
+                  "name": "bad_feet",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -32637,6 +32587,30 @@
       "label_ja": "成人向け",
       "description_ja": "明確な性的身体表現、露出、衣装、ポーズ、接触、行為、フェティッシュ。",
       "medium_categories": [
+        {
+          "id": "custom:medium:1a09f565-60fe-4a41-ac55-4611918ef0ea",
+          "label_ja": "レーティング",
+          "small_categories": [
+            {
+              "id": "custom:small:1a9836f1-5903-4a31-b711-82ba5b15d495",
+              "label_ja": "一般",
+              "tags": [
+                {
+                  "name": "NSFW",
+                  "translation_ja": "職場で見るのに適さない"
+                },
+                {
+                  "name": "rating_explicit",
+                  "translation_ja": "露骨な要素あり"
+                },
+                {
+                  "name": "rating_questionable",
+                  "translation_ja": "軽度のエロ要素あり"
+                }
+              ]
+            }
+          ]
+        },
         {
           "id": "adult_body_exposure",
           "label_ja": "身体・露出",
@@ -33056,6 +33030,20 @@
                   "rank": 114
                 }
               ]
+            },
+            {
+              "id": "custom:small:d109f37b-2e61-4a6e-bcfd-139442506ffc",
+              "label_ja": "下着",
+              "tags": [
+                {
+                  "name": "a_extremely_detailed_closeup_of_extremely_detailed_white_frilled_side-tie_panties",
+                  "translation_ja": "白の紐パン"
+                },
+                {
+                  "name": "white_floral_panties",
+                  "translation_ja": "白い花柄の下着"
+                }
+              ]
             }
           ]
         },
@@ -33095,6 +33083,14 @@
                   "source": "manual_candidate_addition",
                   "translation_ja": "性的に激しく乱された状態",
                   "rank": 21
+                },
+                {
+                  "id": 442577,
+                  "name": "ahegao",
+                  "post_count": 22683,
+                  "aliases": [],
+                  "rank": 14,
+                  "translation_ja": "アヘ顔"
                 }
               ]
             },
@@ -33207,6 +33203,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "脚を上げて股間を露出している",
                   "rank": 77
+                },
+                {
+                  "id": "legacy:c3b6f1ee7abf84d9",
+                  "name": "holding_condom",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "コンドームを手に持っている",
+                  "rank": 24
                 }
               ]
             },
