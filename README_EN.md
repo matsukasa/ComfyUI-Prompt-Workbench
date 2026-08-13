@@ -213,10 +213,7 @@ Tag buttons display the English name and Japanese translation, with the same inf
 hover text. Search covers English names, aliases, and Japanese top, middle, and subcategory names.
 Browsing, searching, and adding catalog tags never contacts an external tag service.
 
-The full tag catalog contains NSFW tags and is not bundled in the Registry package. Download it only
-if you need those tags: [`data/nsfw_full_tag_catalog.json`](data/nsfw_full_tag_catalog.json). Then load it in ComfyUI from
-Prompt Workbench Settings -> Tag manager -> `Choose and load a file`. The loaded file is saved as a
-named catalog under the ComfyUI user directory at `prompt_workbench/tag_catalogs/`.
+A broader optional drawing catalog is not bundled in the Registry package. Download an optional extended catalog file from the GitHub repository only if you need it, then load it in ComfyUI from Prompt Workbench Settings -> Tag manager -> `Choose and load a file`. The loaded file is saved as a named catalog under the ComfyUI user directory at `prompt_workbench/tag_catalogs/`.
 
 External data fetch/update scripts, API authentication settings, raw caches, and intermediate
 artifacts are not included. The built-in default catalog is `data/tag_catalog.json`.

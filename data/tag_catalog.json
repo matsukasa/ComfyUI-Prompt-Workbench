@@ -4,8 +4,7 @@
   "sources": {
     "frequency": "qdlabs/danbooru-tags",
     "aliases": "DominikDoom/a1111-sd-webui-tagcomplete",
-    "legacy": "data/nsfw_full_tag_catalog.json",
-    "translations": "data/translations.json, data/nsfw_full_tag_catalog.json"
+    "translations": "data/translations.json"
   },
   "stats": {
     "official_tags": 800,
@@ -16,12 +15,11 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 3430,
-    "tags": 3430,
+    "tags": 3350,
     "major_categories": 9,
     "medium_categories": 31,
-    "small_categories": 132,
-    "catalog_profile": "registry_sfw",
-    "full_catalog_file": "data/nsfw_full_tag_catalog.json"
+    "small_categories": 129,
+    "catalog_profile": "registry_sfw"
   },
   "major_categories": [
     {
@@ -1395,48 +1393,6 @@
               ]
             },
             {
-              "id": "legacy_small:01-020",
-              "label_ja": "胸・胸の形",
-              "tags": [
-                {
-                  "id": "legacy:be3ee18195b6baa6",
-                  "name": "chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸部",
-                  "rank": 1
-                },
-                {
-                  "id": "legacy:8a662adaa22a4260",
-                  "name": "flat_chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "平らな胸(A)",
-                  "rank": 2
-                },
-                {
-                  "id": "legacy:ed91c6f82149b5e9",
-                  "name": "pectorals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大胸筋",
-                  "rank": 14
-                },
-                {
-                  "id": "legacy:a1158723f13128d5",
-                  "name": "large_pectorals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大きな胸筋",
-                  "rank": 15
-                }
-              ]
-            },
-            {
               "id": "audit_body_limbs",
               "label_ja": "腕・手・脚・足",
               "description_ja": "腕、手、脚、足とその身体的特徴。",
@@ -1565,14 +1521,6 @@
                   "translation_ja": "つま先"
                 },
                 {
-                  "id": 475418,
-                  "name": "bare_arms",
-                  "post_count": 189117,
-                  "aliases": [],
-                  "rank": 9999,
-                  "translation_ja": "裸の腕"
-                },
-                {
                   "id": "legacy:25de5eaedac82bfe",
                   "name": "leg_hair",
                   "post_count": 0,
@@ -1587,15 +1535,6 @@
               "id": "legacy_small:01-019",
               "label_ja": "肩・鎖骨・脇",
               "tags": [
-                {
-                  "id": "legacy:631d099b149327f6",
-                  "name": "bare_shoulders",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "裸の肩",
-                  "rank": 1
-                },
                 {
                   "id": "legacy:4ae9d15941c2f667",
                   "name": "collarbonea",
@@ -3946,16 +3885,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "眨眼と舌を伸ばす",
                   "rank": 3
-                },
-                {
-                  "id": 403904,
-                  "name": "french_kiss",
-                  "post_count": 16881,
-                  "aliases": [
-                    "tongue_kiss"
-                  ],
-                  "rank": 4,
-                  "translation_ja": "フレンチキス"
                 },
                 {
                   "id": "legacy:83d0c279c5a97af4",
@@ -6847,15 +6776,6 @@
                   "rank": 63
                 },
                 {
-                  "id": "legacy:23851b8f348eaeb0",
-                  "name": "underbust",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "下胸囲に食い込む",
-                  "rank": 64
-                },
-                {
                   "id": "legacy:ff963a3c13ba019e",
                   "name": "oversized_clothes",
                   "post_count": 0,
@@ -6881,15 +6801,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "彼氏の服",
                   "rank": 67
-                },
-                {
-                  "id": "legacy:42b3f3f3e154f1a5",
-                  "name": "strap_slip",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ストラップが滑落（露出の原因）",
-                  "rank": 68
                 },
                 {
                   "id": "legacy:0dfad3a7e64a9558",
@@ -7683,15 +7594,6 @@
                   "rank": 9
                 },
                 {
-                  "id": "legacy:e52a5ae70541a81f",
-                  "name": "bustier",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ブスティエ（胸当て）",
-                  "rank": 10
-                },
-                {
                   "id": "legacy:ef96505ffead85ab",
                   "name": "corset",
                   "post_count": 0,
@@ -7831,15 +7733,6 @@
                   ],
                   "rank": 12,
                   "translation_ja": "ショルダーアーマー"
-                },
-                {
-                  "id": "legacy:256046f7502cb431",
-                  "name": "muneate",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸当て（日本の弓道用胸甲）",
-                  "rank": 13
                 },
                 {
                   "id": "legacy:78d72e057268d442",
@@ -9191,15 +9084,6 @@
                   "translation_ja": "衣類を引っ張る"
                 },
                 {
-                  "id": "legacy:e8004bafce84d0ef",
-                  "name": "dress_pull",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ドレスの胸部分を剥ぎ取る",
-                  "rank": 117
-                },
-                {
                   "id": "legacy:52bccc58254c413e",
                   "name": "kimono_pull",
                   "post_count": 0,
@@ -9900,14 +9784,6 @@
                   ],
                   "rank": 6,
                   "translation_ja": "ニーハイソックス（膝までのソックス）"
-                },
-                {
-                  "id": 469714,
-                  "name": "bare_legs",
-                  "post_count": 154063,
-                  "aliases": [],
-                  "rank": 8,
-                  "translation_ja": "裸足"
                 },
                 {
                   "id": "legacy:a37202d9106397d3",
@@ -10643,15 +10519,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "片方だけ履くニーハイソックス",
                   "rank": 22
-                },
-                {
-                  "id": "legacy:86622343950b857d",
-                  "name": "single_vertical_stripe",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "1本の縦ストライプが露出した服",
-                  "rank": 23
                 },
                 {
                   "id": "legacy:86c8a76e188c71c1",
@@ -11669,366 +11536,6 @@
               ]
             },
             {
-              "id": "legacy_small:02-022",
-              "label_ja": "靴・裸足",
-              "tags": [
-                {
-                  "id": 11826,
-                  "name": "barefoot",
-                  "post_count": 421055,
-                  "aliases": [
-                    "bare_feet",
-                    "barefeet",
-                    "bare_foot"
-                  ],
-                  "rank": 1,
-                  "translation_ja": "裸足"
-                },
-                {
-                  "id": "legacy:6a9e3d0dffd190d4",
-                  "name": "no_shoes",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "靴なし",
-                  "rank": 2
-                },
-                {
-                  "id": "legacy:c35ebc20ab6cd94c",
-                  "name": "shoes_removed",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "靴を脱いだ",
-                  "rank": 3
-                },
-                {
-                  "id": "legacy:46c027076b07d4c4",
-                  "name": "single_shoe",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "一つだけの靴",
-                  "rank": 4
-                },
-                {
-                  "id": "legacy:a76c7f51a5a952e8",
-                  "name": "the_only_shoe",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "一つだけの靴",
-                  "rank": 5
-                },
-                {
-                  "id": "legacy:a218a2b9f652d79e",
-                  "name": "black_loafers",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "黒いローファー",
-                  "rank": 6
-                },
-                {
-                  "id": 8672,
-                  "name": "shoes",
-                  "post_count": 664766,
-                  "aliases": [
-                    "shoe"
-                  ],
-                  "rank": 7,
-                  "translation_ja": "靴"
-                },
-                {
-                  "id": "legacy:50128b6740cd39e8",
-                  "name": "uwabaki",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "室内履き",
-                  "rank": 8
-                },
-                {
-                  "id": "legacy:07b97a53779b51e1",
-                  "name": "platform_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "プラットフォームシューズ",
-                  "rank": 9
-                },
-                {
-                  "id": "legacy:023bfb1ab40deadc",
-                  "name": "high_heels",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ハイヒール",
-                  "rank": 10
-                },
-                {
-                  "id": "legacy:b0eb597cd8f33d1f",
-                  "name": "stiletto_heels",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スティレットヒール",
-                  "rank": 11
-                },
-                {
-                  "id": "legacy:af0e1c270f459413",
-                  "name": "strappy_heels",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ストラップ付きハイヒール",
-                  "rank": 12
-                },
-                {
-                  "id": "legacy:d9bc3e4eecbbf150",
-                  "name": "platform_heels_",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "プラットフォームハイヒール",
-                  "rank": 13
-                },
-                {
-                  "id": "legacy:35f521bf9bd472be",
-                  "name": "rudder_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "船の舵用の靴",
-                  "rank": 14
-                },
-                {
-                  "id": "legacy:738bdd359be778fe",
-                  "name": "sandals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サンダル",
-                  "rank": 15
-                },
-                {
-                  "id": "legacy:7f8ae01c686592f3",
-                  "name": "barefoot_sandals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "裸足サンダル",
-                  "rank": 16
-                },
-                {
-                  "id": "legacy:61774d204dd28810",
-                  "name": "clog_sandals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "木靴サンダル",
-                  "rank": 17
-                },
-                {
-                  "id": "legacy:d0410f695c549b32",
-                  "name": "geta",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "下駄",
-                  "rank": 18
-                },
-                {
-                  "id": "legacy:2e6b3407033e467c",
-                  "name": "slippers",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スリッパ",
-                  "rank": 19
-                },
-                {
-                  "id": "legacy:6d70aa2b2a07c140",
-                  "name": "skates",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スケート靴",
-                  "rank": 20
-                },
-                {
-                  "id": "legacy:7b53cc731c5893b1",
-                  "name": "roller_skates",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ローラースケート",
-                  "rank": 21
-                },
-                {
-                  "id": "legacy:17721ef21cadeb4b",
-                  "name": "animal_feet",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "動物の足",
-                  "rank": 22
-                },
-                {
-                  "id": "legacy:df4d4bba7cb6a094",
-                  "name": "animal_slippers",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "動物のスリッパ",
-                  "rank": 23
-                },
-                {
-                  "id": "legacy:c3850c090cc42a68",
-                  "name": "anklet",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "アンクレット",
-                  "rank": 24
-                },
-                {
-                  "id": "legacy:c76f9bb217c5de35",
-                  "name": "shackles",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "手錠",
-                  "rank": 25
-                },
-                {
-                  "id": "legacy:8e6b3cda002a0f3a",
-                  "name": "brown_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "茶色の靴",
-                  "rank": 26
-                },
-                {
-                  "id": "legacy:aad58ffd9385c2ce",
-                  "name": "cross-laced_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "クロスレースの靴",
-                  "rank": 27
-                },
-                {
-                  "id": "legacy:34be609d39ef08e3",
-                  "name": "loafers",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ローファー",
-                  "rank": 28
-                },
-                {
-                  "id": "legacy:69dcf3de5e092cc2",
-                  "name": "mary_janes",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "メリージェーンズ",
-                  "rank": 29
-                },
-                {
-                  "id": "legacy:d0a111a1a66876ba",
-                  "name": "mismatched_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ミスマッチの靴",
-                  "rank": 30
-                },
-                {
-                  "id": "legacy:858cc8799bbb72d0",
-                  "name": "pointy_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "先の尖った靴",
-                  "rank": 31
-                },
-                {
-                  "id": "legacy:886add23ecb290e3",
-                  "name": "pumps",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "パンプス",
-                  "rank": 32
-                },
-                {
-                  "id": "legacy:88c55a0ae527b156",
-                  "name": "sandals_removed",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サンダルを脱いだ",
-                  "rank": 33
-                },
-                {
-                  "id": "legacy:b0e5d80f0ef5b795",
-                  "name": "shoe_soles",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "靴底",
-                  "rank": 34
-                },
-                {
-                  "id": "legacy:a0629e1eec3154dd",
-                  "name": "shoelaces",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "靴紐",
-                  "rank": 35
-                },
-                {
-                  "id": "legacy:d3cf9f50fa8feaed",
-                  "name": "sneakers",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スニーカー",
-                  "rank": 36
-                },
-                {
-                  "id": "legacy:2760822ffe9bb23e",
-                  "name": "winged_footwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "羽のついた靴",
-                  "rank": 37
-                },
-                {
-                  "id": "legacy:d78c8539023e54ff",
-                  "name": "zouri",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "草履",
-                  "rank": 38
-                },
-                {
-                  "id": 554789,
-                  "name": "black_shoes",
-                  "post_count": 266546,
-                  "aliases": [],
-                  "rank": 9999,
-                  "translation_ja": "黒い靴"
-                }
-              ]
-            },
-            {
               "id": "legacy_small:02-023",
               "label_ja": "ブーツ",
               "tags": [
@@ -12067,15 +11574,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ハイヒールブーツ",
                   "rank": 6
-                },
-                {
-                  "id": "legacy:174bd7bc2d40cd29",
-                  "name": "toeless_boots",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "つま先の露出したブーツ",
-                  "rank": 7
                 },
                 {
                   "id": "legacy:0c931b717f2327a4",
@@ -16040,15 +15538,6 @@
                   "rank": 7
                 },
                 {
-                  "id": "legacy:4c0244f10914c822",
-                  "name": "chest_jewel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸の宝石",
-                  "rank": 8
-                },
-                {
                   "id": "legacy:6d74db2d2f1bff7e",
                   "name": "belly_chain_",
                   "post_count": 0,
@@ -18647,15 +18136,6 @@
                   "rank": 131
                 },
                 {
-                  "id": "manual:20260810:blowing_kiss",
-                  "name": "blowing_kiss",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "投げキッス",
-                  "rank": 136
-                },
-                {
                   "id": "legacy:c4b79b93682c7d9d",
                   "name": "hair_twirling",
                   "post_count": 0,
@@ -18824,15 +18304,6 @@
                   "rank": 15
                 },
                 {
-                  "id": "legacy:7e0ceb52c65dd30c",
-                  "name": "hands_on_own_chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "両手で自分の胸を触っている",
-                  "rank": 16
-                },
-                {
                   "id": "legacy:df9903b5dce2bdb9",
                   "name": "hands_on_own_head",
                   "post_count": 0,
@@ -18884,14 +18355,6 @@
                   "aliases": [],
                   "rank": 23,
                   "translation_ja": "手が相手の頬に触れている"
-                },
-                {
-                  "id": 656171,
-                  "name": "hand_on_another's_chest",
-                  "post_count": 6674,
-                  "aliases": [],
-                  "rank": 24,
-                  "translation_ja": "手が相手の胸に当たっている"
                 },
                 {
                   "id": 667200,
@@ -18973,18 +18436,6 @@
                   "rank": 35
                 },
                 {
-                  "id": 656169,
-                  "name": "hand_on_own_chest",
-                  "post_count": 71939,
-                  "aliases": [
-                    "hand_on_chest",
-                    "hand_to_chest",
-                    "hand_to_own_chest"
-                  ],
-                  "rank": 36,
-                  "translation_ja": "手を自分の胸に当てている"
-                },
-                {
                   "id": "legacy:b9dbd55eecf78a44",
                   "name": "hand_on_own_chin",
                   "post_count": 0,
@@ -19044,15 +18495,6 @@
               "id": "legacy_small:03-011",
               "label_ja": "つかむ動作",
               "tags": [
-                {
-                  "id": "legacy:6b610270c5ce5394",
-                  "name": "flat_chest_grab",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "平らな胸をつかんでいる",
-                  "rank": 2
-                },
                 {
                   "id": "legacy:7761a56c62f97632",
                   "name": "grabbing",
@@ -20813,15 +20255,6 @@
                   "translation_ja": "膝を上げている"
                 },
                 {
-                  "id": "legacy:5f3674f9a2b7ae0e",
-                  "name": "knees_to_chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "膝を胸に近づけている",
-                  "rank": 20
-                },
-                {
                   "id": "legacy:8a168225a013f485",
                   "name": "on_lap",
                   "post_count": 0,
@@ -21096,15 +20529,6 @@
                   "rank": 56
                 },
                 {
-                  "id": "legacy:21ab036a09c4fd55",
-                  "name": "no_legwear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "下半身が裸",
-                  "rank": 60
-                },
-                {
                   "id": "legacy:2affd0ad0c0adf4d",
                   "name": "tail_between_legs",
                   "post_count": 0,
@@ -21174,15 +20598,6 @@
               "label_ja": "人物同士の動作",
               "tags": [
                 {
-                  "id": "legacy:e4236aca2ed4c9bf",
-                  "name": "asymmetrical_docking",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸同士が触れている|胸が胸に当たっている",
-                  "rank": 1
-                },
-                {
                   "id": "legacy:63f6b2de9a3b8ffc",
                   "name": "back-to-back",
                   "post_count": 0,
@@ -21243,17 +20658,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "股間をすり合わせる|お尻をすり合わせる",
                   "rank": 8
-                },
-                {
-                  "id": 516432,
-                  "name": "imminent_kiss",
-                  "post_count": 14818,
-                  "aliases": [
-                    "almost_kiss",
-                    "incipient_kiss"
-                  ],
-                  "rank": 10,
-                  "translation_ja": "キスをする直前"
                 },
                 {
                   "id": "legacy:af504dfa33581597",
@@ -21377,15 +20781,6 @@
                   "rank": 23
                 },
                 {
-                  "id": "legacy:098073c154d81091",
-                  "name": "symmetrical_docking",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸同士が圧迫されている",
-                  "rank": 25
-                },
-                {
                   "id": "legacy:7ad7b5effd87b21d",
                   "name": "ear_biting",
                   "post_count": 0,
@@ -21474,14 +20869,6 @@
                   "aliases": [],
                   "rank": 11,
                   "translation_ja": "生き物を見ている"
-                },
-                {
-                  "id": 1917071,
-                  "name": "looking_at_pectorals",
-                  "post_count": 373,
-                  "aliases": [],
-                  "rank": 12,
-                  "translation_ja": "胸筋を見ている"
                 },
                 {
                   "id": 1806830,
@@ -28268,149 +27655,6 @@
                   "aliases": [],
                   "rank": 11,
                   "translation_ja": "相手の首に手を置く"
-                }
-              ]
-            },
-            {
-              "id": "legacy_official_small:06:embrace_kiss_restraint",
-              "label_ja": "抱擁・キス・拘束",
-              "tags": [
-                {
-                  "id": 379970,
-                  "name": "bound_wrists",
-                  "post_count": 23066,
-                  "aliases": [
-                    "bound_hands",
-                    "hands_bound",
-                    "hands_tied",
-                    "tied_hands",
-                    "tied_wrists",
-                    "wrists_bound"
-                  ],
-                  "rank": 12,
-                  "translation_ja": "手首を縛られた"
-                },
-                {
-                  "id": "legacy:9e1f7917494d132d",
-                  "name": "forehead_kiss",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "額にキス",
-                  "rank": 87
-                },
-                {
-                  "id": "legacy:5dbe8220bb2615f8",
-                  "name": "forehead-to-forehead",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "額同士が触れる",
-                  "rank": 88
-                },
-                {
-                  "id": 466226,
-                  "name": "bound",
-                  "post_count": 89110,
-                  "aliases": [],
-                  "rank": 1,
-                  "translation_ja": "拘束されている"
-                },
-                {
-                  "id": 3046,
-                  "name": "kiss",
-                  "post_count": 73232,
-                  "aliases": [
-                    "kissing"
-                  ],
-                  "rank": 2,
-                  "translation_ja": "キス"
-                },
-                {
-                  "id": 513807,
-                  "name": "hug_from_behind",
-                  "post_count": 30799,
-                  "aliases": [
-                    "back_hug"
-                  ],
-                  "rank": 4,
-                  "translation_ja": "後ろから抱きしめる"
-                },
-                {
-                  "id": 566923,
-                  "name": "hugging_object",
-                  "post_count": 27744,
-                  "aliases": [
-                    "object_hug"
-                  ],
-                  "rank": 5,
-                  "translation_ja": "物を抱きしめる"
-                },
-                {
-                  "id": 680046,
-                  "name": "carrying_person",
-                  "post_count": 11081,
-                  "aliases": [
-                    "person_carrying"
-                  ],
-                  "rank": 6,
-                  "translation_ja": "人を抱えて運ぶ"
-                },
-                {
-                  "id": 379975,
-                  "name": "bound_legs",
-                  "post_count": 9852,
-                  "aliases": [],
-                  "rank": 7,
-                  "translation_ja": "脚を拘束されている"
-                },
-                {
-                  "id": 1385010,
-                  "name": "kissing_cheek",
-                  "post_count": 7861,
-                  "aliases": [
-                    "cheek_kiss",
-                    "kiss_on_cheek"
-                  ],
-                  "rank": 8,
-                  "translation_ja": "頬にキス"
-                },
-                {
-                  "id": 7641,
-                  "name": "piggyback",
-                  "post_count": 5661,
-                  "aliases": [
-                    "carrying_on_back"
-                  ],
-                  "rank": 9,
-                  "translation_ja": "おんぶ"
-                },
-                {
-                  "id": 514885,
-                  "name": "after_kiss",
-                  "post_count": 5042,
-                  "aliases": [],
-                  "rank": 10,
-                  "translation_ja": "キスの後"
-                },
-                {
-                  "id": 665809,
-                  "name": "hugging_doll",
-                  "post_count": 4568,
-                  "aliases": [
-                    "doll_hug",
-                    "plush_hug"
-                  ],
-                  "rank": 11,
-                  "translation_ja": "人形を抱きしめる"
-                },
-                {
-                  "id": 585851,
-                  "name": "bound_ankles",
-                  "post_count": 4127,
-                  "aliases": [],
-                  "rank": 12,
-                  "translation_ja": "足首を拘束されている"
                 }
               ]
             }

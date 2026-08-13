@@ -30,7 +30,7 @@ The following source data was used to prepare the optional full catalog and
 local translation pairs:
 
 - `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
-  source entries represented in `data/nsfw_full_tag_catalog.json`; the 62-entry
+  source entries represented in the optional extended catalog; the 62-entry
   `人物 / 二次元キャラクター` group is intentionally excluded
 - selected English/Japanese tag pairs -> the offline translation helper in
   `data/translations.json`

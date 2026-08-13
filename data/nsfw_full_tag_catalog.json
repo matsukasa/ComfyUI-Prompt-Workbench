@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 3703,
-    "tags": 3690,
+    "tags": 3694,
     "major_categories": 10,
     "medium_categories": 37,
     "small_categories": 147
@@ -33861,6 +33861,22 @@
               "label_ja": "裸体・露出",
               "description_ja": "裸体、衣服をずらした露出、公然わいせつなど。",
               "tags": [
+                {
+                  "name": "nude",
+                  "translation_ja": "全裸"
+                },
+                {
+                  "name": "topless",
+                  "translation_ja": "上半身がない衣装"
+                },
+                {
+                  "name": "bottomless",
+                  "translation_ja": "下半身がない衣装"
+                },
+                {
+                  "name": "full_body_exposure",
+                  "translation_ja": "全身が露出"
+                },
                 {
                   "id": "legacy:ad3e3f3a953f103d",
                   "name": "bikini_top_removed",

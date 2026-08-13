@@ -196,8 +196,8 @@ OSのファイル選択画面が開き、選択したJSONを検証してComfyUI�
 英語名、エイリアス、日本語の大・中・小分類名を利用できます。カタログの閲覧・検索・追加で
 外部タグサービスへ通信することはありません。
 
-NSFWタグを含むフルタグカタログはRegistryパッケージには同梱していません。必要な場合だけGitHubから
-[`data/nsfw_full_tag_catalog.json`](data/nsfw_full_tag_catalog.json)をダウンロードし、ComfyUI上の
+より広い作画用のフルカタログはRegistryパッケージには同梱していません。必要な場合だけGitHubリポジトリから
+任意の拡張カタログファイルを取得し、ComfyUI上の
 Prompt Workbench設定 → Tag manager → 「ファイルを選んで読み込む」から任意で読み込んでください。
 読み込んだファイルはComfyUIのユーザーディレクトリ
 `prompt_workbench/tag_catalogs/`へ名前付きカタログとして保存されます。
