@@ -15,8 +15,8 @@
     "legacy_internal_duplicates": 190,
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
-    "translated_tags": 3557,
-    "tags": 3552,
+    "translated_tags": 3703,
+    "tags": 3690,
     "major_categories": 10,
     "medium_categories": 37,
     "small_categories": 147
@@ -128,15 +128,6 @@
                   "rank": 8
                 },
                 {
-                  "id": "legacy:4010759cf847ac7b",
-                  "name": "little_girl",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "小さな女の子",
-                  "rank": 11
-                },
-                {
                   "id": 566835,
                   "name": "multiple_girls",
                   "post_count": 1740003,
@@ -145,35 +136,6 @@
                   ],
                   "rank": 10,
                   "translation_ja": "複数の女の子"
-                },
-                {
-                  "id": "legacy:2a61ce91e2622976",
-                  "name": "little_boy",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "小さな男の子",
-                  "rank": 12
-                },
-                {
-                  "id": "legacy:2b87dcf25969bd54",
-                  "name": "shota",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ショタ",
-                  "rank": 13
-                },
-                {
-                  "id": 128,
-                  "name": "loli",
-                  "post_count": 172492,
-                  "aliases": [
-                    "lolicon",
-                    "rori"
-                  ],
-                  "rank": 14,
-                  "translation_ja": "ロリ"
                 },
                 {
                   "id": "legacy:b3b54ea8fff8877e",
@@ -247,27 +209,6 @@
                   "rank": 22
                 },
                 {
-                  "id": 1517199,
-                  "name": "mature_female",
-                  "post_count": 39926,
-                  "aliases": [
-                    "mature",
-                    "mature_woman",
-                    "milf"
-                  ],
-                  "rank": 23,
-                  "translation_ja": "成熟した女性"
-                },
-                {
-                  "id": "legacy:f0499e7c62b78915",
-                  "name": "mature",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "成熟した",
-                  "rank": 24
-                },
-                {
                   "id": "legacy:0e14cc9af042101c",
                   "name": "female_pervert",
                   "post_count": 0,
@@ -284,15 +225,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "男性",
                   "rank": 26
-                },
-                {
-                  "id": "legacy:ae972466bae3c231",
-                  "name": "milf",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "熟女",
-                  "rank": 27
                 },
                 {
                   "id": "legacy:aa659acfc55981d7",
@@ -314,6 +246,62 @@
                   ],
                   "rank": 29,
                   "translation_ja": "女装"
+                },
+                {
+                  "id": 1300281,
+                  "name": "male_focus",
+                  "post_count": 1108969,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "男性中心"
+                },
+                {
+                  "id": 568656,
+                  "name": "multiple_boys",
+                  "post_count": 684312,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "複数の男の子"
+                },
+                {
+                  "id": 412555,
+                  "name": "4girls",
+                  "post_count": 143679,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "4人の女の子"
+                },
+                {
+                  "id": 567316,
+                  "name": "6+girls",
+                  "post_count": 106324,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "6人以上の女の子"
+                },
+                {
+                  "id": 1463605,
+                  "name": "1other",
+                  "post_count": 125677,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "その他1人"
+                },
+                {
+                  "id": 542846,
+                  "name": "no_humans",
+                  "post_count": 230984,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "人間なし"
+                },
+                {
+                  "id": 14814,
+                  "name": "couple",
+                  "post_count": 98973,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "カップル"
                 }
               ]
             },
@@ -336,15 +324,6 @@
                   "translation_ja": "メイド"
                 },
                 {
-                  "id": "legacy:f677b1c732516693",
-                  "name": "wa_maid",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "和風メイド",
-                  "rank": 59
-                },
-                {
                   "id": "legacy:31c8610f9c0560ab",
                   "name": "housemaid",
                   "post_count": 0,
@@ -352,6 +331,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "メイド",
                   "rank": 50
+                },
+                {
+                  "id": "legacy:f677b1c732516693",
+                  "name": "wa_maid",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "和風メイド",
+                  "rank": 59
                 },
                 {
                   "id": "legacy:204036a1ef6e7360",
@@ -633,15 +621,6 @@
                   "rank": 33
                 },
                 {
-                  "id": "legacy:fe38e30d043ef267",
-                  "name": "bar_censor",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "バーセンサー",
-                  "rank": 34
-                },
-                {
                   "id": 380289,
                   "name": "missionary",
                   "post_count": 36476,
@@ -813,15 +792,6 @@
                   "translation_ja": "男の娘"
                 },
                 {
-                  "id": "legacy:0b82f78f2e1866a2",
-                  "name": "harem",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ハーレム",
-                  "rank": 55
-                },
-                {
                   "id": "legacy:a7ca03374e4dda2c",
                   "name": "idol",
                   "post_count": 0,
@@ -894,6 +864,84 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "切断者",
                   "rank": 63
+                },
+                {
+                  "id": 1407561,
+                  "name": "virtual_youtuber",
+                  "post_count": 636920,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "バーチャルYouTuber"
+                },
+                {
+                  "id": 425206,
+                  "name": "magical_girl",
+                  "post_count": 110514,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "魔法少女"
+                },
+                {
+                  "id": 709734,
+                  "name": "playboy_bunny",
+                  "post_count": 145210,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "バニーガール"
+                }
+              ]
+            },
+            {
+              "id": "custom:small:2e77cdf0-7ab6-4ff1-a2f5-5911e974251e",
+              "label_ja": "種族",
+              "tags": [
+                {
+                  "id": 302,
+                  "name": "elf",
+                  "post_count": 111635,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "エルフ"
+                },
+                {
+                  "id": 465046,
+                  "name": "cat_girl",
+                  "post_count": 167237,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "猫娘"
+                },
+                {
+                  "id": 655303,
+                  "name": "fox_girl",
+                  "post_count": 144265,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "狐娘"
+                },
+                {
+                  "id": 8068,
+                  "name": "demon_girl",
+                  "post_count": 130122,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "悪魔娘"
+                },
+                {
+                  "id": 820510,
+                  "name": "horse_girl",
+                  "post_count": 222823,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ウマ娘風キャラ"
+                },
+                {
+                  "id": 15749,
+                  "name": "furry",
+                  "post_count": 141342,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ファーリー"
                 }
               ]
             },
@@ -901,6 +949,74 @@
               "id": "legacy_small:01-004",
               "label_ja": "年齢",
               "tags": [
+                {
+                  "id": 128,
+                  "name": "loli",
+                  "post_count": 172492,
+                  "aliases": [
+                    "lolicon",
+                    "rori"
+                  ],
+                  "rank": 14,
+                  "translation_ja": "ロリ"
+                },
+                {
+                  "id": "legacy:4010759cf847ac7b",
+                  "name": "little_girl",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "小さな女の子",
+                  "rank": 11
+                },
+                {
+                  "id": "legacy:2a61ce91e2622976",
+                  "name": "little_boy",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "小さな男の子",
+                  "rank": 12
+                },
+                {
+                  "id": "legacy:2b87dcf25969bd54",
+                  "name": "shota",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ショタ",
+                  "rank": 13
+                },
+                {
+                  "id": 1517199,
+                  "name": "mature_female",
+                  "post_count": 39926,
+                  "aliases": [
+                    "mature",
+                    "mature_woman",
+                    "milf"
+                  ],
+                  "rank": 23,
+                  "translation_ja": "成熟した女性"
+                },
+                {
+                  "id": "legacy:f0499e7c62b78915",
+                  "name": "mature",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "成熟した",
+                  "rank": 24
+                },
+                {
+                  "id": "legacy:ae972466bae3c231",
+                  "name": "milf",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "熟女",
+                  "rank": 27
+                },
                 {
                   "id": "legacy:792051e3381fc68e",
                   "name": "toddler",
@@ -1270,6 +1386,462 @@
           "label_ja": "身体の部位",
           "small_categories": [
             {
+              "id": "audit_body_head",
+              "label_ja": "頭部",
+              "description_ja": "頭や頭部の身体的特徴。",
+              "tags": [
+                {
+                  "id": "legacy:1a954628a960aaef",
+                  "name": "head",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "頭",
+                  "rank": 90
+                },
+                {
+                  "id": "legacy:b067588c17c67c7b",
+                  "name": "head_bump",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "頭にこぶ",
+                  "rank": 91
+                }
+              ]
+            },
+            {
+              "id": "legacy_small:01-020",
+              "label_ja": "胸・胸の形",
+              "tags": [
+                {
+                  "id": "legacy:be3ee18195b6baa6",
+                  "name": "chest",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "胸部",
+                  "rank": 1
+                },
+                {
+                  "id": "legacy:8a662adaa22a4260",
+                  "name": "flat_chest",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "平らな胸(A)",
+                  "rank": 2
+                },
+                {
+                  "id": "legacy:8a3cd25717963ffa",
+                  "name": "small_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "小さい胸(B)",
+                  "rank": 3
+                },
+                {
+                  "id": "legacy:d2d6ce96d005cc4d",
+                  "name": "medium_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中くらいの胸(C)",
+                  "rank": 4
+                },
+                {
+                  "id": "legacy:0ce05a0510de3bea",
+                  "name": "big_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大きい胸(D)",
+                  "rank": 5
+                },
+                {
+                  "id": "legacy:23340d72c3c0582d",
+                  "name": "huge_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "巨大な胸(E)",
+                  "rank": 6
+                },
+                {
+                  "id": "legacy:b87eba35ac96f8fe",
+                  "name": "gigantic_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "超巨大な胸(F)",
+                  "rank": 7
+                },
+                {
+                  "name": "perky_breasts",
+                  "translation_ja": "上向きの胸",
+                  "id": "manual:20260813:repair:perky_breasts"
+                },
+                {
+                  "id": "legacy:62903d8970247821",
+                  "name": "breasts_apart",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "胸を分ける",
+                  "rank": 9
+                },
+                {
+                  "id": "legacy:d7111740a02001ba",
+                  "name": "hanging_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "下垂した胸",
+                  "rank": 10
+                },
+                {
+                  "id": "legacy:a2b9e4f1af21360e",
+                  "name": "bouncing_breasts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "弾む胸",
+                  "rank": 11
+                },
+                {
+                  "id": "legacy:3c1170706823650f",
+                  "name": "cleavage",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "谷間",
+                  "rank": 12
+                },
+                {
+                  "id": "legacy:ed91c6f82149b5e9",
+                  "name": "pectorals",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大胸筋",
+                  "rank": 14
+                },
+                {
+                  "id": "legacy:a1158723f13128d5",
+                  "name": "large_pectorals",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大きな胸筋",
+                  "rank": 15
+                }
+              ]
+            },
+            {
+              "id": "audit_body_limbs",
+              "label_ja": "腕・手・脚・足",
+              "description_ja": "腕、手、脚、足とその身体的特徴。",
+              "tags": [
+                {
+                  "id": "legacy:c4aebedd29c5b16b",
+                  "name": "arm_blade",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "腕の刃",
+                  "rank": 20
+                },
+                {
+                  "id": "legacy:a64bb153fadb8866",
+                  "name": "extra_arms",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "追加の腕",
+                  "rank": 27
+                },
+                {
+                  "id": "legacy:b28287493544e814",
+                  "name": "arm_cannon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "腕砲",
+                  "rank": 34
+                },
+                {
+                  "id": 4311,
+                  "name": "legs",
+                  "post_count": 165018,
+                  "aliases": [
+                    "leg"
+                  ],
+                  "rank": 12,
+                  "translation_ja": "両脚"
+                },
+                {
+                  "id": "legacy:882d599d73dff902",
+                  "name": "knees",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "膝",
+                  "rank": 19
+                },
+                {
+                  "id": "legacy:cb616ca361b88a82",
+                  "name": "mechanical_legs",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "機械の足",
+                  "rank": 57
+                },
+                {
+                  "id": "legacy:238c37681856f6bf",
+                  "name": "multiple_legs",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "複数の足を持つキャラクター",
+                  "rank": 58
+                },
+                {
+                  "id": "legacy:461beffd95ea67ff",
+                  "name": "no_legs",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "脚が描かれていない",
+                  "rank": 59
+                },
+                {
+                  "id": 2060,
+                  "name": "feet",
+                  "post_count": 229097,
+                  "aliases": [
+                    "foot"
+                  ],
+                  "rank": 65,
+                  "translation_ja": "足"
+                },
+                {
+                  "id": 419309,
+                  "name": "thick_thighs",
+                  "post_count": 120985,
+                  "aliases": [
+                    "big_thighs",
+                    "fat_thighs",
+                    "thighthick",
+                    "thunder_thighs"
+                  ],
+                  "rank": 78,
+                  "translation_ja": "太ももが太い"
+                },
+                {
+                  "id": 15674,
+                  "name": "tail",
+                  "post_count": 1173999,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "尻尾"
+                },
+                {
+                  "id": 389404,
+                  "name": "cat_tail",
+                  "post_count": 219699,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "猫の尻尾"
+                },
+                {
+                  "id": 51528,
+                  "name": "fox_tail",
+                  "post_count": 142623,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "狐の尻尾"
+                },
+                {
+                  "id": 458223,
+                  "name": "horse_tail",
+                  "post_count": 131702,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "馬の尻尾"
+                },
+                {
+                  "id": 3870,
+                  "name": "thighs",
+                  "post_count": 820028,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "太もも"
+                },
+                {
+                  "id": 28200,
+                  "name": "toes",
+                  "post_count": 235491,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "つま先"
+                },
+                {
+                  "id": 475418,
+                  "name": "bare_arms",
+                  "post_count": 189117,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "裸の腕"
+                },
+                {
+                  "id": "legacy:25de5eaedac82bfe",
+                  "name": "leg_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "脚の毛",
+                  "rank": 53
+                }
+              ]
+            },
+            {
+              "id": "legacy_small:01-019",
+              "label_ja": "肩・鎖骨・脇",
+              "tags": [
+                {
+                  "id": "legacy:631d099b149327f6",
+                  "name": "bare_shoulders",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "裸の肩",
+                  "rank": 1
+                },
+                {
+                  "id": "legacy:4ae9d15941c2f667",
+                  "name": "collarbonea",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鎖骨",
+                  "rank": 2
+                },
+                {
+                  "id": 5576,
+                  "name": "armpits",
+                  "post_count": 275287,
+                  "aliases": [
+                    "armpit",
+                    "showing_armpits"
+                  ],
+                  "rank": 3,
+                  "translation_ja": "脇の下"
+                },
+                {
+                  "id": "legacy:d74df03010a16fe2",
+                  "name": "armpit_crease",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "脇の下のしわ",
+                  "rank": 4
+                }
+              ]
+            },
+            {
+              "id": "legacy_small:01-021",
+              "label_ja": "腰回り",
+              "tags": [
+                {
+                  "id": "legacy:0f604bf6a249d70d",
+                  "name": "narrow_waist",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "細い腰",
+                  "rank": 1
+                },
+                {
+                  "id": "legacy:6616614ab1b0d82e",
+                  "name": "slender_waist",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "細身の腰",
+                  "rank": 2
+                }
+              ]
+            },
+            {
+              "id": "legacy_small:01-022",
+              "label_ja": "お腹・へそ",
+              "tags": [
+                {
+                  "id": 9843,
+                  "name": "midriff",
+                  "post_count": 337702,
+                  "aliases": [],
+                  "rank": 1,
+                  "translation_ja": "腹部"
+                },
+                {
+                  "id": "legacy:73bcd51503b6715a",
+                  "name": "belly",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "お腹",
+                  "rank": 2
+                },
+                {
+                  "id": "legacy:fdf1ecb94853d44f",
+                  "name": "absolute_territory",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "腹筋",
+                  "rank": 3
+                },
+                {
+                  "id": "legacy:0e45dbfb8c559021",
+                  "name": "inflation",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "膨らんだ腹部",
+                  "rank": 4
+                },
+                {
+                  "id": "legacy:ea45077cbee97661",
+                  "name": "navel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "へそ",
+                  "rank": 5
+                },
+                {
+                  "id": "legacy:0265f12d310a506d",
+                  "name": "groin",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鼠径部",
+                  "rank": 6
+                },
+                {
+                  "id": 387991,
+                  "name": "abs",
+                  "post_count": 133170,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "腹筋"
+                }
+              ]
+            },
+            {
               "id": "legacy_small:01-018",
               "label_ja": "爪・ネイル",
               "tags": [
@@ -1371,260 +1943,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ネイルアート",
                   "rank": 11
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:01-019",
-              "label_ja": "肩・鎖骨・脇",
-              "tags": [
-                {
-                  "id": "legacy:631d099b149327f6",
-                  "name": "bare_shoulders",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "裸の肩",
-                  "rank": 1
-                },
-                {
-                  "id": "legacy:4ae9d15941c2f667",
-                  "name": "collarbonea",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鎖骨",
-                  "rank": 2
-                },
-                {
-                  "id": 5576,
-                  "name": "armpits",
-                  "post_count": 275287,
-                  "aliases": [
-                    "armpit",
-                    "showing_armpits"
-                  ],
-                  "rank": 3,
-                  "translation_ja": "脇の下"
-                },
-                {
-                  "id": "legacy:d74df03010a16fe2",
-                  "name": "armpit_crease",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "脇の下のしわ",
-                  "rank": 4
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:01-020",
-              "label_ja": "胸・胸の形",
-              "tags": [
-                {
-                  "id": "legacy:be3ee18195b6baa6",
-                  "name": "chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸部",
-                  "rank": 1
-                },
-                {
-                  "id": "legacy:8a662adaa22a4260",
-                  "name": "flat_chest",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "平らな胸(A)",
-                  "rank": 2
-                },
-                {
-                  "id": "legacy:8a3cd25717963ffa",
-                  "name": "small_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "小さい胸(B)",
-                  "rank": 3
-                },
-                {
-                  "id": "legacy:d2d6ce96d005cc4d",
-                  "name": "medium_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中くらいの胸(C)",
-                  "rank": 4
-                },
-                {
-                  "id": "legacy:0ce05a0510de3bea",
-                  "name": "big_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大きい胸(D)",
-                  "rank": 5
-                },
-                {
-                  "id": "legacy:23340d72c3c0582d",
-                  "name": "huge_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "巨大な胸(E)",
-                  "rank": 6
-                },
-                {
-                  "id": "legacy:b87eba35ac96f8fe",
-                  "name": "gigantic_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "超巨大な胸(F)",
-                  "rank": 7
-                },
-                {
-                  "name": "perky_breasts",
-                  "translation_ja": "上向きの胸"
-                },
-                {
-                  "id": "legacy:62903d8970247821",
-                  "name": "breasts_apart",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "胸を分ける",
-                  "rank": 9
-                },
-                {
-                  "id": "legacy:d7111740a02001ba",
-                  "name": "hanging_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "下垂した胸",
-                  "rank": 10
-                },
-                {
-                  "id": "legacy:a2b9e4f1af21360e",
-                  "name": "bouncing_breasts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "弾む胸",
-                  "rank": 11
-                },
-                {
-                  "id": "legacy:3c1170706823650f",
-                  "name": "cleavage",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "谷間",
-                  "rank": 12
-                },
-                {
-                  "id": "legacy:ed91c6f82149b5e9",
-                  "name": "pectorals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大胸筋",
-                  "rank": 14
-                },
-                {
-                  "id": "legacy:a1158723f13128d5",
-                  "name": "large_pectorals",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大きな胸筋",
-                  "rank": 15
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:01-021",
-              "label_ja": "腰回り",
-              "tags": [
-                {
-                  "id": "legacy:0f604bf6a249d70d",
-                  "name": "narrow_waist",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "細い腰",
-                  "rank": 1
-                },
-                {
-                  "id": "legacy:6616614ab1b0d82e",
-                  "name": "slender_waist",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "細身の腰",
-                  "rank": 2
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:01-022",
-              "label_ja": "お腹・へそ",
-              "tags": [
-                {
-                  "id": 9843,
-                  "name": "midriff",
-                  "post_count": 337702,
-                  "aliases": [],
-                  "rank": 1,
-                  "translation_ja": "腹部"
-                },
-                {
-                  "id": "legacy:73bcd51503b6715a",
-                  "name": "belly",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "お腹",
-                  "rank": 2
-                },
-                {
-                  "id": "legacy:fdf1ecb94853d44f",
-                  "name": "absolute_territory",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "腹筋",
-                  "rank": 3
-                },
-                {
-                  "id": "legacy:0e45dbfb8c559021",
-                  "name": "inflation",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "膨らんだ腹部",
-                  "rank": 4
-                },
-                {
-                  "id": "legacy:ea45077cbee97661",
-                  "name": "navel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "へそ",
-                  "rank": 5
-                },
-                {
-                  "id": "legacy:0265f12d310a506d",
-                  "name": "groin",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鼠径部",
-                  "rank": 6
                 }
               ]
             },
@@ -1869,143 +2187,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "翼のついたヘルメット",
                   "rank": 18
-                }
-              ]
-            },
-            {
-              "id": "audit_body_limbs",
-              "label_ja": "腕・手・脚・足",
-              "description_ja": "腕、手、脚、足とその身体的特徴。",
-              "tags": [
+                },
                 {
-                  "id": "legacy:c4aebedd29c5b16b",
-                  "name": "arm_blade",
-                  "post_count": 0,
+                  "id": 674623,
+                  "name": "feathered_wings",
+                  "post_count": 101997,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "腕の刃",
-                  "rank": 20
-                },
-                {
-                  "id": "legacy:a64bb153fadb8866",
-                  "name": "extra_arms",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "追加の腕",
-                  "rank": 27
-                },
-                {
-                  "id": "legacy:b28287493544e814",
-                  "name": "arm_cannon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "腕砲",
-                  "rank": 34
-                },
-                {
-                  "id": 4311,
-                  "name": "legs",
-                  "post_count": 165018,
-                  "aliases": [
-                    "leg"
-                  ],
-                  "rank": 12,
-                  "translation_ja": "両脚"
-                },
-                {
-                  "id": "legacy:882d599d73dff902",
-                  "name": "knees",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "膝",
-                  "rank": 19
-                },
-                {
-                  "id": "legacy:25de5eaedac82bfe",
-                  "name": "leg_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "脚の毛",
-                  "rank": 53
-                },
-                {
-                  "id": "legacy:cb616ca361b88a82",
-                  "name": "mechanical_legs",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "機械の足",
-                  "rank": 57
-                },
-                {
-                  "id": "legacy:238c37681856f6bf",
-                  "name": "multiple_legs",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "複数の足を持つキャラクター",
-                  "rank": 58
-                },
-                {
-                  "id": "legacy:461beffd95ea67ff",
-                  "name": "no_legs",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "脚が描かれていない",
-                  "rank": 59
-                },
-                {
-                  "id": 2060,
-                  "name": "feet",
-                  "post_count": 229097,
-                  "aliases": [
-                    "foot"
-                  ],
-                  "rank": 65,
-                  "translation_ja": "足"
-                },
-                {
-                  "id": 419309,
-                  "name": "thick_thighs",
-                  "post_count": 120985,
-                  "aliases": [
-                    "big_thighs",
-                    "fat_thighs",
-                    "thighthick",
-                    "thunder_thighs"
-                  ],
-                  "rank": 78,
-                  "translation_ja": "太ももが太い"
-                }
-              ]
-            },
-            {
-              "id": "audit_body_head",
-              "label_ja": "頭部",
-              "description_ja": "頭や頭部の身体的特徴。",
-              "tags": [
-                {
-                  "id": "legacy:1a954628a960aaef",
-                  "name": "head",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "頭",
-                  "rank": 90
-                },
-                {
-                  "id": "legacy:b067588c17c67c7b",
-                  "name": "head_bump",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "頭にこぶ",
-                  "rank": 91
+                  "rank": 9999,
+                  "translation_ja": "羽毛の翼"
                 },
                 {
                   "id": "legacy:c28ae3c7f98c4c52",
@@ -2349,6 +2538,14 @@
                   ],
                   "rank": 30,
                   "translation_ja": "目の上の傷跡"
+                },
+                {
+                  "id": 416202,
+                  "name": "eyelashes",
+                  "post_count": 259758,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "まつげ"
                 }
               ]
             },
@@ -2742,6 +2939,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "アルパカの耳",
                   "rank": 52
+                },
+                {
+                  "id": 465583,
+                  "name": "rabbit_ears",
+                  "post_count": 320067,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "うさ耳"
                 }
               ]
             },
@@ -3307,6 +3512,14 @@
                   "aliases": [],
                   "rank": 29,
                   "translation_ja": "目の中のシンボル"
+                },
+                {
+                  "id": 560247,
+                  "name": "white_pupils",
+                  "post_count": 120093,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白い瞳孔"
                 }
               ]
             },
@@ -3607,24 +3820,6 @@
                   "rank": 29
                 },
                 {
-                  "id": "legacy:62a5d8d4414ec284",
-                  "name": "hair_in_mouth",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "口に髪が入っている",
-                  "rank": 30
-                },
-                {
-                  "id": "legacy:9d3d7a66e03606a4",
-                  "name": "hair_tie_in_mouth",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "口に髪の結び目を持っている",
-                  "rank": 31
-                },
-                {
                   "id": "legacy:5c2bd99229d434a2",
                   "name": "homu",
                   "post_count": 0,
@@ -3865,15 +4060,6 @@
                   "rank": 13
                 },
                 {
-                  "id": "legacy:c3cc7c6c532c8a0e",
-                  "name": "toothbrush",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "歯ブラシ",
-                  "rank": 14
-                },
-                {
                   "id": "legacy:5585845db830a131",
                   "name": "tusks",
                   "post_count": 0,
@@ -3890,6 +4076,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "鮫の歯",
                   "rank": 16
+                },
+                {
+                  "id": 1875867,
+                  "name": "upper_teeth_only",
+                  "post_count": 253588,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "上の歯だけ見える"
                 }
               ]
             },
@@ -3972,15 +4166,6 @@
               "id": "legacy_small:01-008",
               "label_ja": "髪型",
               "tags": [
-                {
-                  "id": "legacy:d00f14ddd775816c",
-                  "name": "hair_on_horn",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "角の上の髪",
-                  "rank": 60
-                },
                 {
                   "id": 478557,
                   "name": "straight_hair",
@@ -4182,15 +4367,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "エアバング",
                   "rank": 39
-                },
-                {
-                  "id": "legacy:d869640aef792442",
-                  "name": "hair_wings",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪の翼",
-                  "rank": 40
                 },
                 {
                   "id": "legacy:27ce5aec75b69eed",
@@ -4498,6 +4674,105 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "アップスタイル",
                   "rank": 66
+                },
+                {
+                  "id": 484168,
+                  "name": "sidelocks",
+                  "post_count": 922020,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "サイドロック"
+                },
+                {
+                  "id": 4334,
+                  "name": "braid",
+                  "post_count": 912868,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "三つ編み"
+                },
+                {
+                  "id": 551772,
+                  "name": "parted_bangs",
+                  "post_count": 307262,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "分けた前髪"
+                },
+                {
+                  "id": 399541,
+                  "name": "hair_over_one_eye",
+                  "post_count": 363722,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "片目を覆う髪"
+                },
+                {
+                  "id": 534835,
+                  "name": "hair_intakes",
+                  "post_count": 248757,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "インテーク髪"
+                },
+                {
+                  "id": 652604,
+                  "name": "two_side_up",
+                  "post_count": 245705,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ツーサイドアップ"
+                },
+                {
+                  "id": 565513,
+                  "name": "floating_hair",
+                  "post_count": 190967,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "浮いた髪"
+                },
+                {
+                  "id": 413908,
+                  "name": "spiked_hair",
+                  "post_count": 105784,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "逆立った髪"
+                },
+                {
+                  "id": "legacy:62a5d8d4414ec284",
+                  "name": "hair_in_mouth",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "口に髪が入っている",
+                  "rank": 30
+                },
+                {
+                  "id": "legacy:9d3d7a66e03606a4",
+                  "name": "hair_tie_in_mouth",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "口に髪の結び目を持っている",
+                  "rank": 31
+                },
+                {
+                  "id": 454933,
+                  "name": "hair_bun",
+                  "post_count": 292293,
+                  "aliases": [],
+                  "rank": 44,
+                  "translation_ja": "髪の束"
+                },
+                {
+                  "id": "legacy:d869640aef792442",
+                  "name": "hair_wings",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪の翼",
+                  "rank": 40
                 }
               ]
             },
@@ -4531,15 +4806,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "明るい茶髪",
                   "rank": 20
-                },
-                {
-                  "id": "manual:20260810:colored_inner_hair",
-                  "name": "colored_inner_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "内側の色が違う髪",
-                  "rank": 13
                 },
                 {
                   "id": "legacy:f76befe812af5b5c",
@@ -4677,6 +4943,39 @@
                   "source": "manual_candidate_addition",
                   "translation_ja": "えんじ色の髪",
                   "rank": 14
+                },
+                {
+                  "id": 391128,
+                  "name": "gradient_hair",
+                  "post_count": 221003,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "グラデーション髪"
+                },
+                {
+                  "id": 87676,
+                  "name": "orange_hair",
+                  "post_count": 345551,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "オレンジ髪"
+                },
+                {
+                  "id": 94007,
+                  "name": "aqua_hair",
+                  "post_count": 174910,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "アクア色の髪"
+                },
+                {
+                  "id": "manual:20260810:colored_inner_hair",
+                  "name": "colored_inner_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "manual_candidate_addition",
+                  "translation_ja": "内側の色が違う髪",
+                  "rank": 13
                 }
               ]
             },
@@ -4848,15 +5147,6 @@
                   "rank": 2
                 },
                 {
-                  "id": "legacy:253050889cfeba82",
-                  "name": "formal_dress",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "フォーマルドレス",
-                  "rank": 3
-                },
-                {
                   "id": "legacy:bc8401e58509c060",
                   "name": "evening_gown",
                   "post_count": 0,
@@ -4873,15 +5163,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "カノニカルス（夜会服）",
                   "rank": 5
-                },
-                {
-                  "id": "legacy:e80c196484fbf006",
-                  "name": "cocktail_dress",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "カクテルドレス",
-                  "rank": 6
                 },
                 {
                   "id": "legacy:29f0b5328ee9da25",
@@ -4975,19 +5256,6 @@
                   "rank": 16
                 },
                 {
-                  "id": 465152,
-                  "name": "china_dress",
-                  "post_count": 65089,
-                  "aliases": [
-                    "cheongsam",
-                    "chinadress",
-                    "chinese_dress",
-                    "qipao"
-                  ],
-                  "rank": 17,
-                  "translation_ja": "チャイナドレス"
-                },
-                {
                   "id": "legacy:5df9d6aed308c17a",
                   "name": "print_cheongsam",
                   "post_count": 0,
@@ -5004,15 +5272,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ペリネウムカーテン（チャイナドレスの前掛け）",
                   "rank": 19
-                },
-                {
-                  "id": "legacy:54d1a23f27162996",
-                  "name": "wedding_dress",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ウェディングドレス",
-                  "rank": 20
                 },
                 {
                   "id": "legacy:acf014fa51645646",
@@ -5103,15 +5362,6 @@
                   "rank": 29
                 },
                 {
-                  "id": "legacy:31542af38b529797",
-                  "name": "ss_uniform/nazi_uniform",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "SS制服/ナチス制服",
-                  "rank": 30
-                },
-                {
                   "id": "legacy:77000a7b62639407",
                   "name": "stile_uniform",
                   "post_count": 0,
@@ -5190,6 +5440,14 @@
                   "aliases": [],
                   "rank": 39,
                   "translation_ja": "レオタード"
+                },
+                {
+                  "id": 9344,
+                  "name": "bodysuit",
+                  "post_count": 180207,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ボディスーツ"
                 }
               ]
             },
@@ -5223,24 +5481,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "半纏（和風）",
                   "rank": 3
-                },
-                {
-                  "id": "legacy:f8b6658242a914b8",
-                  "name": "hanbok",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "韓服",
-                  "rank": 4
-                },
-                {
-                  "id": "legacy:9aa41c203a0bb7e9",
-                  "name": "korean_clothes",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "朝鮮服",
-                  "rank": 5
                 },
                 {
                   "id": "legacy:b681487927bbb2be",
@@ -5594,15 +5834,6 @@
                   "rank": 12
                 },
                 {
-                  "id": "legacy:88a15a3d164a075e",
-                  "name": "hanfu",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "漢服",
-                  "rank": 13
-                },
-                {
                   "id": "legacy:3017d6e9029d35f3",
                   "name": "Taoist_robe",
                   "post_count": 0,
@@ -5735,15 +5966,6 @@
                   "rank": 5
                 },
                 {
-                  "id": "legacy:f134d852ffe6739c",
-                  "name": "letterman_jacket",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "レターマンジャケット",
-                  "rank": 6
-                },
-                {
                   "id": "legacy:848f7d14794f37f5",
                   "name": "volleyball_uniform",
                   "post_count": 0,
@@ -5787,6 +6009,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "道着",
                   "rank": 11
+                },
+                {
+                  "id": 1314596,
+                  "name": "black_leotard",
+                  "post_count": 108784,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いレオタード"
                 }
               ]
             },
@@ -6946,6 +7176,54 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "衣服の盗難",
                   "rank": 70
+                },
+                {
+                  "id": 375229,
+                  "name": "off_shoulder",
+                  "post_count": 340661,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "オフショルダー"
+                },
+                {
+                  "id": 382397,
+                  "name": "strapless",
+                  "post_count": 235343,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ストラップレス"
+                },
+                {
+                  "id": 524961,
+                  "name": "black_shirt",
+                  "post_count": 363984,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いシャツ"
+                },
+                {
+                  "id": 397327,
+                  "name": "blue_shirt",
+                  "post_count": 162645,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いシャツ"
+                },
+                {
+                  "id": 390594,
+                  "name": "red_shirt",
+                  "post_count": 108754,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤いシャツ"
+                },
+                {
+                  "id": 611670,
+                  "name": "grey_shirt",
+                  "post_count": 104868,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "灰色のシャツ"
                 }
               ]
             },
@@ -7384,6 +7662,39 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "パファージャケット",
                   "rank": 48
+                },
+                {
+                  "id": 5569,
+                  "name": "coat",
+                  "post_count": 372165,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "コート"
+                },
+                {
+                  "id": 547860,
+                  "name": "black_jacket",
+                  "post_count": 384329,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いジャケット"
+                },
+                {
+                  "id": 619736,
+                  "name": "blue_jacket",
+                  "post_count": 155531,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いジャケット"
+                },
+                {
+                  "id": "legacy:f134d852ffe6739c",
+                  "name": "letterman_jacket",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "レターマンジャケット",
+                  "rank": 6
                 }
               ]
             },
@@ -7579,6 +7890,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "エギュレット（肩章）",
                   "rank": 20
+                },
+                {
+                  "id": 699830,
+                  "name": "see-through_clothes",
+                  "post_count": 215673,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "透けた服"
                 }
               ]
             },
@@ -7692,6 +8011,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ガードル（腰締め）",
                   "rank": 12
+                },
+                {
+                  "id": 631529,
+                  "name": "white_apron",
+                  "post_count": 121134,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白いエプロン"
                 }
               ]
             },
@@ -7852,15 +8179,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "脛当て",
                   "rank": 17
-                },
-                {
-                  "id": "legacy:2195f428fe5ae6a3",
-                  "name": "armored_boots",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "アーマードブーツ",
-                  "rank": 18
                 }
               ]
             },
@@ -8492,6 +8810,110 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "花柄スカート",
                   "rank": 69
+                },
+                {
+                  "id": 374628,
+                  "name": "black_skirt",
+                  "post_count": 459462,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いスカート"
+                },
+                {
+                  "id": 14620,
+                  "name": "white_dress",
+                  "post_count": 443465,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白いドレス"
+                },
+                {
+                  "id": 39127,
+                  "name": "black_dress",
+                  "post_count": 371018,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いドレス"
+                },
+                {
+                  "id": 428173,
+                  "name": "blue_skirt",
+                  "post_count": 259227,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いスカート"
+                },
+                {
+                  "id": 377140,
+                  "name": "blue_dress",
+                  "post_count": 184092,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いドレス"
+                },
+                {
+                  "id": 503552,
+                  "name": "red_skirt",
+                  "post_count": 162762,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤いスカート"
+                },
+                {
+                  "id": 389777,
+                  "name": "red_dress",
+                  "post_count": 142123,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤いドレス"
+                },
+                {
+                  "id": "legacy:253050889cfeba82",
+                  "name": "formal_dress",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "フォーマルドレス",
+                  "rank": 3
+                },
+                {
+                  "id": "legacy:e80c196484fbf006",
+                  "name": "cocktail_dress",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "カクテルドレス",
+                  "rank": 6
+                },
+                {
+                  "id": 465152,
+                  "name": "china_dress",
+                  "post_count": 65089,
+                  "aliases": [
+                    "cheongsam",
+                    "chinadress",
+                    "chinese_dress",
+                    "qipao"
+                  ],
+                  "rank": 17,
+                  "translation_ja": "チャイナドレス"
+                },
+                {
+                  "id": "legacy:54d1a23f27162996",
+                  "name": "wedding_dress",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ウェディングドレス",
+                  "rank": 20
+                },
+                {
+                  "id": 1235655,
+                  "name": "gradient_dress",
+                  "post_count": 3184,
+                  "aliases": [],
+                  "rank": 144,
+                  "translation_ja": "グラデーションのドレス"
                 }
               ]
             },
@@ -8600,15 +9022,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "他の人に着せる",
                   "rank": 2
-                },
-                {
-                  "id": "legacy:b20c763996d192a3",
-                  "name": "shorts_under_skirt",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スカートの下にショートパンツを穿く",
-                  "rank": 3
                 },
                 {
                   "id": "legacy:ce3295e33c082946",
@@ -8822,7 +9235,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ブルーマー",
+                  "translation_ja": "ブルマ",
                   "rank": 27
                 },
                 {
@@ -8831,7 +9244,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ブルマ（女子用ブルーマー）",
+                  "translation_ja": "ブルマ（女子用ブルマ）",
                   "rank": 28
                 },
                 {
@@ -8923,6 +9336,41 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ストライプパンツ",
                   "rank": 38
+                },
+                {
+                  "id": 514890,
+                  "name": "black_pants",
+                  "post_count": 249830,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いパンツ"
+                },
+                {
+                  "id": "legacy:79791c96a612fbe9",
+                  "name": "torn_pants",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "破れたパンツ",
+                  "rank": 8
+                },
+                {
+                  "id": "legacy:037f07204c459b7d",
+                  "name": "torn_shorts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "破れたショートパンツ",
+                  "rank": 9
+                },
+                {
+                  "id": "legacy:b20c763996d192a3",
+                  "name": "shorts_under_skirt",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "スカートの下にショートパンツを穿く",
+                  "rank": 3
                 }
               ]
             },
@@ -8991,24 +9439,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "破れたジーンズ",
                   "rank": 7
-                },
-                {
-                  "id": "legacy:79791c96a612fbe9",
-                  "name": "torn_pants",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "破れたパンツ",
-                  "rank": 8
-                },
-                {
-                  "id": "legacy:037f07204c459b7d",
-                  "name": "torn_shorts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "破れたショートパンツ",
-                  "rank": 9
                 }
               ]
             },
@@ -9172,15 +9602,6 @@
                   "rank": 127
                 },
                 {
-                  "id": "legacy:e8a1714b147c1ce1",
-                  "name": "swimsuit_pull",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "水着を引っ張る",
-                  "rank": 128
-                },
-                {
                   "id": "legacy:74d0a548a5491fe3",
                   "name": "adjusting_clothes",
                   "post_count": 0,
@@ -9188,6 +9609,23 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "服の調整",
                   "rank": 130
+                },
+                {
+                  "id": 484752,
+                  "name": "clothes_grab",
+                  "post_count": 12160,
+                  "aliases": [],
+                  "rank": 13,
+                  "translation_ja": "服をつかむ"
+                },
+                {
+                  "id": "legacy:e8a1714b147c1ce1",
+                  "name": "swimsuit_pull",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "水着を引っ張る",
+                  "rank": 128
                 },
                 {
                   "id": "legacy:2910bb9c32b5fae3",
@@ -9199,12 +9637,12 @@
                   "rank": 135
                 },
                 {
-                  "id": 484752,
-                  "name": "clothes_grab",
-                  "post_count": 12160,
+                  "id": 7577,
+                  "name": "open_shirt",
+                  "post_count": 149183,
                   "aliases": [],
-                  "rank": 13,
-                  "translation_ja": "服をつかむ"
+                  "rank": 9999,
+                  "translation_ja": "開いたシャツ"
                 }
               ]
             }
@@ -9687,15 +10125,6 @@
                   "rank": 52
                 },
                 {
-                  "id": "legacy:6a8411ca6068ff9c",
-                  "name": "bikini_skirt",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ビキニスカート",
-                  "rank": 53
-                },
-                {
                   "id": "legacy:df62391419b7b6dd",
                   "name": "swim_briefs",
                   "post_count": 0,
@@ -9730,6 +10159,31 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "男性用水着",
                   "rank": 57
+                },
+                {
+                  "id": 374620,
+                  "name": "black_bikini",
+                  "post_count": 162167,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いビキニ"
+                },
+                {
+                  "id": 426936,
+                  "name": "white_bikini",
+                  "post_count": 134421,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白いビキニ"
+                },
+                {
+                  "id": "legacy:6a8411ca6068ff9c",
+                  "name": "bikini_skirt",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ビキニスカート",
+                  "rank": 53
                 }
               ]
             },
@@ -10115,15 +10569,6 @@
                   "rank": 40
                 },
                 {
-                  "id": "legacy:f3c7d0da11d6f751",
-                  "name": "legwear_under_shorts",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ショートパンツの下にレッグウェアを履く",
-                  "rank": 41
-                },
-                {
                   "id": "legacy:44fa8b1c944893e6",
                   "name": "over-kneehighs",
                   "post_count": 0,
@@ -10194,6 +10639,39 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ストライプソックス",
                   "rank": 49
+                },
+                {
+                  "id": 10644,
+                  "name": "zettai_ryouiki",
+                  "post_count": 168825,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "絶対領域"
+                },
+                {
+                  "id": 463397,
+                  "name": "white_socks",
+                  "post_count": 220191,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白い靴下"
+                },
+                {
+                  "id": 8072,
+                  "name": "black_socks",
+                  "post_count": 146639,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒い靴下"
+                },
+                {
+                  "id": "legacy:f3c7d0da11d6f751",
+                  "name": "legwear_under_shorts",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ショートパンツの下にレッグウェアを履く",
+                  "rank": 41
                 }
               ]
             },
@@ -10211,15 +10689,6 @@
                   "rank": 1
                 },
                 {
-                  "id": "legacy:dc950fdb0c567ddd",
-                  "name": "thighhighs_under_boots",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ブーツの下にサイハイソックスを履く",
-                  "rank": 2
-                },
-                {
                   "id": "legacy:e7fcbd43408210d4",
                   "name": "adjusting_legwear",
                   "post_count": 0,
@@ -10227,15 +10696,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "レッグウェアの調整",
                   "rank": 3
-                },
-                {
-                  "id": "legacy:67e09f4000b3b2ff",
-                  "name": "pantyhose_pull",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "脱ぎ下ろされたパンスト",
-                  "rank": 4
                 },
                 {
                   "id": "legacy:ca962aef352438e4",
@@ -10254,6 +10714,24 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ソックスを引っ張る",
                   "rank": 6
+                },
+                {
+                  "id": "legacy:dc950fdb0c567ddd",
+                  "name": "thighhighs_under_boots",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ブーツの下にサイハイソックスを履く",
+                  "rank": 2
+                },
+                {
+                  "id": "legacy:67e09f4000b3b2ff",
+                  "name": "pantyhose_pull",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "脱ぎ下ろされたパンスト",
+                  "rank": 4
                 },
                 {
                   "id": "legacy:3bb276fd978aeafd",
@@ -10603,24 +11081,6 @@
                   "rank": 8
                 },
                 {
-                  "id": "legacy:755b78ac25a88dc0",
-                  "name": "latex_thighhighs",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ラテックス製の太ももハイソックス",
-                  "rank": 9
-                },
-                {
-                  "id": "legacy:3d47dcb70ce427ed",
-                  "name": "see-through_thighhighs",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "透明な太ももハイソックス",
-                  "rank": 10
-                },
-                {
                   "id": "legacy:0d346ade00cf07c3",
                   "name": "asymmetrical_clothes",
                   "post_count": 0,
@@ -10835,6 +11295,88 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "胸ポケット",
                   "rank": 35
+                },
+                {
+                  "id": 194013,
+                  "name": "frills",
+                  "post_count": 758727,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "フリル"
+                },
+                {
+                  "id": 2091,
+                  "name": "bandages",
+                  "post_count": 129043,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "包帯"
+                },
+                {
+                  "id": 470807,
+                  "name": "red_bow",
+                  "post_count": 325975,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤いリボン"
+                },
+                {
+                  "id": 1247160,
+                  "name": "black_bow",
+                  "post_count": 222147,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いリボン"
+                },
+                {
+                  "id": 546609,
+                  "name": "blue_bow",
+                  "post_count": 177281,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いリボン"
+                },
+                {
+                  "id": 701697,
+                  "name": "white_bow",
+                  "post_count": 152730,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白いリボン"
+                },
+                {
+                  "id": 463115,
+                  "name": "pink_bow",
+                  "post_count": 119001,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ピンクのリボン"
+                },
+                {
+                  "id": 498000,
+                  "name": "blue_ribbon",
+                  "post_count": 109351,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青いリボン"
+                },
+                {
+                  "id": "legacy:755b78ac25a88dc0",
+                  "name": "latex_thighhighs",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ラテックス製の太ももハイソックス",
+                  "rank": 9
+                },
+                {
+                  "id": "legacy:3d47dcb70ce427ed",
+                  "name": "see-through_thighhighs",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "透明な太ももハイソックス",
+                  "rank": 10
                 }
               ]
             },
@@ -11687,6 +12229,22 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "髑髏と十字骨",
                   "rank": 62
+                },
+                {
+                  "id": 1946752,
+                  "name": "plaid_clothes",
+                  "post_count": 194976,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "チェック柄の服"
+                },
+                {
+                  "id": 491647,
+                  "name": "striped_clothes",
+                  "post_count": 352540,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "縞模様の服"
                 }
               ]
             },
@@ -12039,6 +12597,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "草履",
                   "rank": 38
+                },
+                {
+                  "id": 554789,
+                  "name": "black_shoes",
+                  "post_count": 266546,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒い靴"
                 }
               ]
             },
@@ -12218,6 +12784,23 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "一つだけのブーツ",
                   "rank": 19
+                },
+                {
+                  "id": 499837,
+                  "name": "black_boots",
+                  "post_count": 181628,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いブーツ"
+                },
+                {
+                  "id": "legacy:2195f428fe5ae6a3",
+                  "name": "armored_boots",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "アーマードブーツ",
+                  "rank": 18
                 }
               ]
             },
@@ -12861,6 +13444,38 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "首にかけた笛",
                   "rank": 67
+                },
+                {
+                  "id": 600177,
+                  "name": "detached_collar",
+                  "post_count": 183638,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "分離襟"
+                },
+                {
+                  "id": 492682,
+                  "name": "red_necktie",
+                  "post_count": 118953,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤いネクタイ"
+                },
+                {
+                  "id": 1281370,
+                  "name": "red_bowtie",
+                  "post_count": 113199,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤い蝶ネクタイ"
+                },
+                {
+                  "id": 647129,
+                  "name": "black_necktie",
+                  "post_count": 104311,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いネクタイ"
                 }
               ]
             },
@@ -14285,6 +14900,31 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "破れた手袋",
                   "rank": 27
+                },
+                {
+                  "id": 474820,
+                  "name": "black_gloves",
+                  "post_count": 665684,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒い手袋"
+                },
+                {
+                  "id": 474821,
+                  "name": "white_gloves",
+                  "post_count": 435269,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白い手袋"
+                },
+                {
+                  "id": "legacy:efae5bcfc173840f",
+                  "name": "adjusting_gloves",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "手袋の調整",
+                  "rank": 132
                 }
               ]
             },
@@ -14404,6 +15044,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "星のイヤリング",
                   "rank": 11
+                },
+                {
+                  "id": 4831,
+                  "name": "piercing",
+                  "post_count": 172165,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ピアス"
                 }
               ]
             },
@@ -14689,32 +15337,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "鉢巻",
                   "rank": 41
-                },
-                {
-                  "id": "legacy:a666feade92618e7",
-                  "name": "hair_bell",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪につけたベル",
-                  "rank": 43
-                },
-                {
-                  "id": 454933,
-                  "name": "hair_bun",
-                  "post_count": 292293,
-                  "aliases": [],
-                  "rank": 44,
-                  "translation_ja": "髪の束"
-                },
-                {
-                  "id": "legacy:abd8dde0046359f1",
-                  "name": "hair_flower",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪に花をつけた",
-                  "rank": 47
                 },
                 {
                   "id": "legacy:2b8380dc84b4e4a5",
@@ -15048,6 +15670,40 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "一つの羽のついた頭",
                   "rank": 105
+                },
+                {
+                  "id": 5948,
+                  "name": "hood",
+                  "post_count": 434737,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "フード"
+                },
+                {
+                  "id": 589398,
+                  "name": "hood_down",
+                  "post_count": 142240,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "下ろしたフード"
+                },
+                {
+                  "id": "legacy:a666feade92618e7",
+                  "name": "hair_bell",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪につけたベル",
+                  "rank": 43
+                },
+                {
+                  "id": "legacy:abd8dde0046359f1",
+                  "name": "hair_flower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪に花をつけた",
+                  "rank": 47
                 }
               ]
             },
@@ -15343,15 +15999,6 @@
                   "rank": 32
                 },
                 {
-                  "id": "legacy:233a1c4197d851df",
-                  "name": "hat_with_ears",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "耳のついた帽子",
-                  "rank": 33
-                },
-                {
                   "id": "legacy:66c661766d84f40a",
                   "name": "bobblehat",
                   "post_count": 0,
@@ -15496,15 +16143,6 @@
                   "rank": 49
                 },
                 {
-                  "id": "legacy:d44bb8c83c339440",
-                  "name": "hat_flower",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "花のついた帽子",
-                  "rank": 50
-                },
-                {
                   "id": "legacy:5d07f559e29c1adb",
                   "name": "hat_ornament",
                   "post_count": 0,
@@ -15629,6 +16267,49 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "別の世界線",
                   "rank": 64
+                },
+                {
+                  "id": 476134,
+                  "name": "black_hat",
+                  "post_count": 247341,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒い帽子"
+                },
+                {
+                  "id": 538901,
+                  "name": "white_hat",
+                  "post_count": 170847,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白い帽子"
+                },
+                {
+                  "id": "legacy:fb8b01aa304a8481",
+                  "name": "adjusting_hat",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "帽子の整理",
+                  "rank": 134
+                },
+                {
+                  "id": "legacy:233a1c4197d851df",
+                  "name": "hat_with_ears",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "耳のついた帽子",
+                  "rank": 33
+                },
+                {
+                  "id": "legacy:d44bb8c83c339440",
+                  "name": "hat_flower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "花のついた帽子",
+                  "rank": 50
                 }
               ]
             },
@@ -15636,20 +16317,6 @@
               "id": "legacy_small:02-035",
               "label_ja": "髪飾り",
               "tags": [
-                {
-                  "id": 464561,
-                  "name": "hair_ribbon",
-                  "post_count": 677780,
-                  "aliases": [
-                    "hair_ribbons",
-                    "/hribbon",
-                    "ribbon_hair_ornament",
-                    "ribbon_in_hair",
-                    "ribbons_in_hair"
-                  ],
-                  "rank": 1,
-                  "translation_ja": "髪リボン"
-                },
                 {
                   "id": 2376,
                   "name": "hairband",
@@ -15659,15 +16326,6 @@
                   ],
                   "rank": 2,
                   "translation_ja": "髪バンド"
-                },
-                {
-                  "id": "legacy:21f3b9eb4f39cd75",
-                  "name": "hair_tie",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪留め",
-                  "rank": 3
                 },
                 {
                   "id": "legacy:f355af4a28a4a740",
@@ -15697,29 +16355,6 @@
                   "rank": 6
                 },
                 {
-                  "id": "legacy:19f1a636c31e6236",
-                  "name": "hair_bobbles",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪ゴム",
-                  "rank": 7
-                },
-                {
-                  "id": 380350,
-                  "name": "hair_ornament",
-                  "post_count": 1650539,
-                  "aliases": [
-                    "hair_accessories",
-                    "hair_accessory",
-                    "hair_decs",
-                    "hair_ornaments",
-                    "/hornament"
-                  ],
-                  "rank": 8,
-                  "translation_ja": "髪飾り"
-                },
-                {
                   "id": "legacy:089b1e0d1c0cc665",
                   "name": "x_hair_ornament",
                   "post_count": 0,
@@ -15727,17 +16362,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "X型の髪飾り",
                   "rank": 9
-                },
-                {
-                  "id": 374844,
-                  "name": "hair_bow",
-                  "post_count": 609062,
-                  "aliases": [
-                    "hairbow",
-                    "hair_bows"
-                  ],
-                  "rank": 10,
-                  "translation_ja": "ヘアボウ"
                 },
                 {
                   "id": "legacy:2dc2f4f037a098be",
@@ -15965,6 +16589,83 @@
                   "rank": 35
                 },
                 {
+                  "id": 1801537,
+                  "name": "single_hair_bun",
+                  "post_count": 79543,
+                  "aliases": [
+                    "bun",
+                    "hair_bun",
+                    "hairbun"
+                  ],
+                  "rank": 38,
+                  "translation_ja": "一つの髪の束"
+                },
+                {
+                  "id": 488167,
+                  "name": "scrunchie",
+                  "post_count": 107079,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "シュシュ"
+                },
+                {
+                  "id": 464561,
+                  "name": "hair_ribbon",
+                  "post_count": 677780,
+                  "aliases": [
+                    "hair_ribbons",
+                    "/hribbon",
+                    "ribbon_hair_ornament",
+                    "ribbon_in_hair",
+                    "ribbons_in_hair"
+                  ],
+                  "rank": 1,
+                  "translation_ja": "髪リボン"
+                },
+                {
+                  "id": "legacy:21f3b9eb4f39cd75",
+                  "name": "hair_tie",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪留め",
+                  "rank": 3
+                },
+                {
+                  "id": "legacy:19f1a636c31e6236",
+                  "name": "hair_bobbles",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪ゴム",
+                  "rank": 7
+                },
+                {
+                  "id": 380350,
+                  "name": "hair_ornament",
+                  "post_count": 1650539,
+                  "aliases": [
+                    "hair_accessories",
+                    "hair_accessory",
+                    "hair_decs",
+                    "hair_ornaments",
+                    "/hornament"
+                  ],
+                  "rank": 8,
+                  "translation_ja": "髪飾り"
+                },
+                {
+                  "id": 374844,
+                  "name": "hair_bow",
+                  "post_count": 609062,
+                  "aliases": [
+                    "hairbow",
+                    "hair_bows"
+                  ],
+                  "rank": 10,
+                  "translation_ja": "ヘアボウ"
+                },
+                {
                   "id": "legacy:58b70a904ba98538",
                   "name": "hair_tubes",
                   "post_count": 0,
@@ -15981,18 +16682,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "髪棒",
                   "rank": 37
-                },
-                {
-                  "id": 1801537,
-                  "name": "single_hair_bun",
-                  "post_count": 79543,
-                  "aliases": [
-                    "bun",
-                    "hair_bun",
-                    "hairbun"
-                  ],
-                  "rank": 38,
-                  "translation_ja": "一つの髪の束"
                 },
                 {
                   "id": "legacy:1d8d4776a80ddcde",
@@ -16262,6 +16951,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ニーパッド",
                   "rank": 28
+                },
+                {
+                  "id": 546229,
+                  "name": "black_belt",
+                  "post_count": 102649,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黒いベルト"
                 }
               ]
             },
@@ -17237,6 +17934,14 @@
                   "source": "manual_candidate_addition",
                   "translation_ja": "パニック",
                   "rank": 38
+                },
+                {
+                  "id": 499624,
+                  "name": "blush_stickers",
+                  "post_count": 156295,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "赤面ステッカー"
                 }
               ]
             }
@@ -17676,15 +18381,6 @@
                   "rank": 76
                 },
                 {
-                  "id": "legacy:dfb5808452718297",
-                  "name": "hair_tucking",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪をかき上げる",
-                  "rank": 80
-                },
-                {
                   "id": "legacy:19d4c9ba8e06b97d",
                   "name": "hanging",
                   "post_count": 0,
@@ -17858,6 +18554,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "逮捕された",
                   "rank": 24
+                },
+                {
+                  "id": "legacy:dfb5808452718297",
+                  "name": "hair_tucking",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪をかき上げる",
+                  "rank": 80
                 }
               ]
             },
@@ -18433,15 +19138,6 @@
                   "rank": 66
                 },
                 {
-                  "id": "legacy:c4b79b93682c7d9d",
-                  "name": "hair_twirling",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "指で髪を巻く",
-                  "rank": 67
-                },
-                {
                   "id": "legacy:14a772743cc9f4e8",
                   "name": "hands_clasped",
                   "post_count": 0,
@@ -18449,15 +19145,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "両手を組む|両手を握りしめる",
                   "rank": 68
-                },
-                {
-                  "id": "legacy:57c23ca657eac6f4",
-                  "name": "holding_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪を握る|指で髪を回す",
-                  "rank": 69
                 },
                 {
                   "id": 403577,
@@ -18557,15 +19244,6 @@
                   "rank": 81
                 },
                 {
-                  "id": "legacy:f3284015eb93e4fd",
-                  "name": "bunching_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪を束ねる",
-                  "rank": 82
-                },
-                {
                   "id": 410734,
                   "name": "carrying",
                   "post_count": 53351,
@@ -18628,15 +19306,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "あごを撫でる",
                   "rank": 90
-                },
-                {
-                  "id": "legacy:0219ab4420de292e",
-                  "name": "hair_pull",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪を引っ張る",
-                  "rank": 91
                 },
                 {
                   "id": "legacy:6e0d408f59e0d27e",
@@ -18720,15 +19389,6 @@
                   "rank": 111
                 },
                 {
-                  "id": "legacy:5056fde2ce95ba35",
-                  "name": "hair_pulled_back",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪を後ろに引っ張る",
-                  "rank": 118
-                },
-                {
                   "id": "legacy:35e410dcc5e5dafb",
                   "name": "pulling",
                   "post_count": 0,
@@ -18756,13 +19416,58 @@
                   "rank": 131
                 },
                 {
-                  "id": "legacy:efae5bcfc173840f",
-                  "name": "adjusting_gloves",
+                  "id": "manual:20260810:blowing_kiss",
+                  "name": "blowing_kiss",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "manual_candidate_addition",
+                  "translation_ja": "投げキッス",
+                  "rank": 136
+                },
+                {
+                  "id": "legacy:c4b79b93682c7d9d",
+                  "name": "hair_twirling",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "手袋の調整",
-                  "rank": 132
+                  "translation_ja": "指で髪を巻く",
+                  "rank": 67
+                },
+                {
+                  "id": "legacy:57c23ca657eac6f4",
+                  "name": "holding_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪を握る|指で髪を回す",
+                  "rank": 69
+                },
+                {
+                  "id": "legacy:f3284015eb93e4fd",
+                  "name": "bunching_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪を束ねる",
+                  "rank": 82
+                },
+                {
+                  "id": "legacy:0219ab4420de292e",
+                  "name": "hair_pull",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪を引っ張る",
+                  "rank": 91
+                },
+                {
+                  "id": "legacy:5056fde2ce95ba35",
+                  "name": "hair_pulled_back",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪を後ろに引っ張る",
+                  "rank": 118
                 },
                 {
                   "id": "legacy:984f48e9a47b8e6b",
@@ -18772,24 +19477,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "髪の調整",
                   "rank": 133
-                },
-                {
-                  "id": "legacy:fb8b01aa304a8481",
-                  "name": "adjusting_hat",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "帽子の整理",
-                  "rank": 134
-                },
-                {
-                  "id": "manual:20260810:blowing_kiss",
-                  "name": "blowing_kiss",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "manual_candidate_addition",
-                  "translation_ja": "投げキッス",
-                  "rank": 136
                 }
               ]
             },
@@ -19112,6 +19799,15 @@
                   "rank": 39
                 },
                 {
+                  "id": "legacy:736c9762f52ca364",
+                  "name": "hand_in_pocket",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "手をポケットに入れている",
+                  "rank": 42
+                },
+                {
                   "id": "legacy:4925d84acc43814d",
                   "name": "hand_in_another's_hair",
                   "post_count": 0,
@@ -19128,15 +19824,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "手が髪に埋まっている",
                   "rank": 41
-                },
-                {
-                  "id": "legacy:736c9762f52ca364",
-                  "name": "hand_in_pocket",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "手をポケットに入れている",
-                  "rank": 42
                 }
               ]
             },
@@ -19161,15 +19848,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "つかんでいる",
                   "rank": 3
-                },
-                {
-                  "id": "legacy:b8195aa29f1d8b01",
-                  "name": "hair_grab",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪をつかんでいる",
-                  "rank": 5
                 },
                 {
                   "id": "legacy:a62157fd3eac7044",
@@ -19255,6 +19933,23 @@
                   "translation_ja": "胴体をつかんでいる"
                 },
                 {
+                  "id": 505613,
+                  "name": "thigh_grab",
+                  "post_count": 6726,
+                  "aliases": [],
+                  "rank": 19,
+                  "translation_ja": "太ももをつかんでいる"
+                },
+                {
+                  "id": "legacy:b8195aa29f1d8b01",
+                  "name": "hair_grab",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪をつかんでいる",
+                  "rank": 5
+                },
+                {
                   "id": 1553182,
                   "name": "grabbing_another's_hair",
                   "post_count": 9224,
@@ -19264,14 +19959,6 @@
                   ],
                   "rank": 16,
                   "translation_ja": "相手の髪をつかんでいる"
-                },
-                {
-                  "id": 505613,
-                  "name": "thigh_grab",
-                  "post_count": 6726,
-                  "aliases": [],
-                  "rank": 19,
-                  "translation_ja": "太ももをつかんでいる"
                 }
               ]
             },
@@ -19460,15 +20147,6 @@
                   "rank": 40
                 },
                 {
-                  "id": "legacy:fa999aa233d49de1",
-                  "name": "brushing_teeth",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "歯を磨く",
-                  "rank": 47
-                },
-                {
                   "id": "legacy:0bca885fd17ea4e5",
                   "name": "cleaning",
                   "post_count": 0,
@@ -19530,15 +20208,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "釣りをする",
                   "rank": 72
-                },
-                {
-                  "id": "legacy:3e1e336607d90164",
-                  "name": "hair_brushing",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "髪をとかす",
-                  "rank": 79
                 },
                 {
                   "id": "legacy:36f2a10c9a7955ca",
@@ -19703,6 +20372,24 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "書く",
                   "rank": 147
+                },
+                {
+                  "id": "legacy:fa999aa233d49de1",
+                  "name": "brushing_teeth",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "歯を磨く",
+                  "rank": 47
+                },
+                {
+                  "id": "legacy:3e1e336607d90164",
+                  "name": "hair_brushing",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "髪をとかす",
+                  "rank": 79
                 }
               ]
             },
@@ -19847,6 +20534,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "鞘から抜く",
                   "rank": 137
+                },
+                {
+                  "id": 670071,
+                  "name": "holding_weapon",
+                  "post_count": 411711,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "武器を持つ"
                 }
               ]
             },
@@ -20095,7 +20790,8 @@
                 },
                 {
                   "name": "holding_oversized_bouquet",
-                  "translation_ja": "大きな花束を持っている"
+                  "translation_ja": "大きな花束を持っている",
+                  "id": "manual:20260813:repair:holding_oversized_bouquet"
                 },
                 {
                   "id": "legacy:1f8678b165621fe0",
@@ -20108,7 +20804,8 @@
                 },
                 {
                   "name": "holding_stuffed_cute_animal",
-                  "translation_ja": "動物のぬいぐるみを持っている"
+                  "translation_ja": "動物のぬいぐるみを持っている",
+                  "id": "manual:20260813:repair:holding_stuffed_cute_animal"
                 },
                 {
                   "id": "legacy:6356ba72987a8899",
@@ -20359,14 +21056,6 @@
                   "rank": 30
                 },
                 {
-                  "id": 550405,
-                  "name": "holding_flower",
-                  "post_count": 32039,
-                  "aliases": [],
-                  "rank": 31,
-                  "translation_ja": "花を持っている"
-                },
-                {
                   "id": 609507,
                   "name": "holding_food",
                   "post_count": 116673,
@@ -20420,15 +21109,6 @@
                   ],
                   "rank": 37,
                   "translation_ja": "手をつないでいる"
-                },
-                {
-                  "id": "legacy:9031ecbd34dd2b01",
-                  "name": "holding_hat",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "帽子を持っている",
-                  "rank": 38
                 },
                 {
                   "id": "legacy:71be18c2cbfc7bf8",
@@ -20792,6 +21472,23 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "両手で首を抱えている",
                   "rank": 82
+                },
+                {
+                  "id": 550405,
+                  "name": "holding_flower",
+                  "post_count": 32039,
+                  "aliases": [],
+                  "rank": 31,
+                  "translation_ja": "花を持っている"
+                },
+                {
+                  "id": "legacy:9031ecbd34dd2b01",
+                  "name": "holding_hat",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "帽子を持っている",
+                  "rank": 38
                 }
               ]
             },
@@ -20862,7 +21559,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "カーテシー（メイドが行うお辞儀）",
+                  "translation_ja": "カーテシー（メイドさんが行うお辞儀）",
                   "rank": 7
                 },
                 {
@@ -21578,16 +22275,6 @@
               "label_ja": "視線・目の動き",
               "tags": [
                 {
-                  "id": 643561,
-                  "name": "eyes_visible_through_hair",
-                  "post_count": 85202,
-                  "aliases": [
-                    "eye_through_hair"
-                  ],
-                  "rank": 1,
-                  "translation_ja": "髪越しに見える目"
-                },
-                {
                   "id": 665452,
                   "name": "facing_viewer",
                   "post_count": 75941,
@@ -21709,6 +22396,16 @@
                   "aliases": [],
                   "rank": 17,
                   "translation_ja": "腕時計を見ている"
+                },
+                {
+                  "id": 643561,
+                  "name": "eyes_visible_through_hair",
+                  "post_count": 85202,
+                  "aliases": [
+                    "eye_through_hair"
+                  ],
+                  "rank": 1,
+                  "translation_ja": "髪越しに見える目"
                 }
               ]
             },
@@ -21880,6 +22577,22 @@
                   "aliases": [],
                   "rank": 24,
                   "translation_ja": "耳の紅潮"
+                },
+                {
+                  "id": 125238,
+                  "name": "sweatdrop",
+                  "post_count": 323019,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "汗マーク"
+                },
+                {
+                  "id": 647551,
+                  "name": "flying_sweatdrops",
+                  "post_count": 126014,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "飛ぶ汗マーク"
                 }
               ]
             }
@@ -21965,6 +22678,69 @@
                   "aliases": [],
                   "rank": 9,
                   "translation_ja": "カラフルな"
+                },
+                {
+                  "id": "manual:20260813:newest",
+                  "name": "newest",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "最新年代",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:recent",
+                  "name": "recent",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "近年",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:mid",
+                  "name": "mid",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "中期年代",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:early",
+                  "name": "early",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "初期年代",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:masterpiece",
+                  "name": "masterpiece",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "傑作",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:best_quality",
+                  "name": "best_quality",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "最高品質",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:good_quality",
+                  "name": "good_quality",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "良品質",
+                  "source": "manual:20260813"
                 }
               ]
             },
@@ -21974,7 +22750,143 @@
               "tags": [
                 {
                   "name": "source_anime",
-                  "translation_ja": "日本のアニメ風の絵柄"
+                  "translation_ja": "日本のアニメ風の絵柄",
+                  "id": "manual:20260813:repair:source_anime"
+                },
+                {
+                  "id": "manual:20260813:score_9",
+                  "name": "score_9",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア9",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:score_8_up",
+                  "name": "score_8_up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア8以上",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:score_7_up",
+                  "name": "score_7_up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア7以上",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:score_6_up",
+                  "name": "score_6_up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア6以上",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:score_5_up",
+                  "name": "score_5_up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア5以上",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:score_4_up",
+                  "name": "score_4_up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スコア4以上",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:rating_safe",
+                  "name": "rating_safe",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "安全レーティング",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:rating_general",
+                  "name": "rating_general",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "一般レーティング",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:source_cartoon",
+                  "name": "source_cartoon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "カートゥーン風",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:source_furry",
+                  "name": "source_furry",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ファーリー風",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:source_pony",
+                  "name": "source_pony",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ポニー風",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:source_western",
+                  "name": "source_western",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "欧米コミック風",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:source_3d",
+                  "name": "source_3d",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "3D風",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:high_score",
+                  "name": "high_score",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "高スコア",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:great_score",
+                  "name": "great_score",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "優良スコア",
+                  "source": "manual:20260813"
                 }
               ]
             }
@@ -22572,6 +23484,24 @@
                   ],
                   "rank": 71,
                   "translation_ja": "漫画本"
+                },
+                {
+                  "id": "manual:20260813:very_aesthetic",
+                  "name": "very_aesthetic",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "非常に美しい",
+                  "source": "manual:20260813"
+                },
+                {
+                  "id": "manual:20260813:very_awa",
+                  "name": "very_awa",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "非常にAWA",
+                  "source": "manual:20260813"
                 }
               ]
             },
@@ -22998,6 +23928,14 @@
                   ],
                   "rank": 9,
                   "translation_ja": "アウトライン"
+                },
+                {
+                  "id": 668761,
+                  "name": "white_border",
+                  "post_count": 157325,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白い縁取り"
                 }
               ]
             },
@@ -24674,14 +25612,6 @@
                   "translation_ja": "セピア調"
                 },
                 {
-                  "id": 1762322,
-                  "name": "greyscale_with_colored_background",
-                  "post_count": 8596,
-                  "aliases": [],
-                  "rank": 141,
-                  "translation_ja": "色付き背景のグレースケール"
-                },
-                {
                   "id": 640153,
                   "name": "muted_color",
                   "post_count": 7430,
@@ -24698,14 +25628,6 @@
                   "aliases": [],
                   "rank": 143,
                   "translation_ja": "パステルカラー"
-                },
-                {
-                  "id": 1235655,
-                  "name": "gradient_dress",
-                  "post_count": 3184,
-                  "aliases": [],
-                  "rank": 144,
-                  "translation_ja": "グラデーションのドレス"
                 }
               ]
             }
@@ -24768,7 +25690,8 @@
                 },
                 {
                   "name": "depth_compensation",
-                  "translation_ja": "深度補正"
+                  "translation_ja": "深度補正",
+                  "id": "manual:20260813:repair:depth_compensation"
                 },
                 {
                   "id": 6107,
@@ -25163,6 +26086,90 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "背景テキスト",
                   "rank": 46
+                },
+                {
+                  "id": 440465,
+                  "name": "speech_bubble",
+                  "post_count": 510485,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "吹き出し"
+                },
+                {
+                  "id": 2508,
+                  "name": "blood",
+                  "post_count": 187573,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "血"
+                },
+                {
+                  "id": 580545,
+                  "name": "blue_background",
+                  "post_count": 188985,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青い背景"
+                },
+                {
+                  "id": 584749,
+                  "name": "pink_background",
+                  "post_count": 148112,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ピンクの背景"
+                },
+                {
+                  "id": 593298,
+                  "name": "yellow_background",
+                  "post_count": 99303,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "黄色い背景"
+                },
+                {
+                  "id": 1762322,
+                  "name": "greyscale_with_colored_background",
+                  "post_count": 8596,
+                  "aliases": [],
+                  "rank": 141,
+                  "translation_ja": "色付き背景のグレースケール"
+                },
+                {
+                  "id": "legacy:aab8631b79a618a4",
+                  "name": "mosaic_background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "モザイクの背景",
+                  "rank": 17
+                },
+                {
+                  "id": "legacy:bc954705daa449de",
+                  "name": "fluorescent_mushroom_forests_background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "蛍光キノコの森の背景",
+                  "rank": 20
+                },
+                {
+                  "id": 553142,
+                  "name": "blurry_background",
+                  "post_count": 152811,
+                  "aliases": [],
+                  "rank": 27,
+                  "translation_ja": "ぼかした背景"
+                },
+                {
+                  "id": 644510,
+                  "name": "dark_background",
+                  "post_count": 13464,
+                  "aliases": [
+                    "/darkbg"
+                  ],
+                  "rank": 31,
+                  "translation_ja": "暗い背景"
                 }
               ]
             }
@@ -25801,6 +26808,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "夢の森（幻想的な感じ、光の粒子が幽玄）",
                   "rank": 36
+                },
+                {
+                  "id": 6364,
+                  "name": "grass",
+                  "post_count": 115356,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "草"
                 }
               ]
             },
@@ -25852,6 +26867,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "海藻",
                   "rank": 5
+                },
+                {
+                  "id": 1573,
+                  "name": "water",
+                  "post_count": 287851,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "水"
                 }
               ]
             },
@@ -25983,6 +27006,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "人工衛星",
                   "rank": 14
+                },
+                {
+                  "id": 490655,
+                  "name": "blue_sky",
+                  "post_count": 293043,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "青空"
                 }
               ]
             },
@@ -26583,15 +27614,6 @@
                   "rank": 16
                 },
                 {
-                  "id": "legacy:aab8631b79a618a4",
-                  "name": "mosaic_background",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モザイクの背景",
-                  "rank": 17
-                },
-                {
                   "id": "legacy:5bea42347cd168de",
                   "name": "liquid_background,_Sputtered_water",
                   "post_count": 0,
@@ -26608,15 +27630,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "魔法の輪",
                   "rank": 19
-                },
-                {
-                  "id": "legacy:bc954705daa449de",
-                  "name": "fluorescent_mushroom_forests_background",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "蛍光キノコの森の背景",
-                  "rank": 20
                 },
                 {
                   "id": "legacy:f07d58f9c6f4fcde",
@@ -26673,14 +27686,6 @@
                   "rank": 26
                 },
                 {
-                  "id": 553142,
-                  "name": "blurry_background",
-                  "post_count": 152811,
-                  "aliases": [],
-                  "rank": 27,
-                  "translation_ja": "ぼかした背景"
-                },
-                {
                   "id": 3943,
                   "name": "smoke",
                   "post_count": 48222,
@@ -26706,16 +27711,6 @@
                   ],
                   "rank": 30,
                   "translation_ja": "フィルム粒子"
-                },
-                {
-                  "id": 644510,
-                  "name": "dark_background",
-                  "post_count": 13464,
-                  "aliases": [
-                    "/darkbg"
-                  ],
-                  "rank": 31,
-                  "translation_ja": "暗い背景"
                 },
                 {
                   "id": 415545,
@@ -26759,6 +27754,14 @@
                   "aliases": [],
                   "rank": 36,
                   "translation_ja": "ほこり"
+                },
+                {
+                  "id": 4474,
+                  "name": "fire",
+                  "post_count": 106622,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "火"
                 }
               ]
             }
@@ -27705,6 +28708,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "廃墟",
                   "rank": 104
+                },
+                {
+                  "id": 13879,
+                  "name": "outdoors",
+                  "post_count": 796542,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "屋外"
                 }
               ]
             }
@@ -28014,6 +29025,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "温室",
                   "rank": 16
+                },
+                {
+                  "id": 375171,
+                  "name": "indoors",
+                  "post_count": 542555,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "屋内"
                 }
               ]
             },
@@ -28234,6 +29253,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "車椅子",
                   "rank": 21
+                },
+                {
+                  "id": 2813,
+                  "name": "window",
+                  "post_count": 178043,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "窓"
                 }
               ]
             },
@@ -28368,6 +29395,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "小悪魔",
                   "rank": 10
+                },
+                {
+                  "id": 490999,
+                  "name": "on_bed",
+                  "post_count": 170446,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ベッドの上"
                 }
               ]
             },
@@ -28890,6 +29925,22 @@
                   ],
                   "rank": 10,
                   "translation_ja": "ケーブル"
+                },
+                {
+                  "id": 645083,
+                  "name": "smartphone",
+                  "post_count": 115709,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "スマートフォン"
+                },
+                {
+                  "id": 2993,
+                  "name": "phone",
+                  "post_count": 149498,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "電話"
                 }
               ]
             },
@@ -29066,6 +30117,14 @@
                   ],
                   "rank": 18,
                   "translation_ja": "ろうそく"
+                },
+                {
+                  "id": 10833,
+                  "name": "bottle",
+                  "post_count": 99799,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ボトル"
                 }
               ]
             },
@@ -29538,6 +30597,30 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ローションのボトル",
                   "rank": 48
+                },
+                {
+                  "id": 460404,
+                  "name": "stuffed_toy",
+                  "post_count": 118900,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ぬいぐるみ"
+                },
+                {
+                  "id": 464546,
+                  "name": "chain",
+                  "post_count": 141133,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "鎖"
+                },
+                {
+                  "id": 4333,
+                  "name": "bag",
+                  "post_count": 324724,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "バッグ"
                 }
               ]
             },
@@ -30051,7 +31134,7 @@
         },
         {
           "id": "legacy_medium:07:tools_transport",
-          "label_ja": "楽器・武器・植物",
+          "label_ja": "楽器・武器",
           "small_categories": [
             {
               "id": "legacy_small:07-004",
@@ -30530,6 +31613,359 @@
                   "rank": 45
                 }
               ]
+            }
+          ]
+        },
+        {
+          "id": "legacy_medium:07:subject_type",
+          "label_ja": "動物・生き物",
+          "small_categories": [
+            {
+              "id": "legacy_small:07-008",
+              "label_ja": "動物・生き物",
+              "tags": [
+                {
+                  "id": 4039,
+                  "name": "dog",
+                  "post_count": 35077,
+                  "aliases": [
+                    "dogs"
+                  ],
+                  "rank": 16,
+                  "translation_ja": "犬"
+                },
+                {
+                  "name": "Italian_Greyhound",
+                  "translation_ja": "イタリアングレーハウンド"
+                },
+                {
+                  "id": 2716,
+                  "name": "cat",
+                  "post_count": 94261,
+                  "aliases": [
+                    "cats",
+                    "neko"
+                  ],
+                  "rank": 14,
+                  "translation_ja": "猫"
+                },
+                {
+                  "id": "legacy:2c730e3a6d2aad6d",
+                  "name": "owl",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "フクロウ",
+                  "rank": 58
+                },
+                {
+                  "id": "legacy:9e2f86633d910574",
+                  "name": "reptile",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "爬虫類",
+                  "rank": 1
+                },
+                {
+                  "id": "legacy:e857ca232f920499",
+                  "name": "crow",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "カラス",
+                  "rank": 2
+                },
+                {
+                  "id": 464534,
+                  "name": "bird",
+                  "post_count": 122935,
+                  "aliases": [
+                    "birds"
+                  ],
+                  "rank": 3,
+                  "translation_ja": "鳥"
+                },
+                {
+                  "id": "legacy:73335c221018b95c",
+                  "name": "penguin",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ペンギン",
+                  "rank": 4
+                },
+                {
+                  "id": "legacy:ed10eb980c71c415",
+                  "name": "chick",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ひよこ",
+                  "rank": 5
+                },
+                {
+                  "id": "legacy:26ad24468bd87993",
+                  "name": "manjuu_(azur_lane)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "マンジュウ（アズールレーン）",
+                  "rank": 6
+                },
+                {
+                  "id": "legacy:ec122f54cf16a175",
+                  "name": "shell",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "貝殻",
+                  "rank": 7
+                },
+                {
+                  "id": "legacy:41e6fe0d186791a8",
+                  "name": "wriggle_nightbug",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "リグル・ナイトバグ",
+                  "rank": 8
+                },
+                {
+                  "id": "legacy:4a3db7484b5961ba",
+                  "name": "dragonfly",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "トンボ",
+                  "rank": 9
+                },
+                {
+                  "id": "legacy:5b48c7908accd32e",
+                  "name": "mammal",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "哺乳動物",
+                  "rank": 10
+                },
+                {
+                  "id": "legacy:a3cb738850fa39be",
+                  "name": "wolf",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "オオカミ",
+                  "rank": 11
+                },
+                {
+                  "id": "legacy:ac320806d963bceb",
+                  "name": "扶桑花",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "馬",
+                  "rank": 12
+                },
+                {
+                  "id": "legacy:1769e230f7885e91",
+                  "name": "whale",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "クジラ",
+                  "rank": 13
+                },
+                {
+                  "id": "legacy:dcaa87a7a1723a95",
+                  "name": "cat_teaser",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "猫じゃらし",
+                  "rank": 15
+                },
+                {
+                  "id": "legacy:5041c8d0af99a1e7",
+                  "name": "dog_tags",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "犬のタグ",
+                  "rank": 17
+                },
+                {
+                  "id": "legacy:ff0f0a8b656f0b44",
+                  "name": "fox",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "キツネ",
+                  "rank": 18
+                },
+                {
+                  "id": "legacy:8bb4ebd4c9c27c16",
+                  "name": "bunny",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ウサギ",
+                  "rank": 19
+                },
+                {
+                  "id": "legacy:62e352aa993203e6",
+                  "name": "snow_bunny",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "スノーバニー",
+                  "rank": 20
+                },
+                {
+                  "id": "legacy:091b5035885c0017",
+                  "name": "horse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "馬",
+                  "rank": 21
+                },
+                {
+                  "id": "legacy:8bbddb4a037421a7",
+                  "name": "cow",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "牛",
+                  "rank": 22
+                },
+                {
+                  "id": 3313,
+                  "name": "dragon",
+                  "post_count": 31608,
+                  "aliases": [],
+                  "rank": 23,
+                  "translation_ja": "ドラゴン"
+                },
+                {
+                  "id": "legacy:7e8390a3b88ccc8b",
+                  "name": "loong",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中国の龍",
+                  "rank": 24
+                },
+                {
+                  "id": "legacy:f963198f9b09af65",
+                  "name": "eastern_dragon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "東洋の龍",
+                  "rank": 25
+                },
+                {
+                  "id": 5953,
+                  "name": "snake",
+                  "post_count": 26088,
+                  "aliases": [
+                    "snakes"
+                  ],
+                  "rank": 26,
+                  "translation_ja": "蛇"
+                },
+                {
+                  "id": "legacy:c0cc84b44c496daa",
+                  "name": "slime",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "スライム",
+                  "rank": 27
+                },
+                {
+                  "id": "legacy:09f5edeb4f5b2a4e",
+                  "name": "bear",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "クマ",
+                  "rank": 28
+                },
+                {
+                  "id": "legacy:f91a8ee646a277a2",
+                  "name": "panda",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "パンダ",
+                  "rank": 29
+                },
+                {
+                  "id": 9831,
+                  "name": "teddy_bear",
+                  "post_count": 30863,
+                  "aliases": [
+                    "stuffed_bear",
+                    "teddybear"
+                  ],
+                  "rank": 30,
+                  "translation_ja": "テディベア"
+                },
+                {
+                  "id": "legacy:46e3d772a1888ead",
+                  "name": "tiger",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "虎",
+                  "rank": 31
+                },
+                {
+                  "id": "legacy:9b64d4ad2ee2fb84",
+                  "name": "bat",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "コウモリ",
+                  "rank": 32
+                },
+                {
+                  "id": "legacy:d65bbe6f4a535904",
+                  "name": "hamster",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ハムスター",
+                  "rank": 33
+                },
+                {
+                  "id": "legacy:3e2bc6af99948960",
+                  "name": "squirrel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "リス",
+                  "rank": 34
+                },
+                {
+                  "id": 10701,
+                  "name": "animal",
+                  "post_count": 144189,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "動物"
+                },
+                {
+                  "id": 464539,
+                  "name": "bug",
+                  "post_count": 98664,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "虫"
+                }
+              ]
             },
             {
               "id": "legacy_small:07-009",
@@ -30812,339 +32248,30 @@
                   ],
                   "rank": 29,
                   "translation_ja": "ネギ"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "legacy_medium:07:subject_type",
-          "label_ja": "動物・生き物",
-          "small_categories": [
-            {
-              "id": "legacy_small:07-008",
-              "label_ja": "動物・生き物",
-              "tags": [
+                },
                 {
-                  "id": "legacy:2c730e3a6d2aad6d",
-                  "name": "owl",
-                  "post_count": 0,
+                  "id": 4244,
+                  "name": "leaf",
+                  "post_count": 138743,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "フクロウ",
-                  "rank": 58
+                  "rank": 9999,
+                  "translation_ja": "葉"
                 },
                 {
-                  "id": "legacy:9e2f86633d910574",
-                  "name": "reptile",
-                  "post_count": 0,
+                  "id": 576310,
+                  "name": "white_flower",
+                  "post_count": 147181,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "爬虫類",
-                  "rank": 1
+                  "rank": 9999,
+                  "translation_ja": "白い花"
                 },
                 {
-                  "id": "legacy:e857ca232f920499",
-                  "name": "crow",
-                  "post_count": 0,
+                  "id": 589376,
+                  "name": "red_flower",
+                  "post_count": 110846,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "カラス",
-                  "rank": 2
-                },
-                {
-                  "id": 464534,
-                  "name": "bird",
-                  "post_count": 122935,
-                  "aliases": [
-                    "birds"
-                  ],
-                  "rank": 3,
-                  "translation_ja": "鳥"
-                },
-                {
-                  "id": "legacy:73335c221018b95c",
-                  "name": "penguin",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ペンギン",
-                  "rank": 4
-                },
-                {
-                  "id": "legacy:ed10eb980c71c415",
-                  "name": "chick",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ひよこ",
-                  "rank": 5
-                },
-                {
-                  "id": "legacy:26ad24468bd87993",
-                  "name": "manjuu_(azur_lane)",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "マンジュウ（アズールレーン）",
-                  "rank": 6
-                },
-                {
-                  "id": "legacy:ec122f54cf16a175",
-                  "name": "shell",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "貝殻",
-                  "rank": 7
-                },
-                {
-                  "id": "legacy:41e6fe0d186791a8",
-                  "name": "wriggle_nightbug",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "リグル・ナイトバグ",
-                  "rank": 8
-                },
-                {
-                  "id": "legacy:4a3db7484b5961ba",
-                  "name": "dragonfly",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "トンボ",
-                  "rank": 9
-                },
-                {
-                  "id": "legacy:5b48c7908accd32e",
-                  "name": "mammal",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "哺乳動物",
-                  "rank": 10
-                },
-                {
-                  "id": "legacy:a3cb738850fa39be",
-                  "name": "wolf",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "オオカミ",
-                  "rank": 11
-                },
-                {
-                  "id": "legacy:ac320806d963bceb",
-                  "name": "扶桑花",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "馬",
-                  "rank": 12
-                },
-                {
-                  "id": "legacy:1769e230f7885e91",
-                  "name": "whale",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "クジラ",
-                  "rank": 13
-                },
-                {
-                  "id": 2716,
-                  "name": "cat",
-                  "post_count": 94261,
-                  "aliases": [
-                    "cats",
-                    "neko"
-                  ],
-                  "rank": 14,
-                  "translation_ja": "猫"
-                },
-                {
-                  "id": "legacy:dcaa87a7a1723a95",
-                  "name": "cat_teaser",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "猫じゃらし",
-                  "rank": 15
-                },
-                {
-                  "id": 4039,
-                  "name": "dog",
-                  "post_count": 35077,
-                  "aliases": [
-                    "dogs"
-                  ],
-                  "rank": 16,
-                  "translation_ja": "犬"
-                },
-                {
-                  "id": "legacy:5041c8d0af99a1e7",
-                  "name": "dog_tags",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "犬のタグ",
-                  "rank": 17
-                },
-                {
-                  "id": "legacy:ff0f0a8b656f0b44",
-                  "name": "fox",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "キツネ",
-                  "rank": 18
-                },
-                {
-                  "id": "legacy:8bb4ebd4c9c27c16",
-                  "name": "bunny",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ウサギ",
-                  "rank": 19
-                },
-                {
-                  "id": "legacy:62e352aa993203e6",
-                  "name": "snow_bunny",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スノーバニー",
-                  "rank": 20
-                },
-                {
-                  "id": "legacy:091b5035885c0017",
-                  "name": "horse",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "馬",
-                  "rank": 21
-                },
-                {
-                  "id": "legacy:8bbddb4a037421a7",
-                  "name": "cow",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "牛",
-                  "rank": 22
-                },
-                {
-                  "id": 3313,
-                  "name": "dragon",
-                  "post_count": 31608,
-                  "aliases": [],
-                  "rank": 23,
-                  "translation_ja": "ドラゴン"
-                },
-                {
-                  "id": "legacy:7e8390a3b88ccc8b",
-                  "name": "loong",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中国の龍",
-                  "rank": 24
-                },
-                {
-                  "id": "legacy:f963198f9b09af65",
-                  "name": "eastern_dragon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "東洋の龍",
-                  "rank": 25
-                },
-                {
-                  "id": 5953,
-                  "name": "snake",
-                  "post_count": 26088,
-                  "aliases": [
-                    "snakes"
-                  ],
-                  "rank": 26,
-                  "translation_ja": "蛇"
-                },
-                {
-                  "id": "legacy:c0cc84b44c496daa",
-                  "name": "slime",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "スライム",
-                  "rank": 27
-                },
-                {
-                  "id": "legacy:09f5edeb4f5b2a4e",
-                  "name": "bear",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "クマ",
-                  "rank": 28
-                },
-                {
-                  "id": "legacy:f91a8ee646a277a2",
-                  "name": "panda",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "パンダ",
-                  "rank": 29
-                },
-                {
-                  "id": 9831,
-                  "name": "teddy_bear",
-                  "post_count": 30863,
-                  "aliases": [
-                    "stuffed_bear",
-                    "teddybear"
-                  ],
-                  "rank": 30,
-                  "translation_ja": "テディベア"
-                },
-                {
-                  "id": "legacy:46e3d772a1888ead",
-                  "name": "tiger",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "虎",
-                  "rank": 31
-                },
-                {
-                  "id": "legacy:9b64d4ad2ee2fb84",
-                  "name": "bat",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "コウモリ",
-                  "rank": 32
-                },
-                {
-                  "id": "legacy:d65bbe6f4a535904",
-                  "name": "hamster",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ハムスター",
-                  "rank": 33
-                },
-                {
-                  "id": "legacy:3e2bc6af99948960",
-                  "name": "squirrel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "リス",
-                  "rank": 34
+                  "rank": 9999,
+                  "translation_ja": "赤い花"
                 }
               ]
             }
@@ -31243,6 +32370,14 @@
                   "aliases": [],
                   "rank": 9,
                   "translation_ja": "肖像画"
+                },
+                {
+                  "id": 608813,
+                  "name": "full_body",
+                  "post_count": 1257911,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "全身"
                 }
               ]
             },
@@ -31793,14 +32928,6 @@
                   "rank": 16
                 },
                 {
-                  "id": 522628,
-                  "name": "upshorts",
-                  "post_count": 1614,
-                  "aliases": [],
-                  "rank": 17,
-                  "translation_ja": "スカートの下を覗く"
-                },
-                {
                   "id": 641577,
                   "name": "looking_at_another",
                   "post_count": 328029,
@@ -31863,6 +32990,14 @@
                   "aliases": [],
                   "rank": 25,
                   "translation_ja": "画面を見る"
+                },
+                {
+                  "id": 522628,
+                  "name": "upshorts",
+                  "post_count": 1614,
+                  "aliases": [],
+                  "rank": 17,
+                  "translation_ja": "スカートの下を覗く"
                 }
               ]
             }
@@ -32203,6 +33338,14 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "低解像度",
                   "rank": 1
+                },
+                {
+                  "id": 437490,
+                  "name": "artist_request",
+                  "post_count": 142183,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "作者名リクエスト"
                 }
               ]
             },
@@ -32517,66 +33660,6 @@
                   "rank": 33
                 }
               ]
-            },
-            {
-              "id": "legacy_small:10-003",
-              "label_ja": "ネガティブ埋め込み",
-              "tags": [
-                {
-                  "id": "legacy:fa9737e18dbe99dc",
-                  "name": "AS-YoungV2-neg",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 1,
-                  "translation_ja": "AS-YoungV2 ネガティブ埋め込み"
-                },
-                {
-                  "id": "legacy:fa5f3d2034bc9602",
-                  "name": "BadDream",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 2,
-                  "translation_ja": "BadDream ネガティブ埋め込み"
-                },
-                {
-                  "id": "legacy:b84ee752a9c47342",
-                  "name": "badhandv4",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 3,
-                  "translation_ja": "badhandv4 手の崩れ抑制"
-                },
-                {
-                  "id": "legacy:d572590a4f54920a",
-                  "name": "BadNegAnatomyV1-neg",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 4,
-                  "translation_ja": "BadNegAnatomyV1 人体崩れ抑制"
-                },
-                {
-                  "id": "legacy:9f7d61ca618df8f3",
-                  "name": "EasyNegative",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 5,
-                  "translation_ja": "EasyNegative ネガティブ埋め込み"
-                },
-                {
-                  "id": "legacy:cbd0ae23914115e1",
-                  "name": "FastNegativeV2",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "rank": 6,
-                  "translation_ja": "FastNegativeV2 ネガティブ埋め込み"
-                }
-              ]
             }
           ]
         }
@@ -32597,15 +33680,27 @@
               "tags": [
                 {
                   "name": "NSFW",
-                  "translation_ja": "職場で見るのに適さない"
+                  "translation_ja": "職場で見るのに適さない",
+                  "id": "manual:20260813:repair:NSFW"
                 },
                 {
                   "name": "rating_explicit",
-                  "translation_ja": "露骨な要素あり"
+                  "translation_ja": "露骨な要素あり",
+                  "id": "manual:20260813:repair:rating_explicit"
                 },
                 {
                   "name": "rating_questionable",
-                  "translation_ja": "軽度のエロ要素あり"
+                  "translation_ja": "軽度のエロ要素あり",
+                  "id": "manual:20260813:repair:rating_questionable"
+                },
+                {
+                  "id": "manual:20260813:rating_sensitive",
+                  "name": "rating_sensitive",
+                  "post_count": 0,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "センシティブ",
+                  "source": "manual:20260813"
                 }
               ]
             }
@@ -32622,15 +33717,6 @@
               "description_ja": "性器、乳首、乳輪、陰毛など明確に性的な身体部位や特徴。",
               "tags": [
                 {
-                  "id": "legacy:3261cd2478cb23a7",
-                  "name": "areola",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "乳輪",
-                  "rank": 13
-                },
-                {
                   "id": 4075,
                   "name": "cameltoe",
                   "post_count": 107800,
@@ -32639,6 +33725,15 @@
                   ],
                   "rank": 69,
                   "translation_ja": "キャメルトウ"
+                },
+                {
+                  "id": "legacy:3261cd2478cb23a7",
+                  "name": "areola",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "乳輪",
+                  "rank": 13
                 },
                 {
                   "id": 8889,
@@ -32676,18 +33771,6 @@
                   "translation_ja": "女性器"
                 },
                 {
-                  "id": 12552,
-                  "name": "pubic_hair",
-                  "post_count": 154601,
-                  "aliases": [
-                    "hairy_pussy",
-                    "pubes",
-                    "pubichair"
-                  ],
-                  "rank": 4,
-                  "translation_ja": "陰毛"
-                },
-                {
                   "id": 2217,
                   "name": "anus",
                   "post_count": 133664,
@@ -32699,26 +33782,6 @@
                   ],
                   "rank": 5,
                   "translation_ja": "肛門"
-                },
-                {
-                  "id": 663669,
-                  "name": "female_pubic_hair",
-                  "post_count": 99278,
-                  "aliases": [
-                    "pubic_hair_(female)"
-                  ],
-                  "rank": 10,
-                  "translation_ja": "女性の陰毛"
-                },
-                {
-                  "id": 601824,
-                  "name": "male_pubic_hair",
-                  "post_count": 53972,
-                  "aliases": [
-                    "pubic_hair_(male)"
-                  ],
-                  "rank": 12,
-                  "translation_ja": "男性の陰毛"
                 },
                 {
                   "id": 375723,
@@ -32758,6 +33821,38 @@
                   ],
                   "rank": 19,
                   "translation_ja": "陥没乳首"
+                },
+                {
+                  "id": 12552,
+                  "name": "pubic_hair",
+                  "post_count": 154601,
+                  "aliases": [
+                    "hairy_pussy",
+                    "pubes",
+                    "pubichair"
+                  ],
+                  "rank": 4,
+                  "translation_ja": "陰毛"
+                },
+                {
+                  "id": 663669,
+                  "name": "female_pubic_hair",
+                  "post_count": 99278,
+                  "aliases": [
+                    "pubic_hair_(female)"
+                  ],
+                  "rank": 10,
+                  "translation_ja": "女性の陰毛"
+                },
+                {
+                  "id": 601824,
+                  "name": "male_pubic_hair",
+                  "post_count": 53972,
+                  "aliases": [
+                    "pubic_hair_(male)"
+                  ],
+                  "rank": 12,
+                  "translation_ja": "男性の陰毛"
                 }
               ]
             },
@@ -33037,11 +34132,37 @@
               "tags": [
                 {
                   "name": "a_extremely_detailed_closeup_of_extremely_detailed_white_frilled_side-tie_panties",
-                  "translation_ja": "白の紐パン"
+                  "translation_ja": "白の紐パン",
+                  "id": "manual:20260813:repair:a_extremely_detailed_closeup_of_extremely_detailed_white_frilled_side-tie_panties"
                 },
                 {
                   "name": "white_floral_panties",
-                  "translation_ja": "白い花柄の下着"
+                  "translation_ja": "白い花柄の下着",
+                  "id": "manual:20260813:repair:white_floral_panties"
+                },
+                {
+                  "id": 464906,
+                  "name": "underwear",
+                  "post_count": 1006111,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "下着"
+                },
+                {
+                  "id": 3796,
+                  "name": "bra",
+                  "post_count": 273577,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "ブラ"
+                },
+                {
+                  "id": 374791,
+                  "name": "white_panties",
+                  "post_count": 240741,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "白いパンティ"
                 }
               ]
             }
@@ -33139,7 +34260,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "マンコ見せ",
+                  "translation_ja": "女性器をチラ見せ",
                   "rank": 21
                 },
                 {
@@ -33459,7 +34580,7 @@
                     "tekoki"
                   ],
                   "rank": 4,
-                  "translation_ja": "手淫"
+                  "translation_ja": "手コキ"
                 },
                 {
                   "id": 676529,
@@ -33487,7 +34608,7 @@
                   "post_count": 7172,
                   "aliases": [],
                   "rank": 18,
-                  "translation_ja": "両手での手淫"
+                  "translation_ja": "両手での手コキ"
                 },
                 {
                   "id": 429161,
