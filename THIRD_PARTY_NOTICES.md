@@ -26,10 +26,11 @@ snapshot. The CSV and its acquisition tools are not distributed with the node.
 - License: MIT
 - Copyright: Copyright (c) 2023 Physton
 
-The following source data remains as the local compatibility fallback:
+The following source data was used to prepare the optional full catalog and
+local translation pairs:
 
 - `group_tags/default.yaml` and `group_tags/ja_JP.yaml` -> 134 groups and 3,744
-  entries in `data/prompt_examples.json`; the 62-entry
+  source entries represented in `data/nsfw_full_tag_catalog.json`; the 62-entry
   `人物 / 二次元キャラクター` group is intentionally excluded
 - selected English/Japanese tag pairs -> the offline translation helper in
   `data/translations.json`

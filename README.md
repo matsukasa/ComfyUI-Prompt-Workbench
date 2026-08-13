@@ -189,15 +189,21 @@ OSのファイル選択画面が開き、選択したJSONを検証してComfyUI�
 
 ## 内蔵タグカタログ
 
-`data/tag_catalog.json`はローカル専用の固定スナップショットです。10大分類・34中分類・
-124小分類に3,623タグを収録しています。
+`data/tag_catalog.json`はComfyUI Registry同梱用のSFW/一般タグカタログです。9大分類・
+31中分類・132小分類に3,430タグを収録しています。
 
 タグボタンは英語名と日本語訳を表示し、ホバーにも同じ内容だけを表示します。検索では
 英語名、エイリアス、日本語の大・中・小分類名を利用できます。カタログの閲覧・検索・追加で
 外部タグサービスへ通信することはありません。
 
+NSFWタグを含むフルタグカタログはRegistryパッケージには同梱していません。必要な場合だけGitHubから
+[`data/nsfw_full_tag_catalog.json`](data/nsfw_full_tag_catalog.json)をダウンロードし、ComfyUI上の
+Prompt Workbench設定 → Tag manager → 「ファイルを選んで読み込む」から任意で読み込んでください。
+読み込んだファイルはComfyUIのユーザーディレクトリ
+`prompt_workbench/tag_catalogs/`へ名前付きカタログとして保存されます。
+
 外部データの取得・更新スクリプト、API認証設定、rawキャッシュ、中間生成物は同梱していません。
-固定カタログがない場合だけ`data/prompt_examples.json`を安全なフォールバックとして読み込みます。
+内蔵デフォルトとして読み込む固定カタログは`data/tag_catalog.json`です。
 由来データの出典とライセンスは[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。
 
 ## セキュリティ

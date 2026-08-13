@@ -70,7 +70,6 @@ def _iter_catalog_translations(value):
 def _dictionary_paths(requested_name="", storage_directory=None):
     data_directory = Path(__file__).with_name("data")
     paths = [
-        data_directory / "prompt_examples.json",
         data_directory / "tag_catalog.json",
         data_directory / "translations.json",
     ]
@@ -96,7 +95,7 @@ def _load_dictionary(requested_name="", storage_directory=None):
         dictionary = _DICTIONARY_CACHE_VALUE
     else:
         dictionary = {"ja": {}, "en": {}}
-        for path in paths[:2]:
+        for path in paths[:1]:
             try:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
@@ -112,7 +111,7 @@ def _load_dictionary(requested_name="", storage_directory=None):
                     if alias_key:
                         dictionary["ja"][alias_key] = translation
 
-        explicit_path = paths[2]
+        explicit_path = paths[1]
         try:
             explicit = json.loads(explicit_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -186,8 +185,7 @@ def user_catalog_path(name, storage_directory=None):
 
 def default_examples_path(data_directory=None):
     data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
-    catalog = data_directory / "tag_catalog.json"
-    return catalog if catalog.is_file() else data_directory / "prompt_examples.json"
+    return data_directory / "tag_catalog.json"
 
 
 def examples_path(data_directory=None, requested_name="", storage_directory=None):
