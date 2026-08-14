@@ -16,10 +16,10 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 4371,
-    "tags": 4371,
+    "tags": 4370,
     "major_categories": 10,
     "medium_categories": 42,
-    "small_categories": 155
+    "small_categories": 164
   },
   "major_categories": [
     {
@@ -33140,15 +33140,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "タワー",
                   "rank": 96
-                },
-                {
-                  "id": "legacy:33bdc5dee9821c63",
-                  "name": "mosque",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モスク",
-                  "rank": 97
                 },
                 {
                   "id": 3531,
