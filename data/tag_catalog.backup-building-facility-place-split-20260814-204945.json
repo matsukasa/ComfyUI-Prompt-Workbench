@@ -25986,8 +25986,8 @@
           "label_ja": "建物・施設・場所",
           "small_categories": [
             {
-              "id": "legacy_small:06-001-buildings",
-              "label_ja": "建物",
+              "id": "legacy_small:06-001",
+              "label_ja": "建物・施設・場所",
               "tags": [
                 {
                   "id": 389066,
@@ -25998,250 +25998,13 @@
                   "translation_ja": "城"
                 },
                 {
-                  "id": "legacy:1f24cea80c3e0691",
-                  "name": "temple",
-                  "post_count": 0,
+                  "id": 8807,
+                  "name": "city",
+                  "post_count": 29089,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "寺院",
-                  "rank": 14
+                  "rank": 2,
+                  "translation_ja": "街"
                 },
-                {
-                  "id": 374955,
-                  "name": "ruins",
-                  "post_count": 12684,
-                  "aliases": [
-                    "ruin"
-                  ],
-                  "rank": 25,
-                  "translation_ja": "遺跡"
-                },
-                {
-                  "id": "legacy:3a9eb85eaadb8d18",
-                  "name": "greco-roman_architectur",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "グレコローマ建築",
-                  "rank": 26
-                },
-                {
-                  "id": 13810,
-                  "name": "torii",
-                  "post_count": 14177,
-                  "aliases": [
-                    "shrine_gate",
-                    "torii_(gate)",
-                    "torii_gate"
-                  ],
-                  "rank": 28,
-                  "translation_ja": "鳥居"
-                },
-                {
-                  "id": "legacy:2f1899f2b33c1631",
-                  "name": "church",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "教会",
-                  "rank": 29
-                },
-                {
-                  "id": "legacy:52b5844de3a3c91f",
-                  "name": "chinese_style_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中国風建築",
-                  "rank": 33
-                },
-                {
-                  "id": "legacy:51e4c7d79ee2fc40",
-                  "name": "gothic_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ゴシック建築",
-                  "rank": 48
-                },
-                {
-                  "id": "legacy:d630ae647f0c1593",
-                  "name": "treehouse",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "木の家",
-                  "rank": 50
-                },
-                {
-                  "id": "legacy:5c5e54d4eb0d380c",
-                  "name": "modern,Europe",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モダン、ヨーロッパ",
-                  "rank": 51
-                },
-                {
-                  "id": "legacy:e229f58f83b5a57a",
-                  "name": "Industrial_wind,_Chinese_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "工業風、中国建築",
-                  "rank": 52
-                },
-                {
-                  "id": "legacy:21e4d5867d6c6cc9",
-                  "name": "building_ruins",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "建物の廃墟",
-                  "rank": 53
-                },
-                {
-                  "id": "legacy:251bceddeba47ccd",
-                  "name": "Japanese_hotel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "和風旅館",
-                  "rank": 75
-                },
-                {
-                  "id": 464540,
-                  "name": "building",
-                  "post_count": 69894,
-                  "aliases": [
-                    "buildings"
-                  ],
-                  "rank": 88,
-                  "translation_ja": "建物"
-                },
-                {
-                  "id": 484880,
-                  "name": "architecture",
-                  "post_count": 17496,
-                  "aliases": [],
-                  "rank": 89,
-                  "translation_ja": "建築"
-                },
-                {
-                  "id": "legacy:dd0cc25e061b280e",
-                  "name": "magnificent_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "壮大な建築",
-                  "rank": 90
-                },
-                {
-                  "id": 543207,
-                  "name": "east_asian_architecture",
-                  "post_count": 13932,
-                  "aliases": [
-                    "chinese_architecture",
-                    "japanese_architecture"
-                  ],
-                  "rank": 91,
-                  "translation_ja": "東アジアの建築"
-                },
-                {
-                  "id": "legacy:5c92c39a203f4cfa",
-                  "name": "cathedral",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大聖堂",
-                  "rank": 92
-                },
-                {
-                  "id": "legacy:99909e31cc68be2d",
-                  "name": "chinese_style_loft",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中国風ロフト",
-                  "rank": 93
-                },
-                {
-                  "id": "legacy:243c144e68911987",
-                  "name": "traditional_chinese_room",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "伝統的な中国の部屋",
-                  "rank": 94
-                },
-                {
-                  "id": "legacy:ccca2c8951eaf853",
-                  "name": "turret",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "タレット",
-                  "rank": 95
-                },
-                {
-                  "id": "legacy:54efaa66b0dfe19d",
-                  "name": "tower",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "タワー",
-                  "rank": 96
-                },
-                {
-                  "id": "legacy:33bdc5dee9821c63",
-                  "name": "mosque",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モスク",
-                  "rank": 97
-                },
-                {
-                  "id": 3531,
-                  "name": "bridge",
-                  "post_count": 11248,
-                  "aliases": [],
-                  "rank": 101,
-                  "translation_ja": "橋"
-                },
-                {
-                  "id": "legacy:6d530a4f1d752d81",
-                  "name": "under_bridge",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "橋の下",
-                  "rank": 102
-                },
-                {
-                  "id": "legacy:75a94da28cac780f",
-                  "name": "remains",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "遺跡",
-                  "rank": 103
-                },
-                {
-                  "id": "legacy:98d378dda0252ffe",
-                  "name": "rubble_ruins",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "廃墟",
-                  "rank": 104
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:06-001-facilities",
-              "label_ja": "施設",
-              "tags": [
                 {
                   "id": "legacy:4f754d8fad628d51",
                   "name": "waterpark",
@@ -26342,6 +26105,15 @@
                   "rank": 13
                 },
                 {
+                  "id": "legacy:1f24cea80c3e0691",
+                  "name": "temple",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "寺院",
+                  "rank": 14
+                },
+                {
                   "id": "legacy:5c47841652e7324a",
                   "name": "bus_stop",
                   "post_count": 0,
@@ -26358,6 +26130,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "駅",
                   "rank": 16
+                },
+                {
+                  "id": "legacy:4620ade69035f78c",
+                  "name": "fountain",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "噴水",
+                  "rank": 17
                 },
                 {
                   "id": "legacy:d191430e46c0aa54",
@@ -26387,6 +26168,15 @@
                   "rank": 20
                 },
                 {
+                  "id": "legacy:11f9d58a78cc830d",
+                  "name": "railroad_tracks",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道の線路",
+                  "rank": 21
+                },
+                {
                   "id": "legacy:6b5465bf0bccf06b",
                   "name": "airport",
                   "post_count": 0,
@@ -26394,6 +26184,107 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "空港",
                   "rank": 22
+                },
+                {
+                  "id": "legacy:e9c55a92e8104668",
+                  "name": "tunnel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "トンネル",
+                  "rank": 23
+                },
+                {
+                  "id": 374955,
+                  "name": "ruins",
+                  "post_count": 12684,
+                  "aliases": [
+                    "ruin"
+                  ],
+                  "rank": 25,
+                  "translation_ja": "遺跡"
+                },
+                {
+                  "id": "legacy:3a9eb85eaadb8d18",
+                  "name": "greco-roman_architectur",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "グレコローマ建築",
+                  "rank": 26
+                },
+                {
+                  "id": 13810,
+                  "name": "torii",
+                  "post_count": 14177,
+                  "aliases": [
+                    "shrine_gate",
+                    "torii_(gate)",
+                    "torii_gate"
+                  ],
+                  "rank": 28,
+                  "translation_ja": "鳥居"
+                },
+                {
+                  "id": "legacy:2f1899f2b33c1631",
+                  "name": "church",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "教会",
+                  "rank": 29
+                },
+                {
+                  "id": "legacy:5042d146667518a1",
+                  "name": "shop",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "店舗",
+                  "rank": 30
+                },
+                {
+                  "id": 41161,
+                  "name": "street",
+                  "post_count": 9709,
+                  "aliases": [],
+                  "rank": 31,
+                  "translation_ja": "街路"
+                },
+                {
+                  "id": "legacy:959c3758a81444d3",
+                  "name": "cyberpunk_city",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "サイバーパンクの街",
+                  "rank": 32
+                },
+                {
+                  "id": "legacy:52b5844de3a3c91f",
+                  "name": "chinese_style_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中国風建築",
+                  "rank": 33
+                },
+                {
+                  "id": 232297,
+                  "name": "gohei",
+                  "post_count": 17986,
+                  "aliases": [],
+                  "rank": 34,
+                  "translation_ja": "御幣"
+                },
+                {
+                  "id": "legacy:8361d39612194751",
+                  "name": "Bustling_city",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "繁華な都市",
+                  "rank": 35
                 },
                 {
                   "id": "legacy:80240dcecd105d50",
@@ -26441,6 +26332,50 @@
                   "rank": 41
                 },
                 {
+                  "id": "legacy:d2a0366fa557221a",
+                  "name": "handrail",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "手すり",
+                  "rank": 42
+                },
+                {
+                  "id": "legacy:70396c54ae920456",
+                  "name": "neon_lights",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ネオンライト",
+                  "rank": 43
+                },
+                {
+                  "id": "legacy:37cc9c67d3901215",
+                  "name": "street_lamp",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "街灯",
+                  "rank": 44
+                },
+                {
+                  "id": 397948,
+                  "name": "road",
+                  "post_count": 20341,
+                  "aliases": [],
+                  "rank": 45,
+                  "translation_ja": "道路"
+                },
+                {
+                  "id": "legacy:669fd27bf95d65aa",
+                  "name": "shanty_town/slum",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "貧民街",
+                  "rank": 46
+                },
+                {
                   "id": "legacy:4a35c0647dfb2fc0",
                   "name": "warehouse",
                   "post_count": 0,
@@ -26450,6 +26385,15 @@
                   "rank": 47
                 },
                 {
+                  "id": "legacy:51e4c7d79ee2fc40",
+                  "name": "gothic_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ゴシック建築",
+                  "rank": 48
+                },
+                {
                   "id": "legacy:32ac991d88d626c7",
                   "name": "restaurant",
                   "post_count": 0,
@@ -26457,6 +26401,42 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "レストラン",
                   "rank": 49
+                },
+                {
+                  "id": "legacy:d630ae647f0c1593",
+                  "name": "treehouse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "木の家",
+                  "rank": 50
+                },
+                {
+                  "id": "legacy:5c5e54d4eb0d380c",
+                  "name": "modern,Europe",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "モダン、ヨーロッパ",
+                  "rank": 51
+                },
+                {
+                  "id": "legacy:e229f58f83b5a57a",
+                  "name": "Industrial_wind,_Chinese_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "工業風、中国建築",
+                  "rank": 52
+                },
+                {
+                  "id": "legacy:21e4d5867d6c6cc9",
+                  "name": "building_ruins",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "建物の廃墟",
+                  "rank": 53
                 },
                 {
                   "id": "legacy:62cdb7020ff920e5",
@@ -26558,6 +26538,15 @@
                   "rank": 64
                 },
                 {
+                  "id": "legacy:ce4151ff856b629d",
+                  "name": "park",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "公園",
+                  "rank": 65
+                },
+                {
                   "id": "legacy:0f4d13fb78b2c668",
                   "name": "botanical_garden",
                   "post_count": 0,
@@ -26612,6 +26601,15 @@
                   "rank": 74
                 },
                 {
+                  "id": "legacy:251bceddeba47ccd",
+                  "name": "Japanese_hotel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "和風旅館",
+                  "rank": 75
+                },
+                {
                   "id": "legacy:2ae578d6c51754c6",
                   "name": "jail_bars",
                   "post_count": 0,
@@ -26637,6 +26635,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ステージ",
                   "rank": 78
+                },
+                {
+                  "id": "legacy:e347660d52d87798",
+                  "name": "harbor",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "港",
+                  "rank": 79
                 },
                 {
                   "id": "legacy:67ba051df8b29844",
@@ -26666,188 +26673,6 @@
                   "rank": 82
                 },
                 {
-                  "id": "legacy:2b11fa44e48edca0",
-                  "name": "graveyard",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "墓地",
-                  "rank": 84
-                },
-                {
-                  "id": "legacy:5f4fb936b3cb9e3e",
-                  "name": "reservoir",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "貯水池",
-                  "rank": 98
-                },
-                {
-                  "id": "legacy:652fd41aaf000ba8",
-                  "name": "railroad",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道",
-                  "rank": 99
-                },
-                {
-                  "id": "legacy:cb0dff2129f80544",
-                  "name": "railway",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道",
-                  "rank": 100
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:06-001-places",
-              "label_ja": "場所",
-              "tags": [
-                {
-                  "id": 8807,
-                  "name": "city",
-                  "post_count": 29089,
-                  "aliases": [],
-                  "rank": 2,
-                  "translation_ja": "街"
-                },
-                {
-                  "id": "legacy:4620ade69035f78c",
-                  "name": "fountain",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "噴水",
-                  "rank": 17
-                },
-                {
-                  "id": "legacy:11f9d58a78cc830d",
-                  "name": "railroad_tracks",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道の線路",
-                  "rank": 21
-                },
-                {
-                  "id": "legacy:e9c55a92e8104668",
-                  "name": "tunnel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "トンネル",
-                  "rank": 23
-                },
-                {
-                  "id": "legacy:5042d146667518a1",
-                  "name": "shop",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "店舗",
-                  "rank": 30
-                },
-                {
-                  "id": 41161,
-                  "name": "street",
-                  "post_count": 9709,
-                  "aliases": [],
-                  "rank": 31,
-                  "translation_ja": "街路"
-                },
-                {
-                  "id": "legacy:959c3758a81444d3",
-                  "name": "cyberpunk_city",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サイバーパンクの街",
-                  "rank": 32
-                },
-                {
-                  "id": 232297,
-                  "name": "gohei",
-                  "post_count": 17986,
-                  "aliases": [],
-                  "rank": 34,
-                  "translation_ja": "御幣"
-                },
-                {
-                  "id": "legacy:8361d39612194751",
-                  "name": "Bustling_city",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "繁華な都市",
-                  "rank": 35
-                },
-                {
-                  "id": "legacy:d2a0366fa557221a",
-                  "name": "handrail",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "手すり",
-                  "rank": 42
-                },
-                {
-                  "id": "legacy:70396c54ae920456",
-                  "name": "neon_lights",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ネオンライト",
-                  "rank": 43
-                },
-                {
-                  "id": "legacy:37cc9c67d3901215",
-                  "name": "street_lamp",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "街灯",
-                  "rank": 44
-                },
-                {
-                  "id": 397948,
-                  "name": "road",
-                  "post_count": 20341,
-                  "aliases": [],
-                  "rank": 45,
-                  "translation_ja": "道路"
-                },
-                {
-                  "id": "legacy:669fd27bf95d65aa",
-                  "name": "shanty_town/slum",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "貧民街",
-                  "rank": 46
-                },
-                {
-                  "id": "legacy:ce4151ff856b629d",
-                  "name": "park",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "公園",
-                  "rank": 65
-                },
-                {
-                  "id": "legacy:e347660d52d87798",
-                  "name": "harbor",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "港",
-                  "rank": 79
-                },
-                {
                   "id": "legacy:83d8fafd6dcbb529",
                   "name": "grave",
                   "post_count": 0,
@@ -26855,6 +26680,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "墓",
                   "rank": 83
+                },
+                {
+                  "id": "legacy:2b11fa44e48edca0",
+                  "name": "graveyard",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "墓地",
+                  "rank": 84
                 },
                 {
                   "id": "legacy:01645d02736b8b88",
@@ -26882,6 +26716,160 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "レーベル",
                   "rank": 87
+                },
+                {
+                  "id": 464540,
+                  "name": "building",
+                  "post_count": 69894,
+                  "aliases": [
+                    "buildings"
+                  ],
+                  "rank": 88,
+                  "translation_ja": "建物"
+                },
+                {
+                  "id": 484880,
+                  "name": "architecture",
+                  "post_count": 17496,
+                  "aliases": [],
+                  "rank": 89,
+                  "translation_ja": "建築"
+                },
+                {
+                  "id": "legacy:dd0cc25e061b280e",
+                  "name": "magnificent_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "壮大な建築",
+                  "rank": 90
+                },
+                {
+                  "id": 543207,
+                  "name": "east_asian_architecture",
+                  "post_count": 13932,
+                  "aliases": [
+                    "chinese_architecture",
+                    "japanese_architecture"
+                  ],
+                  "rank": 91,
+                  "translation_ja": "東アジアの建築"
+                },
+                {
+                  "id": "legacy:5c92c39a203f4cfa",
+                  "name": "cathedral",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大聖堂",
+                  "rank": 92
+                },
+                {
+                  "id": "legacy:99909e31cc68be2d",
+                  "name": "chinese_style_loft",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中国風ロフト",
+                  "rank": 93
+                },
+                {
+                  "id": "legacy:243c144e68911987",
+                  "name": "traditional_chinese_room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "伝統的な中国の部屋",
+                  "rank": 94
+                },
+                {
+                  "id": "legacy:ccca2c8951eaf853",
+                  "name": "turret",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "タレット",
+                  "rank": 95
+                },
+                {
+                  "id": "legacy:54efaa66b0dfe19d",
+                  "name": "tower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "タワー",
+                  "rank": 96
+                },
+                {
+                  "id": "legacy:33bdc5dee9821c63",
+                  "name": "mosque",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "モスク",
+                  "rank": 97
+                },
+                {
+                  "id": "legacy:5f4fb936b3cb9e3e",
+                  "name": "reservoir",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "貯水池",
+                  "rank": 98
+                },
+                {
+                  "id": "legacy:652fd41aaf000ba8",
+                  "name": "railroad",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道",
+                  "rank": 99
+                },
+                {
+                  "id": "legacy:cb0dff2129f80544",
+                  "name": "railway",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道",
+                  "rank": 100
+                },
+                {
+                  "id": 3531,
+                  "name": "bridge",
+                  "post_count": 11248,
+                  "aliases": [],
+                  "rank": 101,
+                  "translation_ja": "橋"
+                },
+                {
+                  "id": "legacy:6d530a4f1d752d81",
+                  "name": "under_bridge",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "橋の下",
+                  "rank": 102
+                },
+                {
+                  "id": "legacy:75a94da28cac780f",
+                  "name": "remains",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "遺跡",
+                  "rank": 103
+                },
+                {
+                  "id": "legacy:98d378dda0252ffe",
+                  "name": "rubble_ruins",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "廃墟",
+                  "rank": 104
                 },
                 {
                   "id": 13879,

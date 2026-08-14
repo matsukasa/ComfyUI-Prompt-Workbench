@@ -22821,9 +22821,81 @@
           "label_ja": "色・配色",
           "small_categories": [
             {
-              "id": "legacy_small:04-010-white-gray-black",
-              "label_ja": "白・灰・黒系",
+              "id": "legacy_small:04-010",
+              "label_ja": "色・配色",
               "tags": [
+                {
+                  "id": "legacy:ef0ebbb77298e1fb",
+                  "name": "orange",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "オレンジ色",
+                  "rank": 1
+                },
+                {
+                  "id": "legacy:4c9a82ce72ca2519",
+                  "name": "blue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "青色",
+                  "rank": 2
+                },
+                {
+                  "id": "legacy:78988010b890ce6f",
+                  "name": "red",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "赤色",
+                  "rank": 3
+                },
+                {
+                  "id": "legacy:9a122f4006a8e1c8",
+                  "name": "light_brown",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るい茶色",
+                  "rank": 4
+                },
+                {
+                  "id": "legacy:394d02aaf15ffa5b",
+                  "name": "dark_pink",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃いピンク色",
+                  "rank": 5
+                },
+                {
+                  "id": "legacy:53eeb76edb49f5fb",
+                  "name": "khaki",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "カーキ色",
+                  "rank": 6
+                },
+                {
+                  "id": "legacy:5e1bc90d0d9f3aec",
+                  "name": "blonde",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "金髪の",
+                  "rank": 7
+                },
+                {
+                  "id": "legacy:9166eeff1e5056d4",
+                  "name": "brown",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "茶色",
+                  "rank": 8
+                },
                 {
                   "id": "legacy:466bc8cef3e71de7",
                   "name": "black",
@@ -23021,453 +23093,7 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "アイボリー色",
                   "rank": 31
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-brown-beige",
-              "label_ja": "茶・ベージュ系",
-              "tags": [
-                {
-                  "id": "legacy:9a122f4006a8e1c8",
-                  "name": "light_brown",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るい茶色",
-                  "rank": 4
                 },
-                {
-                  "id": "legacy:53eeb76edb49f5fb",
-                  "name": "khaki",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "カーキ色",
-                  "rank": 6
-                },
-                {
-                  "id": "legacy:5e1bc90d0d9f3aec",
-                  "name": "blonde",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "金髪の",
-                  "rank": 7
-                },
-                {
-                  "id": "legacy:9166eeff1e5056d4",
-                  "name": "brown",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "茶色",
-                  "rank": 8
-                },
-                {
-                  "id": "legacy:9a63d84a08c6a6e7",
-                  "name": "darkslategray",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いスレートグレー色",
-                  "rank": 62
-                },
-                {
-                  "id": "legacy:f9a3108fd07c5d32",
-                  "name": "darkkhaki",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いカーキ色",
-                  "rank": 83
-                },
-                {
-                  "id": "legacy:283ad66f5f9ff1fa",
-                  "name": "palegoldenrod",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "淡いゴールデンロッド色",
-                  "rank": 84
-                },
-                {
-                  "id": "legacy:145f8e015ac7cc50",
-                  "name": "cornsilk",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "コーンシルク色",
-                  "rank": 85
-                },
-                {
-                  "id": "legacy:911ae51d1423bcb9",
-                  "name": "beige",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ベージュ色",
-                  "rank": 86
-                },
-                {
-                  "id": "legacy:7f572f2b5a5ded40",
-                  "name": "wheat",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "小麦色",
-                  "rank": 90
-                },
-                {
-                  "id": "legacy:54aa33124a7a264e",
-                  "name": "burlywood",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "バーリーウッド色",
-                  "rank": 91
-                },
-                {
-                  "id": "legacy:3c24e8187f937d25",
-                  "name": "peru",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ペルー色",
-                  "rank": 97
-                },
-                {
-                  "id": 4357,
-                  "name": "chocolate",
-                  "post_count": 28333,
-                  "aliases": [],
-                  "rank": 99,
-                  "translation_ja": "チョコレート色"
-                },
-                {
-                  "id": "legacy:e35b78f98a7d5e97",
-                  "name": "sienna",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "シエナ色",
-                  "rank": 100
-                },
-                {
-                  "id": "legacy:576d3543347bd335",
-                  "name": "saddlebrown",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サドルブラウン色",
-                  "rank": 101
-                },
-                {
-                  "id": "legacy:0d51ad81da2936b2",
-                  "name": "rosybrown",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ロージーブラウン色",
-                  "rank": 106
-                },
-                {
-                  "id": 16710,
-                  "name": "sepia",
-                  "post_count": 8951,
-                  "aliases": [],
-                  "rank": 140,
-                  "translation_ja": "セピア調"
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-red-pink",
-              "label_ja": "赤・ピンク系",
-              "tags": [
-                {
-                  "id": "legacy:78988010b890ce6f",
-                  "name": "red",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "赤色",
-                  "rank": 3
-                },
-                {
-                  "id": "legacy:394d02aaf15ffa5b",
-                  "name": "dark_pink",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いピンク色",
-                  "rank": 5
-                },
-                {
-                  "id": "legacy:51f297a7e4467f82",
-                  "name": "maroon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "マルーン色",
-                  "rank": 102
-                },
-                {
-                  "id": "legacy:8f399aa4a4052581",
-                  "name": "darkred",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃い赤色",
-                  "rank": 103
-                },
-                {
-                  "id": "legacy:e8a589e58230df3c",
-                  "name": "firebrick",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ファイアブリック色",
-                  "rank": 104
-                },
-                {
-                  "id": "legacy:a313f2ee6a06bf80",
-                  "name": "indianred",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "インディアンレッド色",
-                  "rank": 105
-                },
-                {
-                  "id": "legacy:eab8511a5c4bdd27",
-                  "name": "darksalmon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いサーモン色",
-                  "rank": 107
-                },
-                {
-                  "id": "legacy:2f8ea1534f63e612",
-                  "name": "lightcoral",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいコーラル色",
-                  "rank": 108
-                },
-                {
-                  "id": "legacy:4ffcf321c72e796c",
-                  "name": "salmon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サーモン色",
-                  "rank": 109
-                },
-                {
-                  "id": "legacy:0a63038212e7028e",
-                  "name": "lightsalmon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいサーモン色",
-                  "rank": 110
-                },
-                {
-                  "id": 468635,
-                  "name": "coral",
-                  "post_count": 3519,
-                  "aliases": [
-                    "corals"
-                  ],
-                  "rank": 111,
-                  "translation_ja": "コーラル色"
-                },
-                {
-                  "id": 464585,
-                  "name": "tomato",
-                  "post_count": 6523,
-                  "aliases": [
-                    "tomatoes"
-                  ],
-                  "rank": 112,
-                  "translation_ja": "トマト色"
-                },
-                {
-                  "id": "legacy:83c11081add44f35",
-                  "name": "orangered",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "オレンジレッド色",
-                  "rank": 113
-                },
-                {
-                  "id": "legacy:ad5333beb0b6fda5",
-                  "name": "crimson",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "深紅色",
-                  "rank": 114
-                },
-                {
-                  "id": "legacy:926b3e6a971aad7f",
-                  "name": "mediumvioletred",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ミディアムバイオレットレッド",
-                  "rank": 115
-                },
-                {
-                  "id": "legacy:c365d60c762ca05a",
-                  "name": "deeppink",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いピンク色",
-                  "rank": 116
-                },
-                {
-                  "id": "legacy:371fbc1150d329b4",
-                  "name": "hotpink",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ホットピンク色",
-                  "rank": 117
-                },
-                {
-                  "id": "legacy:97a7ce8f94d8a636",
-                  "name": "palevioletred",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "淡い紫罗兰赤色",
-                  "rank": 118
-                },
-                {
-                  "id": "legacy:b0f7f128338b504e",
-                  "name": "pink",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ピンク色",
-                  "rank": 119
-                },
-                {
-                  "id": "legacy:4a2bb3f7271be453",
-                  "name": "lightpink",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいピンク色",
-                  "rank": 120
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-orange-yellow-gold",
-              "label_ja": "橙・黄・金系",
-              "tags": [
-                {
-                  "id": "legacy:ef0ebbb77298e1fb",
-                  "name": "orange",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "オレンジ色",
-                  "rank": 1
-                },
-                {
-                  "id": "legacy:f8f925390fea33e0",
-                  "name": "lightyellow",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るい黄色",
-                  "rank": 87
-                },
-                {
-                  "id": "legacy:9e083aab81817aa4",
-                  "name": "lightgoldenrodyellow",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいゴールデンロッドイエロー色",
-                  "rank": 88
-                },
-                {
-                  "id": "legacy:2cf14a9b9dce5023",
-                  "name": "lemonchiffon",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "レモンシフォン色",
-                  "rank": 89
-                },
-                {
-                  "id": "legacy:96de5543d183d7de",
-                  "name": "yellow",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "黄色",
-                  "rank": 92
-                },
-                {
-                  "id": 388210,
-                  "name": "gold",
-                  "post_count": 12693,
-                  "aliases": [],
-                  "rank": 93,
-                  "translation_ja": "金色"
-                },
-                {
-                  "id": "legacy:253c307f5ad59385",
-                  "name": "sandybrown",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "砂色",
-                  "rank": 94
-                },
-                {
-                  "id": "legacy:707f69462e692c44",
-                  "name": "darkorange",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いオレンジ色",
-                  "rank": 95
-                },
-                {
-                  "id": "legacy:28672d7416193adc",
-                  "name": "goldenrod",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ゴールデンロッド色",
-                  "rank": 96
-                },
-                {
-                  "id": "legacy:250c7c627e117b84",
-                  "name": "darkgoldenrod",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いゴールデンロッド色",
-                  "rank": 98
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-green",
-              "label_ja": "緑系",
-              "tags": [
                 {
                   "id": "legacy:c7e476e1fd613833",
                   "name": "honeydew",
@@ -23485,6 +23111,267 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ミントクリーム色",
                   "rank": 33
+                },
+                {
+                  "id": "legacy:80b3364deb09ee4c",
+                  "name": "azure",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "空色",
+                  "rank": 34
+                },
+                {
+                  "id": "legacy:2c590e74104bdfd9",
+                  "name": "aliceblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "アリスブルー色",
+                  "rank": 35
+                },
+                {
+                  "id": "legacy:1e72bffe225fd7e4",
+                  "name": "lavender",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ラベンダー色",
+                  "rank": 36
+                },
+                {
+                  "id": "legacy:679d30a069f44478",
+                  "name": "lightsteelblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るい鋼色",
+                  "rank": 37
+                },
+                {
+                  "id": "legacy:8f58445570789340",
+                  "name": "lightslategray",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るいスレートグレー色",
+                  "rank": 38
+                },
+                {
+                  "id": "legacy:393a0744bf3518cf",
+                  "name": "slategray",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "スレートグレー色",
+                  "rank": 39
+                },
+                {
+                  "id": "legacy:b2d713ec0e39ae81",
+                  "name": "steelblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鋼色",
+                  "rank": 40
+                },
+                {
+                  "id": "legacy:bfce5be43a21e5c3",
+                  "name": "royalblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ロイヤルブルー色",
+                  "rank": 41
+                },
+                {
+                  "id": "legacy:f6799477004676c6",
+                  "name": "midnightblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "真夜中の青色",
+                  "rank": 42
+                },
+                {
+                  "id": "legacy:57c5f2e274183c79",
+                  "name": "navy",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "海軍色",
+                  "rank": 43
+                },
+                {
+                  "id": "legacy:df2689c6722f1846",
+                  "name": "darkblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃い青色",
+                  "rank": 44
+                },
+                {
+                  "id": "legacy:587ab6a1658f0ab7",
+                  "name": "mediumblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中間の青色",
+                  "rank": 45
+                },
+                {
+                  "id": "legacy:1a10bf0b57824392",
+                  "name": "dodgerblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ドッジャーブルー色",
+                  "rank": 46
+                },
+                {
+                  "id": "legacy:fb62ce7f2ed7e39b",
+                  "name": "cornflowerblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "コーンフラワーブルー色",
+                  "rank": 47
+                },
+                {
+                  "id": "legacy:18d819f82fb2f763",
+                  "name": "skyblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "空色",
+                  "rank": 48
+                },
+                {
+                  "id": "legacy:7b392b470063e1e5",
+                  "name": "lightblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るい青色",
+                  "rank": 49
+                },
+                {
+                  "id": "legacy:c52e31ecd4e6bf5e",
+                  "name": "powderblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "パウダーブルー色",
+                  "rank": 50
+                },
+                {
+                  "id": "legacy:86a5f4b4d57235a9",
+                  "name": "paleturquoise",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ペイルターコイズ色",
+                  "rank": 51
+                },
+                {
+                  "id": "legacy:e0352948432ca957",
+                  "name": "lightcyan",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るいシアン色",
+                  "rank": 52
+                },
+                {
+                  "id": "legacy:1571b29d8677d461",
+                  "name": "cyan",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "シアン色",
+                  "rank": 53
+                },
+                {
+                  "id": "legacy:f364840671b5cc80",
+                  "name": "aquamarine",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "アクアマリン色",
+                  "rank": 54
+                },
+                {
+                  "id": "legacy:1dc97c0fa3d7c1ac",
+                  "name": "turquoise",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ターコイズ色",
+                  "rank": 55
+                },
+                {
+                  "id": "legacy:805c81ead9e6ec71",
+                  "name": "mediumturquoise",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中間のターコイズ色",
+                  "rank": 56
+                },
+                {
+                  "id": "legacy:6ed7ea6fab4f6e27",
+                  "name": "darkturquoise",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃い青緑色",
+                  "rank": 57
+                },
+                {
+                  "id": "legacy:7d3df9ff0c3ef80e",
+                  "name": "lightseagreen",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るいシーグリーン色",
+                  "rank": 58
+                },
+                {
+                  "id": "legacy:3510d2ed21fd3b6f",
+                  "name": "cadetblue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "カデットブルー色",
+                  "rank": 59
+                },
+                {
+                  "id": "legacy:b54af03309fd6abd",
+                  "name": "darkcyan",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃いシアン色",
+                  "rank": 60
+                },
+                {
+                  "id": "legacy:03e06c4b7a097e46",
+                  "name": "teal",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ティール色",
+                  "rank": 61
+                },
+                {
+                  "id": "legacy:9a63d84a08c6a6e7",
+                  "name": "darkslategray",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃いスレートグレー色",
+                  "rank": 62
                 },
                 {
                   "id": "legacy:94ce610c905057bb",
@@ -23665,279 +23552,348 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "オリーブ色",
                   "rank": 82
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-blue-cyan",
-              "label_ja": "青・水色系",
-              "tags": [
-                {
-                  "id": "legacy:80b3364deb09ee4c",
-                  "name": "azure",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "空色",
-                  "rank": 34
                 },
                 {
-                  "id": "legacy:2c590e74104bdfd9",
-                  "name": "aliceblue",
+                  "id": "legacy:f9a3108fd07c5d32",
+                  "name": "darkkhaki",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "アリスブルー色",
-                  "rank": 35
+                  "translation_ja": "濃いカーキ色",
+                  "rank": 83
                 },
                 {
-                  "id": "legacy:679d30a069f44478",
-                  "name": "lightsteelblue",
+                  "id": "legacy:283ad66f5f9ff1fa",
+                  "name": "palegoldenrod",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "明るい鋼色",
-                  "rank": 37
+                  "translation_ja": "淡いゴールデンロッド色",
+                  "rank": 84
                 },
                 {
-                  "id": "legacy:8f58445570789340",
-                  "name": "lightslategray",
+                  "id": "legacy:145f8e015ac7cc50",
+                  "name": "cornsilk",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいスレートグレー色",
-                  "rank": 38
+                  "translation_ja": "コーンシルク色",
+                  "rank": 85
                 },
                 {
-                  "id": "legacy:393a0744bf3518cf",
-                  "name": "slategray",
+                  "id": "legacy:911ae51d1423bcb9",
+                  "name": "beige",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "スレートグレー色",
-                  "rank": 39
+                  "translation_ja": "ベージュ色",
+                  "rank": 86
                 },
                 {
-                  "id": "legacy:b2d713ec0e39ae81",
-                  "name": "steelblue",
+                  "id": "legacy:f8f925390fea33e0",
+                  "name": "lightyellow",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "鋼色",
-                  "rank": 40
+                  "translation_ja": "明るい黄色",
+                  "rank": 87
                 },
                 {
-                  "id": "legacy:bfce5be43a21e5c3",
-                  "name": "royalblue",
+                  "id": "legacy:9e083aab81817aa4",
+                  "name": "lightgoldenrodyellow",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ロイヤルブルー色",
-                  "rank": 41
+                  "translation_ja": "明るいゴールデンロッドイエロー色",
+                  "rank": 88
                 },
                 {
-                  "id": "legacy:f6799477004676c6",
-                  "name": "midnightblue",
+                  "id": "legacy:2cf14a9b9dce5023",
+                  "name": "lemonchiffon",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "真夜中の青色",
-                  "rank": 42
+                  "translation_ja": "レモンシフォン色",
+                  "rank": 89
                 },
                 {
-                  "id": "legacy:57c5f2e274183c79",
-                  "name": "navy",
+                  "id": "legacy:7f572f2b5a5ded40",
+                  "name": "wheat",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "海軍色",
-                  "rank": 43
+                  "translation_ja": "小麦色",
+                  "rank": 90
                 },
                 {
-                  "id": "legacy:df2689c6722f1846",
-                  "name": "darkblue",
+                  "id": "legacy:54aa33124a7a264e",
+                  "name": "burlywood",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "濃い青色",
-                  "rank": 44
+                  "translation_ja": "バーリーウッド色",
+                  "rank": 91
                 },
                 {
-                  "id": "legacy:587ab6a1658f0ab7",
-                  "name": "mediumblue",
+                  "id": "legacy:96de5543d183d7de",
+                  "name": "yellow",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "中間の青色",
-                  "rank": 45
+                  "translation_ja": "黄色",
+                  "rank": 92
                 },
                 {
-                  "id": "legacy:4c9a82ce72ca2519",
-                  "name": "blue",
-                  "post_count": 0,
+                  "id": 388210,
+                  "name": "gold",
+                  "post_count": 12693,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "青色",
-                  "rank": 2
+                  "rank": 93,
+                  "translation_ja": "金色"
                 },
                 {
-                  "id": "legacy:1a10bf0b57824392",
-                  "name": "dodgerblue",
+                  "id": "legacy:253c307f5ad59385",
+                  "name": "sandybrown",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ドッジャーブルー色",
-                  "rank": 46
+                  "translation_ja": "砂色",
+                  "rank": 94
                 },
                 {
-                  "id": "legacy:fb62ce7f2ed7e39b",
-                  "name": "cornflowerblue",
+                  "id": "legacy:707f69462e692c44",
+                  "name": "darkorange",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "コーンフラワーブルー色",
-                  "rank": 47
+                  "translation_ja": "濃いオレンジ色",
+                  "rank": 95
                 },
                 {
-                  "id": "legacy:18d819f82fb2f763",
-                  "name": "skyblue",
+                  "id": "legacy:28672d7416193adc",
+                  "name": "goldenrod",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "空色",
-                  "rank": 48
+                  "translation_ja": "ゴールデンロッド色",
+                  "rank": 96
                 },
                 {
-                  "id": "legacy:7b392b470063e1e5",
-                  "name": "lightblue",
+                  "id": "legacy:3c24e8187f937d25",
+                  "name": "peru",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "明るい青色",
-                  "rank": 49
+                  "translation_ja": "ペルー色",
+                  "rank": 97
                 },
                 {
-                  "id": "legacy:c52e31ecd4e6bf5e",
-                  "name": "powderblue",
+                  "id": "legacy:250c7c627e117b84",
+                  "name": "darkgoldenrod",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "パウダーブルー色",
-                  "rank": 50
+                  "translation_ja": "濃いゴールデンロッド色",
+                  "rank": 98
                 },
                 {
-                  "id": "legacy:86a5f4b4d57235a9",
-                  "name": "paleturquoise",
-                  "post_count": 0,
+                  "id": 4357,
+                  "name": "chocolate",
+                  "post_count": 28333,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ペイルターコイズ色",
-                  "rank": 51
+                  "rank": 99,
+                  "translation_ja": "チョコレート色"
                 },
                 {
-                  "id": "legacy:e0352948432ca957",
-                  "name": "lightcyan",
+                  "id": "legacy:e35b78f98a7d5e97",
+                  "name": "sienna",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいシアン色",
-                  "rank": 52
+                  "translation_ja": "シエナ色",
+                  "rank": 100
                 },
                 {
-                  "id": "legacy:1571b29d8677d461",
-                  "name": "cyan",
+                  "id": "legacy:576d3543347bd335",
+                  "name": "saddlebrown",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "シアン色",
-                  "rank": 53
+                  "translation_ja": "サドルブラウン色",
+                  "rank": 101
                 },
                 {
-                  "id": "legacy:f364840671b5cc80",
-                  "name": "aquamarine",
+                  "id": "legacy:51f297a7e4467f82",
+                  "name": "maroon",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "アクアマリン色",
-                  "rank": 54
+                  "translation_ja": "マルーン色",
+                  "rank": 102
                 },
                 {
-                  "id": "legacy:1dc97c0fa3d7c1ac",
-                  "name": "turquoise",
+                  "id": "legacy:8f399aa4a4052581",
+                  "name": "darkred",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ターコイズ色",
-                  "rank": 55
+                  "translation_ja": "濃い赤色",
+                  "rank": 103
                 },
                 {
-                  "id": "legacy:805c81ead9e6ec71",
-                  "name": "mediumturquoise",
+                  "id": "legacy:e8a589e58230df3c",
+                  "name": "firebrick",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "中間のターコイズ色",
-                  "rank": 56
+                  "translation_ja": "ファイアブリック色",
+                  "rank": 104
                 },
                 {
-                  "id": "legacy:6ed7ea6fab4f6e27",
-                  "name": "darkturquoise",
+                  "id": "legacy:a313f2ee6a06bf80",
+                  "name": "indianred",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "濃い青緑色",
-                  "rank": 57
+                  "translation_ja": "インディアンレッド色",
+                  "rank": 105
                 },
                 {
-                  "id": "legacy:7d3df9ff0c3ef80e",
-                  "name": "lightseagreen",
+                  "id": "legacy:0d51ad81da2936b2",
+                  "name": "rosybrown",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "明るいシーグリーン色",
-                  "rank": 58
+                  "translation_ja": "ロージーブラウン色",
+                  "rank": 106
                 },
                 {
-                  "id": "legacy:3510d2ed21fd3b6f",
-                  "name": "cadetblue",
+                  "id": "legacy:eab8511a5c4bdd27",
+                  "name": "darksalmon",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "カデットブルー色",
-                  "rank": 59
+                  "translation_ja": "濃いサーモン色",
+                  "rank": 107
                 },
                 {
-                  "id": "legacy:b54af03309fd6abd",
-                  "name": "darkcyan",
+                  "id": "legacy:2f8ea1534f63e612",
+                  "name": "lightcoral",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いシアン色",
-                  "rank": 60
+                  "translation_ja": "明るいコーラル色",
+                  "rank": 108
                 },
                 {
-                  "id": "legacy:03e06c4b7a097e46",
-                  "name": "teal",
+                  "id": "legacy:4ffcf321c72e796c",
+                  "name": "salmon",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ティール色",
-                  "rank": 61
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-purple-lavender",
-              "label_ja": "紫・ラベンダー系",
-              "tags": [
+                  "translation_ja": "サーモン色",
+                  "rank": 109
+                },
                 {
-                  "id": "legacy:1e72bffe225fd7e4",
-                  "name": "lavender",
+                  "id": "legacy:0a63038212e7028e",
+                  "name": "lightsalmon",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "ラベンダー色",
-                  "rank": 36
+                  "translation_ja": "明るいサーモン色",
+                  "rank": 110
+                },
+                {
+                  "id": 468635,
+                  "name": "coral",
+                  "post_count": 3519,
+                  "aliases": [
+                    "corals"
+                  ],
+                  "rank": 111,
+                  "translation_ja": "コーラル色"
+                },
+                {
+                  "id": 464585,
+                  "name": "tomato",
+                  "post_count": 6523,
+                  "aliases": [
+                    "tomatoes"
+                  ],
+                  "rank": 112,
+                  "translation_ja": "トマト色"
+                },
+                {
+                  "id": "legacy:83c11081add44f35",
+                  "name": "orangered",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "オレンジレッド色",
+                  "rank": 113
+                },
+                {
+                  "id": "legacy:ad5333beb0b6fda5",
+                  "name": "crimson",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "深紅色",
+                  "rank": 114
+                },
+                {
+                  "id": "legacy:926b3e6a971aad7f",
+                  "name": "mediumvioletred",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ミディアムバイオレットレッド",
+                  "rank": 115
+                },
+                {
+                  "id": "legacy:c365d60c762ca05a",
+                  "name": "deeppink",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃いピンク色",
+                  "rank": 116
+                },
+                {
+                  "id": "legacy:371fbc1150d329b4",
+                  "name": "hotpink",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ホットピンク色",
+                  "rank": 117
+                },
+                {
+                  "id": "legacy:97a7ce8f94d8a636",
+                  "name": "palevioletred",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "淡い紫罗兰赤色",
+                  "rank": 118
+                },
+                {
+                  "id": "legacy:b0f7f128338b504e",
+                  "name": "pink",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ピンク色",
+                  "rank": 119
+                },
+                {
+                  "id": "legacy:4a2bb3f7271be453",
+                  "name": "lightpink",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "明るいピンク色",
+                  "rank": 120
                 },
                 {
                   "id": "legacy:e2ca3a96678053bd",
@@ -24012,15 +23968,6 @@
                   "rank": 128
                 },
                 {
-                  "id": "legacy:7f89c642a5945008",
-                  "name": "darkmagenta",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "濃いマゼンタ色",
-                  "rank": 130
-                },
-                {
                   "id": "legacy:62bc0aceeb37d6dd",
                   "name": "darkviolet",
                   "post_count": 0,
@@ -24028,6 +23975,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "濃い紫罗兰色",
                   "rank": 129
+                },
+                {
+                  "id": "legacy:7f89c642a5945008",
+                  "name": "darkmagenta",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "濃いマゼンタ色",
+                  "rank": 130
                 },
                 {
                   "id": "legacy:afaed75406bd4148",
@@ -24091,13 +24047,7 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "中間のスレートブルー色",
                   "rank": 137
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:04-010-palette-tone",
-              "label_ja": "配色・色調",
-              "tags": [
+                },
                 {
                   "id": 384441,
                   "name": "alternate_color",
@@ -24120,6 +24070,14 @@
                   ],
                   "rank": 139,
                   "translation_ja": "限定された色数"
+                },
+                {
+                  "id": 16710,
+                  "name": "sepia",
+                  "post_count": 8951,
+                  "aliases": [],
+                  "rank": 140,
+                  "translation_ja": "セピア調"
                 },
                 {
                   "id": 640153,
@@ -25986,8 +25944,8 @@
           "label_ja": "建物・施設・場所",
           "small_categories": [
             {
-              "id": "legacy_small:06-001-buildings",
-              "label_ja": "建物",
+              "id": "legacy_small:06-001",
+              "label_ja": "建物・施設・場所",
               "tags": [
                 {
                   "id": 389066,
@@ -25998,250 +25956,13 @@
                   "translation_ja": "城"
                 },
                 {
-                  "id": "legacy:1f24cea80c3e0691",
-                  "name": "temple",
-                  "post_count": 0,
+                  "id": 8807,
+                  "name": "city",
+                  "post_count": 29089,
                   "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "寺院",
-                  "rank": 14
+                  "rank": 2,
+                  "translation_ja": "街"
                 },
-                {
-                  "id": 374955,
-                  "name": "ruins",
-                  "post_count": 12684,
-                  "aliases": [
-                    "ruin"
-                  ],
-                  "rank": 25,
-                  "translation_ja": "遺跡"
-                },
-                {
-                  "id": "legacy:3a9eb85eaadb8d18",
-                  "name": "greco-roman_architectur",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "グレコローマ建築",
-                  "rank": 26
-                },
-                {
-                  "id": 13810,
-                  "name": "torii",
-                  "post_count": 14177,
-                  "aliases": [
-                    "shrine_gate",
-                    "torii_(gate)",
-                    "torii_gate"
-                  ],
-                  "rank": 28,
-                  "translation_ja": "鳥居"
-                },
-                {
-                  "id": "legacy:2f1899f2b33c1631",
-                  "name": "church",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "教会",
-                  "rank": 29
-                },
-                {
-                  "id": "legacy:52b5844de3a3c91f",
-                  "name": "chinese_style_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中国風建築",
-                  "rank": 33
-                },
-                {
-                  "id": "legacy:51e4c7d79ee2fc40",
-                  "name": "gothic_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ゴシック建築",
-                  "rank": 48
-                },
-                {
-                  "id": "legacy:d630ae647f0c1593",
-                  "name": "treehouse",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "木の家",
-                  "rank": 50
-                },
-                {
-                  "id": "legacy:5c5e54d4eb0d380c",
-                  "name": "modern,Europe",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モダン、ヨーロッパ",
-                  "rank": 51
-                },
-                {
-                  "id": "legacy:e229f58f83b5a57a",
-                  "name": "Industrial_wind,_Chinese_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "工業風、中国建築",
-                  "rank": 52
-                },
-                {
-                  "id": "legacy:21e4d5867d6c6cc9",
-                  "name": "building_ruins",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "建物の廃墟",
-                  "rank": 53
-                },
-                {
-                  "id": "legacy:251bceddeba47ccd",
-                  "name": "Japanese_hotel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "和風旅館",
-                  "rank": 75
-                },
-                {
-                  "id": 464540,
-                  "name": "building",
-                  "post_count": 69894,
-                  "aliases": [
-                    "buildings"
-                  ],
-                  "rank": 88,
-                  "translation_ja": "建物"
-                },
-                {
-                  "id": 484880,
-                  "name": "architecture",
-                  "post_count": 17496,
-                  "aliases": [],
-                  "rank": 89,
-                  "translation_ja": "建築"
-                },
-                {
-                  "id": "legacy:dd0cc25e061b280e",
-                  "name": "magnificent_architecture",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "壮大な建築",
-                  "rank": 90
-                },
-                {
-                  "id": 543207,
-                  "name": "east_asian_architecture",
-                  "post_count": 13932,
-                  "aliases": [
-                    "chinese_architecture",
-                    "japanese_architecture"
-                  ],
-                  "rank": 91,
-                  "translation_ja": "東アジアの建築"
-                },
-                {
-                  "id": "legacy:5c92c39a203f4cfa",
-                  "name": "cathedral",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "大聖堂",
-                  "rank": 92
-                },
-                {
-                  "id": "legacy:99909e31cc68be2d",
-                  "name": "chinese_style_loft",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "中国風ロフト",
-                  "rank": 93
-                },
-                {
-                  "id": "legacy:243c144e68911987",
-                  "name": "traditional_chinese_room",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "伝統的な中国の部屋",
-                  "rank": 94
-                },
-                {
-                  "id": "legacy:ccca2c8951eaf853",
-                  "name": "turret",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "タレット",
-                  "rank": 95
-                },
-                {
-                  "id": "legacy:54efaa66b0dfe19d",
-                  "name": "tower",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "タワー",
-                  "rank": 96
-                },
-                {
-                  "id": "legacy:33bdc5dee9821c63",
-                  "name": "mosque",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "モスク",
-                  "rank": 97
-                },
-                {
-                  "id": 3531,
-                  "name": "bridge",
-                  "post_count": 11248,
-                  "aliases": [],
-                  "rank": 101,
-                  "translation_ja": "橋"
-                },
-                {
-                  "id": "legacy:6d530a4f1d752d81",
-                  "name": "under_bridge",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "橋の下",
-                  "rank": 102
-                },
-                {
-                  "id": "legacy:75a94da28cac780f",
-                  "name": "remains",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "遺跡",
-                  "rank": 103
-                },
-                {
-                  "id": "legacy:98d378dda0252ffe",
-                  "name": "rubble_ruins",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "廃墟",
-                  "rank": 104
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:06-001-facilities",
-              "label_ja": "施設",
-              "tags": [
                 {
                   "id": "legacy:4f754d8fad628d51",
                   "name": "waterpark",
@@ -26342,6 +26063,15 @@
                   "rank": 13
                 },
                 {
+                  "id": "legacy:1f24cea80c3e0691",
+                  "name": "temple",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "寺院",
+                  "rank": 14
+                },
+                {
                   "id": "legacy:5c47841652e7324a",
                   "name": "bus_stop",
                   "post_count": 0,
@@ -26358,6 +26088,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "駅",
                   "rank": 16
+                },
+                {
+                  "id": "legacy:4620ade69035f78c",
+                  "name": "fountain",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "噴水",
+                  "rank": 17
                 },
                 {
                   "id": "legacy:d191430e46c0aa54",
@@ -26387,6 +26126,15 @@
                   "rank": 20
                 },
                 {
+                  "id": "legacy:11f9d58a78cc830d",
+                  "name": "railroad_tracks",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道の線路",
+                  "rank": 21
+                },
+                {
                   "id": "legacy:6b5465bf0bccf06b",
                   "name": "airport",
                   "post_count": 0,
@@ -26394,6 +26142,107 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "空港",
                   "rank": 22
+                },
+                {
+                  "id": "legacy:e9c55a92e8104668",
+                  "name": "tunnel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "トンネル",
+                  "rank": 23
+                },
+                {
+                  "id": 374955,
+                  "name": "ruins",
+                  "post_count": 12684,
+                  "aliases": [
+                    "ruin"
+                  ],
+                  "rank": 25,
+                  "translation_ja": "遺跡"
+                },
+                {
+                  "id": "legacy:3a9eb85eaadb8d18",
+                  "name": "greco-roman_architectur",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "グレコローマ建築",
+                  "rank": 26
+                },
+                {
+                  "id": 13810,
+                  "name": "torii",
+                  "post_count": 14177,
+                  "aliases": [
+                    "shrine_gate",
+                    "torii_(gate)",
+                    "torii_gate"
+                  ],
+                  "rank": 28,
+                  "translation_ja": "鳥居"
+                },
+                {
+                  "id": "legacy:2f1899f2b33c1631",
+                  "name": "church",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "教会",
+                  "rank": 29
+                },
+                {
+                  "id": "legacy:5042d146667518a1",
+                  "name": "shop",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "店舗",
+                  "rank": 30
+                },
+                {
+                  "id": 41161,
+                  "name": "street",
+                  "post_count": 9709,
+                  "aliases": [],
+                  "rank": 31,
+                  "translation_ja": "街路"
+                },
+                {
+                  "id": "legacy:959c3758a81444d3",
+                  "name": "cyberpunk_city",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "サイバーパンクの街",
+                  "rank": 32
+                },
+                {
+                  "id": "legacy:52b5844de3a3c91f",
+                  "name": "chinese_style_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中国風建築",
+                  "rank": 33
+                },
+                {
+                  "id": 232297,
+                  "name": "gohei",
+                  "post_count": 17986,
+                  "aliases": [],
+                  "rank": 34,
+                  "translation_ja": "御幣"
+                },
+                {
+                  "id": "legacy:8361d39612194751",
+                  "name": "Bustling_city",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "繁華な都市",
+                  "rank": 35
                 },
                 {
                   "id": "legacy:80240dcecd105d50",
@@ -26441,6 +26290,50 @@
                   "rank": 41
                 },
                 {
+                  "id": "legacy:d2a0366fa557221a",
+                  "name": "handrail",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "手すり",
+                  "rank": 42
+                },
+                {
+                  "id": "legacy:70396c54ae920456",
+                  "name": "neon_lights",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ネオンライト",
+                  "rank": 43
+                },
+                {
+                  "id": "legacy:37cc9c67d3901215",
+                  "name": "street_lamp",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "街灯",
+                  "rank": 44
+                },
+                {
+                  "id": 397948,
+                  "name": "road",
+                  "post_count": 20341,
+                  "aliases": [],
+                  "rank": 45,
+                  "translation_ja": "道路"
+                },
+                {
+                  "id": "legacy:669fd27bf95d65aa",
+                  "name": "shanty_town/slum",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "貧民街",
+                  "rank": 46
+                },
+                {
                   "id": "legacy:4a35c0647dfb2fc0",
                   "name": "warehouse",
                   "post_count": 0,
@@ -26450,6 +26343,15 @@
                   "rank": 47
                 },
                 {
+                  "id": "legacy:51e4c7d79ee2fc40",
+                  "name": "gothic_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "ゴシック建築",
+                  "rank": 48
+                },
+                {
                   "id": "legacy:32ac991d88d626c7",
                   "name": "restaurant",
                   "post_count": 0,
@@ -26457,6 +26359,42 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "レストラン",
                   "rank": 49
+                },
+                {
+                  "id": "legacy:d630ae647f0c1593",
+                  "name": "treehouse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "木の家",
+                  "rank": 50
+                },
+                {
+                  "id": "legacy:5c5e54d4eb0d380c",
+                  "name": "modern,Europe",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "モダン、ヨーロッパ",
+                  "rank": 51
+                },
+                {
+                  "id": "legacy:e229f58f83b5a57a",
+                  "name": "Industrial_wind,_Chinese_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "工業風、中国建築",
+                  "rank": 52
+                },
+                {
+                  "id": "legacy:21e4d5867d6c6cc9",
+                  "name": "building_ruins",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "建物の廃墟",
+                  "rank": 53
                 },
                 {
                   "id": "legacy:62cdb7020ff920e5",
@@ -26558,6 +26496,15 @@
                   "rank": 64
                 },
                 {
+                  "id": "legacy:ce4151ff856b629d",
+                  "name": "park",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "公園",
+                  "rank": 65
+                },
+                {
                   "id": "legacy:0f4d13fb78b2c668",
                   "name": "botanical_garden",
                   "post_count": 0,
@@ -26612,6 +26559,15 @@
                   "rank": 74
                 },
                 {
+                  "id": "legacy:251bceddeba47ccd",
+                  "name": "Japanese_hotel",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "和風旅館",
+                  "rank": 75
+                },
+                {
                   "id": "legacy:2ae578d6c51754c6",
                   "name": "jail_bars",
                   "post_count": 0,
@@ -26637,6 +26593,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "ステージ",
                   "rank": 78
+                },
+                {
+                  "id": "legacy:e347660d52d87798",
+                  "name": "harbor",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "港",
+                  "rank": 79
                 },
                 {
                   "id": "legacy:67ba051df8b29844",
@@ -26666,188 +26631,6 @@
                   "rank": 82
                 },
                 {
-                  "id": "legacy:2b11fa44e48edca0",
-                  "name": "graveyard",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "墓地",
-                  "rank": 84
-                },
-                {
-                  "id": "legacy:5f4fb936b3cb9e3e",
-                  "name": "reservoir",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "貯水池",
-                  "rank": 98
-                },
-                {
-                  "id": "legacy:652fd41aaf000ba8",
-                  "name": "railroad",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道",
-                  "rank": 99
-                },
-                {
-                  "id": "legacy:cb0dff2129f80544",
-                  "name": "railway",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道",
-                  "rank": 100
-                }
-              ]
-            },
-            {
-              "id": "legacy_small:06-001-places",
-              "label_ja": "場所",
-              "tags": [
-                {
-                  "id": 8807,
-                  "name": "city",
-                  "post_count": 29089,
-                  "aliases": [],
-                  "rank": 2,
-                  "translation_ja": "街"
-                },
-                {
-                  "id": "legacy:4620ade69035f78c",
-                  "name": "fountain",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "噴水",
-                  "rank": 17
-                },
-                {
-                  "id": "legacy:11f9d58a78cc830d",
-                  "name": "railroad_tracks",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "鉄道の線路",
-                  "rank": 21
-                },
-                {
-                  "id": "legacy:e9c55a92e8104668",
-                  "name": "tunnel",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "トンネル",
-                  "rank": 23
-                },
-                {
-                  "id": "legacy:5042d146667518a1",
-                  "name": "shop",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "店舗",
-                  "rank": 30
-                },
-                {
-                  "id": 41161,
-                  "name": "street",
-                  "post_count": 9709,
-                  "aliases": [],
-                  "rank": 31,
-                  "translation_ja": "街路"
-                },
-                {
-                  "id": "legacy:959c3758a81444d3",
-                  "name": "cyberpunk_city",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "サイバーパンクの街",
-                  "rank": 32
-                },
-                {
-                  "id": 232297,
-                  "name": "gohei",
-                  "post_count": 17986,
-                  "aliases": [],
-                  "rank": 34,
-                  "translation_ja": "御幣"
-                },
-                {
-                  "id": "legacy:8361d39612194751",
-                  "name": "Bustling_city",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "繁華な都市",
-                  "rank": 35
-                },
-                {
-                  "id": "legacy:d2a0366fa557221a",
-                  "name": "handrail",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "手すり",
-                  "rank": 42
-                },
-                {
-                  "id": "legacy:70396c54ae920456",
-                  "name": "neon_lights",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "ネオンライト",
-                  "rank": 43
-                },
-                {
-                  "id": "legacy:37cc9c67d3901215",
-                  "name": "street_lamp",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "街灯",
-                  "rank": 44
-                },
-                {
-                  "id": 397948,
-                  "name": "road",
-                  "post_count": 20341,
-                  "aliases": [],
-                  "rank": 45,
-                  "translation_ja": "道路"
-                },
-                {
-                  "id": "legacy:669fd27bf95d65aa",
-                  "name": "shanty_town/slum",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "貧民街",
-                  "rank": 46
-                },
-                {
-                  "id": "legacy:ce4151ff856b629d",
-                  "name": "park",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "公園",
-                  "rank": 65
-                },
-                {
-                  "id": "legacy:e347660d52d87798",
-                  "name": "harbor",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "legacy_prompt_examples",
-                  "translation_ja": "港",
-                  "rank": 79
-                },
-                {
                   "id": "legacy:83d8fafd6dcbb529",
                   "name": "grave",
                   "post_count": 0,
@@ -26855,6 +26638,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "墓",
                   "rank": 83
+                },
+                {
+                  "id": "legacy:2b11fa44e48edca0",
+                  "name": "graveyard",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "墓地",
+                  "rank": 84
                 },
                 {
                   "id": "legacy:01645d02736b8b88",
@@ -26882,6 +26674,160 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "レーベル",
                   "rank": 87
+                },
+                {
+                  "id": 464540,
+                  "name": "building",
+                  "post_count": 69894,
+                  "aliases": [
+                    "buildings"
+                  ],
+                  "rank": 88,
+                  "translation_ja": "建物"
+                },
+                {
+                  "id": 484880,
+                  "name": "architecture",
+                  "post_count": 17496,
+                  "aliases": [],
+                  "rank": 89,
+                  "translation_ja": "建築"
+                },
+                {
+                  "id": "legacy:dd0cc25e061b280e",
+                  "name": "magnificent_architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "壮大な建築",
+                  "rank": 90
+                },
+                {
+                  "id": 543207,
+                  "name": "east_asian_architecture",
+                  "post_count": 13932,
+                  "aliases": [
+                    "chinese_architecture",
+                    "japanese_architecture"
+                  ],
+                  "rank": 91,
+                  "translation_ja": "東アジアの建築"
+                },
+                {
+                  "id": "legacy:5c92c39a203f4cfa",
+                  "name": "cathedral",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "大聖堂",
+                  "rank": 92
+                },
+                {
+                  "id": "legacy:99909e31cc68be2d",
+                  "name": "chinese_style_loft",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "中国風ロフト",
+                  "rank": 93
+                },
+                {
+                  "id": "legacy:243c144e68911987",
+                  "name": "traditional_chinese_room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "伝統的な中国の部屋",
+                  "rank": 94
+                },
+                {
+                  "id": "legacy:ccca2c8951eaf853",
+                  "name": "turret",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "タレット",
+                  "rank": 95
+                },
+                {
+                  "id": "legacy:54efaa66b0dfe19d",
+                  "name": "tower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "タワー",
+                  "rank": 96
+                },
+                {
+                  "id": "legacy:33bdc5dee9821c63",
+                  "name": "mosque",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "モスク",
+                  "rank": 97
+                },
+                {
+                  "id": "legacy:5f4fb936b3cb9e3e",
+                  "name": "reservoir",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "貯水池",
+                  "rank": 98
+                },
+                {
+                  "id": "legacy:652fd41aaf000ba8",
+                  "name": "railroad",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道",
+                  "rank": 99
+                },
+                {
+                  "id": "legacy:cb0dff2129f80544",
+                  "name": "railway",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "鉄道",
+                  "rank": 100
+                },
+                {
+                  "id": 3531,
+                  "name": "bridge",
+                  "post_count": 11248,
+                  "aliases": [],
+                  "rank": 101,
+                  "translation_ja": "橋"
+                },
+                {
+                  "id": "legacy:6d530a4f1d752d81",
+                  "name": "under_bridge",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "橋の下",
+                  "rank": 102
+                },
+                {
+                  "id": "legacy:75a94da28cac780f",
+                  "name": "remains",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "遺跡",
+                  "rank": 103
+                },
+                {
+                  "id": "legacy:98d378dda0252ffe",
+                  "name": "rubble_ruins",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "legacy_prompt_examples",
+                  "translation_ja": "廃墟",
+                  "rank": 104
                 },
                 {
                   "id": 13879,
