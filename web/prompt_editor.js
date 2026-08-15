@@ -371,6 +371,10 @@ export function filterExampleLibraryTags(library, selectedSmallId, query = "") {
   });
 }
 
+export function favoriteTagKey(value) {
+  return canonicalTagKey(value);
+}
+
 export function translationBatchTimeoutMs(itemCount) {
   return Math.max(12000, Math.min(30000, Math.max(1, Number(itemCount) || 1) * 500));
 }
@@ -418,6 +422,27 @@ export class PromptEditor {
 
   get currentTags() {
     return this.tags;
+  }
+
+  favoriteSet() {
+    return new Set(this.settings.favorites || []);
+  }
+
+  isFavoriteValue(value) {
+    const key = favoriteTagKey(value);
+    return Boolean(key && this.favoriteSet().has(key));
+  }
+
+  setFavoriteValue(value, favorite) {
+    const key = favoriteTagKey(value);
+    if (!key) return;
+    const favorites = this.favoriteSet();
+    if (favorite) favorites.add(key);
+    else favorites.delete(key);
+    this.settings.favorites = [...favorites].sort();
+    this.persist();
+    this.renderTags();
+    this.refreshExamplesPanel?.();
   }
 
   promptEditorValue() {
@@ -593,6 +618,17 @@ export class PromptEditor {
       this.filterMode = this.filterSelect.value;
       this.renderTags();
     });
+    this.favoriteOnlyToggle = button(t("お気に入りのみ表示"), () => {
+      this.settings.showFavoritesOnly = !this.settings.showFavoritesOnly;
+      this.favoriteOnlyToggle.classList.toggle("is-active", this.settings.showFavoritesOnly);
+      this.favoriteOnlyToggle.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+      this.persist();
+      this.renderTags();
+      this.refreshExamplesPanel?.();
+    });
+    this.favoriteOnlyToggle.classList.add("paio-favorite-filter");
+    this.favoriteOnlyToggle.classList.toggle("is-active", this.settings.showFavoritesOnly);
+    this.favoriteOnlyToggle.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
 
     const addRow = element("div", { className: "paio-add-row" }, [
       this.addInput,
@@ -601,6 +637,7 @@ export class PromptEditor {
     const tools = element("div", { className: "paio-toolbar" }, [
       this.searchInput,
       this.filterSelect,
+      this.favoriteOnlyToggle,
       button("↶", () => this.undo(), t("元に戻す")),
       button("↷", () => this.redo(), t("やり直す")),
       button(t("整形"), () => this.normalize(false)),
@@ -1348,6 +1385,20 @@ export class PromptEditor {
     search.type = "search";
     search.placeholder = t("英語・日本語でタグを検索");
     search.setAttribute("aria-label", t("内蔵例を検索"));
+    const favoriteOnly = button(t("お気に入りのみ表示"), () => {
+      this.settings.showFavoritesOnly = !this.settings.showFavoritesOnly;
+      favoriteOnly.classList.toggle("is-active", this.settings.showFavoritesOnly);
+      favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+      this.favoriteOnlyToggle?.classList.toggle("is-active", this.settings.showFavoritesOnly);
+      this.favoriteOnlyToggle?.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+      this.persist();
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      redraw();
+      this.renderTags();
+    });
+    favoriteOnly.classList.add("paio-favorite-filter");
+    favoriteOnly.classList.toggle("is-active", this.settings.showFavoritesOnly);
+    favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
     const categoryBands = element("div", { className: "paio-example-category-bands" });
     const pathStatus = element("span", { className: "paio-example-path", text: t("分類を読み込み中…") });
     const list = element("div", { className: "paio-example-list" });
@@ -1491,11 +1542,14 @@ export class PromptEditor {
       };
       renderCategoryBands(resolved);
       const query = search.value.trim().toLocaleLowerCase();
-      const matches = filterExampleLibraryTags(library, resolved.small?.id, query);
+      const favoriteKeys = this.favoriteSet();
+      const matches = filterExampleLibraryTags(library, resolved.small?.id, query)
+        .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt)));
       resultStatus.textContent = t("{count}件", { count: matches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
       for (const item of matches.slice(0, visibleLimit)) {
         const translation = cleanTranslation(item.ja);
+        const favorite = favoriteKeys.has(favoriteTagKey(item.prompt));
         const chip = button("", (event) => {
           if (event.ctrlKey || event.metaKey) {
             if (selected.has(item.prompt)) selected.delete(item.prompt);
@@ -1516,7 +1570,13 @@ export class PromptEditor {
           translation ? `${item.prompt} — ${translation}` : item.prompt,
         ].filter(Boolean).join("\n"));
         chip.classList.add("paio-example-chip");
+        chip.classList.toggle("is-favorite", favorite);
+        chip.addEventListener("contextmenu", (event) => {
+          event.preventDefault();
+          this.showFavoriteContextMenu(event, item.prompt);
+        });
         chip.replaceChildren(
+          ...(favorite ? [element("span", { className: "paio-favorite-mark", text: "★" })] : []),
           element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
           ...(translation ? [element("span", { className: "paio-example-chip-translation", text: translation })] : []),
         );
@@ -1576,7 +1636,7 @@ export class PromptEditor {
       element("div", { className: "paio-example-path-row" }, [pathStatus, resetCategories]),
       categoryBands,
     ]);
-    const controls = element("div", { className: "paio-example-controls" }, [search]);
+    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly]);
     const footer = element("div", { className: "paio-example-footer" }, [
       resultStatus,
       element("span", { className: "paio-hint", text: t("Ctrl+クリックで複数選択") }),
@@ -1731,6 +1791,7 @@ export class PromptEditor {
     return this.currentTags.map((tag, index) => ({ tag, index })).filter(({ tag }) => {
       const haystack = `${tag.value} ${cleanTranslation(tag.translation)}`.toLocaleLowerCase();
       if (query && !haystack.includes(query)) return false;
+      if (this.settings.showFavoritesOnly && !this.isFavoriteValue(tag.value)) return false;
       const duplicate = duplicates.has(canonicalTagKey(tag.value));
       if (this.filterMode === "enabled") return tag.enabled;
       if (this.filterMode === "disabled") return !tag.enabled;
@@ -1784,6 +1845,7 @@ export class PromptEditor {
     row.classList.toggle("is-blacklisted", tag.blacklistMatch);
     row.classList.toggle("is-missing", tag.missingModel);
     row.classList.toggle("has-error", Boolean(tag.translationError));
+    row.classList.toggle("is-favorite", this.isFavoriteValue(tag.value));
     const notices = [];
     if (duplicate) notices.push(t("重複"));
     if (tag.blacklistMatch) notices.push(t("ブラックリスト一致"));
@@ -1793,7 +1855,7 @@ export class PromptEditor {
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
-    const stateMark = element("span", { className: "paio-state-mark", text: "" });
+    const stateMark = element("span", { className: "paio-state-mark", text: this.isFavoriteValue(tag.value) ? "★" : "" });
     stateMark.setAttribute("aria-hidden", "true");
     const content = element("span", { className: "paio-tag-content" }, [
       element("span", { className: "paio-tag-label", text: primaryText }),
@@ -1999,6 +2061,11 @@ export class PromptEditor {
     menu.append(
       title,
       weightPanel,
+      action(t(this.isFavoriteValue(tag.value) ? "お気に入りから削除" : "お気に入りに追加"), () => {
+        const current = this.currentTags[index]?.value || tag.value;
+        this.setFavoriteValue(current, !this.isFavoriteValue(current));
+        this.setStatus(t("お気に入りを更新しました"));
+      }),
       action(t("編集"), () => {
         const row = [...this.tagList.children].find((item) => item.dataset?.tagIndex === String(index));
         if (row) this.beginInlineEdit(row, tag, index);
@@ -2020,6 +2087,35 @@ export class PromptEditor {
           commitWeightInput();
           this.closeContextMenu();
         }
+      }, { capture: true, signal: this.contextMenuAbort.signal });
+      document.addEventListener("keydown", (keyEvent) => {
+        if (keyEvent.key === "Escape") this.closeContextMenu();
+      }, { signal: this.contextMenuAbort.signal });
+    }, 0);
+  }
+
+  showFavoriteContextMenu(event, value) {
+    this.closeContextMenu();
+    const favorite = this.isFavoriteValue(value);
+    const menu = element("div", { className: "paio-context-menu paio-favorite-context-menu" });
+    menu.setAttribute("role", "menu");
+    const title = element("strong", { className: "paio-context-title", text: value || t("空タグ") });
+    const action = button(t(favorite ? "お気に入りから削除" : "お気に入りに追加"), () => {
+      this.closeContextMenu();
+      this.setFavoriteValue(value, !favorite);
+      this.setStatus(t("お気に入りを更新しました"));
+    });
+    action.className = "paio-context-action";
+    action.setAttribute("role", "menuitem");
+    menu.append(title, action);
+    menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
+    menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 140))}px`;
+    document.body.append(menu);
+    this.contextMenu = menu;
+    window.setTimeout(() => {
+      this.contextMenuAbort = new AbortController();
+      document.addEventListener("pointerdown", (pointerEvent) => {
+        if (!menu.contains(pointerEvent.target)) this.closeContextMenu();
       }, { capture: true, signal: this.contextMenuAbort.signal });
       document.addEventListener("keydown", (keyEvent) => {
         if (keyEvent.key === "Escape") this.closeContextMenu();

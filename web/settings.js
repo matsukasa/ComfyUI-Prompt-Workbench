@@ -16,6 +16,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   filter: "all",
   libraryFile: "",
   libraryEdits: { categories: [], tags: [] },
+  favorites: [],
+  showFavoritesOnly: false,
   tagListHeight: 260,
   exampleListHeight: 118,
 });
@@ -60,6 +62,18 @@ export function sanitizeSettings(input = {}) {
     }
   }
   settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
+  if (Array.isArray(input.favorites)) {
+    const seen = new Set();
+    settings.favorites = input.favorites
+      .map((value) => String(value || "").trim().replace(/\s+/gu, " ").toLocaleLowerCase())
+      .filter((value) => {
+        if (!value || seen.has(value)) return false;
+        seen.add(value);
+        return true;
+      })
+      .slice(0, 20000);
+  }
+  settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
   if (typeof input.libraryFile === "string") {
     settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);
   }

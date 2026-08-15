@@ -201,9 +201,13 @@
 .paio-tag.is-blacklisted { --paio-tag-fill: var(--paio-color-blacklist, var(--paio-rose)); }
 .paio-tag.is-missing { border-color: var(--paio-color-missing, var(--paio-danger)); }
 .paio-tag.has-error { border-color: var(--paio-color-error, var(--paio-danger)); }
+.paio-tag.is-favorite {
+  border-color: color-mix(in srgb, #ffd56a 76%, white);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffd56a 50%, transparent), 0 1px 2px rgb(0 0 0 / 0.28);
+}
 .paio-tag.is-dragging { opacity: 0.3; }
 .paio-select-mark { width: 12px; color: #fff; font-weight: 800; text-align: center; }
-.paio-state-mark { width: 13px; color: var(--paio-muted); font-weight: 800; text-align: center; }
+.paio-state-mark { width: 13px; color: #ffd56a; font-weight: 800; text-align: center; }
 .paio-select-mark:empty, .paio-state-mark:empty { display: none; }
 .paio-tag-content { display: flex; min-width: 0; width: max-content; flex-direction: column; }
 .paio-tag-label { min-width: 0; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -288,6 +292,11 @@
 }
 .paio-context-action:hover, .paio-context-action:focus-visible { background: color-mix(in oklch, currentColor, transparent 90%); }
 .paio-context-action.is-danger { color: var(--paio-danger, oklch(0.7 0.18 25)); }
+.paio-favorite-filter.is-active {
+  color: #ffd56a;
+  border-color: color-mix(in srgb, #ffd56a 72%, var(--paio-border));
+  background: color-mix(in srgb, #ffd56a 14%, var(--paio-surface));
+}
 
 .paio-status { color: var(--paio-muted); margin: 6px 2px; min-height: 1.4em; overflow-wrap: anywhere; }
 .paio-error, .paio-status.is-error { color: var(--paio-danger); }
@@ -366,6 +375,16 @@
 .paio-example-chip-prompt { max-width: 100%; color: #f4f6f8; font-weight: 650; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
 .paio-example-chip-translation { max-width: 100%; color: #afc7e8; font-size: 0.88rem; font-weight: 550; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
 .paio-example-chip.is-selected { background: var(--paio-primary-soft); box-shadow: inset 0 0 0 1px var(--paio-primary); }
+.paio-example-chip.is-favorite {
+  border-color: color-mix(in srgb, #ffd56a 72%, white);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffd56a 54%, transparent);
+}
+.paio-favorite-mark {
+  color: #ffd56a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
 .paio-example-footer { justify-content: space-between; flex-wrap: wrap; min-height: 26px; margin-top: 5px; }
 .paio-example-count { color: var(--paio-muted); }
 

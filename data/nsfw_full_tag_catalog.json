@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 4371,
-    "tags": 4370,
+    "tags": 4373,
     "major_categories": 10,
     "medium_categories": 42,
     "small_categories": 164
@@ -17915,16 +17915,6 @@
                   "rank": 29
                 },
                 {
-                  "id": 435555,
-                  "name": "heavy_breathing",
-                  "post_count": 42621,
-                  "aliases": [
-                    "panting"
-                  ],
-                  "rank": 31,
-                  "translation_ja": "重い呼吸、おそらく使用されない"
-                },
-                {
                   "id": "legacy:d52d2540417af794",
                   "name": "naughty",
                   "post_count": 0,
@@ -22807,6 +22797,12 @@
               "id": "legacy_small:04-001",
               "label_ja": "画質・画像形式",
               "tags": [
+                {
+                  "name": "embedding:lazypos"
+                },
+                {
+                  "name": "embedding:lazympos"
+                },
                 {
                   "id": "legacy:69e23f185c13b313",
                   "name": "highres",
@@ -37123,6 +37119,10 @@
               "label_ja": "花・植物",
               "tags": [
                 {
+                  "name": "Lily Blossom",
+                  "translation_ja": "百合の花"
+                },
+                {
                   "id": 464573,
                   "name": "plant",
                   "post_count": 85140,
@@ -38371,12 +38371,15 @@
       "medium_categories": [
         {
           "id": "legacy_medium:10:legacy_other",
-          "label_ja": "画像・人物の除外指定",
+          "label_ja": "品質指定",
           "small_categories": [
             {
               "id": "legacy_small:10-001",
               "label_ja": "画質・文字・透かしの除外",
               "tags": [
+                {
+                  "name": "embedding:lazyneg"
+                },
                 {
                   "id": "legacy:5807dd602664a565",
                   "name": "logo",
