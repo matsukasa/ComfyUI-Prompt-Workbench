@@ -203,6 +203,10 @@ Prompt Workbench設定 → Tag manager → 「ファイルを選んで読み込�
 Comfy Registryへ公開するパッケージでは、公開ワークフロー内で`data/sfw_tag_catalog.json`を
 `data/tag_catalog.json`として差し替えるため、Registry同梱版の既定カタログはSFW版です。
 
+お気に入りは専用ファイルではなく、`状態JSONを書き出す`で保存する`prompt_workbench_state.json`の
+`settings.favorites`に含まれます。カタログを差し替える前や環境を移す前は、この状態JSONと
+使用中のタグカタログJSONをあわせてバックアップしてください。
+
 外部データの取得・更新スクリプト、API認証設定、rawキャッシュ、中間生成物は同梱していません。
 内蔵デフォルトとして読み込む固定カタログは`data/tag_catalog.json`です。
 由来データの出典とライセンスは[第三者表記](THIRD_PARTY_NOTICES.md)に記録しています。

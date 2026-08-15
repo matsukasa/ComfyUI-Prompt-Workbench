@@ -220,6 +220,10 @@ loaded file is saved as a named catalog under the ComfyUI user directory at
 For Comfy Registry packages, the publish workflow replaces `data/tag_catalog.json` with
 `data/sfw_tag_catalog.json` during packaging, so the Registry-bundled default catalog is SFW.
 
+Favorites do not use a dedicated favorites file. They are included in `settings.favorites` inside
+the `prompt_workbench_state.json` file exported by `Export state JSON`. Before replacing catalogs
+or moving to another environment, back up both this state JSON and the active tag catalog JSON.
+
 External data fetch/update scripts, API authentication settings, raw caches, and intermediate
 artifacts are not included. The built-in default catalog is `data/tag_catalog.json`.
 Data sources and licenses are recorded in
