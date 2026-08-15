@@ -41,7 +41,7 @@
 Undo／Redo、検索、重複検出、変更内容の確認、上書き・別名保存に対応しています。
 
 `start-dev.bat`をダブルクリックすると起動できます。ComfyUI本体とは独立して動作するため、
-ComfyUIを起動していなくても`data/tag_catalog.json`などの対応JSONを開いて編集できます。
+ComfyUIを起動していなくても`data/tag_catalog.json`や`data/sfw_tag_catalog.json`などの対応JSONを開いて編集できます。
 
 ## インストール
 
@@ -189,18 +189,19 @@ OSのファイル選択画面が開き、選択したJSONを検証してComfyUI�
 
 ## 内蔵タグカタログ
 
-`data/tag_catalog.json`はComfyUI Registry同梱用のSFW/一般タグカタログです。9大分類・
-31中分類・132小分類に3,430タグを収録しています。
+`data/tag_catalog.json`はNSFW系を含むフルタグカタログです。11大分類・
+40中分類・163小分類に4,120タグを収録しています。
 
 タグボタンは英語名と日本語訳を表示し、ホバーにも同じ内容だけを表示します。検索では
 英語名、エイリアス、日本語の大・中・小分類名を利用できます。カタログの閲覧・検索・追加で
 外部タグサービスへ通信することはありません。
 
-より広い作画用のフルカタログはRegistryパッケージには同梱していません。必要な場合だけGitHubリポジトリから
-任意の拡張カタログファイルを取得し、ComfyUI上の
+SFW/一般向けのカタログは`data/sfw_tag_catalog.json`として残しています。必要な場合はComfyUI上の
 Prompt Workbench設定 → Tag manager → 「ファイルを選んで読み込む」から任意で読み込んでください。
 読み込んだファイルはComfyUIのユーザーディレクトリ
 `prompt_workbench/tag_catalogs/`へ名前付きカタログとして保存されます。
+Comfy Registryへ公開するパッケージでは、公開ワークフロー内で`data/sfw_tag_catalog.json`を
+`data/tag_catalog.json`として差し替えるため、Registry同梱版の既定カタログはSFW版です。
 
 外部データの取得・更新スクリプト、API認証設定、rawキャッシュ、中間生成物は同梱していません。
 内蔵デフォルトとして読み込む固定カタログは`data/tag_catalog.json`です。

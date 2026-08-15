@@ -2,4 +2,4 @@
 .gitignore
 __pycache__/
 *.pyc
-data/nsfw_full_tag_catalog.json
+data/sfw_tag_catalog.json

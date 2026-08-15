@@ -446,6 +446,16 @@ export class PromptEditor {
     this.refreshExamplesPanel?.();
   }
 
+  syncFavoritesWithCatalog(catalog) {
+    const available = new Set(buildTagLibrary(catalog, this.settings.libraryEdits).tags.map((tag) => favoriteTagKey(tag.prompt)));
+    const next = [...this.favoriteSet()].filter((key) => available.has(key)).sort();
+    if (next.length === (this.settings.favorites || []).length && next.every((key, index) => key === this.settings.favorites[index])) return 0;
+    const removed = (this.settings.favorites || []).length - next.length;
+    this.settings.favorites = next;
+    this.persist();
+    return removed;
+  }
+
   promptEditorValue() {
     return serializeEditorPrompt(this.tags, {
       includeDisabled: true,
@@ -1029,6 +1039,7 @@ export class PromptEditor {
         edits = sanitizeLibraryEdits({});
         this.exampleData = catalog;
         this.exampleLoadPromise = Promise.resolve(catalog);
+        this.syncFavoritesWithCatalog(catalog);
         currentCatalogFileHandle = fileHandle;
         currentSourceFileName = selectedFile.name;
         this.syncToWidgets();
@@ -1091,6 +1102,7 @@ export class PromptEditor {
       edits = sanitizeLibraryEdits({});
       this.exampleData = catalog;
       this.exampleLoadPromise = Promise.resolve(catalog);
+      this.syncFavoritesWithCatalog(catalog);
       this.syncToWidgets();
       render();
       this.refreshExamplesPanel?.();
@@ -1366,6 +1378,7 @@ export class PromptEditor {
     if (!this.exampleLoadPromise) {
       this.exampleLoadPromise = fetchExampleCatalog(this.api, this.settings.libraryFile).then((body) => {
         this.exampleData = body;
+        this.syncFavoritesWithCatalog(body);
         return body;
       }).catch((error) => {
         this.exampleLoadPromise = null;

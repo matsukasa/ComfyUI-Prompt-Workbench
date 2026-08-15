@@ -13,6 +13,44 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+      - name: Registry package catalog preflight
+        run: |
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          import routes
+
+          default_catalog = Path("data/tag_catalog.json")
+          sfw_catalog = Path("data/sfw_tag_catalog.json")
+
+          def load_catalog(path):
+              if not path.is_file():
+                  raise SystemExit(f"Missing required catalog: {path}")
+              with path.open("r", encoding="utf-8") as handle:
+                  catalog = json.load(handle)
+              routes.validate_user_catalog(catalog)
+              return catalog
+
+          full = load_catalog(default_catalog)
+          sfw = load_catalog(sfw_catalog)
+          if full.get("stats", {}).get("catalog_profile") == "registry_sfw":
+              raise SystemExit("data/tag_catalog.json is expected to be the local full catalog before packaging")
+          if sfw.get("stats", {}).get("catalog_profile") != "registry_sfw":
+              raise SystemExit("data/sfw_tag_catalog.json must declare stats.catalog_profile = registry_sfw")
+
+          shutil.copyfile(sfw_catalog, default_catalog)
+          packaged = load_catalog(default_catalog)
+          if packaged.get("stats", {}).get("catalog_profile") != "registry_sfw":
+              raise SystemExit("Registry package catalog replacement did not produce an SFW default catalog")
+          print(
+              "Registry package catalog is SFW:",
+              f"tags={packaged.get('stats', {}).get('tags')}",
+              f"source={sfw_catalog}",
+              f"target={default_catalog}",
+          )
+          PY
       - name: Publish Custom Node
         uses: Comfy-Org/publish-node-action@main
         with:

@@ -45,8 +45,8 @@ dragging and reordering tags, direct editing of category and tag names, multi-se
 Undo/Redo, search, duplicate detection, change review, overwrite, and Save As.
 
 Double-click `start-dev.bat` to launch it. The editor runs independently from ComfyUI, so you can
-open and edit supported JSON files such as `data/tag_catalog.json` without installing or starting
-ComfyUI.
+open and edit supported JSON files such as `data/tag_catalog.json` or
+`data/sfw_tag_catalog.json` without installing or starting ComfyUI.
 
 ## Installation
 
@@ -206,14 +206,19 @@ in progress requires confirmation before those edits are discarded.
 
 ## Built-in Tag Catalog
 
-`data/tag_catalog.json` is the SFW/general-purpose catalog bundled with the ComfyUI Registry package.
-It contains 3,430 tags across 9 top-level, 31 middle-level, and 132 subcategories.
+`data/tag_catalog.json` is the full tag catalog, including NSFW-related tags. It contains 4,120
+tags across 11 top-level, 40 middle-level, and 163 subcategories.
 
 Tag buttons display the English name and Japanese translation, with the same information in the
 hover text. Search covers English names, aliases, and Japanese top, middle, and subcategory names.
 Browsing, searching, and adding catalog tags never contacts an external tag service.
 
-A broader optional drawing catalog is not bundled in the Registry package. Download an optional extended catalog file from the GitHub repository only if you need it, then load it in ComfyUI from Prompt Workbench Settings -> Tag manager -> `Choose and load a file`. The loaded file is saved as a named catalog under the ComfyUI user directory at `prompt_workbench/tag_catalogs/`.
+The SFW/general-purpose catalog remains available as `data/sfw_tag_catalog.json`. If you need it,
+load it in ComfyUI from Prompt Workbench Settings -> Tag manager -> `Choose and load a file`. The
+loaded file is saved as a named catalog under the ComfyUI user directory at
+`prompt_workbench/tag_catalogs/`.
+For Comfy Registry packages, the publish workflow replaces `data/tag_catalog.json` with
+`data/sfw_tag_catalog.json` during packaging, so the Registry-bundled default catalog is SFW.
 
 External data fetch/update scripts, API authentication settings, raw caches, and intermediate
 artifacts are not included. The built-in default catalog is `data/tag_catalog.json`.

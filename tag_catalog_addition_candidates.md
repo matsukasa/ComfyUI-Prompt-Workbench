@@ -10,7 +10,7 @@
 - 追加非推奨?7
 - 新規分類候補?5
 
-> 比較対象は現在の内蔵デフォルトである `data/tag_catalog.json` です。`data/nsfw_full_tag_catalog.json` に既に存在するものは、重複・統合候補で「任意フルカタログ既存」として分けました。
+> 比較対象は当時の内蔵デフォルトである `data/tag_catalog.json` です。現在のSFWカタログにあたる `data/sfw_tag_catalog.json` に既に存在するものは、重複・統合候補で「任意フルカタログ既存」として分けました。
 
 ---
 
