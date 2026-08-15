@@ -312,6 +312,14 @@
 }
 .paio-context-action:hover, .paio-context-action:focus-visible { background: color-mix(in oklch, currentColor, transparent 90%); }
 .paio-context-action.is-danger { color: var(--paio-danger, oklch(0.7 0.18 25)); }
+.paio-favorite-filter {
+  color: #f5d36b;
+  border-color: color-mix(in srgb, #ffd56a 36%, var(--paio-border));
+  background: color-mix(in srgb, #ffd56a 7%, var(--paio-surface));
+}
+.paio-favorite-filter:hover {
+  background: color-mix(in srgb, #ffd56a 11%, var(--paio-raised));
+}
 .paio-favorite-filter.is-active {
   color: #ffd56a;
   border-color: color-mix(in srgb, #ffd56a 72%, var(--paio-border));

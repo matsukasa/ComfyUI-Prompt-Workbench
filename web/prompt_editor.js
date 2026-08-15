@@ -1409,6 +1409,19 @@ export class PromptEditor {
     const list = element("div", { className: "paio-example-list" });
     list.setAttribute("aria-live", "polite");
     list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
+    const openExampleFavoriteMenu = (event) => {
+      const chip = event.target?.closest?.(".paio-example-chip");
+      const prompt = chip?.dataset?.prompt;
+      if (!prompt) return;
+      event.preventDefault();
+      event.stopPropagation();
+      clearTimeout(this.clickTimer);
+      this.showFavoriteContextMenu(event, prompt);
+    };
+    list.addEventListener("pointerdown", (event) => {
+      if (event.button === 2) openExampleFavoriteMenu(event);
+    }, true);
+    list.addEventListener("contextmenu", openExampleFavoriteMenu, true);
     const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
       element("span", { className: "paio-example-resize-mark", text: "⋯" }),
     ]);
@@ -1575,10 +1588,18 @@ export class PromptEditor {
           translation ? `${item.prompt} — ${translation}` : item.prompt,
         ].filter(Boolean).join("\n"));
         chip.classList.add("paio-example-chip");
+        chip.dataset.prompt = item.prompt;
         chip.classList.toggle("is-favorite", favorite);
-        chip.addEventListener("contextmenu", (event) => {
+        const openFavoriteMenu = (event) => {
           event.preventDefault();
+          event.stopPropagation();
           this.showFavoriteContextMenu(event, item.prompt);
+        };
+        chip.addEventListener("pointerdown", (event) => {
+          if (event.button === 2) openFavoriteMenu(event);
+        });
+        chip.addEventListener("contextmenu", (event) => {
+          openFavoriteMenu(event);
         });
         chip.replaceChildren(
           element("span", { className: "paio-favorite-mark", text: favorite ? "★" : "☆" }),
@@ -1910,6 +1931,14 @@ export class PromptEditor {
     });
     row.addEventListener("contextmenu", (event) => {
       event.preventDefault();
+      event.stopPropagation();
+      clearTimeout(this.clickTimer);
+      this.showContextMenu(event, tag, index);
+    });
+    row.addEventListener("pointerdown", (event) => {
+      if (event.button !== 2) return;
+      event.preventDefault();
+      event.stopPropagation();
       clearTimeout(this.clickTimer);
       this.showContextMenu(event, tag, index);
     });
