@@ -14,7 +14,7 @@
     "legacy_internal_duplicates": 190,
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
-    "translated_tags": 3816,
+    "translated_tags": 3350,
     "tags": 3816,
     "major_categories": 10,
     "medium_categories": 32,
@@ -1241,8 +1241,7 @@
                   "rank": 14,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "肌から浮いた布地"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:aee9fa02a2f55691",
@@ -1253,8 +1252,7 @@
                   "rank": 15,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "発光感のある肌"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:69ca180522ae6051",
@@ -1265,8 +1263,7 @@
                   "rank": 16,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "つるつる肌"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:951a87adb6048ada",
@@ -1277,8 +1274,7 @@
                   "rank": 17,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "柔らかな頬染め"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:56ed76cdb8cb3efb",
@@ -1289,8 +1285,7 @@
                   "rank": 18,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "柔らかな肌"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:0f3721c816e68e0f",
@@ -1301,8 +1296,7 @@
                   "rank": 19,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "透明感"
+                  "style_count": 6
                 }
               ]
             }
@@ -1440,8 +1434,7 @@
                   "rank": 13,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ウエスト部分を直す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2782890a87c2ade9",
@@ -1452,8 +1445,7 @@
                   "rank": 14,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体と布の間の隙間"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:17e91bd4fc307923",
@@ -1464,8 +1456,7 @@
                   "rank": 15,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体に回した腕"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2827f6a15af6bc2b",
@@ -1476,8 +1467,7 @@
                   "rank": 16,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "頭上に上げた腕"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9986a3a40e987306",
@@ -1488,8 +1478,7 @@
                   "rank": 17,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "休めた腕"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:98d303309910adfa",
@@ -1500,8 +1489,7 @@
                   "rank": 18,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バランスのよい胸の形"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:60be6d26d6967013",
@@ -1512,8 +1500,7 @@
                   "rank": 19,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バランスのよい小柄な体型"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:28e0b7104dbfe77a",
@@ -1524,8 +1511,7 @@
                   "rank": 20,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "美しいバストライン"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:4d142bc56cff7e01",
@@ -1536,8 +1522,7 @@
                   "rank": 21,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "美しい鎖骨"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:0977f04d5d81f7f7",
@@ -1548,8 +1533,7 @@
                   "rank": 22,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "美しく丸みのあるバスト"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b1c6a6a5763843ae",
@@ -1560,8 +1544,7 @@
                   "rank": 23,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両腕を上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d64a72eba0667298",
@@ -1572,8 +1555,7 @@
                   "rank": 24,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "鎖骨"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:c261123616f29872",
@@ -1584,8 +1566,7 @@
                   "rank": 25,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "胸が覆われている"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:6c925c20c066cad3",
@@ -1596,8 +1577,7 @@
                   "rank": 26,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "華奢な体つき"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:1599ca96defe5f92",
@@ -1608,8 +1588,7 @@
                   "rank": 27,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "華奢な首"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:aa9bfea8f6d20698",
@@ -1620,8 +1599,7 @@
                   "rank": 28,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上品な胸のシルエット"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:00e4fd332abea8f9",
@@ -1632,8 +1610,7 @@
                   "rank": 29,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "上品なシルエット"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:9ec943f76f0be9fb",
@@ -1644,8 +1621,7 @@
                   "rank": 30,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "長く伸びた脚"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e50842b0c5b2ca31",
@@ -1656,8 +1632,7 @@
                   "rank": 31,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "女性的"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:82a6da45eee6d9bf",
@@ -1668,8 +1643,7 @@
                   "rank": 32,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "女性的な仕草"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:42358744481b1d95",
@@ -1680,8 +1654,7 @@
                   "rank": 33,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "鎖骨に添えた指先"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:eddc7a0ae0e50b8d",
@@ -1692,8 +1665,7 @@
                   "rank": 34,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "引き締まったバストライン"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:2ce5830dd1a7033e",
@@ -1704,8 +1676,7 @@
                   "rank": 35,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "平らなお腹"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:31142178b0988b37",
@@ -1716,8 +1687,7 @@
                   "rank": 36,
                   "prompt_count": 11,
                   "negative_prompt_count": 0,
-                  "style_count": 11,
-                  "translation_ja": "上胸にボリュームのある胸"
+                  "style_count": 11
                 },
                 {
                   "id": "styles:20260815:5ba05e942359a5ae",
@@ -1728,8 +1698,7 @@
                   "rank": 37,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "半身をひねった体"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fd4f27c3787f12a0",
@@ -1740,8 +1709,7 @@
                   "rank": 38,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体の後ろの手"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b879f2ec2110efab",
@@ -1752,8 +1720,7 @@
                   "rank": 39,
                   "prompt_count": 10,
                   "negative_prompt_count": 0,
-                  "style_count": 10,
-                  "translation_ja": "高い位置の胸"
+                  "style_count": 10
                 },
                 {
                   "id": "styles:20260815:b04389539ad992fe",
@@ -1764,8 +1731,7 @@
                   "rank": 40,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "そろえた脚"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:34cb462f43a7286e",
@@ -1776,8 +1742,7 @@
                   "rank": 41,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "曲げた脚"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:2d30c0f1f596ed52",
@@ -1788,8 +1753,7 @@
                   "rank": 42,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "伸ばした脚"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:9e1b77e79a4842fd",
@@ -1800,8 +1764,7 @@
                   "rank": 43,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "片側に流した脚"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:d316b3b655097dd5",
@@ -1812,8 +1775,7 @@
                   "rank": 44,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "持ち上がったバスト"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:d1b35b3349b06f41",
@@ -1824,8 +1786,7 @@
                   "rank": 45,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "長い脚"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:1dbdfb3a7bf071dc",
@@ -1836,8 +1797,7 @@
                   "rank": 46,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "狭い肩幅"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:1641a2b61d95ecf0",
@@ -1848,8 +1808,7 @@
                   "rank": 47,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "自然な胸の曲線"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fcc23ba6f707442d",
@@ -1860,8 +1819,7 @@
                   "rank": 48,
                   "prompt_count": 10,
                   "negative_prompt_count": 0,
-                  "style_count": 10,
-                  "translation_ja": "上向きの胸"
+                  "style_count": 10
                 },
                 {
                   "id": "styles:20260815:fff7005928e9951c",
@@ -1872,8 +1830,7 @@
                   "rank": 49,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "目立つ上胸のふくらみ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c01fbf0da7d4651f",
@@ -1884,8 +1841,7 @@
                   "rank": 50,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "洗練されたボディライン"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:b05eccff73e5bba5",
@@ -1896,8 +1852,7 @@
                   "rank": 51,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "丸い胸"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c62bf10b56c4c563",
@@ -1908,8 +1863,7 @@
                   "rank": 52,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "丸みのある胸"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:97005c73c6c612b9",
@@ -1920,8 +1874,7 @@
                   "rank": 53,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "丸みのある上胸"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:ab0a55e306e4b930",
@@ -1932,8 +1885,7 @@
                   "rank": 54,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩を引いた姿勢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:566772cf64fd433d",
@@ -1944,8 +1896,7 @@
                   "rank": 55,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "細い腕"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:94fabc4e32444dae",
@@ -1956,8 +1907,7 @@
                   "rank": 56,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "細い腰"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:24960cef82aeab7a",
@@ -1968,8 +1918,7 @@
                   "rank": 57,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "小柄な体格"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:02558e81a4b8207c",
@@ -1980,8 +1929,7 @@
                   "rank": 58,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "なめらかな胸の輪郭"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6dee4dbc08109fd6",
@@ -1992,8 +1940,7 @@
                   "rank": 59,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかなバストライン"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2fa6203bce92980b",
@@ -2004,8 +1951,7 @@
                   "rank": 60,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかく丸い胸"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c93d8b62e578c4b7",
@@ -2016,8 +1962,7 @@
                   "rank": 61,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "控えめな下腹部"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:6a86964b4d37cb46",
@@ -2028,8 +1973,7 @@
                   "rank": 62,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "鎖骨に触れる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:c3fe6128bd7166a0",
@@ -2040,8 +1984,7 @@
                   "rank": 63,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ウエスト部分に触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ca8a57a8d3b45cd2",
@@ -2052,8 +1995,7 @@
                   "rank": 64,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩にかけたタオル"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ca46c239aedd07c8",
@@ -2064,8 +2006,7 @@
                   "rank": 65,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "タートルネックを引く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f60c03413a5808d9",
@@ -2076,8 +2017,7 @@
                   "rank": 66,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "振り向いた体"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:31a03a31f8ee71f2",
@@ -2088,8 +2028,7 @@
                   "rank": 67,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "ひねった胴体"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:1e5561fa4b0a5e59",
@@ -2100,8 +2039,7 @@
                   "rank": 68,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "振り返った上半身"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0434dd6c28b674ea",
@@ -2112,8 +2050,7 @@
                   "rank": 69,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上向きの胸の輪郭"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e8a5c19178d3122d",
@@ -2124,8 +2061,7 @@
                   "rank": 70,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "腰のひねり"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8c25d9d3c47aa18e",
@@ -2136,8 +2072,7 @@
                   "rank": 71,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "ウエスト部分の隙間"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:77f7ee579dc9cfec",
@@ -2148,8 +2083,7 @@
                   "rank": 72,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "はっきりした胸の形"
+                  "style_count": 2
                 }
               ]
             }
@@ -2330,8 +2264,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両手でスカートの裾を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8bb45edccdb893a3",
@@ -2342,8 +2275,7 @@
                   "rank": 10001,
                   "prompt_count": 9,
                   "negative_prompt_count": 0,
-                  "style_count": 9,
-                  "translation_ja": "繊細な手の仕草"
+                  "style_count": 9
                 },
                 {
                   "id": "styles:20260815:b5b9ca378d3ae628",
@@ -2354,8 +2286,7 @@
                   "rank": 10002,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上品な手の仕草"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1fddac069a000135",
@@ -2366,8 +2297,7 @@
                   "rank": 10003,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "足をそろえる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2db91108be12a6a4",
@@ -2378,8 +2308,7 @@
                   "rank": 10004,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "唇の近くの指"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:14619e55f1b0523f",
@@ -2390,8 +2319,7 @@
                   "rank": 10005,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "唇に指を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ab19c662454372c4",
@@ -2402,8 +2330,7 @@
                   "rank": 10006,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "指を絡ませる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e5005108a3db0f0b",
@@ -2414,8 +2341,7 @@
                   "rank": 10007,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ガラスに触れる指先"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:365fd8f720c3c447",
@@ -2426,8 +2352,7 @@
                   "rank": 10008,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "指先を合わせる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5aa27d06008073b4",
@@ -2438,8 +2363,7 @@
                   "rank": 10009,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ガラスに手を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:37c4755372384e43",
@@ -2450,8 +2374,7 @@
                   "rank": 10010,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "後頭部に手を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2554a8eb90427ea7",
@@ -2462,8 +2385,7 @@
                   "rank": 10011,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニトップに手を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ec4aabcdd4b8f36f",
@@ -2474,8 +2396,7 @@
                   "rank": 10012,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "うなじに手を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9ed02c947bc73406",
@@ -2486,8 +2407,7 @@
                   "rank": 10013,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "胸元の近くの手"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:ac01d0371ef038c6",
@@ -2498,8 +2418,7 @@
                   "rank": 10014,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "口元の近くの手"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:6cac1708d1f9131c",
@@ -2510,8 +2429,7 @@
                   "rank": 10015,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "頬に手を当てる"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:6ba140f1de0c460c",
@@ -2522,8 +2440,7 @@
                   "rank": 10016,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ドアノブに手をかける"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:017d5671e461e6aa",
@@ -2534,8 +2451,7 @@
                   "rank": 10017,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "胸に手を当てる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:af4eb357ddc62219",
@@ -2546,8 +2462,7 @@
                   "rank": 10018,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "雨を受けるように手を上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:778e2de8246ea45a",
@@ -2558,8 +2473,7 @@
                   "rank": 10019,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "差し伸べた手"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9bdc0641eb4f8325",
@@ -2570,8 +2484,7 @@
                   "rank": 10020,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "顎の下の手"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:af9353ba6546ab61",
@@ -2582,8 +2495,7 @@
                   "rank": 10021,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "前で手を組む"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:aa470f08a559f3ca",
@@ -2594,8 +2506,7 @@
                   "rank": 10022,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "胸元で手を組む"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5c5b95d0e2631745",
@@ -2606,8 +2517,7 @@
                   "rank": 10023,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "手を重ねる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b61ef55c1a11409b",
@@ -2618,8 +2528,7 @@
                   "rank": 10024,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "床に手をつく"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c6a1947e6948edc9",
@@ -2630,8 +2539,7 @@
                   "rank": 10025,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "膝に手を置く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:e9e817083d47884f",
@@ -2642,8 +2550,7 @@
                   "rank": 10026,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "太ももに手を置く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:a3bbbde6aa4cf3dc",
@@ -2654,8 +2561,7 @@
                   "rank": 10027,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "手が見えている"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:70dbfadb554eb4af",
@@ -2666,8 +2572,7 @@
                   "rank": 10028,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "傘の柄をゆるく持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2749a70d541def44",
@@ -2678,8 +2583,7 @@
                   "rank": 10029,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "片手を頭の後ろに置く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:8046994a6ac1d380",
@@ -2690,8 +2594,7 @@
                   "rank": 10030,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片手を伸ばす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8e325ae7adbd0485",
@@ -2702,8 +2605,7 @@
                   "rank": 10031,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片手でハート形を作る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3614a3e047d65d8b",
@@ -2714,8 +2616,7 @@
                   "rank": 10032,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "片手を腰に当てる"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:cb05e2df8bebe745",
@@ -2726,8 +2627,7 @@
                   "rank": 10033,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片手で手首に触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1d7c8c53bcfe9ccd",
@@ -2738,8 +2638,7 @@
                   "rank": 10034,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "開いた手"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9f7f99a7aa124ae6",
@@ -2750,8 +2649,7 @@
                   "rank": 10035,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかな輪部リング"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1ff4e2247b0faa00",
@@ -2762,8 +2660,7 @@
                   "rank": 10036,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "指を振る"
+                  "style_count": 1
                 }
               ]
             },
@@ -3578,8 +3475,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "顔の接近"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:60db68978f3f3c60",
@@ -3590,8 +3486,7 @@
                   "rank": 10001,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "ひとつのほくろ"
+                  "style_count": 2
                 }
               ]
             },
@@ -4558,8 +4453,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ぼかした虹彩の反射"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:aae816947999be27",
@@ -4570,8 +4464,7 @@
                   "rank": 10001,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "細い下まつげ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:f279205409af27fc",
@@ -4582,8 +4475,7 @@
                   "rank": 10002,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "優しい視線"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:718e682cae381bf6",
@@ -4594,8 +4486,7 @@
                   "rank": 10003,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "優しく微笑む目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e778c619952817ec",
@@ -4606,8 +4497,7 @@
                   "rank": 10004,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "つやのある目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f1481fd6fdae9ab1",
@@ -4618,8 +4508,7 @@
                   "rank": 10005,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "目いっぱいに広がる虹彩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b1c688491c635a19",
@@ -4630,8 +4519,7 @@
                   "rank": 10006,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "大きなガラスのような目"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:195388bb71e60247",
@@ -4642,8 +4530,7 @@
                   "rank": 10007,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "大きな虹彩"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:48876fc60dcbfc67",
@@ -4654,8 +4541,7 @@
                   "rank": 10008,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "長く分かれた上まつげ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:1598653cc103c0e5",
@@ -4666,8 +4552,7 @@
                   "rank": 10009,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "長い上まつげ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:b16a6db846215283",
@@ -4678,8 +4563,7 @@
                   "rank": 10010,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "光を帯びた目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0392d7e378bd6748",
@@ -4690,8 +4574,7 @@
                   "rank": 10011,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "左目の下のほくろ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:2ce72a70539570a1",
@@ -4702,8 +4585,7 @@
                   "rank": 10012,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "リラックスした正面視線"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:d27ca9cef86b74c1",
@@ -4714,8 +4596,7 @@
                   "rank": 10013,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "丸みのあるアーモンド形の目"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:c40c717cf780721a",
@@ -4726,8 +4607,7 @@
                   "rank": 10014,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "中央にある小さな瞳孔"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:bc077d93752ae20e",
@@ -4738,8 +4618,7 @@
                   "rank": 10015,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "小さな瞳孔"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:3f16ef576ee76172",
@@ -4750,8 +4629,7 @@
                   "rank": 10016,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかなまぶた"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b02c9b121c217fec",
@@ -4762,8 +4640,7 @@
                   "rank": 10017,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかく描かれた下まぶた"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b5e468f6e0a41003",
@@ -4774,8 +4651,7 @@
                   "rank": 10018,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "柔らかく薄れる下側の虹彩"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:2b1b7d5d87e0981a",
@@ -4786,8 +4662,7 @@
                   "rank": 10019,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "まばらな下まつげ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f8a643a9b7d7cf26",
@@ -4798,8 +4673,7 @@
                   "rank": 10020,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "まばらで短い下まつげ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:025dabc51d4d074e",
@@ -4810,8 +4684,7 @@
                   "rank": 10021,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "控えめな虹彩グラデーション"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:8fdfef37468c8e4a",
@@ -4822,8 +4695,7 @@
                   "rank": 10022,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "左右対称の目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:985f549956147403",
@@ -4834,8 +4706,7 @@
                   "rank": 10023,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "透明感とつやのある虹彩"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:1257175fcd324327",
@@ -4846,8 +4717,7 @@
                   "rank": 10024,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "透明感のある虹彩"
+                  "style_count": 2
                 }
               ]
             },
@@ -6057,8 +5927,7 @@
                   "rank": 10000,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "軽やかな髪"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:8ff5b2546f878117",
@@ -6069,8 +5938,7 @@
                   "rank": 10001,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両手で髪を整える"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0f3d747c71f2cbfe",
@@ -6081,8 +5949,7 @@
                   "rank": 10002,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪を編む"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e7dad9c6b998f73b",
@@ -6093,8 +5960,7 @@
                   "rank": 10003,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪を横へ払う"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e4d11956876feaec",
@@ -6105,8 +5971,7 @@
                   "rank": 10004,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "細かな髪の束"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:4c83685ba346f818",
@@ -6117,8 +5982,7 @@
                   "rank": 10005,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "お団子髪を直す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6a6f2f37aeccd60a",
@@ -6129,8 +5993,7 @@
                   "rank": 10006,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横髪をまとめる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a920ddc3935a44cc",
@@ -6141,8 +6004,7 @@
                   "rank": 10007,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪に触れるポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:7b5ec56e908ea2c9",
@@ -6153,8 +6015,7 @@
                   "rank": 10008,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "風で乱れた髪を押さえる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ac7c79bf89ed003e",
@@ -6165,8 +6026,7 @@
                   "rank": 10009,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "髪先を持つ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:a48b71dcc3a2f89f",
@@ -6177,8 +6037,7 @@
                   "rank": 10010,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩越しに髪を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a79d7bfe7a835113",
@@ -6189,8 +6048,7 @@
                   "rank": 10011,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "椅子の背にもたれる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b03eab169acc2e07",
@@ -6201,8 +6059,7 @@
                   "rank": 10012,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪を持ち上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a9a6b3ec64b422e5",
@@ -6213,8 +6070,7 @@
                   "rank": 10013,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "淡い髪色"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:d5e181c5f33347fe",
@@ -6225,8 +6081,7 @@
                   "rank": 10014,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "椅子にまたがって座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:668821446c7ad9f7",
@@ -6237,8 +6092,7 @@
                   "rank": 10015,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "椅子に後ろ向きに座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:340e204eb2085962",
@@ -6249,8 +6103,7 @@
                   "rank": 10016,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "椅子に後ろ向きに座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ad66c8a757995d32",
@@ -6261,8 +6114,7 @@
                   "rank": 10017,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "長い髪を整える"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:41d218c5746aed68",
@@ -6273,8 +6125,7 @@
                   "rank": 10018,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "前髪に触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:57d051701a092244",
@@ -6285,8 +6136,7 @@
                   "rank": 10019,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "濡れた髪に触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ddba36a0de63b038",
@@ -6297,8 +6147,7 @@
                   "rank": 10020,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪を耳にかける"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f19c5fca8b9d5f03",
@@ -6309,8 +6158,7 @@
                   "rank": 10021,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪の束をねじる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d370095a1820ef52",
@@ -6321,8 +6169,7 @@
                   "rank": 10022,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "濡れた髪を絞る"
+                  "style_count": 2
                 }
               ]
             },
@@ -9352,8 +9199,7 @@
                   "rank": 21,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニの紐を直す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5d311257e078d443",
@@ -9364,8 +9210,7 @@
                   "rank": 22,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニボトムの隙間"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fe5c67231897e546",
@@ -9376,8 +9221,7 @@
                   "rank": 23,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "服を着ている"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a2c26314c5a39468",
@@ -9388,8 +9232,7 @@
                   "rank": 24,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニのサイド紐を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b08d012eae9ba47b",
@@ -9400,8 +9243,7 @@
                   "rank": 25,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ワンピース水着の脇を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0308b69c630904ae",
@@ -9412,8 +9254,7 @@
                   "rank": 26,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ゆるいビキニ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:40fe7a96f660746d",
@@ -9424,8 +9265,7 @@
                   "rank": 27,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ゆるいフィット感"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6b85441d178e0b4b",
@@ -9436,8 +9276,7 @@
                   "rank": 28,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水着で横たわる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:95b5b4b1f6b85eed",
@@ -9448,8 +9287,7 @@
                   "rank": 29,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水着で座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:973401ae3bb5d281",
@@ -9460,8 +9298,7 @@
                   "rank": 30,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水着でプールサイドに座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:02c66faa894f5465",
@@ -9472,8 +9309,7 @@
                   "rank": 31,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニトップ下の小さな隙間"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f7fbc99127f4ae21",
@@ -9484,8 +9320,7 @@
                   "rank": 32,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニを着ている"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f55b78a8a4d1cc6c",
@@ -9496,8 +9331,7 @@
                   "rank": 33,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "服を着ている"
+                  "style_count": 1
                 }
               ]
             },
@@ -19303,8 +19137,7 @@
                   "rank": 153,
                   "prompt_count": 8,
                   "negative_prompt_count": 0,
-                  "style_count": 8,
-                  "translation_ja": "魅惑的な・ポーズ"
+                  "style_count": 8
                 },
                 {
                   "id": "styles:20260815:2d62824a467b0d77",
@@ -19315,8 +19148,7 @@
                   "rank": 154,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "魅惑的に座るポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b0127a3a0a30fbd9",
@@ -19327,8 +19159,7 @@
                   "rank": 155,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "魅惑的な座りポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e8f18edf0f99eb25",
@@ -19339,8 +19170,7 @@
                   "rank": 156,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "穏やかな・ポーズ"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:53c9cf9ec6983c30",
@@ -19351,8 +19181,7 @@
                   "rank": 157,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "自然な・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:743f6fb3f76b355b",
@@ -19363,8 +19192,7 @@
                   "rank": 158,
                   "prompt_count": 16,
                   "negative_prompt_count": 0,
-                  "style_count": 16,
-                  "translation_ja": "近い・ポーズ"
+                  "style_count": 16
                 },
                 {
                   "id": "styles:20260815:9c871ed93df3499c",
@@ -19375,8 +19203,7 @@
                   "rank": 159,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "まとまった・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b35ef0ebdacb42c4",
@@ -19387,8 +19214,7 @@
                   "rank": 160,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "落ち着いた・ポーズ"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:ac5774fe9d9ac576",
@@ -19399,8 +19225,7 @@
                   "rank": 161,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "くつろいだ・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:07c99285e38dfd80",
@@ -19411,8 +19236,7 @@
                   "rank": 162,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "湿った・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:68da18acca1a79a0",
@@ -19423,8 +19247,7 @@
                   "rank": 163,
                   "prompt_count": 7,
                   "negative_prompt_count": 0,
-                  "style_count": 7,
-                  "translation_ja": "繊細な・ポーズ"
+                  "style_count": 7
                 },
                 {
                   "id": "styles:20260815:89da965b1a3fd758",
@@ -19435,8 +19258,7 @@
                   "rank": 164,
                   "prompt_count": 22,
                   "negative_prompt_count": 0,
-                  "style_count": 22,
-                  "translation_ja": "上品な・ポーズ"
+                  "style_count": 22
                 },
                 {
                   "id": "styles:20260815:5bb28a836e778df3",
@@ -19447,8 +19269,7 @@
                   "rank": 165,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上品な・座った・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5497c479051a103b",
@@ -19459,8 +19280,7 @@
                   "rank": 166,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上品な・座る・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0098ec5605c0feb2",
@@ -19471,8 +19291,7 @@
                   "rank": 167,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "伸びやかな・ポーズ"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:51882698c81fda17",
@@ -19483,8 +19302,7 @@
                   "rank": 168,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "伸びやかな・姿勢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1f7e191c441a4735",
@@ -19495,8 +19313,7 @@
                   "rank": 169,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "優しい・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:3920193f6824ae75",
@@ -19507,8 +19324,7 @@
                   "rank": 170,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "優しい・姿勢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:96be61dba626d19f",
@@ -19519,8 +19335,7 @@
                   "rank": 171,
                   "prompt_count": 15,
                   "negative_prompt_count": 0,
-                  "style_count": 15,
-                  "translation_ja": "優雅な・ポーズ"
+                  "style_count": 15
                 },
                 {
                   "id": "styles:20260815:eb7673069e2dd026",
@@ -19531,8 +19346,7 @@
                   "rank": 172,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "くつろいだ・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:42881e0ecb7002d3",
@@ -19543,8 +19357,7 @@
                   "rank": 173,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "控えめな・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:83200a52f9aa3531",
@@ -19555,8 +19368,7 @@
                   "rank": 174,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "自然な・立つ・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ffa1f63d45369da0",
@@ -19567,8 +19379,7 @@
                   "rank": 175,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "きちんとした・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:b30388fea4e6741e",
@@ -19579,8 +19390,7 @@
                   "rank": 176,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "開いた・姿勢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8151524a0a924de5",
@@ -19591,8 +19401,7 @@
                   "rank": 177,
                   "prompt_count": 18,
                   "negative_prompt_count": 0,
-                  "style_count": 18,
-                  "translation_ja": "遊び心のある・ポーズ"
+                  "style_count": 18
                 },
                 {
                   "id": "styles:20260815:2275410befdbb462",
@@ -19603,8 +19412,7 @@
                   "rank": 178,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "丁寧な・ポーズ"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:69a2c9bac433c0cf",
@@ -19615,8 +19423,7 @@
                   "rank": 179,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "雨・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d95f01e635fa5391",
@@ -19627,8 +19434,7 @@
                   "rank": 180,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "洗練された・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:345ec6d50bc7cfac",
@@ -19639,8 +19445,7 @@
                   "rank": 181,
                   "prompt_count": 62,
                   "negative_prompt_count": 0,
-                  "style_count": 62,
-                  "translation_ja": "リラックスした・ポーズ"
+                  "style_count": 62
                 },
                 {
                   "id": "styles:20260815:7d8066a93d4e3059",
@@ -19651,8 +19456,7 @@
                   "rank": 182,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "リラックスした・姿勢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0089658bb78754e1",
@@ -19663,8 +19467,7 @@
                   "rank": 183,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "官能的なポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:77ab37aedd84d9a1",
@@ -19675,8 +19478,7 @@
                   "rank": 184,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "官能的な・ポーズ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:cb0810e172452a5c",
@@ -19687,8 +19489,7 @@
                   "rank": 185,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "座る・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:7c93ac22b89a1a91",
@@ -19699,8 +19500,7 @@
                   "rank": 186,
                   "prompt_count": 9,
                   "negative_prompt_count": 0,
-                  "style_count": 9,
-                  "translation_ja": "柔らかな・ポーズ"
+                  "style_count": 9
                 },
                 {
                   "id": "styles:20260815:0c3e49fab0efbd3b",
@@ -19711,8 +19511,7 @@
                   "rank": 187,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "雨の窓辺に立つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3a40e3e15306c5f8",
@@ -19723,8 +19522,7 @@
                   "rank": 188,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ビキニで立つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:96a5e6eef4f73a1f",
@@ -19735,8 +19533,7 @@
                   "rank": 189,
                   "prompt_count": 12,
                   "negative_prompt_count": 0,
-                  "style_count": 12,
-                  "translation_ja": "雨の中に立つ"
+                  "style_count": 12
                 },
                 {
                   "id": "styles:20260815:b0470fdaddd1759c",
@@ -19747,8 +19544,7 @@
                   "rank": 190,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水着で立つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:260c3756509dfa1c",
@@ -19759,8 +19555,7 @@
                   "rank": 191,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水たまりの近くに立つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:10e978af66ed8788",
@@ -19771,8 +19566,7 @@
                   "rank": 192,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "壁の近くに立つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d36a3d772f51807c",
@@ -19783,8 +19577,7 @@
                   "rank": 193,
                   "prompt_count": 8,
                   "negative_prompt_count": 0,
-                  "style_count": 8,
-                  "translation_ja": "まっすぐな・姿勢"
+                  "style_count": 8
                 },
                 {
                   "id": "styles:20260815:00f46f5ff83a86bb",
@@ -19795,8 +19588,7 @@
                   "rank": 194,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "伸びた・ポーズ"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:faa0107691d2db60",
@@ -19807,8 +19599,7 @@
                   "rank": 195,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "挑発的な・ポーズ"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:dc9a80eacf7d86fc",
@@ -19819,8 +19610,7 @@
                   "rank": 196,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "物思いにふける・ポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e6365fd8b36e625f",
@@ -19831,8 +19621,7 @@
                   "rank": 197,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "直立した・姿勢"
+                  "style_count": 1
                 }
               ]
             },
@@ -23777,8 +23566,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "8K"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c697f90d4044fea5",
@@ -23789,8 +23577,7 @@
                   "rank": 10001,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "8K背景"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:dde8bf70eab98fbb",
@@ -23801,8 +23588,7 @@
                   "rank": 10002,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "8K壁紙"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:42d5ccd4053ef09b",
@@ -23813,8 +23599,7 @@
                   "rank": 10003,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "美しい・精細な"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c69ed1dfafec205c",
@@ -23825,8 +23610,7 @@
                   "rank": 10004,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "美しく精細な目"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:9c8f9b23d367dfd2",
@@ -23837,8 +23621,7 @@
                   "rank": 10005,
                   "prompt_count": 18,
                   "negative_prompt_count": 0,
-                  "style_count": 18,
-                  "translation_ja": "詳細"
+                  "style_count": 18
                 },
                 {
                   "id": "styles:20260815:b17393b9db32344d",
@@ -23849,8 +23632,7 @@
                   "rank": 10006,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "精細な背景"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:850704b660d1e6bc",
@@ -23861,8 +23643,7 @@
                   "rank": 10007,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "精細なまつげ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:23c3337ab1e5a3bf",
@@ -23873,8 +23654,7 @@
                   "rank": 10008,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "精細な亀頭の形"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:20e74929f3fc8940",
@@ -23885,8 +23665,7 @@
                   "rank": 10009,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "精細な肌の質感"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9404da559aa544c2",
@@ -23897,8 +23676,7 @@
                   "rank": 10010,
                   "prompt_count": 12,
                   "negative_prompt_count": 0,
-                  "style_count": 12,
-                  "translation_ja": "lazypos埋め込み"
+                  "style_count": 12
                 },
                 {
                   "id": "styles:20260815:77ce9120319d8291",
@@ -23909,8 +23687,7 @@
                   "rank": 10011,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "非常に精細な建築"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:2dd3a392ccaf824e",
@@ -23921,8 +23698,7 @@
                   "rank": 10012,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "非常に精細な目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1091eed3a242a827",
@@ -23933,8 +23709,7 @@
                   "rank": 10013,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "極めて・精細な"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:8826efbb987504c1",
@@ -23945,8 +23720,7 @@
                   "rank": 10014,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "超精細な背景"
+                  "style_count": 2
                 }
               ]
             },
@@ -24103,8 +23877,7 @@
                   "rank": 10000,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "スコア7"
+                  "style_count": 5
                 }
               ]
             }
@@ -24730,8 +24503,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "青・灰色・線画"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c5eca1ad69794424",
@@ -24742,8 +24514,7 @@
                   "rank": 10001,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "植物画風の・イラスト・スタイル"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:b85c60170eb35116",
@@ -24754,8 +24525,7 @@
                   "rank": 10002,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "映画的な"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d661b7ff91711e0d",
@@ -24766,8 +24536,7 @@
                   "rank": 10003,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "映画的な・影"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f85a4fde1c130b88",
@@ -24778,8 +24547,7 @@
                   "rank": 10004,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "綺麗な・線画"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:1848d8dd93155d0f",
@@ -24790,8 +24558,7 @@
                   "rank": 10005,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ダークファンタジー"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d43e0a25392ff3e8",
@@ -24802,8 +24569,7 @@
                   "rank": 10006,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "繊細な・アニメ調の・イラスト"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:bed8709b8d915c24",
@@ -24814,8 +24580,7 @@
                   "rank": 10007,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "繊細な・線画"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8196070a28983b6a",
@@ -24826,8 +24591,7 @@
                   "rank": 10008,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上品な・繊細な・描写"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ad051ef8bfa6e821",
@@ -24838,8 +24602,7 @@
                   "rank": 10009,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "淡い・青・灰色・輪郭線"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fa2a4d4cf6ef8036",
@@ -24850,8 +24613,7 @@
                   "rank": 10010,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "淡い・輪郭線"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:7eceda69320bdd41",
@@ -24862,8 +24624,7 @@
                   "rank": 10011,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "つやのあるアニメ調の目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:043ad79c91c00b17",
@@ -24874,8 +24635,7 @@
                   "rank": 10012,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "公式・アート"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0fd664331a336f98",
@@ -24886,8 +24646,7 @@
                   "rank": 10013,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "絵画的"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:fa87a2295900b0d5",
@@ -24898,8 +24657,7 @@
                   "rank": 10014,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "写実的な照明"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c0296d2d2adb33a8",
@@ -24910,8 +24668,7 @@
                   "rank": 10015,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "写実的な肌の質感"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6be2b174883a85ec",
@@ -24922,8 +24679,7 @@
                   "rank": 10016,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "豊かな・質感"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:b70ef05f96f554e5",
@@ -24934,8 +24690,7 @@
                   "rank": 10017,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "柔らかな・エアブラシ・陰影"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:53012340f0db52da",
@@ -24946,8 +24701,7 @@
                   "rank": 10018,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかな・水彩・陰影"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9bdef0f5bb04613d",
@@ -24958,8 +24712,7 @@
                   "rank": 10019,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "柔らかな・水彩・にじみ"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:8580141202ed64ed",
@@ -24970,8 +24723,7 @@
                   "rank": 10020,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "細い・綺麗な・線画"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:9e83669783817428",
@@ -24982,8 +24734,7 @@
                   "rank": 10021,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "水彩"
+                  "style_count": 2
                 }
               ]
             },
@@ -25809,8 +25560,7 @@
                   "rank": 31,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "腕と脚を軽く広げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:879bddc5c90942c2",
@@ -25821,8 +25571,7 @@
                   "rank": 32,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体に軽く腕を回す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:97b3fdcb572bb5b9",
@@ -25833,8 +25582,7 @@
                   "rank": 33,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "腕を軽く上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f6a9608d1605c751",
@@ -25845,8 +25593,7 @@
                   "rank": 34,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "腕を少し開く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:cf171cebeba3d2dc",
@@ -25857,8 +25604,7 @@
                   "rank": 35,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "雰囲気のある霧"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:1c0b5d064dd619b6",
@@ -25869,8 +25615,7 @@
                   "rank": 36,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "一面に咲く花"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:724c1496c52eab67",
@@ -25881,8 +25626,7 @@
                   "rank": 37,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "体を少しひねる"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:a58593eae98d0415",
@@ -25893,8 +25637,7 @@
                   "rank": 38,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両手でスカートを軽くまとめる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:abefbf71484f8e63",
@@ -25905,8 +25648,7 @@
                   "rank": 39,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両手でスカートを軽く持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:51f545b8b881ca8b",
@@ -25917,8 +25659,7 @@
                   "rank": 40,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "胸を少し前に出す"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:a474dd4e614be176",
@@ -25929,8 +25670,7 @@
                   "rank": 41,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "少ししゃがむ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ee924816dda4b876",
@@ -25941,8 +25681,7 @@
                   "rank": 42,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "拡散した照明"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9d3248f4a078700c",
@@ -25953,8 +25692,7 @@
                   "rank": 43,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ドラマチックな光"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1291a3dad238045b",
@@ -25965,8 +25703,7 @@
                   "rank": 44,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "髪を軽く払う"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:734c0fc320bc779d",
@@ -25977,8 +25714,7 @@
                   "rank": 45,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "穏やかなリムライト"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:46285db01024d1d5",
@@ -25989,8 +25725,7 @@
                   "rank": 46,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "つやがありつつ柔らかなハイライト"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b4cfafe47b02b5ea",
@@ -26001,8 +25736,7 @@
                   "rank": 47,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "つやのあるハイライト"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:e824d8e0e5ee9bab",
@@ -26013,8 +25747,7 @@
                   "rank": 48,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "ハイキー照明"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:6915f73e83d64668",
@@ -26025,8 +25758,7 @@
                   "rank": 49,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "少し後ろにもたれる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:73f0012789e127e7",
@@ -26037,8 +25769,7 @@
                   "rank": 50,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "少し前かがみになる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:abab4ce69e72adf1",
@@ -26049,8 +25780,7 @@
                   "rank": 51,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "脚を軽く組む"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5a1362d77098689f",
@@ -26061,8 +25791,7 @@
                   "rank": 52,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "脚を少し折り込む"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c8a02a55a65f7e18",
@@ -26073,8 +25802,7 @@
                   "rank": 53,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "軽い動き"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b81ddb004bb20acc",
@@ -26085,8 +25813,7 @@
                   "rank": 54,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "軽やかなポーズ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3e8deb6206dca4de",
@@ -26097,8 +25824,7 @@
                   "rank": 55,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "低コントラストの白目"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:edd21af66517fbdf",
@@ -26109,8 +25835,7 @@
                   "rank": 56,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "複数の柔らかなキャッチライト"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:83b97df09752a06c",
@@ -26121,8 +25846,7 @@
                   "rank": 57,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片足を軽く上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:37be1408ba51efc2",
@@ -26133,8 +25857,7 @@
                   "rank": 58,
                   "prompt_count": 9,
                   "negative_prompt_count": 0,
-                  "style_count": 9,
-                  "translation_ja": "レイトレーシング"
+                  "style_count": 9
                 },
                 {
                   "id": "styles:20260815:360cb76b4a6c3756",
@@ -26145,8 +25868,7 @@
                   "rank": 59,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "リムライト"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:be5a253c11143c76",
@@ -26157,8 +25879,7 @@
                   "rank": 60,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩を少し後ろへ引く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:81f498722a926160",
@@ -26169,8 +25890,7 @@
                   "rank": 61,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スツールに軽く座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e78903f294d42f60",
@@ -26181,8 +25901,7 @@
                   "rank": 62,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "わずかに反った背中"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:95fbba446dce64e5",
@@ -26193,8 +25912,7 @@
                   "rank": 63,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "軽いお辞儀"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:23b7ec7ce9ead1e9",
@@ -26205,8 +25923,7 @@
                   "rank": 64,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "少し前かがみになる"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:66e3ba6fa7b6b3f6",
@@ -26217,8 +25934,7 @@
                   "rank": 65,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "少しリラックスした視線"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f2c8411e06e88183",
@@ -26229,8 +25945,7 @@
                   "rank": 66,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかなブルーム"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b00b13c7cbe946fb",
@@ -26241,8 +25956,7 @@
                   "rank": 67,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "柔らかな薄明光線"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:f018deba98ff1c0b",
@@ -26253,8 +25967,7 @@
                   "rank": 68,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかい光"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0a5ebc6cd64f5bf7",
@@ -26265,8 +25978,7 @@
                   "rank": 69,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "柔らかなリムライト"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:eb58c7beedac8e9a",
@@ -26277,8 +25989,7 @@
                   "rank": 70,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "柔らかなボリューム光"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:8ceadbd7c11a5cb1",
@@ -26289,8 +26000,7 @@
                   "rank": 71,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "鏡面ハイライト"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:99022137e6293313",
@@ -26301,8 +26011,7 @@
                   "rank": 72,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "髪の鏡面ハイライト"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:6112a2f7dcc104aa",
@@ -26313,8 +26022,7 @@
                   "rank": 73,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "強いリムライト"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:200c7f63d2eb1b12",
@@ -26325,8 +26033,7 @@
                   "rank": 74,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "控えめなブルーム"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:eb4927c0ebe854b3",
@@ -26337,8 +26044,7 @@
                   "rank": 75,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "小さなキャッチライト"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:727121ab6f80d62f",
@@ -26349,8 +26055,7 @@
                   "rank": 76,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ボリュームフォグ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:eae06789ab136948",
@@ -26361,8 +26066,7 @@
                   "rank": 77,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "ボリューム光"
+                  "style_count": 3
                 }
               ]
             }
@@ -27700,8 +27404,7 @@
                   "rank": 144,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "明るい色彩"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:113d259472322077",
@@ -27712,8 +27415,7 @@
                   "rank": 145,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "色とりどりの花"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:1e257ef32fdc1e77",
@@ -27724,8 +27426,7 @@
                   "rank": 146,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "暗めの上側虹彩"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:32c73ecc312dcaf4",
@@ -27736,8 +27437,7 @@
                   "rank": 147,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "穏やかな色の移り変わり"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c743cd5d674aa2c5",
@@ -27748,8 +27448,7 @@
                   "rank": 148,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "長い白髪"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:db7b181486767bc5",
@@ -27760,8 +27459,7 @@
                   "rank": 149,
                   "prompt_count": 6,
                   "negative_prompt_count": 0,
-                  "style_count": 6,
-                  "translation_ja": "淡いパステル配色"
+                  "style_count": 6
                 },
                 {
                   "id": "styles:20260815:85739b845eb52895",
@@ -27772,8 +27470,7 @@
                   "rank": 150,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "パステル調"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:33abe471564477bb",
@@ -27784,8 +27481,7 @@
                   "rank": 151,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "豊かな色彩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6a7bcf785655c5f6",
@@ -27796,8 +27492,7 @@
                   "rank": 152,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "鮮やかな色彩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6f25736e2362c863",
@@ -27808,8 +27503,7 @@
                   "rank": 153,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "淡く洗ったような色"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6edee21c452f35b9",
@@ -27820,8 +27514,7 @@
                   "rank": 154,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "白いまつげ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:db3df7764e609c8d",
@@ -27832,8 +27525,7 @@
                   "rank": 155,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "白基調の配色"
+                  "style_count": 2
                 }
               ]
             }
@@ -28386,8 +28078,7 @@
                   "rank": 10000,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "すっきりした背景"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3ace067051cd8093",
@@ -28398,8 +28089,7 @@
                   "rank": 10001,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "花園"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:297a136ff8eec854",
@@ -28410,8 +28100,7 @@
                   "rank": 10002,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "垂れ下がるつる植物"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:99ac314953545287",
@@ -28422,8 +28111,7 @@
                   "rank": 10003,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "緻密な風景"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:366b8494d7bd07fa",
@@ -28434,8 +28122,7 @@
                   "rank": 10004,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "花が豊かな背景"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:0f8be1f247948fb8",
@@ -28446,8 +28133,7 @@
                   "rank": 10005,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "最小限の背景"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1a2d249cb34da77e",
@@ -28458,8 +28144,7 @@
                   "rank": 10006,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "舞い落ちる花びら"
+                  "style_count": 2
                 }
               ]
             }
@@ -34699,8 +34384,7 @@
                   "rank": 26,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "鮮明"
+                  "style_count": 1
                 }
               ]
             }
@@ -35381,8 +35065,7 @@
                   "rank": 1,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "軽やかな"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:43e406a6430ed875",
@@ -35393,8 +35076,7 @@
                   "rank": 2,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "解剖学的な・ディテール"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5cc02500addf7622",
@@ -35405,8 +35087,7 @@
                   "rank": 3,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "足首・交差した"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:77e6c49f67db92e1",
@@ -35417,8 +35098,7 @@
                   "rank": 4,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "整える・スカート"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1a00a9a12b0b1186",
@@ -35429,8 +35109,7 @@
                   "rank": 5,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バッグ・越し・肩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6217e69f789ed5f1",
@@ -35441,8 +35120,7 @@
                   "rank": 6,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バランスのよい"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1a6aaaa4ef25d58f",
@@ -35453,8 +35131,7 @@
                   "rank": 7,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ブラウスのボタンを留める"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:efc8e897cbd501c9",
@@ -35465,8 +35142,7 @@
                   "rank": 8,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "胸・前方"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:944dc94eefc3e7f5",
@@ -35477,8 +35153,7 @@
                   "rank": 9,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "顎・近い"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2a06527c0f97bcae",
@@ -35489,8 +35164,7 @@
                   "rank": 10,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "複雑な・環境"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:35f45ef39014796b",
@@ -35501,8 +35175,7 @@
                   "rank": 11,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "しゃがむ・中・雨"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1ccf8ba3ee042687",
@@ -35513,8 +35186,7 @@
                   "rank": 12,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "丸まる・上げる・上・ベッド"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3e92be61bee8e040",
@@ -35525,8 +35197,7 @@
                   "rank": 13,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "曲がった背筋"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c62a1190b91bc6d5",
@@ -35537,8 +35208,7 @@
                   "rank": 14,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "キュート"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:39cb0a2511cd3278",
@@ -35549,8 +35219,7 @@
                   "rank": 15,
                   "prompt_count": 9,
                   "negative_prompt_count": 0,
-                  "style_count": 9,
-                  "translation_ja": "繊細な・仕草"
+                  "style_count": 9
                 },
                 {
                   "id": "styles:20260815:6fe2611815c0410a",
@@ -35561,8 +35230,7 @@
                   "rank": 16,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "密集した・植物"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:e1468407bc72198d",
@@ -35573,8 +35241,7 @@
                   "rank": 17,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "夢のような雰囲気"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:73498540cbcbfbc8",
@@ -35585,8 +35252,7 @@
                   "rank": 18,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "夢見るような表情"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:189932c8c8fb9d94",
@@ -35597,8 +35263,7 @@
                   "rank": 19,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "緻密な・ディテール"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:2b53119425e5cfc0",
@@ -35609,8 +35274,7 @@
                   "rank": 20,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "机に肘を置く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e1a499dded687361",
@@ -35621,8 +35285,7 @@
                   "rank": 21,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "幻想的な雰囲気"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:60a9d80d4d98fd42",
@@ -35633,8 +35296,7 @@
                   "rank": 22,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "幻想的なムード"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d6c1146d216fe3d5",
@@ -35645,8 +35307,7 @@
                   "rank": 23,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ベルトを留める"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6f04585dfa079e2d",
@@ -35657,8 +35318,7 @@
                   "rank": 24,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "羽毛のように柔らかな縁"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:32d64f11442d9e73",
@@ -35669,8 +35329,7 @@
                   "rank": 25,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "袖口を直す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e2b8464d39bf666d",
@@ -35681,8 +35340,7 @@
                   "rank": 26,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ひらめく・裾"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9bc559252be1c029",
@@ -35693,8 +35351,7 @@
                   "rank": 27,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "前で裾をまとめる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:7eafaff0c2371d50",
@@ -35705,8 +35362,7 @@
                   "rank": 28,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スカートを片側へまとめる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6b3a6b72f67283e6",
@@ -35717,8 +35373,7 @@
                   "rank": 29,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "優雅な・仕草"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ea50f9c7f5e50d28",
@@ -35729,8 +35384,7 @@
                   "rank": 30,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ベッドで半身を横たえる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d135b58111e24849",
@@ -35741,8 +35395,7 @@
                   "rank": 31,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "頭を後ろへ向ける"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:6c1624b554dd3821",
@@ -35753,8 +35406,7 @@
                   "rank": 32,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バッグを前で持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:752bcc12b27d4581",
@@ -35765,8 +35417,7 @@
                   "rank": 33,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・バッグ・越し・頭"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5cf22bf162f18af7",
@@ -35777,8 +35428,7 @@
                   "rank": 34,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・本・へ・胸"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:918144bd34b76912",
@@ -35789,8 +35439,7 @@
                   "rank": 35,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "コートの襟を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1542e55b0e40547f",
@@ -35801,8 +35450,7 @@
                   "rank": 36,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "カップを繊細に持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:aeb888f9d0b2d4f4",
@@ -35813,8 +35461,7 @@
                   "rank": 37,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・ドレス・裾"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:38313679afadbb35",
@@ -35825,8 +35472,7 @@
                   "rank": 38,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "持つ・ジャケット・裾"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:a2193ad5366def32",
@@ -35837,8 +35483,7 @@
                   "rank": 39,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "長いスカートの端を持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9b1f6ee2f2e6ccb3",
@@ -35849,8 +35494,7 @@
                   "rank": 40,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ペンを繊細に持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1dcf982f8289b32f",
@@ -35861,8 +35505,7 @@
                   "rank": 41,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ポニーテールを持つ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c3c28e2db83a0a17",
@@ -35873,8 +35516,7 @@
                   "rank": 42,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・ローブ・閉じた"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:07652c02ac5f29ee",
@@ -35885,8 +35527,7 @@
                   "rank": 43,
                   "prompt_count": 5,
                   "negative_prompt_count": 0,
-                  "style_count": 5,
-                  "translation_ja": "持つ・スカート・裾"
+                  "style_count": 5
                 },
                 {
                   "id": "styles:20260815:9abac846d7717ab1",
@@ -35897,8 +35538,7 @@
                   "rank": 44,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・ツインテール"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8dd4a4d116f869db",
@@ -35909,8 +35549,7 @@
                   "rank": 45,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "持つ・濡れた・裾"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:4158dee067b19c37",
@@ -35921,8 +35560,7 @@
                   "rank": 46,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "クッションを抱く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f74a06e15e13f11f",
@@ -35933,8 +35571,7 @@
                   "rank": 47,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "枕を抱く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:da525e078d437c86",
@@ -35945,8 +35582,7 @@
                   "rank": 48,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ジャケット・越し・肩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:575184387260c763",
@@ -35957,8 +35593,7 @@
                   "rank": 49,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "ベッドの上で膝立ち"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:108ea30919db1dee",
@@ -35969,8 +35604,7 @@
                   "rank": 50,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ソファの上で膝立ち"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:931c2c21f87165ff",
@@ -35981,8 +35615,7 @@
                   "rank": 51,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "膝を抱え込む"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:2803157945267273",
@@ -35993,8 +35626,7 @@
                   "rank": 52,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "膝をそろえる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e5f4397e4d196352",
@@ -36005,8 +35637,7 @@
                   "rank": 53,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "壁にもたれる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:d4dd248050fcd6eb",
@@ -36017,8 +35648,7 @@
                   "rank": 54,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "雨の中で壁にもたれる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:4da0e21d14e8a368",
@@ -36029,8 +35659,7 @@
                   "rank": 55,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "もたれる・中"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:c58c19a7d6a3b25e",
@@ -36041,8 +35670,7 @@
                   "rank": 56,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "もたれる・上・クッション"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c4d7e575d41755bb",
@@ -36053,8 +35681,7 @@
                   "rank": 57,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "机にもたれる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a4531fac24987965",
@@ -36065,8 +35692,7 @@
                   "rank": 58,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "もたれる・越し・ソファ・背中"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1674bea11ef1d87f",
@@ -36077,8 +35703,7 @@
                   "rank": 59,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "コートの襟を持ち上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a9ba64384f69f831",
@@ -36089,8 +35714,7 @@
                   "rank": 60,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "長く伸ばした脚"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:b3f2587f8cc744a9",
@@ -36101,8 +35725,7 @@
                   "rank": 61,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "丸まって横たわる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:499bb5322e2a5c9b",
@@ -36113,8 +35736,7 @@
                   "rank": 62,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横たわる・上・背中・上・ベッド"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:33ef9e2f1d46f028",
@@ -36125,8 +35747,7 @@
                   "rank": 63,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "横たわる・上・ベッド"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:d8628f4a19aac3f6",
@@ -36137,8 +35758,7 @@
                   "rank": 64,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横たわる・上・横・上・ベッド"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:68fb51f7efa3d82f",
@@ -36149,8 +35769,7 @@
                   "rank": 65,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横たわる・上・ソファ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:cfb27eeee250d0d4",
@@ -36161,8 +35780,7 @@
                   "rank": 66,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "クッションにもたれて横向きに寝る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:039cd8eca03915c2",
@@ -36173,8 +35791,7 @@
                   "rank": 67,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "巨大な・重そうな・陰茎"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:161a114196b47362",
@@ -36185,8 +35802,7 @@
                   "rank": 68,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "控えめな露出"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:45dbab68d29817b7",
@@ -36197,8 +35813,7 @@
                   "rank": 69,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "物憂げな雰囲気"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:519108982af3dce0",
@@ -36209,8 +35824,7 @@
                   "rank": 70,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "自然な陰嚢"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:bd5889dc18f68523",
@@ -36221,8 +35835,7 @@
                   "rank": 71,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "きちんとした・仕草"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:e043236c3af496f5",
@@ -36233,8 +35846,7 @@
                   "rank": 72,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "カップを差し出す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:28182d57d11bcd75",
@@ -36245,8 +35857,7 @@
                   "rank": 73,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片腕を伸ばす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6a7c193d8b74211c",
@@ -36257,8 +35868,7 @@
                   "rank": 74,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片腕を額にかざす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:efe4fa4dbb9bd221",
@@ -36269,8 +35879,7 @@
                   "rank": 75,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片腕を上げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8f9e96b5316f8336",
@@ -36281,8 +35890,7 @@
                   "rank": 76,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片方・足・前方"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f7d8dd5ba825893d",
@@ -36293,8 +35901,7 @@
                   "rank": 77,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片側の腰を突き出す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:be3cc86ae9f794f1",
@@ -36305,8 +35912,7 @@
                   "rank": 78,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "片膝を曲げる"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:43baa67fd96fdc65",
@@ -36317,8 +35923,7 @@
                   "rank": 79,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "片膝を立てる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:bda90c9fbaaab3ac",
@@ -36329,8 +35934,7 @@
                   "rank": 80,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片脚を曲げる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1e872266735c48a3",
@@ -36341,8 +35945,7 @@
                   "rank": 81,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "片脚を伸ばす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:530840d1205d44c1",
@@ -36353,8 +35956,7 @@
                   "rank": 82,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "越し・肩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fca8c3b3f51b3a57",
@@ -36365,8 +35967,7 @@
                   "rank": 83,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩越しの視線"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c25a5ec7c8b5fd19",
@@ -36377,8 +35978,7 @@
                   "rank": 84,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "大きすぎる亀頭"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3b001d5bcfe9e47e",
@@ -36389,8 +35989,7 @@
                   "rank": 85,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "空へ手のひらを向ける"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1160d8839cf94b01",
@@ -36401,8 +36000,7 @@
                   "rank": 86,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "粒子"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:bba4ba5692784cca",
@@ -36413,8 +36011,7 @@
                   "rank": 87,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "物陰から覗く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:566b65dd8b969c3b",
@@ -36425,8 +36022,7 @@
                   "rank": 88,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "近くから覗く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8db93a5f45dd02d2",
@@ -36437,8 +36033,7 @@
                   "rank": 89,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "骨盤・傾き"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:95c21159681e51a7",
@@ -36449,8 +36044,7 @@
                   "rank": 90,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "完璧な陰影"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:fc86cca02b368f98",
@@ -36461,8 +36055,7 @@
                   "rank": 91,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "遊び心のある・仕草"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:4ed46d987eaa7005",
@@ -36473,8 +36066,7 @@
                   "rank": 92,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "つま先を伸ばす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:60f57b7a19891533",
@@ -36485,8 +36077,7 @@
                   "rank": 93,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "支えた・上・肘"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:7f05b25d075dfeb5",
@@ -36497,8 +36088,7 @@
                   "rank": 94,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "支えた・上・片方・肘"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:cd3060be013a47fc",
@@ -36509,8 +36099,7 @@
                   "rank": 95,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "引く・カーディガン・閉じた"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3630ae67fa54175c",
@@ -36521,8 +36110,7 @@
                   "rank": 96,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ドレスの裾をきちんと引く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:bae986d6f70ac6fc",
@@ -36533,8 +36121,7 @@
                   "rank": 97,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "引く・手袋"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:38e5596df4f5a845",
@@ -36545,8 +36132,7 @@
                   "rank": 98,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "レイトレーシング"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:80c89d00fd530914",
@@ -36557,8 +36143,7 @@
                   "rank": 99,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "上へ手を伸ばす"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6904a0c6b297bc23",
@@ -36569,8 +36154,7 @@
                   "rank": 100,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "ソファで横たわる"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:7824ac4fb6a5108f",
@@ -36581,8 +36165,7 @@
                   "rank": 101,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "洗練された・仕草"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:bf31c52c32b0fcda",
@@ -36593,8 +36176,7 @@
                   "rank": 102,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "安全"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:d075ade8c21490fd",
@@ -36605,8 +36187,7 @@
                   "rank": 103,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "正座"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:bb615dc6cc90445a",
@@ -36617,8 +36198,7 @@
                   "rank": 104,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩を覗かせる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c101ff50b4b0e0d0",
@@ -36629,8 +36209,7 @@
                   "rank": 105,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "肩を出して振り向く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c75c438c099293ed",
@@ -36641,8 +36220,7 @@
                   "rank": 106,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横へもたれる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:79681fd822913757",
@@ -36653,8 +36231,7 @@
                   "rank": 107,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "横・座る"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:550a0f75ce18bc5b",
@@ -36665,8 +36242,7 @@
                   "rank": 108,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "横・座る・上・ベッド"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:edcaac50b4d3adac",
@@ -36677,8 +36253,7 @@
                   "rank": 109,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "横に伸びる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:33a5aed6b103914d",
@@ -36689,8 +36264,7 @@
                   "rank": 110,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ヘッドボードにもたれて座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d41eb3208d5328e7",
@@ -36701,8 +36275,7 @@
                   "rank": 111,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "枕にもたれて座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c251602f7c25df44",
@@ -36713,8 +36286,7 @@
                   "rank": 112,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "クッションに囲まれて座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f4072ea40f64a340",
@@ -36725,8 +36297,7 @@
                   "rank": 113,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "ベッドの端に座る"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:bee6fca3c0fad8aa",
@@ -36737,8 +36308,7 @@
                   "rank": 114,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "雨の中でベンチに座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3ba458c325b2b16a",
@@ -36749,8 +36319,7 @@
                   "rank": 115,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "床に座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e8248d982bbab1d1",
@@ -36761,8 +36330,7 @@
                   "rank": 116,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "座る・上・ソファ"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:953da455500fe414",
@@ -36773,8 +36341,7 @@
                   "rank": 117,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ソファの肘掛けに座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:9d9d8b2ff7305ad0",
@@ -36785,8 +36352,7 @@
                   "rank": 118,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "テーブルの端に座る"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ae5fe495bc82a72d",
@@ -36797,8 +36363,7 @@
                   "rank": 119,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "座る・上・窓辺"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:0bbf454cd5eaff47",
@@ -36809,8 +36374,7 @@
                   "rank": 120,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "なめらかで発光感のある陰影"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a2f730234e04b168",
@@ -36821,8 +36385,7 @@
                   "rank": 121,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ドレスの裾を整える"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:29b16b99c3975675",
@@ -36833,8 +36396,7 @@
                   "rank": 122,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スカートを整える"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f06222f382c18b8a",
@@ -36845,8 +36407,7 @@
                   "rank": 123,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スカートの裾を整える"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:eb74f2cb1a9d6a50",
@@ -36857,8 +36418,7 @@
                   "rank": 124,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "柔らかな"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:6bcaebfb9c04ce1b",
@@ -36869,8 +36429,7 @@
                   "rank": 125,
                   "prompt_count": 3,
                   "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "柔らかな縁"
+                  "style_count": 3
                 },
                 {
                   "id": "styles:20260815:7a4e67e00cc1855c",
@@ -36881,8 +36440,7 @@
                   "rank": 126,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "スカートを広げる"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:6588e23fec61fe47",
@@ -36893,8 +36451,7 @@
                   "rank": 127,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "離れるように踏み出す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:c1365a40f256c884",
@@ -36905,8 +36462,7 @@
                   "rank": 128,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "近づくように踏み出す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:fff4e00f86f1afb5",
@@ -36917,8 +36473,7 @@
                   "rank": 129,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "前へ踏み出す"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:55c14d28ea75e6a0",
@@ -36929,8 +36484,7 @@
                   "rank": 130,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "水たまりをまたぐ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e474730ef33f220b",
@@ -36941,8 +36495,7 @@
                   "rank": 131,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "まっすぐな・背中"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:7614681699cb304e",
@@ -36953,8 +36506,7 @@
                   "rank": 132,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "整える・ネクタイ"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:3b3551f05128b4d7",
@@ -36965,8 +36517,7 @@
                   "rank": 133,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "伸びをしている"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8403b615eef83170",
@@ -36977,8 +36528,7 @@
                   "rank": 134,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スカートを横へ払う"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:92b7b95e2356dc9c",
@@ -36989,8 +36539,7 @@
                   "rank": 135,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "太く綺麗な上まつげのライン"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:00c7574ed0687051",
@@ -37001,8 +36550,7 @@
                   "rank": 136,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "太い上まつげのライン"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:452d640a7a2251a4",
@@ -37013,8 +36561,7 @@
                   "rank": 137,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "太く血管の浮いた陰茎"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:d07f87cda788b35a",
@@ -37025,8 +36572,7 @@
                   "rank": 138,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "イヤリングに触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:ac10259f8332bf04",
@@ -37037,8 +36583,7 @@
                   "rank": 139,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "唇に触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:8ec88e455b991565",
@@ -37049,8 +36594,7 @@
                   "rank": 140,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ペンダントに触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:f14b2c925fc5786f",
@@ -37061,8 +36605,7 @@
                   "rank": 141,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "リボンに触れる"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:aa615d7673902837",
@@ -37073,8 +36616,7 @@
                   "rank": 142,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "触れる・紐・越し・肩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e3eaaa9846148bca",
@@ -37085,8 +36627,7 @@
                   "rank": 143,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "シャツの裾を引く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:5600f01ce9c3486e",
@@ -37097,8 +36638,7 @@
                   "rank": 144,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "袖を引く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:cfdd43b2537a037d",
@@ -37109,8 +36649,7 @@
                   "rank": 145,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "スカートの裾を持ちながら振り向く"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:1d0182d808e8c634",
@@ -37121,8 +36660,7 @@
                   "rank": 146,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "傘・越し・肩"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:e305150379df2937",
@@ -37133,8 +36671,7 @@
                   "rank": 147,
                   "prompt_count": 4,
                   "negative_prompt_count": 0,
-                  "style_count": 4,
-                  "translation_ja": "まっすぐな膝立ち"
+                  "style_count": 4
                 },
                 {
                   "id": "styles:20260815:491bb8bc29d339d9",
@@ -37145,8 +36682,7 @@
                   "rank": 148,
                   "prompt_count": 1,
                   "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "見える血管"
+                  "style_count": 1
                 },
                 {
                   "id": "styles:20260815:a432525514d5c157",
@@ -37157,8 +36693,7 @@
                   "rank": 149,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "雨の中を歩く"
+                  "style_count": 2
                 },
                 {
                   "id": "styles:20260815:b8b540742117a60c",
@@ -37169,8 +36704,7 @@
                   "rank": 150,
                   "prompt_count": 2,
                   "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "体重・上・片方・脚"
+                  "style_count": 2
                 }
               ]
             }

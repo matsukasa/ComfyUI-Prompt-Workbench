@@ -440,6 +440,7 @@ export class PromptEditor {
     if (favorite) favorites.add(key);
     else favorites.delete(key);
     this.settings.favorites = [...favorites].sort();
+    this.clearSelectionState();
     this.persist();
     this.renderTags();
     this.refreshExamplesPanel?.();
@@ -1082,10 +1083,11 @@ export class PromptEditor {
       if (!selectedFile) return;
       await loadSelectedCatalog(selectedFile);
     });
-    const applySavedCatalog = async (catalog, responseBody, message) => {
+    const applySavedCatalog = async (catalog, responseBody, message, options = {}) => {
       this.pushUndo();
       this.settings.libraryFile = responseBody.name;
       this.settings.libraryEdits = { categories: [], tags: [] };
+      if (options.clearTagSelection) this.clearSelectionState();
       edits = sanitizeLibraryEdits({});
       this.exampleData = catalog;
       this.exampleLoadPromise = Promise.resolve(catalog);
@@ -1139,7 +1141,7 @@ export class PromptEditor {
         const catalog = await buildCompleteCatalogForSave(() => this.loadExampleData(), edits);
         if (currentCatalogFileHandle) await writeCatalogFile(currentCatalogFileHandle, catalog);
         const responseBody = await upsertCatalogCopy(this.api, targetName, catalog);
-        await applySavedCatalog(catalog, responseBody, t("{file} を上書き保存しました", { file: targetName }));
+        await applySavedCatalog(catalog, responseBody, t("{file} を上書き保存しました", { file: targetName }), { clearTagSelection: true });
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
@@ -2219,10 +2221,14 @@ export class PromptEditor {
   }
 
   clearSelection() {
-    this.currentTags.forEach((tag) => { tag.selected = false; });
-    this.lastSelectedIndex = null;
+    this.clearSelectionState();
     this.persist();
     this.render();
+  }
+
+  clearSelectionState() {
+    this.currentTags.forEach((tag) => { tag.selected = false; });
+    this.lastSelectedIndex = null;
   }
 
   bulkMutate(mutate) {
