@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 4371,
-    "tags": 4373,
+    "tags": 4382,
     "major_categories": 10,
     "medium_categories": 42,
     "small_categories": 164
@@ -1376,6 +1376,12 @@
                   ],
                   "rank": 12,
                   "translation_ja": "筋肉質"
+                },
+                {
+                  "name": "elegant silhouette"
+                },
+                {
+                  "name": "refined body line"
                 }
               ]
             }
@@ -1703,12 +1709,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "脚の毛",
                   "rank": 53
+                },
+                {
+                  "name": "slender arms"
                 }
               ]
             },
             {
               "id": "legacy_small:01-019",
-              "label_ja": "肩・鎖骨・脇",
+              "label_ja": "首・肩・鎖骨・脇",
               "tags": [
                 {
                   "id": "legacy:631d099b149327f6",
@@ -1747,6 +1756,15 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "脇の下のしわ",
                   "rank": 4
+                },
+                {
+                  "name": "narrow shoulders"
+                },
+                {
+                  "name": "delicate neck"
+                },
+                {
+                  "name": "beautiful collarbone"
                 }
               ]
             },
@@ -1771,6 +1789,9 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "細身の腰",
                   "rank": 2
+                },
+                {
+                  "name": "slim waist"
                 }
               ]
             },
@@ -1838,6 +1859,12 @@
                   "aliases": [],
                   "rank": 9999,
                   "translation_ja": "腹筋"
+                },
+                {
+                  "name": "flat stomach"
+                },
+                {
+                  "name": "subtle lower abdomen"
                 }
               ]
             },

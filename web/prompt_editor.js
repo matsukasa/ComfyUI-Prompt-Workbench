@@ -564,8 +564,9 @@ export class PromptEditor {
     const promptHeader = element("div", { className: "paio-section-header" }, [
       element("strong", { text: t("プロンプト本文") }),
     ]);
+    this.catalogPathLabel = element("span", { className: "paio-current-catalog-path", text: t("タグファイル: 確認中…") });
     this.syncBadge = element("span", { className: "paio-sync-badge", text: t("同期済み") });
-    promptHeader.append(this.syncBadge);
+    promptHeader.append(element("span", { className: "paio-section-header-meta" }, [this.catalogPathLabel, this.syncBadge]));
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
     this.promptTextarea.rows = 4;
@@ -744,6 +745,7 @@ export class PromptEditor {
       this.blacklistDialog,
       this.ioDialog,
     );
+    this.refreshCurrentCatalogPath();
     return root;
   }
 
@@ -1003,6 +1005,7 @@ export class PromptEditor {
             ? t("使用中: {file}", { file: `${this.settings.libraryFile}.json` })
             : t("指定ファイルがないためデフォルトを使用中"))
           : t("使用中: デフォルト");
+        this.setCurrentCatalogPathStatus(responseBody);
       } catch (error) {
         overwriteButton.disabled = true;
         fileStatus.textContent = error.message;
@@ -1576,7 +1579,7 @@ export class PromptEditor {
           this.showFavoriteContextMenu(event, item.prompt);
         });
         chip.replaceChildren(
-          ...(favorite ? [element("span", { className: "paio-favorite-mark", text: "★" })] : []),
+          element("span", { className: "paio-favorite-mark", text: favorite ? "★" : "☆" }),
           element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
           ...(translation ? [element("span", { className: "paio-example-chip-translation", text: translation })] : []),
         );
@@ -1729,6 +1732,27 @@ export class PromptEditor {
     this.renderTranslationControls();
     this.renderBulk();
     this.renderTags();
+  }
+
+  async refreshCurrentCatalogPath() {
+    if (!this.catalogPathLabel) return;
+    try {
+      const query = this.settings.libraryFile ? `?selected=${encodeURIComponent(this.settings.libraryFile)}` : "";
+      const response = await this.api.fetchApi(`/prompt_workbench/catalogs${query}`);
+      const responseBody = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(responseBody.error || t("タグファイルの場所を確認できませんでした"));
+      this.setCurrentCatalogPathStatus(responseBody);
+    } catch (error) {
+      this.catalogPathLabel.textContent = t("タグファイル: 確認失敗");
+      this.catalogPathLabel.title = error.message || this.catalogPathLabel.textContent;
+    }
+  }
+
+  setCurrentCatalogPathStatus(status) {
+    if (!this.catalogPathLabel) return;
+    const path = String(status?.path || status?.default_path || "");
+    this.catalogPathLabel.textContent = path ? t("タグファイル: {path}", { path }) : t("タグファイル: 不明");
+    this.catalogPathLabel.title = path || this.catalogPathLabel.textContent;
   }
 
   renderSyncState() {

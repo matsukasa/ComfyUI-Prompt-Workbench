@@ -44,11 +44,29 @@
   border-color: transparent;
 }
 
-.paio-section-header { justify-content: space-between; margin: 0 2px 4px; }
-.paio-section-header strong { font-size: 12px; }
+.paio-section-header { justify-content: space-between; margin: 0 2px 4px; min-width: 0; }
+.paio-section-header strong { flex: 0 0 auto; font-size: 12px; }
+.paio-section-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.paio-current-catalog-path {
+  color: var(--paio-muted);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .paio-sync-badge {
   color: var(--paio-muted);
   background: var(--paio-surface);
+  flex: 0 0 auto;
   border-radius: 999px;
   padding: 1px 7px;
 }
@@ -287,6 +305,8 @@
   border: 0;
   border-radius: 5px;
   padding: 4px 7px;
+  font: inherit;
+  font-size: 12px;
   text-align: start;
   cursor: pointer;
 }
@@ -371,9 +391,9 @@
 .paio-tag-list-resize-handle { margin-top: 0; margin-bottom: 1px; }
 .paio-example-resize-handle:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
 .paio-example-resize-mark { font-size: 18px; line-height: 0.5; letter-spacing: 2px; transform: rotate(90deg); }
-.paio-example-chip { display: inline-flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 44px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
+.paio-example-chip { display: grid; grid-template-columns: 13px minmax(0, 1fr); align-items: center; column-gap: 5px; row-gap: 1px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 44px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
 .paio-example-chip-prompt { max-width: 100%; color: #f4f6f8; font-weight: 650; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
-.paio-example-chip-translation { max-width: 100%; color: #afc7e8; font-size: 0.88rem; font-weight: 550; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
+.paio-example-chip-translation { grid-column: 2; max-width: 100%; color: #afc7e8; font-size: 0.88rem; font-weight: 550; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
 .paio-example-chip.is-selected { background: var(--paio-primary-soft); box-shadow: inset 0 0 0 1px var(--paio-primary); }
 .paio-example-chip.is-favorite {
   border-color: color-mix(in srgb, #ffd56a 72%, white);

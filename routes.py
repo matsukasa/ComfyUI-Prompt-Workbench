@@ -196,6 +196,25 @@ def examples_path(data_directory=None, requested_name="", storage_directory=None
     return default_examples_path(data_directory)
 
 
+def catalog_path_status(requested_name="", data_directory=None, storage_directory=None):
+    selected = str(requested_name or "")
+    if selected:
+        selected_path = user_catalog_path(selected, storage_directory)
+        exists = selected_path.is_file()
+        active_path = selected_path if exists else default_examples_path(data_directory)
+    else:
+        selected_path = None
+        exists = False
+        active_path = default_examples_path(data_directory)
+    return {
+        "selected": selected,
+        "exists": exists,
+        "path": str(active_path.resolve()),
+        "selected_path": str(selected_path.resolve()) if selected_path is not None else "",
+        "default_path": str(default_examples_path(data_directory).resolve()),
+    }
+
+
 def load_examples_catalog(data_directory=None, requested_name="", storage_directory=None):
     path = examples_path(data_directory, requested_name, storage_directory)
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -594,10 +613,10 @@ def register_routes():
         selected = request.rel_url.query.get("selected", "")
         try:
             files = list_user_catalogs()
-            exists = bool(selected and user_catalog_path(selected).is_file())
+            status = catalog_path_status(selected)
         except ValueError as exc:
             return web.json_response({"error": str(exc)}, status=400)
-        return web.json_response({"files": files, "selected": selected, "exists": exists})
+        return web.json_response({"files": files, **status})
 
     @routes.post("/prompt_workbench/catalogs")
     async def post_catalog(request):
