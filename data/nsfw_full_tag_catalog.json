@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 4839,
-    "tags": 4839,
+    "tags": 4829,
     "major_categories": 11,
     "medium_categories": 43,
     "small_categories": 165
@@ -1420,138 +1420,6 @@
                 {
                   "name": "refined body line",
                   "translation_ja": "洗練されたボディライン"
-                },
-                {
-                  "id": "styles:20260815:52548df5885c1301",
-                  "name": "adjusting waistband",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 13,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "ウエスト部分を直す"
-                },
-                {
-                  "id": "styles:20260815:2782890a87c2ade9",
-                  "name": "air between body and fabric",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 14,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体と布の間の隙間"
-                },
-                {
-                  "id": "styles:20260815:17e91bd4fc307923",
-                  "name": "arms around body",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 15,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "体に回した腕"
-                },
-                {
-                  "id": "styles:20260815:2827f6a15af6bc2b",
-                  "name": "arms overhead",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 16,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "頭上に上げた腕"
-                },
-                {
-                  "id": "styles:20260815:9986a3a40e987306",
-                  "name": "arms resting",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 17,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "休めた腕"
-                },
-                {
-                  "id": "styles:20260815:98d303309910adfa",
-                  "name": "balanced breast shape",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 18,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バランスのよい胸の形"
-                },
-                {
-                  "id": "styles:20260815:60be6d26d6967013",
-                  "name": "balanced petite proportions",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 19,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "バランスのよい小柄な体型"
-                },
-                {
-                  "id": "styles:20260815:28e0b7104dbfe77a",
-                  "name": "beautiful bust line",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 20,
-                  "prompt_count": 3,
-                  "negative_prompt_count": 0,
-                  "style_count": 3,
-                  "translation_ja": "美しいバストライン"
-                },
-                {
-                  "id": "styles:20260815:0977f04d5d81f7f7",
-                  "name": "beautiful rounded bust",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 21,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "美しく丸みのあるバスト"
-                },
-                {
-                  "id": "styles:20260815:b1c6a6a5763843ae",
-                  "name": "both arms up",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 22,
-                  "prompt_count": 1,
-                  "negative_prompt_count": 0,
-                  "style_count": 1,
-                  "translation_ja": "両腕を上げる"
-                },
-                {
-                  "id": "styles:20260815:d64a72eba0667298",
-                  "name": "collarbone",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 23,
-                  "prompt_count": 2,
-                  "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "鎖骨"
                 },
                 {
                   "id": "styles:20260815:c261123616f29872",
@@ -21903,6 +21771,18 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "髪の調整",
                   "rank": 133
+                },
+                {
+                  "id": "styles:20260815:b1c6a6a5763843ae",
+                  "name": "both arms up",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "styles.txt:20260815",
+                  "rank": 22,
+                  "prompt_count": 1,
+                  "negative_prompt_count": 0,
+                  "style_count": 1,
+                  "translation_ja": "両腕を上げる"
                 }
               ]
             },
