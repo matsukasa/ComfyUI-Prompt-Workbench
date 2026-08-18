@@ -374,10 +374,8 @@ function parseSearchPattern(query) {
   if (!regexSource) {
     return { empty: false, test: (text) => normalizeSearchText(text).includes(normalized) };
   }
-  const trailing = raw.startsWith("/") ? raw.slice(raw.lastIndexOf("/") + 1) : "";
-  const flags = trailing.includes("i") ? "iu" : "iu";
   try {
-    const matcher = new RegExp(regexSource, flags);
+    const matcher = new RegExp(regexSource, "u");
     return { empty: false, test: (text) => matcher.test(normalizeSearchText(text)) };
   } catch {
     const fallback = normalizeSearchText(regexSource);
@@ -2404,6 +2402,7 @@ export class PromptEditor {
         provider: this.settings.translationProvider,
         source: "auto",
         target,
+        catalog: this.settings.libraryFile,
         timeoutMs: translationBatchTimeoutMs(values.length),
       });
       this.pushUndo();

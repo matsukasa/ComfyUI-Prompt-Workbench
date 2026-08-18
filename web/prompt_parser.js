@@ -9,6 +9,17 @@ const CLOSE_TO_OPEN = Object.fromEntries(
 
 let nextTagId = 1;
 
+function isTagWordCharacter(character) {
+  return /[\p{L}\p{N}_-]/u.test(character || "");
+}
+
+function isSingleQuoteDelimiter(input, index) {
+  return !(
+    isTagWordCharacter(input[index - 1]) &&
+    isTagWordCharacter(input[index + 1])
+  );
+}
+
 function normalizeLegacyDisabledValue(raw) {
   const text = String(raw ?? "").trim();
   const match = text.match(/^(.+\S)\s+(?:null|undefined)$/iu);
@@ -81,11 +92,11 @@ export function splitPrompt(text) {
     }
     if (quote) {
       buffer += character;
-      if (character === quote) quote = null;
+      if (character === quote && (quote !== "'" || isSingleQuoteDelimiter(input, index))) quote = null;
       lastWasSeparator = false;
       continue;
     }
-    if (character === '"' || character === "'") {
+    if (character === '"' || (character === "'" && isSingleQuoteDelimiter(input, index))) {
       quote = character;
       buffer += character;
       lastWasSeparator = false;

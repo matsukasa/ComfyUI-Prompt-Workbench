@@ -15,8 +15,8 @@
     "legacy_internal_duplicates": 190,
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
-    "translated_tags": 4120,
-    "tags": 4128,
+    "translated_tags": 4125,
+    "tags": 4125,
     "major_categories": 11,
     "medium_categories": 40,
     "small_categories": 163
@@ -3860,6 +3860,7 @@
               "label_ja": "目",
               "tags": [
                 {
+                  "id": "manual:20260818:tareme",
                   "name": "tareme",
                   "translation_ja": "たれ目"
                 },
@@ -6557,6 +6558,7 @@
                   "rank": 19
                 },
                 {
+                  "id": "manual:20260818:turn_pale",
                   "name": "turn_pale",
                   "translation_ja": "青ざめている"
                 }
@@ -7136,10 +7138,12 @@
                   "rank": 426
                 },
                 {
+                  "id": "manual:20260818:horrified",
                   "name": "horrified",
                   "translation_ja": "恐怖に引きつっている"
                 },
                 {
+                  "id": "manual:20260818:closed_eyes_expression",
                   "name": ">_<",
                   "translation_ja": "ぎゅっと閉じた目"
                 }
@@ -11888,18 +11892,6 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "あくびをする",
                   "rank": 148
-                },
-                {
-                  "name": "parted lips",
-                  "translation_ja": "少し開いた唇"
-                },
-                {
-                  "name": "wavy mouth",
-                  "translation_ja": "波線の口"
-                },
-                {
-                  "name": "open mouth",
-                  "translation_ja": "口を開けている"
                 }
               ]
             }
