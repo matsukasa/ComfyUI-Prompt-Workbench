@@ -225,7 +225,8 @@
 }
 .paio-tag.is-dragging { opacity: 0.3; }
 .paio-select-mark { width: 12px; color: #fff; font-weight: 800; text-align: center; }
-.paio-state-mark { width: 13px; color: #ffd56a; font-weight: 800; text-align: center; }
+.paio-state-mark { width: 13px; color: #fff; font-weight: 800; text-align: center; }
+.paio-tag.is-favorite .paio-state-mark { color: #ffd56a; }
 .paio-select-mark:empty, .paio-state-mark:empty { display: none; }
 .paio-tag-content { display: flex; min-width: 0; width: max-content; flex-direction: column; }
 .paio-tag-label { min-width: 0; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -408,11 +409,12 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffd56a 54%, transparent);
 }
 .paio-favorite-mark {
-  color: #ffd56a;
+  color: #f4f6f8;
   font-size: 12px;
   font-weight: 800;
   line-height: 1;
 }
+.paio-example-chip.is-favorite .paio-favorite-mark { color: #ffd56a; }
 .paio-example-footer { justify-content: space-between; flex-wrap: wrap; min-height: 26px; margin-top: 5px; }
 .paio-example-count { color: var(--paio-muted); }
 

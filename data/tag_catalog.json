@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 4120,
-    "tags": 4120,
+    "tags": 4128,
     "major_categories": 11,
     "medium_categories": 40,
     "small_categories": 163
@@ -824,6 +824,7 @@
                   "post_count": 86838,
                   "aliases": [
                     "boy_love",
+                    "boy's_love",
                     "boys_love",
                     "gay",
                     "shonen-ai",
@@ -838,6 +839,7 @@
                   "post_count": 257123,
                   "aliases": [
                     "girl_love",
+                    "girl's_love",
                     "girls_love",
                     "lesbian",
                     "shoujo-ai"
@@ -3858,6 +3860,10 @@
               "label_ja": "目",
               "tags": [
                 {
+                  "name": "tareme",
+                  "translation_ja": "たれ目"
+                },
+                {
                   "id": "legacy:a13b81e797e5eab1",
                   "name": "blue_eyes",
                   "post_count": 0,
@@ -4088,7 +4094,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "均一でない目",
+                  "translation_ja": "左右非対称の目",
                   "rank": 35
                 },
                 {
@@ -4125,6 +4131,18 @@
                   "aliases": [],
                   "rank": 18,
                   "translation_ja": "発光する片目"
+                },
+                {
+                  "id": "styles:20260815:6edee21c452f35b9",
+                  "name": "white_eyelashes",
+                  "post_count": 0,
+                  "aliases": [],
+                  "source": "styles.txt:20260815",
+                  "rank": 154,
+                  "prompt_count": 2,
+                  "negative_prompt_count": 0,
+                  "style_count": 2,
+                  "translation_ja": "白いまつげ"
                 }
               ]
             },
@@ -4935,7 +4953,7 @@
                     ":0"
                   ],
                   "rank": 21,
-                  "translation_ja": "口を開ける"
+                  "translation_ja": "驚いた丸い口"
                 },
                 {
                   "id": "legacy:5752758e6b3a7b02",
@@ -4969,7 +4987,7 @@
                   "post_count": 17039,
                   "aliases": [],
                   "rank": 25,
-                  "translation_ja": "栗の口"
+                  "translation_ja": "栗のような口"
                 },
                 {
                   "id": "legacy:619d42645010127a",
@@ -6371,7 +6389,7 @@
                   "post_count": 26619,
                   "aliases": [],
                   "rank": 11,
-                  "translation_ja": "うぬぼれた"
+                  "translation_ja": "得意げな笑み"
                 },
                 {
                   "id": 10376,
@@ -6537,6 +6555,10 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "幸せな涙",
                   "rank": 19
+                },
+                {
+                  "name": "turn_pale",
+                  "translation_ja": "青ざめている"
                 }
               ]
             },
@@ -6597,7 +6619,7 @@
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
-                  "translation_ja": "陰気な",
+                  "translation_ja": "陰気な表情",
                   "rank": 6
                 },
                 {
@@ -6671,7 +6693,7 @@
                     "flat_gaze"
                   ],
                   "rank": 5,
-                  "translation_ja": "軽蔑の目つき"
+                  "translation_ja": "じと目"
                 },
                 {
                   "id": 374938,
@@ -7112,6 +7134,14 @@
                   "translation_ja": "驚きの表情",
                   "note_ja": "驚いている",
                   "rank": 426
+                },
+                {
+                  "name": "horrified",
+                  "translation_ja": "恐怖に引きつっている"
+                },
+                {
+                  "name": ">_<",
+                  "translation_ja": "ぎゅっと閉じた目"
                 }
               ]
             }
@@ -9304,7 +9334,7 @@
                 },
                 {
                   "id": "legacy:fe0c56701e2271d7",
-                  "name": "hands_on_anothers_",
+                  "name": "hands_on_another's_",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -9313,7 +9343,7 @@
                 },
                 {
                   "id": "legacy:630fabf5c6468cf5",
-                  "name": "hands_on_anothers_cheeks",
+                  "name": "hands_on_another's_cheeks",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -9421,7 +9451,7 @@
                 },
                 {
                   "id": "legacy:b7c77eb1f92f2328",
-                  "name": "hands_on_anothers_shoulders",
+                  "name": "hands_on_another's_shoulders",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -9430,7 +9460,7 @@
                 },
                 {
                   "id": "legacy:622f9e672d2d41a9",
-                  "name": "hand_on_anothers_",
+                  "name": "hand_on_another's_",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -9439,7 +9469,7 @@
                 },
                 {
                   "id": 656163,
-                  "name": "hand_on_anothers_cheek",
+                  "name": "hand_on_another's_cheek",
                   "post_count": 9829,
                   "aliases": [],
                   "rank": 23,
@@ -9447,7 +9477,7 @@
                 },
                 {
                   "id": 656171,
-                  "name": "hand_on_anothers_chest",
+                  "name": "hand_on_another's_chest",
                   "post_count": 6674,
                   "aliases": [],
                   "rank": 24,
@@ -9455,17 +9485,17 @@
                 },
                 {
                   "id": 667200,
-                  "name": "hand_on_anothers_chin",
+                  "name": "hand_on_another's_chin",
                   "post_count": 8889,
                   "aliases": [
-                    "finger_to_anothers_chin"
+                    "finger_to_another's_chin"
                   ],
                   "rank": 25,
                   "translation_ja": "手が相手の顎を支えている"
                 },
                 {
                   "id": 670088,
-                  "name": "hand_on_anothers_head",
+                  "name": "hand_on_another's_head",
                   "post_count": 40678,
                   "aliases": [],
                   "rank": 26,
@@ -9473,7 +9503,7 @@
                 },
                 {
                   "id": 670983,
-                  "name": "hand_on_anothers_shoulder",
+                  "name": "hand_on_another's_shoulder",
                   "post_count": 32485,
                   "aliases": [],
                   "rank": 27,
@@ -9481,7 +9511,7 @@
                 },
                 {
                   "id": 714136,
-                  "name": "hand_on_anothers_stomach",
+                  "name": "hand_on_another's_stomach",
                   "post_count": 3710,
                   "aliases": [],
                   "rank": 28,
@@ -9591,7 +9621,7 @@
                 },
                 {
                   "id": "legacy:4925d84acc43814d",
-                  "name": "hand_in_anothers_hair",
+                  "name": "hand_in_another's_hair",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -10272,7 +10302,7 @@
                 },
                 {
                   "id": 1464162,
-                  "name": "grabbing_anothers_arm",
+                  "name": "grabbing_another's_arm",
                   "post_count": 18281,
                   "aliases": [],
                   "rank": 9,
@@ -10318,11 +10348,11 @@
                 },
                 {
                   "id": 1553182,
-                  "name": "grabbing_anothers_hair",
+                  "name": "grabbing_another's_hair",
                   "post_count": 9224,
                   "aliases": [
                     "hair_pull",
-                    "pulling_anothers_hair"
+                    "pulling_another's_hair"
                   ],
                   "rank": 16,
                   "translation_ja": "相手の髪をつかんでいる"
@@ -10670,7 +10700,7 @@
                   "aliases": [
                     "hand_holding",
                     "handholding",
-                    "holding_anothers_hand"
+                    "holding_another's_hand"
                   ],
                   "rank": 37,
                   "translation_ja": "手をつないでいる"
@@ -11858,6 +11888,18 @@
                   "source": "legacy_prompt_examples",
                   "translation_ja": "あくびをする",
                   "rank": 148
+                },
+                {
+                  "name": "parted lips",
+                  "translation_ja": "少し開いた唇"
+                },
+                {
+                  "name": "wavy mouth",
+                  "translation_ja": "波線の口"
+                },
+                {
+                  "name": "open mouth",
+                  "translation_ja": "口を開けている"
                 }
               ]
             }
@@ -11917,7 +11959,7 @@
                 },
                 {
                   "id": "legacy:7e31d9e97c67e287",
-                  "name": "finger_in_anothers_mouth",
+                  "name": "finger_in_another's_mouth",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -12256,6 +12298,10 @@
                   ],
                   "rank": 1,
                   "translation_ja": "髪越しに見える目"
+                },
+                {
+                  "name": "upturned_eyes",
+                  "translation_ja": "上目遣い"
                 }
               ]
             },
@@ -12373,7 +12419,7 @@
                     "full_face_blush"
                   ],
                   "rank": 9,
-                  "translation_ja": "顔全体の赤面"
+                  "translation_ja": "顔全体が赤面"
                 },
                 {
                   "id": 681480,
@@ -13917,7 +13963,7 @@
                 },
                 {
                   "id": "legacy:4f529bc9547cde5a",
-                  "name": "st._glorianas_military_uniform",
+                  "name": "st._gloriana's_military_uniform",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -13926,7 +13972,7 @@
                 },
                 {
                   "id": "legacy:244accf09d750187",
-                  "name": "st._glorianas_school_uniform",
+                  "name": "st._gloriana's_school_uniform",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -19499,7 +19545,7 @@
                 },
                 {
                   "id": "legacy:cc8d1997af623496",
-                  "name": "jack-o-lantern_print",
+                  "name": "jack-o'-lantern_print",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -24563,7 +24609,7 @@
                 },
                 {
                   "id": "legacy:a926bd283b6063fd",
-                  "name": "st._glorianas_(emblem)",
+                  "name": "st._gloriana's_(emblem)",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -28570,18 +28616,6 @@
                   "translation_ja": "淡く洗ったような色"
                 },
                 {
-                  "id": "styles:20260815:6edee21c452f35b9",
-                  "name": "white_eyelashes",
-                  "post_count": 0,
-                  "aliases": [],
-                  "source": "styles.txt:20260815",
-                  "rank": 154,
-                  "prompt_count": 2,
-                  "negative_prompt_count": 0,
-                  "style_count": 2,
-                  "translation_ja": "白いまつげ"
-                },
-                {
                   "id": "styles:20260815:db3df7764e609c8d",
                   "name": "white-dominant_palette",
                   "post_count": 0,
@@ -30521,6 +30555,7 @@
                   "aliases": [
                     "valentien",
                     "valentines",
+                    "valentine's_day",
                     "valentines_day"
                   ],
                   "rank": 3,
@@ -32397,7 +32432,7 @@
               "tags": [
                 {
                   "id": 656167,
-                  "name": "hand_on_anothers_face",
+                  "name": "hand_on_another's_face",
                   "post_count": 23841,
                   "aliases": [],
                   "rank": 1,
@@ -32425,7 +32460,7 @@
                 },
                 {
                   "id": 685091,
-                  "name": "hand_on_anothers_back",
+                  "name": "hand_on_another's_back",
                   "post_count": 7765,
                   "aliases": [],
                   "rank": 4,
@@ -32433,7 +32468,7 @@
                 },
                 {
                   "id": 1319452,
-                  "name": "hand_on_anothers_arm",
+                  "name": "hand_on_another's_arm",
                   "post_count": 7467,
                   "aliases": [],
                   "rank": 5,
@@ -32441,7 +32476,7 @@
                 },
                 {
                   "id": 713394,
-                  "name": "hand_on_anothers_thigh",
+                  "name": "hand_on_another's_thigh",
                   "post_count": 6579,
                   "aliases": [],
                   "rank": 6,
@@ -32449,7 +32484,7 @@
                 },
                 {
                   "id": 760104,
-                  "name": "hand_on_anothers_waist",
+                  "name": "hand_on_another's_waist",
                   "post_count": 6354,
                   "aliases": [],
                   "rank": 7,
@@ -32457,7 +32492,7 @@
                 },
                 {
                   "id": 682862,
-                  "name": "hand_on_anothers_hip",
+                  "name": "hand_on_another's_hip",
                   "post_count": 5280,
                   "aliases": [],
                   "rank": 8,
@@ -32475,7 +32510,7 @@
                 },
                 {
                   "id": 663896,
-                  "name": "hand_on_anothers_neck",
+                  "name": "hand_on_another's_neck",
                   "post_count": 4391,
                   "aliases": [],
                   "rank": 11,
@@ -34451,7 +34486,7 @@
                 },
                 {
                   "id": "legacy:3b6ae34e9196847c",
-                  "name": "sorcerers_sutra_scroll",
+                  "name": "sorcerer's_sutra_scroll",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -35059,10 +35094,11 @@
                 },
                 {
                   "id": 529493,
-                  "name": "jack-o-lantern",
+                  "name": "jack-o'-lantern",
                   "post_count": 19143,
                   "aliases": [
                     "jack-o-lantern",
+                    "jack_o'_lantern",
                     "jack_o_lantern"
                   ],
                   "rank": 28,
@@ -35570,7 +35606,7 @@
                 },
                 {
                   "id": "legacy:0b4114eebd2f06ad",
-                  "name": "turn_ones_back",
+                  "name": "turn_one's_back",
                   "post_count": 0,
                   "aliases": [],
                   "source": "legacy_prompt_examples",
@@ -38338,7 +38374,7 @@
                 },
                 {
                   "id": 1274924,
-                  "name": "hand_on_anothers_ass",
+                  "name": "hand_on_another's_ass",
                   "post_count": 4526,
                   "aliases": [],
                   "rank": 10,
@@ -38346,7 +38382,7 @@
                 },
                 {
                   "id": 1533172,
-                  "name": "grabbing_anothers_breast",
+                  "name": "grabbing_another's_breast",
                   "post_count": 76860,
                   "aliases": [
                     "boob_grab",
@@ -38385,7 +38421,7 @@
                 },
                 {
                   "id": 684686,
-                  "name": "grabbing_anothers_ass",
+                  "name": "grabbing_another's_ass",
                   "post_count": 25001,
                   "aliases": [],
                   "rank": 8,

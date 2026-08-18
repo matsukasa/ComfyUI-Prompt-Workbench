@@ -358,16 +358,42 @@ export function resolveExampleCategoryPath(library, requested = {}) {
   return { large, medium, small, largeOptions, mediumOptions, smallOptions };
 }
 
+function normalizeSearchText(value) {
+  return String(value || "").normalize("NFKC").trim().toLocaleLowerCase().replace(/[\s_-]+/gu, " ");
+}
+
+function parseSearchPattern(query) {
+  const raw = String(query || "").trim();
+  if (!raw) return { empty: true, test: () => true };
+  const normalized = normalizeSearchText(raw);
+  const regexSource = raw.startsWith("re:")
+    ? raw.slice(3)
+    : raw.startsWith("/") && raw.lastIndexOf("/") > 0
+      ? raw.slice(1, raw.lastIndexOf("/"))
+      : "";
+  if (!regexSource) {
+    return { empty: false, test: (text) => normalizeSearchText(text).includes(normalized) };
+  }
+  const trailing = raw.startsWith("/") ? raw.slice(raw.lastIndexOf("/") + 1) : "";
+  const flags = trailing.includes("i") ? "iu" : "iu";
+  try {
+    const matcher = new RegExp(regexSource, flags);
+    return { empty: false, test: (text) => matcher.test(normalizeSearchText(text)) };
+  } catch {
+    const fallback = normalizeSearchText(regexSource);
+    return { empty: false, test: (text) => normalizeSearchText(text).includes(fallback) };
+  }
+}
+
 export function filterExampleLibraryTags(library, selectedSmallId, query = "") {
-  const normalizedQuery = String(query).trim().toLocaleLowerCase();
+  const search = parseSearchPattern(query);
   const categories = new Map((library?.categories || []).map((category) => [category.id, category]));
   return (library?.tags || []).filter((tag) => {
-    if (!normalizedQuery) return tag.categoryId === selectedSmallId;
+    if (search.empty) return tag.categoryId === selectedSmallId;
     const small = categories.get(tag.categoryId);
     const medium = categories.get(small?.parentId);
     const large = categories.get(medium?.parentId);
-    return [tag.prompt, ...(tag.aliases || []), large?.ja, medium?.ja, small?.ja]
-      .filter(Boolean).join(" ").toLocaleLowerCase().includes(normalizedQuery);
+    return search.test([tag.prompt, ...(tag.aliases || []), large?.ja, medium?.ja, small?.ja].filter(Boolean).join(" "));
   });
 }
 
@@ -1915,7 +1941,7 @@ export class PromptEditor {
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
-    const stateMark = element("span", { className: "paio-state-mark", text: this.isFavoriteValue(tag.value) ? "★" : "" });
+    const stateMark = element("span", { className: "paio-state-mark", text: this.isFavoriteValue(tag.value) ? "★" : "☆" });
     stateMark.setAttribute("aria-hidden", "true");
     const content = element("span", { className: "paio-tag-content" }, [
       element("span", { className: "paio-tag-label", text: primaryText }),
