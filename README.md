@@ -14,7 +14,7 @@ GitHub 上で動画が表示されない場合は、
 [`docs/assets/comfyui_prompt_workbench_intro.mp4`](docs/assets/comfyui_prompt_workbench_intro.mp4)
 を開いてください。
 
-![Prompt Workbench 本体の画面](docs/assets/prompt-workbench-tag-manager.png)
+![Prompt Workbench ノード本体の画面](docs/assets/prompt-workbench-main-node.png)
 
 > [!IMPORTANT]
 > 本プロジェクトは、[Physton 氏](https://github.com/Physton)による
