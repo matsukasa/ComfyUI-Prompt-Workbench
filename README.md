@@ -112,7 +112,7 @@ Stability Matrix は Package ごとに `custom_nodes` が分かれます。
 [ComfyUI Prompt Workbench Tag Editor](https://github.com/matsukasa/ComfyUI-Prompt-Workbench-Tag-Editor)
 を使えます。
 
-![Prompt Workbench のタグ管理画面](docs/assets/prompt-workbench-tag-manager.png)
+![ComfyUI Prompt Workbench Tag Editor の画面](docs/assets/prompt-workbench-tag-editor.png)
 
 Tag Editor では、タグのドラッグ移動、並べ替え、分類名やタグ名の直接編集、複数選択、Undo / Redo、検索、重複検出、変更内容の確認、上書き保存、別名保存ができます。
 `start-dev.bat` をダブルクリックすると起動できます。
