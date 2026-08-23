@@ -24,6 +24,8 @@ jobs:
 
           default_catalog = Path("data/tag_catalog.json")
           sfw_catalog = Path("data/sfw_tag_catalog.json")
+          default_tag_sets = Path("data/tag_sets.json")
+          sfw_tag_sets = Path("data/sfw_tag_sets.json")
 
           def load_catalog(path):
               if not path.is_file():
@@ -49,6 +51,32 @@ jobs:
               f"tags={packaged.get('stats', {}).get('tags')}",
               f"source={sfw_catalog}",
               f"target={default_catalog}",
+          )
+
+          def load_tag_sets(path):
+              if not path.is_file():
+                  raise SystemExit(f"Missing required tag sets: {path}")
+              with path.open("r", encoding="utf-8") as handle:
+                  tag_sets = json.load(handle)
+              routes.validate_user_tag_sets(tag_sets)
+              return tag_sets
+
+          full_sets = load_tag_sets(default_tag_sets)
+          sfw_sets = load_tag_sets(sfw_tag_sets)
+          if full_sets.get("stats", {}).get("tag_set_profile") == "registry_sfw":
+              raise SystemExit("data/tag_sets.json is expected to be the local full tag sets before packaging")
+          if sfw_sets.get("stats", {}).get("tag_set_profile") != "registry_sfw":
+              raise SystemExit("data/sfw_tag_sets.json must declare stats.tag_set_profile = registry_sfw")
+
+          shutil.copyfile(sfw_tag_sets, default_tag_sets)
+          packaged_sets = load_tag_sets(default_tag_sets)
+          if packaged_sets.get("stats", {}).get("tag_set_profile") != "registry_sfw":
+              raise SystemExit("Registry package tag set replacement did not produce SFW defaults")
+          print(
+              "Registry package tag sets are SFW:",
+              f"sets={packaged_sets.get('stats', {}).get('sets')}",
+              f"source={sfw_tag_sets}",
+              f"target={default_tag_sets}",
           )
           PY
       - name: Publish Custom Node

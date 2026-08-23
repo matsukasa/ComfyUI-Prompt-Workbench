@@ -3,3 +3,4 @@
 __pycache__/
 *.pyc
 data/sfw_tag_catalog.json
+data/sfw_tag_sets.json
