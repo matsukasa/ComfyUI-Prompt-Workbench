@@ -426,11 +426,11 @@
 }
 .paio-tag-set-row {
   display: grid;
-  grid-template-columns: 16px 52px minmax(90px, 0.32fr) minmax(0, 1fr);
+  grid-template-columns: 16px 52px minmax(130px, 0.42fr) minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   width: 100%;
-  min-height: 58px;
+  min-height: 66px;
   padding: 6px 8px;
   text-align: left;
   border-radius: 6px;
@@ -500,24 +500,30 @@
   display: block;
 }
 .paio-tag-set-name {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
   min-width: 0;
   overflow: hidden;
   color: #f4f6f8;
   font-weight: 650;
+  line-height: 1.25;
 }
 .paio-tag-set-name-text {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .paio-tag-set-creator {
+  display: block;
   overflow: hidden;
-  color: color-mix(in srgb, var(--paio-muted) 72%, transparent);
-  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--paio-muted) 88%, var(--paio-ink) 12%);
+  font-size: 0.74rem;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.15;
+  opacity: 0.82;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
