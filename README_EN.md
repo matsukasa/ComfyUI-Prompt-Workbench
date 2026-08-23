@@ -42,9 +42,20 @@ Tag parsing uses a state-machine parser that tracks brackets, quotes, and escape
 
 ## Installation
 
-### ComfyUI Manager
+### GitHub Clone (Recommended)
 
-ComfyUI Manager is recommended for normal installation.
+GitHub clone is the recommended installation method when you want the latest version.
+ComfyUI Manager releases can be older than the GitHub version because they depend on Comfy Registry review and update timing.
+Immediately after a new release, Manager may also fail to resolve `prompt-workbench@latest`.
+
+```powershell
+Set-Location ComfyUI/custom_nodes
+git clone https://github.com/matsukasa/ComfyUI-Prompt-Workbench.git
+```
+
+Restart ComfyUI after cloning. No additional dependencies are required.
+
+### ComfyUI Manager
 
 1. Start ComfyUI and open `Manager`.
 2. Open `Custom Nodes Manager`.
@@ -54,7 +65,7 @@ ComfyUI Manager is recommended for normal installation.
 
 The Registry listing is available at [ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench). No additional dependencies are required.
 
-The latest development version is available from the [`main` branch on GitHub](https://github.com/matsukasa/ComfyUI-Prompt-Workbench). Manager releases may appear later than the GitHub version because they depend on Registry update timing.
+If Manager cannot find or install the node, use the GitHub clone method above.
 
 ### Standard ComfyUI
 

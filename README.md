@@ -43,9 +43,21 @@ GitHub上で動画が表示されない場合は、[`docs/assets/comfyui_prompt_
 
 ## インストール
 
-### ComfyUI Managerから入れる
+### GitHubから入れる（推奨）
 
-通常はComfyUI Managerからのインストールを推奨します。
+最新版を使う場合は、GitHubから `custom_nodes` へcloneする方法を推奨します。
+ComfyUI Manager版はComfy Registryの審査や反映タイミングにより、GitHub版より古い場合があります。
+また、新しい公開直後はManager側で `prompt-workbench@latest` を解決できないことがあります。
+
+```powershell
+Set-Location ComfyUI/custom_nodes
+git clone https://github.com/matsukasa/ComfyUI-Prompt-Workbench.git
+```
+
+clone後、ComfyUIを再起動してください。
+追加依存関係はありません。
+
+### ComfyUI Managerから入れる
 
 1. ComfyUIを起動し、`Manager` を開きます。
 2. `Custom Nodes Manager` を開きます。
@@ -54,10 +66,7 @@ GitHub上で動画が表示されない場合は、[`docs/assets/comfyui_prompt_
 5. インストールが終わったらComfyUIを再起動します。
 
 Registryの公開ページは [ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench) です。
-追加依存関係はありません。
-
-開発中の変更を含む最新版は、[GitHubの `main` ブランチ](https://github.com/matsukasa/ComfyUI-Prompt-Workbench) にあります。
-Manager版はRegistryへの反映タイミングにより、GitHub版より更新が遅れる場合があります。
+Managerで見つからない、またはインストールできない場合は、上記のGitHub cloneを使ってください。
 
 ### 手動で入れる
 
