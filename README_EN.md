@@ -119,7 +119,7 @@ The currently bundled data is:
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
-Some bundled tag sets include prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), kindly shared with permission. Thank you very much for providing such lovely prompt sets.
+Some bundled tag sets include a selection of publicly posted prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), included with kind permission. Thank you very much for allowing Prompt Workbench to include them. They are wonderfully expressive and practical references for outfits, mood, and prompt composition, and I am very happy to introduce them as tag sets here.
 
 ### Using The Tag Catalogue
 
