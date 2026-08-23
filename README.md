@@ -54,6 +54,13 @@ Set-Location ComfyUI/custom_nodes
 git clone https://github.com/matsukasa/ComfyUI-Prompt-Workbench.git
 ```
 
+macOS / Linuxでは、同じ `custom_nodes` の場所で次のように実行します。
+
+```bash
+cd /path/to/ComfyUI/custom_nodes
+git clone https://github.com/matsukasa/ComfyUI-Prompt-Workbench.git
+```
+
 clone後、ComfyUIを再起動してください。
 追加依存関係はありません。
 
@@ -86,7 +93,7 @@ Portable版では、Portableフォルダ内にあるComfyUIの `custom_nodes` �
 ComfyUI_windows_portable/ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/
 ```
 
-配置したら、普段使っている `run_nvidia_gpu.bat` などからComfyUIを再起動してください。
+配置したら、Windowsでは `run_nvidia_gpu.bat` など、macOS / Linuxでは普段使っているシェルコマンドからComfyUIを再起動してください。
 
 ### Stability Matrixに入れる
 
