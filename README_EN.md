@@ -119,6 +119,8 @@ The currently bundled data is:
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
+Comfy Registry packages include SFW/general-purpose tag catalogue and tag set data as ready-to-try samples. You can expand or replace them for your own workflow by loading local JSON files or using the fuller data from the GitHub repository.
+
 Some bundled tag sets include a selection of publicly posted prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), included with kind permission. Thank you very much for allowing Prompt Workbench to include them. They are wonderfully expressive and practical references for outfits, mood, and prompt composition, and I am deeply grateful for the opportunity to include them as tag sets here.
 
 ### Using The Tag Catalogue
@@ -131,7 +133,7 @@ The SFW/general-purpose catalogue remains available as `data/sfw_tag_catalog.jso
 prompt_workbench/tag_catalogs/
 ```
 
-For Comfy Registry packages, the publish workflow replaces `data/tag_catalog.json` with `data/sfw_tag_catalog.json` during packaging, so the Registry-bundled default catalogue is SFW.
+For Comfy Registry packages, the publish workflow replaces `data/tag_catalog.json` with `data/sfw_tag_catalog.json` during packaging, so the Registry-bundled default catalogue is SFW sample data.
 
 ### Using Tag Sets
 
@@ -149,6 +151,8 @@ prompt_workbench/tag_sets/
 ```
 
 This lets you switch between purpose-specific tag set JSON files without editing the bundled defaults directly.
+
+For Comfy Registry packages, the publish workflow replaces `data/tag_sets.json` with `data/sfw_tag_sets.json` during packaging, so the Registry-bundled default tag sets are SFW/general-purpose sample data.
 
 ## Editing The Catalogue In Prompt Workbench
 
