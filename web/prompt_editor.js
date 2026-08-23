@@ -1829,6 +1829,13 @@ export class PromptEditor {
         smallId: resolved.small?.id || "",
       };
       renderCategoryBands(resolved);
+      const warnings = Array.isArray(library.warnings) ? library.warnings.filter(Boolean) : [];
+      if (warnings.length) {
+        list.append(element("p", {
+          className: "paio-empty paio-error",
+          text: t("タグセットの読み込みに警告があります: {message}", { message: warnings.slice(0, 3).join(" / ") }),
+        }));
+      }
       const favorites = this.favoriteTagSetKeys();
       const matches = filterTagSets(library, resolved.small?.id, search.value)
         .filter((item) => !this.settings.showFavoritesOnly || favorites.has(tagSetFavoriteKey(item.id)));
