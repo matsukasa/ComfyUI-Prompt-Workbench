@@ -401,6 +401,10 @@ def normalize_tag_sets_catalog(data):
                         set_output["name_ja"] = _short_text(item.get("name_ja"))
                     if item.get("name_en"):
                         set_output["name_en"] = _short_text(item.get("name_en"))
+                    if item.get("creator"):
+                        set_output["creator"] = _short_text(item.get("creator"), 200)
+                    if item.get("source_url"):
+                        set_output["source_url"] = _short_text(item.get("source_url"), 1000)
                     if item.get("image_url"):
                         set_output["image_url"] = _short_text(item.get("image_url"), 1000)
                     if item.get("image_path"):
