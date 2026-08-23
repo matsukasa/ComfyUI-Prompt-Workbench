@@ -14,6 +14,8 @@ MAX_REQUEST_BYTES = 64 * 1024
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
 MAX_CATALOG_CATEGORIES = 500
 MAX_CATALOG_TAGS = 10_000
+MAX_TAG_SETS = 500
+MAX_TAG_SET_TAGS = 100
 MAX_TEXT_LENGTH = 8_000
 MAX_BATCH_SIZE = 100
 CACHE_LIMIT = 512
@@ -159,6 +161,18 @@ def catalog_storage_directory(base_directory=None):
     return user_directory / "prompt_workbench" / "tag_catalogs"
 
 
+def tag_set_storage_directory(base_directory=None):
+    if base_directory is not None:
+        return Path(base_directory)
+    try:
+        import folder_paths
+
+        user_directory = Path(folder_paths.get_user_directory())
+    except (ImportError, AttributeError):
+        user_directory = Path(__file__).with_name("user_data")
+    return user_directory / "prompt_workbench" / "tag_sets"
+
+
 def normalize_catalog_name(value):
     name = unicodedata.normalize("NFKC", str(value or "")).strip()
     if name.lower().endswith(".json"):
@@ -183,9 +197,277 @@ def user_catalog_path(name, storage_directory=None):
     return target
 
 
+def user_tag_set_path(name, storage_directory=None):
+    safe_name = normalize_catalog_name(name)
+    directory = tag_set_storage_directory(storage_directory).resolve()
+    target = (directory / f"{safe_name}.json").resolve()
+    if target.parent != directory:
+        raise ValueError("Tag set path is outside the storage directory")
+    return target
+
+
 def default_examples_path(data_directory=None):
     data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
     return data_directory / "tag_catalog.json"
+
+
+DEFAULT_TAG_SETS_CATALOG = {
+    "schema_version": 1,
+    "major_categories": [
+        {
+            "id": "tagset_major:image_parts",
+            "label_ja": "イメージ要素",
+            "medium_categories": [
+                {
+                    "id": "tagset_medium:image_parts:styling",
+                    "label_ja": "スタイリング",
+                    "small_categories": [
+                        {
+                            "id": "tagset_small:image_parts:styling:clothing",
+                            "label_ja": "服装",
+                            "sets": [
+                                {
+                                    "id": "outfit_casual_street",
+                                    "name": "Casual street outfit",
+                                    "name_ja": "服装",
+                                    "tags": [
+                                        "casual outfit",
+                                        "streetwear",
+                                        "jacket",
+                                        "shirt",
+                                        "skirt",
+                                        "sneakers",
+                                        "fashionable",
+                                    ],
+                                }
+                            ],
+                        },
+                        {
+                            "id": "tagset_small:image_parts:styling:hairstyle",
+                            "label_ja": "髪型",
+                            "sets": [
+                                {
+                                    "id": "hairstyle_soft_long_hair",
+                                    "name": "Soft long hairstyle",
+                                    "name_ja": "髪型",
+                                    "tags": [
+                                        "long hair",
+                                        "wavy hair",
+                                        "hair between eyes",
+                                        "side bangs",
+                                        "soft hair",
+                                        "detailed hair",
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "id": "tagset_medium:image_parts:scene",
+                    "label_ja": "シーン",
+                    "small_categories": [
+                        {
+                            "id": "tagset_small:image_parts:scene:background",
+                            "label_ja": "背景のイメージ",
+                            "sets": [
+                                {
+                                    "id": "background_cinematic_city",
+                                    "name": "Cinematic city background",
+                                    "name_ja": "背景のイメージ",
+                                    "tags": [
+                                        "cityscape",
+                                        "street",
+                                        "night",
+                                        "neon lights",
+                                        "depth of field",
+                                        "cinematic lighting",
+                                        "detailed background",
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                },
+            ],
+        }
+    ],
+}
+
+
+def default_tag_sets_path(data_directory=None):
+    data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
+    return data_directory / "tag_sets.json"
+
+
+def tag_set_image_directory(data_directory=None):
+    data_directory = Path(data_directory) if data_directory is not None else Path(__file__).with_name("data")
+    return data_directory / "tag-set-images"
+
+
+def tag_set_image_path(file_name, data_directory=None):
+    name = str(file_name or "").strip()
+    if not name:
+        raise ValueError("Image file name is required")
+    path_name = Path(name).name
+    if path_name != name or not path_name.lower().endswith((".webp", ".png", ".jpg", ".jpeg", ".gif", ".avif")):
+        raise ValueError("Invalid image file name")
+    return (tag_set_image_directory(data_directory) / path_name).resolve()
+
+
+def tag_set_image_content_type(path):
+    suffix = Path(path).suffix.lower()
+    return {
+        ".webp": "image/webp",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif",
+        ".avif": "image/avif",
+    }.get(suffix, "application/octet-stream")
+
+
+def _empty_tag_sets_catalog(warnings=None):
+    return {"schema_version": 1, "major_categories": [], "warnings": list(warnings or [])}
+
+
+def _short_text(value, limit=200):
+    return str(value or "").strip()[:limit]
+
+
+def normalize_tag_sets_catalog(data):
+    if not isinstance(data, dict) or data.get("schema_version") != 1:
+        return _empty_tag_sets_catalog(["Unsupported tag set schema"])
+    output = {"schema_version": 1, "major_categories": [], "warnings": []}
+    set_count = 0
+    for major_index, major in enumerate(data.get("major_categories") if isinstance(data.get("major_categories"), list) else []):
+        if not isinstance(major, dict):
+            output["warnings"].append(f"Skipped invalid major category at {major_index}")
+            continue
+        major_id = _short_text(major.get("id"), 120) or f"tagset_major:{major_index}"
+        major_output = {
+            "id": major_id,
+            "label_ja": _short_text(major.get("label_ja") or major.get("name_ja") or major.get("name")),
+            "medium_categories": [],
+        }
+        if major.get("label_en"):
+            major_output["label_en"] = _short_text(major.get("label_en"))
+        for medium_index, medium in enumerate(major.get("medium_categories") if isinstance(major.get("medium_categories"), list) else []):
+            if not isinstance(medium, dict):
+                output["warnings"].append(f"Skipped invalid medium category under {major_id}")
+                continue
+            medium_id = _short_text(medium.get("id"), 120) or f"{major_id}:medium:{medium_index}"
+            medium_output = {
+                "id": medium_id,
+                "label_ja": _short_text(medium.get("label_ja") or medium.get("name_ja") or medium.get("name")),
+                "small_categories": [],
+            }
+            if medium.get("label_en"):
+                medium_output["label_en"] = _short_text(medium.get("label_en"))
+            for small_index, small in enumerate(medium.get("small_categories") if isinstance(medium.get("small_categories"), list) else []):
+                if not isinstance(small, dict):
+                    output["warnings"].append(f"Skipped invalid small category under {medium_id}")
+                    continue
+                small_id = _short_text(small.get("id"), 120) or f"{medium_id}:small:{small_index}"
+                small_output = {
+                    "id": small_id,
+                    "label_ja": _short_text(small.get("label_ja") or small.get("name_ja") or small.get("name")),
+                    "sets": [],
+                }
+                if small.get("label_en"):
+                    small_output["label_en"] = _short_text(small.get("label_en"))
+                for set_index, item in enumerate(small.get("sets") if isinstance(small.get("sets"), list) else []):
+                    if set_count >= MAX_TAG_SETS:
+                        output["warnings"].append("Skipped tag sets beyond the limit")
+                        break
+                    if not isinstance(item, dict):
+                        output["warnings"].append(f"Skipped invalid tag set under {small_id}")
+                        continue
+                    tags = [
+                        _short_text(tag, 10000)
+                        for tag in (item.get("tags") if isinstance(item.get("tags"), list) else [])
+                    ]
+                    tags = [tag for tag in tags if tag][:MAX_TAG_SET_TAGS]
+                    if not tags:
+                        output["warnings"].append(f"Skipped empty tag set under {small_id}")
+                        continue
+                    set_id = _short_text(item.get("id"), 160) or f"{small_id}:set:{set_index}"
+                    set_output = {
+                        "id": set_id,
+                        "name": _short_text(item.get("name") or item.get("name_en") or item.get("name_ja") or set_id),
+                        "tags": tags,
+                    }
+                    if item.get("name_ja"):
+                        set_output["name_ja"] = _short_text(item.get("name_ja"))
+                    if item.get("name_en"):
+                        set_output["name_en"] = _short_text(item.get("name_en"))
+                    if item.get("image_url"):
+                        set_output["image_url"] = _short_text(item.get("image_url"), 1000)
+                    if item.get("image_path"):
+                        set_output["image_path"] = _short_text(item.get("image_path"), 1000)
+                    small_output["sets"].append(set_output)
+                    set_count += 1
+                medium_output["small_categories"].append(small_output)
+            major_output["medium_categories"].append(medium_output)
+        output["major_categories"].append(major_output)
+    return output
+
+
+def load_tag_sets_catalog(data_directory=None):
+    path = default_tag_sets_path(data_directory)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        catalog = normalize_tag_sets_catalog(DEFAULT_TAG_SETS_CATALOG)
+        catalog["warnings"].append("Tag set file not found; using built-in defaults")
+        return catalog
+    except (OSError, json.JSONDecodeError):
+        catalog = normalize_tag_sets_catalog(DEFAULT_TAG_SETS_CATALOG)
+        catalog["warnings"].append("Tag set file could not be loaded; using built-in defaults")
+        return catalog
+    return normalize_tag_sets_catalog(data)
+
+
+def tag_sets_path(data_directory=None, requested_name="", storage_directory=None):
+    if requested_name:
+        requested = user_tag_set_path(requested_name, storage_directory)
+        if requested.is_file():
+            return requested
+    return default_tag_sets_path(data_directory)
+
+
+def tag_sets_path_status(requested_name="", data_directory=None, storage_directory=None):
+    selected = str(requested_name or "")
+    if selected:
+        selected_path = user_tag_set_path(selected, storage_directory)
+        exists = selected_path.is_file()
+        active_path = selected_path if exists else default_tag_sets_path(data_directory)
+    else:
+        selected_path = None
+        exists = False
+        active_path = default_tag_sets_path(data_directory)
+    return {
+        "selected": selected,
+        "exists": exists,
+        "path": str(active_path.resolve()),
+        "selected_path": str(selected_path.resolve()) if selected_path is not None else "",
+        "default_path": str(default_tag_sets_path(data_directory).resolve()),
+    }
+
+
+def load_selected_tag_sets_catalog(data_directory=None, requested_name="", storage_directory=None):
+    path = tag_sets_path(data_directory, requested_name, storage_directory)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        catalog = normalize_tag_sets_catalog(DEFAULT_TAG_SETS_CATALOG)
+        catalog["warnings"].append("Tag set file not found; using built-in defaults")
+        return catalog
+    except (OSError, json.JSONDecodeError):
+        catalog = normalize_tag_sets_catalog(DEFAULT_TAG_SETS_CATALOG)
+        catalog["warnings"].append("Tag set file could not be loaded; using built-in defaults")
+        return catalog
+    return normalize_tag_sets_catalog(data)
 
 
 def examples_path(data_directory=None, requested_name="", storage_directory=None):
@@ -225,6 +507,16 @@ def load_examples_catalog(data_directory=None, requested_name="", storage_direct
 
 def list_user_catalogs(storage_directory=None):
     directory = catalog_storage_directory(storage_directory)
+    if not directory.is_dir():
+        return []
+    return sorted(
+        (path.stem for path in directory.glob("*.json") if path.is_file()),
+        key=str.casefold,
+    )[:500]
+
+
+def list_user_tag_sets(storage_directory=None):
+    directory = tag_set_storage_directory(storage_directory)
     if not directory.is_dir():
         return []
     return sorted(
@@ -299,11 +591,51 @@ def validate_user_catalog(data):
     return data
 
 
+def validate_user_tag_sets(data):
+    if not isinstance(data, dict):
+        raise ValueError("Unsupported tag set schema")
+    if data.get("schema_version") != 1 or not isinstance(data.get("major_categories"), list):
+        raise ValueError("Tag set file must contain schema_version: 1 and major_categories")
+    normalized = normalize_tag_sets_catalog(data)
+    set_count = 0
+    for major in normalized.get("major_categories", []):
+        for medium in major.get("medium_categories", []):
+            for small in medium.get("small_categories", []):
+                set_count += len(small.get("sets", []))
+    if not normalized.get("major_categories"):
+        raise ValueError("Tag set category count is invalid")
+    if set_count > 2000:
+        raise ValueError("Tag set file contains too many sets")
+    encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    if len(encoded) > MAX_CATALOG_BYTES:
+        raise ValueError("Tag set file exceeds the 4 MB limit")
+    return data
+
+
 def save_user_catalog(name, data, storage_directory=None):
     catalog = validate_user_catalog(data)
     target = user_catalog_path(name, storage_directory)
     target.parent.mkdir(parents=True, exist_ok=True)
     serialized = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
+    created = False
+    try:
+        with target.open("x", encoding="utf-8", newline="\n") as output:
+            created = True
+            output.write(serialized)
+            output.flush()
+            os.fsync(output.fileno())
+    except Exception:
+        if created and target.exists():
+            target.unlink()
+        raise
+    return target
+
+
+def save_user_tag_sets(name, data, storage_directory=None):
+    tag_sets = validate_user_tag_sets(data)
+    target = user_tag_set_path(name, storage_directory)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(tag_sets, ensure_ascii=False, indent=2) + "\n"
     created = False
     try:
         with target.open("x", encoding="utf-8", newline="\n") as output:
@@ -324,6 +656,35 @@ def overwrite_user_catalog(name, data, storage_directory=None):
     if not target.is_file():
         raise FileNotFoundError(target.name)
     serialized = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            newline="\n",
+            dir=target.parent,
+            prefix=f".{target.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as output:
+            temporary_path = Path(output.name)
+            output.write(serialized)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary_path, target)
+        temporary_path = None
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
+    return target
+
+
+def overwrite_user_tag_sets(name, data, storage_directory=None):
+    tag_sets = validate_user_tag_sets(data)
+    target = user_tag_set_path(name, storage_directory)
+    if not target.is_file():
+        raise FileNotFoundError(target.name)
+    serialized = json.dumps(tag_sets, ensure_ascii=False, indent=2) + "\n"
     temporary_path = None
     try:
         with tempfile.NamedTemporaryFile(
@@ -607,6 +968,60 @@ def register_routes():
         except (OSError, ValueError, json.JSONDecodeError):
             return web.json_response({"error": "Prompt examples are unavailable"}, status=500)
         return web.json_response(data)
+
+    @routes.get("/prompt_workbench/tag_sets")
+    async def get_tag_sets(request):
+        requested_name = request.rel_url.query.get("file", "")
+        return web.json_response(load_selected_tag_sets_catalog(requested_name=requested_name))
+
+    @routes.get("/prompt-workbench-data/tag-set-images/{file_name}")
+    async def get_tag_set_image(request):
+        try:
+            path = tag_set_image_path(request.match_info.get("file_name", ""))
+        except ValueError:
+            return web.Response(status=400, text="Invalid image file name")
+        if not path.is_file():
+            return web.Response(status=404, text="Image not found")
+        return web.Response(
+            body=path.read_bytes(),
+            content_type=tag_set_image_content_type(path),
+        )
+
+    @routes.get("/prompt_workbench/tag_sets/files")
+    async def get_tag_set_files(request):
+        selected = request.rel_url.query.get("selected", "")
+        try:
+            files = list_user_tag_sets()
+            status = tag_sets_path_status(selected)
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        return web.json_response({"files": files, **status})
+
+    @routes.post("/prompt_workbench/tag_sets/files")
+    async def post_tag_set_file(request):
+        if request.content_length and request.content_length > MAX_CATALOG_BYTES:
+            return web.json_response({"error": "Tag set request is too large"}, status=413)
+        try:
+            body = await request.json()
+            target = save_user_tag_sets(body.get("name"), body.get("tag_sets"))
+            return web.json_response({"name": target.stem, "filename": target.name}, status=201)
+        except FileExistsError:
+            return web.json_response({"error": "A tag set file with this name already exists"}, status=409)
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.put("/prompt_workbench/tag_sets/files")
+    async def put_tag_set_file(request):
+        if request.content_length and request.content_length > MAX_CATALOG_BYTES:
+            return web.json_response({"error": "Tag set request is too large"}, status=413)
+        try:
+            body = await request.json()
+            target = overwrite_user_tag_sets(body.get("name"), body.get("tag_sets"))
+            return web.json_response({"name": target.stem, "filename": target.name})
+        except FileNotFoundError:
+            return web.json_response({"error": "The selected tag set file no longer exists"}, status=404)
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
 
     @routes.get("/prompt_workbench/catalogs")
     async def get_catalogs(request):

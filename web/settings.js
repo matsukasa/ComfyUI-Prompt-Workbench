@@ -1,5 +1,7 @@
 import { sanitizeLibraryEdits } from "./tag_library.js";
 
+export const DEFAULT_CATALOG_NAME = "tag_catalog";
+
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
   weightMin: 0.05,
@@ -14,12 +16,15 @@ export const DEFAULT_SETTINGS = Object.freeze({
   blacklistAction: "warn",
   tagColors: {},
   filter: "all",
-  libraryFile: "",
+  libraryFile: DEFAULT_CATALOG_NAME,
+  tagSetFile: "",
   libraryEdits: { categories: [], tags: [] },
   favorites: [],
+  favoriteTagSets: [],
   showFavoritesOnly: false,
   tagListHeight: 260,
   exampleListHeight: 118,
+  tagSetListHeight: 160,
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
@@ -73,12 +78,29 @@ export function sanitizeSettings(input = {}) {
       })
       .slice(0, 20000);
   }
+  if (Array.isArray(input.favoriteTagSets)) {
+    const seen = new Set();
+    settings.favoriteTagSets = input.favoriteTagSets
+      .map((value) => String(value || "").trim().replace(/\s+/gu, " ").toLocaleLowerCase())
+      .filter((value) => {
+        if (!value || seen.has(value)) return false;
+        seen.add(value);
+        return true;
+      })
+      .slice(0, 2000);
+  }
   settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
   if (typeof input.libraryFile === "string") {
     settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);
   }
+  if (typeof input.tagSetFile === "string") {
+    settings.tagSetFile = input.tagSetFile.trim().replace(/\.json$/iu, "").slice(0, 64);
+  }
   if (Number.isFinite(Number(input.exampleListHeight))) {
     settings.exampleListHeight = Math.min(520, Math.max(96, Math.round(Number(input.exampleListHeight))));
+  }
+  if (Number.isFinite(Number(input.tagSetListHeight))) {
+    settings.tagSetListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagSetListHeight))));
   }
   if (Number.isFinite(Number(input.tagListHeight))) {
     settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));

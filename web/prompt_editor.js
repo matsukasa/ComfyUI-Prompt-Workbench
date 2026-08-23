@@ -16,6 +16,7 @@ import {
   setTagWeight,
 } from "./prompt_parser.js";
 import {
+  DEFAULT_CATALOG_NAME,
   DEFAULT_SETTINGS,
   exportEditorState,
   parseImportedState,
@@ -39,6 +40,12 @@ import {
   saveTagEdit,
   sanitizeLibraryEdits,
 } from "./tag_library.js";
+import {
+  buildTagSetLibrary,
+  filterTagSets,
+  resolveTagSetCategoryPath,
+  tagSetFavoriteKey,
+} from "./tag_sets.js";
 
 const STATE_KEY = "promptWorkbenchState";
 const MAX_RENDERED_TAGS = 250;
@@ -52,9 +59,13 @@ const CATALOG_FILE_PICKER_TYPES = [{
   accept: { "application/json": [".json"] },
 }];
 const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
+const TAG_SET_FILE_PICKER_ID = "prompt-workbench-tag-set-save";
 const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
 const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
+const DEFAULT_TAG_SET_LIST_HEIGHT = 160;
+const MIN_TAG_SET_LIST_HEIGHT = 96;
+const MAX_TAG_SET_LIST_HEIGHT = 720;
 const DEFAULT_TAG_LIST_HEIGHT = 260;
 const MIN_TAG_LIST_HEIGHT = 96;
 const MAX_TAG_LIST_HEIGHT = 720;
@@ -68,6 +79,18 @@ const COLOR_DEFAULTS = {
 
 export function clampTagListHeight(value) {
   return Math.min(MAX_TAG_LIST_HEIGHT, Math.max(MIN_TAG_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_LIST_HEIGHT)));
+}
+
+function clampTagSetListHeight(value) {
+  return Math.min(MAX_TAG_SET_LIST_HEIGHT, Math.max(MIN_TAG_SET_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_SET_LIST_HEIGHT)));
+}
+
+function tagSetImageSource(value) {
+  const source = String(value || "").trim();
+  if (!source) return "";
+  if (!source.startsWith("/prompt-workbench-data/tag-set-images/")) return source;
+  const encoded = encodeURI(source);
+  return `${encoded}${encoded.includes("?") ? "&" : "?"}v=2`;
 }
 
 function element(tagName, options = {}, children = []) {
@@ -144,6 +167,14 @@ export async function fetchExampleCatalog(api, libraryFile = "") {
   return body;
 }
 
+export async function fetchSelectedTagSetCatalog(api, tagSetFile = "") {
+  const query = tagSetFile ? `?file=${encodeURIComponent(tagSetFile)}` : "";
+  const response = await api.fetchApi(`/prompt_workbench/tag_sets${query}`);
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || t("タグセットの読込に失敗しました ({status})", { status: response.status }));
+  return body;
+}
+
 export function catalogNameFromFileName(fileName) {
   let name = String(fileName || "").normalize("NFKC").replace(/\.json$/iu, "");
   name = name.replace(/[^\p{L}\p{N}_ -]+/gu, "_").replace(/\s+/gu, " ").trim();
@@ -187,6 +218,33 @@ export async function upsertCatalogCopy(api, fileName, catalog, options = {}) {
   return result.body;
 }
 
+export async function upsertTagSetCopy(api, fileName, tagSets, options = {}) {
+  const requestedName = catalogNameFromFileName(fileName);
+  const listResponse = await api.fetchApi("/prompt_workbench/tag_sets/files");
+  const listBody = await listResponse.json().catch(() => ({}));
+  if (!listResponse.ok) throw new Error(listBody.error || t("保存済みファイルの確認に失敗しました ({status})", { status: listResponse.status }));
+  const existingName = (listBody.files || []).find((name) => String(name).toLocaleLowerCase() === requestedName.toLocaleLowerCase());
+  const send = async (method, name) => {
+    const response = await api.fetchApi("/prompt_workbench/tag_sets/files", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, tag_sets: tagSets }),
+    });
+    const body = await response.json().catch(() => ({}));
+    return { response, body };
+  };
+  let result = await send(existingName ? "PUT" : "POST", existingName || requestedName);
+  if (!existingName && result.response.status === 409) result = await send("PUT", requestedName);
+  if (result.response.status === 405) {
+    if (existingName && options.allowLoadFallback) {
+      return { name: existingName, filename: `${existingName}.json`, compatibilityFallback: true };
+    }
+    throw new Error(t("この保存機能を有効にするにはComfyUIを再起動してください"));
+  }
+  if (!result.response.ok) throw new Error(result.body.error || t("タグセットの保存に失敗しました ({status})", { status: result.response.status }));
+  return result.body;
+}
+
 export async function writeCatalogFile(handle, catalog) {
   const writable = await handle.createWritable();
   try {
@@ -215,6 +273,14 @@ export function parseImportedCatalogText(value) {
     throw new Error(t("タグファイルのカテゴリー構造が正しくありません"));
   }
   return libraryToBundledCatalog(library, parsed);
+}
+
+export function parseImportedTagSetText(value) {
+  const parsed = JSON.parse(String(value || ""));
+  const library = buildTagSetLibrary(parsed);
+  if (!library.categories.length) throw new Error(t("読み込めるタグセット分類がありません"));
+  if (!library.sets.length) throw new Error(t("読み込めるタグセットがありません"));
+  return parsed;
 }
 
 export function containsJapaneseText(value) {
@@ -435,7 +501,11 @@ export class PromptEditor {
     this.lastWidgetValue = "";
     this.exampleData = null;
     this.exampleLoadPromise = null;
+    this.tagSetData = null;
+    this.tagSetLoadPromise = null;
+    this.activeLibraryTab = "tags";
     this.refreshExamplesPanel = null;
+    this.refreshTagSetsPanel = null;
     this.domWidget = null;
     this.restore();
     this.root = this.build();
@@ -468,6 +538,27 @@ export class PromptEditor {
     this.persist();
     this.renderTags();
     this.refreshExamplesPanel?.();
+  }
+
+  favoriteTagSetKeys() {
+    return new Set(this.settings.favoriteTagSets || []);
+  }
+
+  isFavoriteTagSet(id) {
+    const key = tagSetFavoriteKey(id);
+    return Boolean(key && this.favoriteTagSetKeys().has(key));
+  }
+
+  setFavoriteTagSetValue(id, favorite) {
+    const key = tagSetFavoriteKey(id);
+    if (!key) return;
+    const favorites = this.favoriteTagSetKeys();
+    if (favorite) favorites.add(key);
+    else favorites.delete(key);
+    this.settings.favoriteTagSets = [...favorites].sort();
+    this.persist();
+    this.refreshExamplesPanel?.();
+    this.refreshTagSetsPanel?.();
   }
 
   syncFavoritesWithCatalog(catalog) {
@@ -760,8 +851,11 @@ export class PromptEditor {
 
     this.settingsDialog = this.buildSettingsDialog();
     this.examplesPanel = this.buildExamplesPanel();
+    this.tagSetsPanel = this.buildTagSetsPanel();
+    this.libraryTabs = this.buildLibraryTabs();
     this.blacklistDialog = this.buildBlacklistDialog();
     this.ioDialog = this.buildIoDialog();
+    this.setLibraryTab(this.activeLibraryTab);
 
     root.append(
       promptHeader,
@@ -775,7 +869,9 @@ export class PromptEditor {
       this.tagList,
       tagListResizeHandle,
       this.status,
+      this.libraryTabs,
       this.examplesPanel,
+      this.tagSetsPanel,
       this.settingsDialog,
       this.blacklistDialog,
       this.ioDialog,
@@ -940,6 +1036,7 @@ export class PromptEditor {
       ]));
     }
     const libraryManager = this.buildLibraryManager();
+    this.refreshSettingsFileStatus = () => libraryManager.refresh();
     const generalPanel = element("section", { className: "paio-settings-panel is-active", dataset: { panel: "general" } });
     generalPanel.append(
       element("h4", { text: t("一般") }),
@@ -958,14 +1055,15 @@ export class PromptEditor {
       this.labeled(t("入力時に自動翻訳"), auto),
       element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。") }),
     );
-    const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.root);
-    const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, libraryPanel]);
+    const filePanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "files" } }, libraryManager.fileRoot);
+    const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.editorRoot);
+    const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, filePanel, libraryPanel]);
     const navigation = element("nav", { className: "paio-settings-nav", ariaLabel: t("設定項目") });
-    for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["library", "タグ管理"]]) {
+    for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["files", "ファイル"], ["library", "タグ管理"]]) {
       const navButton = button(t(label), () => {
         navigation.querySelectorAll(".paio-button").forEach((item) => item.classList.toggle("is-active", item === navButton));
         content.querySelectorAll(".paio-settings-panel").forEach((item) => item.classList.toggle("is-active", item.dataset.panel === id));
-        if (id === "library") libraryManager.refresh();
+        if (id === "files" || id === "library") libraryManager.refresh();
       });
       navButton.classList.add("paio-settings-nav-button");
       if (id === "general") navButton.classList.add("is-active");
@@ -998,15 +1096,26 @@ export class PromptEditor {
   }
 
   buildLibraryManager() {
-    const root = element("div", { className: "paio-library-manager" });
+    const fileRoot = element("div", { className: "paio-library-manager paio-file-manager" });
+    const editorRoot = element("div", { className: "paio-library-manager" });
     const heading = element("div", { className: "paio-library-heading" }, [
       element("div", {}, [element("h4", { text: t("タグ管理") }), element("p", { text: t("大分類 → 中分類 → 小分類 → タグの順で整理します。") })]),
+    ]);
+    const fileHeading = element("div", { className: "paio-library-heading" }, [
+      element("div", {}, [element("h4", { text: t("ファイル") }), element("p", { text: t("読み込むタグファイルとタグセットファイルを指定します。") })]),
     ]);
     const fileInput = element("input");
     fileInput.type = "file";
     fileInput.accept = ".json,application/json";
     fileInput.hidden = true;
+    const tagSetFileInput = element("input");
+    tagSetFileInput.type = "file";
+    tagSetFileInput.accept = ".json,application/json";
+    tagSetFileInput.hidden = true;
     const fileStatus = element("span", { className: "paio-library-file-status", text: t("保存先を確認中…") });
+    const tagSetFileStatus = element("span", { className: "paio-library-file-status", text: t("タグセット保存先を確認中…") });
+    fileStatus.hidden = true;
+    tagSetFileStatus.hidden = true;
     const body = element("div", { className: "paio-library-body" });
     const treePane = element("section", { className: "paio-library-tree" });
     const detailPane = element("section", { className: "paio-library-detail" });
@@ -1017,6 +1126,7 @@ export class PromptEditor {
     let selectedId = "";
     let serial = 0;
     let currentCatalogFileHandle = null;
+    let currentTagSetFileHandle = null;
     let currentSourceFileName = this.settings.libraryFile ? `${this.settings.libraryFile}.json` : "tag_catalog.json";
     const collapsedCategoryIds = new Set();
     const source = () => this.exampleData || { categories: [] };
@@ -1035,23 +1145,44 @@ export class PromptEditor {
           ? t("{file} を上書き保存", { file: `${this.settings.libraryFile}.json` })
           : t("デフォルトは上書きできません。別名で保存してください");
         fileStatus.classList.remove("is-error");
-        fileStatus.textContent = this.settings.libraryFile
-          ? (responseBody.exists
-            ? t("使用中: {file}", { file: `${this.settings.libraryFile}.json` })
-            : t("指定ファイルがないためデフォルトを使用中"))
-          : t("使用中: デフォルト");
+        fileStatus.classList.remove("is-success");
+        fileStatus.hidden = true;
+        fileStatus.textContent = "";
+        fileStatus.title = "";
         this.setCurrentCatalogPathStatus(responseBody);
       } catch (error) {
         overwriteButton.disabled = true;
+        fileStatus.hidden = false;
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
+        fileStatus.classList.remove("is-success");
+      }
+    };
+    const refreshTagSetFileStatus = async () => {
+      try {
+        const query = this.settings.tagSetFile ? `?selected=${encodeURIComponent(this.settings.tagSetFile)}` : "";
+        const response = await this.api.fetchApi(`/prompt_workbench/tag_sets/files${query}`);
+        const responseBody = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(responseBody.error || t("タグセットファイル情報の取得に失敗しました ({status})", { status: response.status }));
+        tagSetFileStatus.classList.remove("is-error");
+        tagSetFileStatus.classList.remove("is-success");
+        tagSetFileStatus.hidden = true;
+        tagSetFileStatus.textContent = "";
+        tagSetFileStatus.title = "";
+      } catch (error) {
+        tagSetFileStatus.hidden = false;
+        tagSetFileStatus.textContent = error.message;
+        tagSetFileStatus.classList.add("is-error");
+        tagSetFileStatus.classList.remove("is-success");
       }
     };
     const loadSelectedCatalog = async (selectedFile, fileHandle = null) => {
       loadButton.disabled = true;
       loadButton.textContent = t("読み込み中…");
+      fileStatus.hidden = false;
       fileStatus.textContent = t("{file} を確認中…", { file: selectedFile.name });
       fileStatus.classList.remove("is-error");
+      fileStatus.classList.remove("is-success");
       try {
         if (selectedFile.size > MAX_CATALOG_FILE_BYTES) throw new Error(t("タグファイルは4 MB以下にしてください"));
         if (!selectedFile.name.toLocaleLowerCase().endsWith(".json")) throw new Error(t("JSONファイルを選択してください"));
@@ -1070,12 +1201,19 @@ export class PromptEditor {
         render();
         this.refreshExamplesPanel?.();
         await refreshFileStatus();
-        this.setStatus(saved.compatibilityFallback
+        const successMessage = saved.compatibilityFallback
           ? t("{file} を読み込みました。同名コピーの更新にはComfyUIの再起動が必要です", { file: selectedFile.name })
-          : t("{file} を読み込みました", { file: selectedFile.name }));
+          : t("{file} を正常に読み込みました", { file: selectedFile.name });
+        fileStatus.hidden = false;
+        fileStatus.textContent = successMessage;
+        fileStatus.title = successMessage;
+        fileStatus.classList.remove("is-error");
+        fileStatus.classList.add("is-success");
+        this.setStatus(successMessage);
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
+        fileStatus.classList.remove("is-success");
         this.setStatus(error.message, true);
       } finally {
         loadButton.disabled = false;
@@ -1090,6 +1228,7 @@ export class PromptEditor {
           const message = t("読み込みをキャンセルしました。編集内容は保持されています");
           fileStatus.textContent = message;
           fileStatus.classList.remove("is-error");
+          fileStatus.classList.remove("is-success");
           return this.setStatus(message);
         }
       }
@@ -1109,6 +1248,7 @@ export class PromptEditor {
         if (error?.name === "AbortError") return this.setStatus(t("読み込みをキャンセルしました"));
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
+        fileStatus.classList.remove("is-success");
         this.setStatus(error.message, true);
       }
     };
@@ -1117,6 +1257,73 @@ export class PromptEditor {
       const selectedFile = fileInput.files?.[0];
       if (!selectedFile) return;
       await loadSelectedCatalog(selectedFile);
+    });
+    const loadSelectedTagSetFile = async (selectedFile, fileHandle = null) => {
+      tagSetLoadButton.disabled = true;
+      tagSetLoadButton.textContent = t("読み込み中…");
+      tagSetFileStatus.hidden = false;
+      tagSetFileStatus.textContent = t("{file} を確認中…", { file: selectedFile.name });
+      tagSetFileStatus.classList.remove("is-error");
+      tagSetFileStatus.classList.remove("is-success");
+      try {
+        if (selectedFile.size > MAX_CATALOG_FILE_BYTES) throw new Error(t("タグセットファイルは4 MB以下にしてください"));
+        if (!selectedFile.name.toLocaleLowerCase().endsWith(".json")) throw new Error(t("JSONファイルを選択してください"));
+        const tagSets = parseImportedTagSetText(await selectedFile.text());
+        const saved = await upsertTagSetCopy(this.api, selectedFile.name, tagSets, { allowLoadFallback: true });
+        this.pushUndo();
+        this.settings.tagSetFile = saved.name;
+        this.tagSetData = tagSets;
+        this.tagSetLoadPromise = Promise.resolve(tagSets);
+        currentTagSetFileHandle = fileHandle;
+        this.syncToWidgets();
+        this.refreshTagSetsPanel?.();
+        await refreshTagSetFileStatus();
+        const successMessage = saved.compatibilityFallback
+          ? t("{file} を読み込みました。同名コピーの更新にはComfyUIの再起動が必要です", { file: selectedFile.name })
+          : t("{file} を正常に読み込みました", { file: selectedFile.name });
+        tagSetFileStatus.hidden = false;
+        tagSetFileStatus.textContent = successMessage;
+        tagSetFileStatus.title = successMessage;
+        tagSetFileStatus.classList.remove("is-error");
+        tagSetFileStatus.classList.add("is-success");
+        this.setStatus(successMessage);
+      } catch (error) {
+        tagSetFileStatus.textContent = error.message;
+        tagSetFileStatus.classList.add("is-error");
+        tagSetFileStatus.classList.remove("is-success");
+        this.setStatus(error.message, true);
+      } finally {
+        tagSetLoadButton.disabled = false;
+        tagSetLoadButton.textContent = t("ファイルを選んで読み込む");
+        tagSetFileInput.value = "";
+      }
+    };
+    const openTagSetFile = async () => {
+      if (typeof window.showOpenFilePicker !== "function") {
+        tagSetFileInput.value = "";
+        tagSetFileInput.click();
+        return;
+      }
+      try {
+        const [fileHandle] = await window.showOpenFilePicker({
+          id: TAG_SET_FILE_PICKER_ID,
+          multiple: false,
+          types: CATALOG_FILE_PICKER_TYPES,
+        });
+        await loadSelectedTagSetFile(await fileHandle.getFile(), fileHandle);
+      } catch (error) {
+        if (error?.name === "AbortError") return this.setStatus(t("読み込みをキャンセルしました"));
+        tagSetFileStatus.textContent = error.message;
+        tagSetFileStatus.classList.add("is-error");
+        tagSetFileStatus.classList.remove("is-success");
+        this.setStatus(error.message, true);
+      }
+    };
+    const tagSetLoadButton = button(t("ファイルを選んで読み込む"), openTagSetFile, t("JSONタグセットファイルを選んで読み込む"));
+    tagSetFileInput.addEventListener("change", async () => {
+      const selectedFile = tagSetFileInput.files?.[0];
+      if (!selectedFile) return;
+      await loadSelectedTagSetFile(selectedFile);
     });
     const applySavedCatalog = async (catalog, responseBody, message, options = {}) => {
       this.pushUndo();
@@ -1162,6 +1369,7 @@ export class PromptEditor {
         if (error?.name === "AbortError") return this.setStatus(t("別名保存をキャンセルしました"));
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
+        fileStatus.classList.remove("is-success");
         this.setStatus(error.message, true);
       } finally {
         saveAsButton.disabled = false;
@@ -1181,6 +1389,7 @@ export class PromptEditor {
       } catch (error) {
         fileStatus.textContent = error.message;
         fileStatus.classList.add("is-error");
+        fileStatus.classList.remove("is-success");
         this.setStatus(error.message, true);
       }
     };
@@ -1194,6 +1403,13 @@ export class PromptEditor {
         fileInput,
       ]),
       fileStatus,
+    ]);
+    const tagSetFileBar = element("section", { className: "paio-library-filebar" }, [
+      element("div", { className: "paio-library-file-controls" }, [
+        this.labeled(t("タグセットファイル"), tagSetLoadButton),
+        tagSetFileInput,
+      ]),
+      tagSetFileStatus,
     ]);
     const saveBar = element("section", { className: "paio-library-savebar" }, [
       element("span", { className: "paio-hint", text: t("タグとカテゴリーの変更をJSONへ保存") }),
@@ -1315,10 +1531,17 @@ export class PromptEditor {
     };
     search.addEventListener("input", render);
     body.append(treePane, detailPane);
-    root.append(heading, fileBar, body, saveBar);
+    fileRoot.append(fileHeading, fileBar, tagSetFileBar);
+    editorRoot.append(heading, body, saveBar);
     this.loadExampleData().then(render).catch(render);
     refreshFileStatus();
-    return { root, getEdits: () => sanitizeLibraryEdits(edits), refresh: () => { render(); refreshFileStatus(); } };
+    refreshTagSetFileStatus();
+    return {
+      fileRoot,
+      editorRoot,
+      getEdits: () => sanitizeLibraryEdits(edits),
+      refresh: () => { render(); refreshFileStatus(); refreshTagSetFileStatus(); },
+    };
   }
 
   buildTagEditor(library, category, getEdits, setEdits) {
@@ -1412,8 +1635,298 @@ export class PromptEditor {
     return this.exampleLoadPromise;
   }
 
+  loadTagSetData() {
+    if (this.tagSetData) return Promise.resolve(this.tagSetData);
+    if (!this.tagSetLoadPromise) {
+      this.tagSetLoadPromise = fetchSelectedTagSetCatalog(this.api, this.settings.tagSetFile).then((body) => {
+        this.tagSetData = body;
+        return body;
+      }).catch((error) => {
+        this.tagSetLoadPromise = null;
+        throw error;
+      });
+    }
+    return this.tagSetLoadPromise;
+  }
+
   labeled(label, control) {
     return element("label", { className: "paio-field" }, [element("span", { text: label }), control]);
+  }
+
+  buildLibraryTabs() {
+    const tags = button(t("タグ"), () => this.setLibraryTab("tags"));
+    const tagSets = button(t("タグセット"), () => this.setLibraryTab("tagSets"));
+    tags.dataset.tab = "tags";
+    tagSets.dataset.tab = "tagSets";
+    return element("div", { className: "paio-library-tabs paio-tabs" }, [tags, tagSets]);
+  }
+
+  setLibraryTab(tab) {
+    this.activeLibraryTab = tab === "tagSets" ? "tagSets" : "tags";
+    this.examplesPanel.hidden = this.activeLibraryTab !== "tags";
+    this.tagSetsPanel.hidden = this.activeLibraryTab !== "tagSets";
+    this.libraryTabs?.querySelectorAll?.(".paio-button").forEach((control) => {
+      const active = control.dataset.tab === this.activeLibraryTab;
+      control.classList.toggle("is-active", active);
+      control.setAttribute("aria-pressed", String(active));
+    });
+    if (this.activeLibraryTab === "tagSets") this.refreshTagSetsPanel?.();
+  }
+
+  buildTagSetsPanel() {
+    const panel = element("details", { className: "paio-examples paio-tag-sets" });
+    panel.open = true;
+    const summary = element("summary", { className: "paio-examples-summary" });
+    const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
+    disclosure.setAttribute("aria-hidden", "true");
+    summary.append(disclosure, element("strong", { text: t("タグセット") }));
+    const categoryBands = element("div", { className: "paio-example-category-bands" });
+    const pathStatus = element("span", { className: "paio-example-path", text: t("タグセットを読み込み中…") });
+    const search = element("input", { className: "paio-search" });
+    search.type = "search";
+    search.placeholder = t("タグセットを検索");
+    search.setAttribute("aria-label", t("タグセットを検索"));
+    const favoriteOnly = button(t("お気に入りのみ表示"), () => {
+      this.settings.showFavoritesOnly = !this.settings.showFavoritesOnly;
+      favoriteOnly.classList.toggle("is-active", this.settings.showFavoritesOnly);
+      favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+      this.favoriteOnlyToggle?.classList.toggle("is-active", this.settings.showFavoritesOnly);
+      this.favoriteOnlyToggle?.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+      this.persist();
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      redraw();
+      this.renderTags();
+    });
+    favoriteOnly.classList.add("paio-favorite-filter");
+    favoriteOnly.classList.toggle("is-active", this.settings.showFavoritesOnly);
+    favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
+    const list = element("div", { className: "paio-example-list paio-tag-set-list" });
+    list.setAttribute("aria-live", "polite");
+    list.style.height = `${clampTagSetListHeight(this.settings.tagSetListHeight)}px`;
+    const resizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-set-list-resize-handle" }, [
+      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
+    ]);
+    resizeHandle.tabIndex = 0;
+    resizeHandle.setAttribute("role", "separator");
+    resizeHandle.setAttribute("aria-orientation", "horizontal");
+    resizeHandle.setAttribute("aria-label", t("タグセット一覧の高さを変更"));
+    const applyListHeight = (height, nodeHeight = null, persist = false) => {
+      const nextHeight = clampTagSetListHeight(height);
+      this.settings.tagSetListHeight = nextHeight;
+      list.style.height = `${nextHeight}px`;
+      resizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_SET_LIST_HEIGHT));
+      resizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_SET_LIST_HEIGHT));
+      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
+      if (this.node && nodeHeight !== null) {
+        this.node.setSize([
+          Math.max(this.node.size?.[0] || 0, 540),
+          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_TAG_SET_LIST_HEIGHT, nodeHeight),
+        ]);
+      }
+      this.node?.graph?.setDirtyCanvas?.(true, true);
+      if (persist) this.persist();
+      return nextHeight;
+    };
+    applyListHeight(this.settings.tagSetListHeight);
+    resizeHandle.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      const startY = event.clientY;
+      const startHeight = this.settings.tagSetListHeight;
+      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      resizeHandle.classList.add("is-dragging");
+      resizeHandle.setPointerCapture?.(pointerId);
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        const nextHeight = clampTagSetListHeight(startHeight + moveEvent.clientY - startY);
+        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        resizeHandle.removeEventListener("pointermove", move);
+        resizeHandle.removeEventListener("pointerup", finish);
+        resizeHandle.removeEventListener("pointercancel", finish);
+        resizeHandle.releasePointerCapture?.(pointerId);
+        resizeHandle.classList.remove("is-dragging");
+        applyListHeight(this.settings.tagSetListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
+      };
+      resizeHandle.addEventListener("pointermove", move);
+      resizeHandle.addEventListener("pointerup", finish);
+      resizeHandle.addEventListener("pointercancel", finish);
+    });
+    resizeHandle.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const currentHeight = this.settings.tagSetListHeight;
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyListHeight(DEFAULT_TAG_SET_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_SET_LIST_HEIGHT - currentHeight, true);
+    });
+    resizeHandle.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const currentHeight = this.settings.tagSetListHeight;
+      const step = event.shiftKey ? 48 : 16;
+      const nextHeight = event.key === "Home"
+        ? DEFAULT_TAG_SET_LIST_HEIGHT
+        : event.key === "End"
+          ? MAX_TAG_SET_LIST_HEIGHT
+          : event.key === "ArrowUp"
+            ? currentHeight - step
+            : currentHeight + step;
+      const applied = applyListHeight(nextHeight, (this.node.size?.[1] || BASE_NODE_HEIGHT) + nextHeight - currentHeight, true);
+      this.setStatus(t("タグセット一覧の高さ: {height}px", { height: applied }));
+    });
+    let library = null;
+    let categoryPath = { largeId: "", mediumId: "", smallId: "" };
+    let renderLimit = INITIAL_EXAMPLE_LIMIT;
+
+    const selectCategory = (level, id) => {
+      categoryPath = {
+        largeId: level === "large" ? id : categoryPath.largeId,
+        mediumId: level === "medium" ? id : (level === "large" ? "" : categoryPath.mediumId),
+        smallId: level === "small" ? id : "",
+      };
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      redraw();
+    };
+    const renderCategoryBands = (resolved) => {
+      categoryBands.replaceChildren();
+      const definitions = [
+        ["large", "大分類", resolved.largeOptions, resolved.large?.id],
+        ["medium", "中分類", resolved.mediumOptions, resolved.medium?.id],
+        ["small", "小分類", resolved.smallOptions, resolved.small?.id],
+      ];
+      for (const [level, label, options, activeId] of definitions) {
+        const chips = element("div", { className: "paio-example-category-chips" });
+        for (const category of options) {
+          const chip = button(category.ja || category.en, () => selectCategory(level, category.id), category.en || category.ja);
+          chip.classList.add("paio-example-category-chip", `is-${level}`);
+          chip.classList.toggle("is-active", category.id === activeId);
+          chip.setAttribute("aria-pressed", String(category.id === activeId));
+          chips.append(chip);
+        }
+        if (!options.length) chips.append(element("span", { className: "paio-hint", text: t("分類がありません") }));
+        categoryBands.append(element("div", { className: `paio-example-category-band is-${level}` }, [
+          element("strong", { className: "paio-example-category-label", text: t(label) }),
+          chips,
+        ]));
+      }
+      pathStatus.textContent = [resolved.large?.ja, resolved.medium?.ja, resolved.small?.ja].filter(Boolean).join(" > ") || t("分類がありません");
+    };
+    const redraw = () => {
+      list.replaceChildren();
+      if (!library) {
+        renderCategoryBands({ large: null, medium: null, small: null, largeOptions: [], mediumOptions: [], smallOptions: [] });
+        list.append(element("p", { className: "paio-empty", text: t("タグセットを読み込み中…") }));
+        return;
+      }
+      const resolved = resolveTagSetCategoryPath(library, categoryPath);
+      categoryPath = {
+        largeId: resolved.large?.id || "",
+        mediumId: resolved.medium?.id || "",
+        smallId: resolved.small?.id || "",
+      };
+      renderCategoryBands(resolved);
+      const favorites = this.favoriteTagSetKeys();
+      const matches = filterTagSets(library, resolved.small?.id, search.value)
+        .filter((item) => !this.settings.showFavoritesOnly || favorites.has(tagSetFavoriteKey(item.id)));
+      const visibleLimit = search.value.trim() ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
+      for (const item of matches.slice(0, visibleLimit)) {
+        const favorite = favorites.has(tagSetFavoriteKey(item.id));
+        const row = button("", (event) => {
+          if (event.ctrlKey || event.metaKey) return;
+          this.pushUndo();
+          this.addValues(item.tags.map((value) => ({ value })), { trailingSeparator: true });
+          this.setStatus(t("{name} を追加しました", { name: item.nameJa || item.name }));
+        }, item.preview);
+        row.classList.add("paio-tag-set-row");
+        row.classList.toggle("is-favorite", favorite);
+        row.dataset.setId = item.id;
+        const openMenu = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.showTagSetFavoriteContextMenu(event, item);
+        };
+        row.addEventListener("pointerdown", (event) => {
+          if (event.button === 2) openMenu(event);
+        });
+        row.addEventListener("contextmenu", openMenu);
+        const imageSource = tagSetImageSource(item.imagePath || item.imageUrl);
+        const imageNode = imageSource
+          ? element("span", { className: "paio-tag-set-image-wrap" }, [
+            element("img", { className: "paio-tag-set-image", title: item.nameJa || item.name }),
+            element("span", { className: "paio-tag-set-image-popover" }, [
+              element("img", { className: "paio-tag-set-image-preview", alt: "" }),
+            ]),
+          ])
+          : element("span", { className: "paio-tag-set-image-placeholder" });
+        const nameChildren = [element("span", { className: "paio-tag-set-name-text", text: item.nameJa || item.name })];
+        if (item.creator) nameChildren.push(element("small", { className: "paio-tag-set-creator", text: t("製作者: {name}", { name: item.creator }) }));
+        row.replaceChildren(
+          element("span", { className: "paio-favorite-mark", text: favorite ? "★" : "☆" }),
+          imageNode,
+          element("span", { className: "paio-tag-set-name" }, nameChildren),
+          element("span", { className: "paio-tag-set-preview", text: item.preview }),
+        );
+        const image = row.querySelector(".paio-tag-set-image");
+        if (image) {
+          image.src = imageSource;
+          image.alt = item.nameJa || item.name;
+          image.loading = "lazy";
+        }
+        const previewImage = row.querySelector(".paio-tag-set-image-preview");
+        if (previewImage) {
+          previewImage.src = imageSource;
+          previewImage.loading = "lazy";
+        }
+        list.append(row);
+      }
+      if (!matches.length) list.append(element("p", { className: "paio-empty", text: t("一致するタグセットはありません") }));
+      if (!search.value.trim() && matches.length > renderLimit) {
+        list.append(button(t("さらに表示（残り {count}）", { count: matches.length - renderLimit }), () => {
+          renderLimit += EXAMPLE_PAGE_SIZE;
+          redraw();
+        }));
+      }
+    };
+    this.refreshTagSetsPanel = () => {
+      if (this.tagSetData) library = buildTagSetLibrary(this.tagSetData);
+      redraw();
+    };
+    this.loadTagSetData()
+      .then((body) => {
+        library = buildTagSetLibrary(body);
+        redraw();
+      })
+      .catch(() => {
+        library = { categories: [], sets: [], warnings: [t("タグセットを読み込めませんでした")] };
+        redraw();
+        this.setStatus(t("タグセットを読み込めませんでした"), true);
+      });
+    search.addEventListener("input", () => {
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      redraw();
+    });
+    const resetCategories = button(t("リセット"), () => {
+      categoryPath = { largeId: "", mediumId: "", smallId: "" };
+      search.value = "";
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      redraw();
+    });
+    resetCategories.classList.add("paio-example-reset");
+    const navigation = element("div", { className: "paio-example-navigation" }, [
+      element("div", { className: "paio-example-path-row" }, [pathStatus, resetCategories]),
+      categoryBands,
+    ]);
+    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly]);
+    const footer = element("div", { className: "paio-example-footer" }, [
+      element("span", { className: "paio-hint", text: t("右クリック: お気に入り") }),
+    ]);
+    panel.append(summary, navigation, controls, list, resizeHandle, footer);
+    redraw();
+    return panel;
   }
 
   buildExamplesPanel() {
@@ -1768,6 +2281,7 @@ export class PromptEditor {
         this.applyBlacklist(this.settings.blacklistAction !== "warn");
         this.syncToWidgets();
         this.render();
+        this.refreshSettingsFileStatus?.();
         closeDialog(dialog);
         this.setStatus(t("インポートしました"));
       } catch (error) {
@@ -2195,6 +2709,35 @@ export class PromptEditor {
     const action = button(t(favorite ? "お気に入りから削除" : "お気に入りに追加"), () => {
       this.closeContextMenu();
       this.setFavoriteValue(value, !favorite);
+      this.setStatus(t("お気に入りを更新しました"));
+    });
+    action.className = "paio-context-action";
+    action.setAttribute("role", "menuitem");
+    menu.append(title, action);
+    menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
+    menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 140))}px`;
+    document.body.append(menu);
+    this.contextMenu = menu;
+    window.setTimeout(() => {
+      this.contextMenuAbort = new AbortController();
+      document.addEventListener("pointerdown", (pointerEvent) => {
+        if (!menu.contains(pointerEvent.target)) this.closeContextMenu();
+      }, { capture: true, signal: this.contextMenuAbort.signal });
+      document.addEventListener("keydown", (keyEvent) => {
+        if (keyEvent.key === "Escape") this.closeContextMenu();
+      }, { signal: this.contextMenuAbort.signal });
+    }, 0);
+  }
+
+  showTagSetFavoriteContextMenu(event, item) {
+    this.closeContextMenu();
+    const favorite = this.isFavoriteTagSet(item?.id);
+    const menu = element("div", { className: "paio-context-menu paio-favorite-context-menu" });
+    menu.setAttribute("role", "menu");
+    const title = element("strong", { className: "paio-context-title", text: item?.nameJa || item?.name || t("タグセット") });
+    const action = button(t(favorite ? "お気に入りから削除" : "お気に入りに追加"), () => {
+      this.closeContextMenu();
+      this.setFavoriteTagSetValue(item?.id, !favorite);
       this.setStatus(t("お気に入りを更新しました"));
     });
     action.className = "paio-context-action";
