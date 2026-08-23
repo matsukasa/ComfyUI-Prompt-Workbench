@@ -119,6 +119,8 @@ The currently bundled data is:
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
+Some bundled tag sets include prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), kindly shared with permission. Thank you very much for providing such lovely prompt sets.
+
 ### Using The Tag Catalogue
 
 Open `Add tags` to use the tag catalogue. Search covers English names, aliases, and Japanese top-level, middle-level, and subcategory names. Tag buttons display the English name and Japanese translation.
@@ -133,15 +135,20 @@ For Comfy Registry packages, the publish workflow replaces `data/tag_catalog.jso
 
 ### Using Tag Sets
 
-Open the `Tag sets` tab to search classified tag sets and add them to the prompt. A tag set can include a name, Japanese name, English name, author, reference URL, image URL, image path, and tag contents. The UI can show the image, name, description, and tags before insertion.
+Open the `Tag sets` tab to search classified tag sets and add them to the prompt. Tag sets are presets for groups of tags that are often used together, such as outfits, hairstyles, composition, poses, and atmosphere. You can insert a whole group with one click instead of typing every detail by hand.
+
+A tag set can include a name, Japanese name, English name, author, reference URL, image URL, image path, description, and tag contents. The UI can show the image, name, description, tags, author, and reference URL before insertion. Insertion goes through the normal tag-add flow, so duplicate handling, translated display, blocklist marking, and widget synchronisation work the same way as individual tag additions.
 
 Use the star button to mark a tag set as a favourite. Favourites are saved in node settings as `favoriteTagSets`. The tag set list can be resized, and its height is saved as `tagSetListHeight`.
+Search covers tag set names, English names, descriptions, tag contents, and category names.
 
 The default tag set file is `data/tag_sets.json`. To use another tag set JSON file, load it from Prompt Workbench Settings -> Tag manager. The loaded file is saved as a named file under the ComfyUI user directory at:
 
 ```text
 prompt_workbench/tag_sets/
 ```
+
+This lets you switch between purpose-specific tag set JSON files without editing the bundled defaults directly.
 
 ## Editing The Catalogue In Prompt Workbench
 
