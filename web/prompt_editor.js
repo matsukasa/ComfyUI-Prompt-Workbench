@@ -457,7 +457,7 @@ export function filterExampleLibraryTags(library, selectedSmallId, query = "") {
     const small = categories.get(tag.categoryId);
     const medium = categories.get(small?.parentId);
     const large = categories.get(medium?.parentId);
-    return search.test([tag.prompt, ...(tag.aliases || []), large?.ja, medium?.ja, small?.ja].filter(Boolean).join(" "));
+    return search.test([tag.prompt, tag.ja, ...(tag.aliases || []), large?.ja, medium?.ja, small?.ja].filter(Boolean).join(" "));
   });
 }
 
