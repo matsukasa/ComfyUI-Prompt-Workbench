@@ -111,6 +111,17 @@ export function appendPresentChildren(parent, ...children) {
   parent.append(...children.filter((child) => child !== null && child !== undefined));
 }
 
+function collapsiblePane(title, className, children = []) {
+  const pane = element("details", { className: `paio-collapsible ${className}`.trim() });
+  pane.open = true;
+  const summary = element("summary", { className: "paio-collapsible-summary" }, [
+    element("span", { className: "paio-disclosure", text: "▾" }),
+    element("strong", { text: title }),
+  ]);
+  pane.append(summary, ...children);
+  return { pane, summary };
+}
+
 function button(label, action, title = label) {
   const control = element("button", {
     className: "paio-button",
@@ -687,12 +698,8 @@ export class PromptEditor {
     root.setAttribute("aria-label", "Prompt Workbench editor");
     containNodeContextMenu(root);
 
-    const promptHeader = element("div", { className: "paio-section-header" }, [
-      element("strong", { text: t("プロンプト本文") }),
-    ]);
     this.catalogPathLabel = element("span", { className: "paio-current-catalog-path", text: t("タグファイル: 確認中…") });
     this.syncBadge = element("span", { className: "paio-sync-badge", text: t("同期済み") });
-    promptHeader.append(element("span", { className: "paio-section-header-meta" }, [this.catalogPathLabel, this.syncBadge]));
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
     this.promptTextarea.rows = 4;
@@ -711,6 +718,12 @@ export class PromptEditor {
     this.applyPromptButton = button(t("タグへ反映"), () => this.applyPromptText(), t("本文を解析してタグへ反映（Ctrl+Enter）"));
     const promptActions = element("div", { className: "paio-prompt-actions" }, [this.applyPromptButton]);
     this.translationBar = this.buildTranslationBar();
+    const promptPane = collapsiblePane(t("プロンプト本文"), "paio-prompt-pane", [
+      this.promptTextarea,
+      promptActions,
+      this.translationBar,
+    ]);
+    promptPane.summary.append(element("span", { className: "paio-section-header-meta" }, [this.catalogPathLabel, this.syncBadge]));
 
     this.addInput = element("textarea", { className: "paio-add-input" });
     this.addInput.rows = 1;
@@ -853,15 +866,13 @@ export class PromptEditor {
     this.examplesPanel = this.buildExamplesPanel();
     this.tagSetsPanel = this.buildTagSetsPanel();
     this.libraryTabs = this.buildLibraryTabs();
+    const libraryTabsPane = collapsiblePane(t("タグ追加タブ"), "paio-library-tabs-pane", [this.libraryTabs]);
     this.blacklistDialog = this.buildBlacklistDialog();
     this.ioDialog = this.buildIoDialog();
     this.setLibraryTab(this.activeLibraryTab);
 
     root.append(
-      promptHeader,
-      this.promptTextarea,
-      promptActions,
-      this.translationBar,
+      promptPane.pane,
       addRow,
       tools,
       this.bulkBar,
@@ -869,7 +880,7 @@ export class PromptEditor {
       this.tagList,
       tagListResizeHandle,
       this.status,
-      this.libraryTabs,
+      libraryTabsPane.pane,
       this.examplesPanel,
       this.tagSetsPanel,
       this.settingsDialog,
@@ -2687,7 +2698,7 @@ export class PromptEditor {
       action(t("日本語へ翻訳"), () => this.translateIndexes([index], this.settings.localLanguage)),
       action(t(tag.enabled ? "無効にする" : "有効にする"), () => this.toggleOne(index)),
       action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
-      action(t("削除"), () => this.deleteOne(index), "is-danger"),
+      action(t("削除"), () => this.deleteOneById(tag.id), "is-danger"),
     );
     menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
     menu.style.top = `${Math.max(6, Math.min(event.clientY, window.innerHeight - 420))}px`;
@@ -2911,8 +2922,13 @@ export class PromptEditor {
 
   deleteOne(index) {
     const tagId = this.currentTags[index]?.id;
+    this.deleteOneById(tagId);
+  }
+
+  deleteOneById(tagId) {
+    if (!tagId) return;
     this.commitPromptBeforeAction();
-    index = this.currentTags.findIndex((tag) => tag.id === tagId);
+    const index = this.currentTags.findIndex((tag) => tag.id === tagId);
     if (index < 0) return;
     this.pushUndo();
     this.currentTags.splice(index, 1);

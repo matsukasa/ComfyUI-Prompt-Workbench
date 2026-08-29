@@ -11,6 +11,14 @@
 - ソース側の `git status`、テスト、差分確認だけでは live install の検証完了とは言わない。
 - 「ローカルも最新版」「Stability Matrix側も更新」「実インストール先も更新」と言われたら、live install の更新と検証も作業範囲に含める。
 - live install に未コミット変更がある場合は、上書き・pull・merge の前に変更ファイル、影響範囲、退避方法を示す。必要なら `git stash push -u` で退避してから更新する。
+- Prompt Workbench のカタログ、タグセット、Registry、UI、または live install を扱う作業では、調査段階から `prompt-workbench-guard` を使う。特に指定がない限り、カタログとタグセット確認の正はソースリポジトリ側とする。
+
+## Windows / UTF-8
+
+- Windows PowerShell では Bash 形式の heredoc（例: `python - <<'PY'`）を使わない。複数行の Python / Node 処理が必要な場合は、PowerShell の here-string、既存スクリプト、または `apply_patch` で作った一時スクリプトを使う。
+- 日本語を含む JSON、Markdown、locale、catalog、tag set を読む・書く・テストするときは `windows-utf8-json` を使い、Python では `PYTHONUTF8=1` または `encoding="utf-8"` / `encoding="utf-8-sig"` を明示する。
+- PowerShell のコマンド文字列に日本語データを直接埋め込んで書き込まない。文字化けや `?` 置換が疑われる場合は、JSON parse だけでなく代表値のコードポイントや `U+FFFD` / `??` 混入も確認する。
+- Windows で `Get-Content` や差分出力に `繝`、`縺`、`蜒`、`譛`、`�` などの文字化けが見えた場合は `windows-mojibake-guard` を使い、その出力を編集根拠にしない。ASCII の関数名・ID・クラス名で位置を取り直すか、UTF-8 検査スクリプトで確認してから編集する。
 
 ## GitHub 同期
 
@@ -54,7 +62,8 @@
   - 主要 JavaScript の `node --check`
   - source 側で利用可能なら `npm test`
 - ComfyUI が起動中で API 確認できる場合は、`/system_stats`、`/object_info/PromptWorkbench`、関連 web asset の HTTP 応答を確認する。
-- ブラウザ UI や ComfyUI runtime を確認していない場合は、完了報告で未確認として明記する。
+- UI 変更では、`npm run build` や構文チェックを「表示・操作確認」と混同しない。変更したコントロールをブラウザで確認していない場合は、未確認として明記する。
+- ブラウザ UI、ComfyUI runtime、live install、Registry Active 状態は別々の確認項目として扱う。確認できた範囲と未確認の範囲を完了報告で分ける。
 
 ## 完了報告
 

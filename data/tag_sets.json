@@ -14,6 +14,133 @@
               "label_ja": "立ち",
               "sets": [
                 {
+                  "id": "styles_workbench_addon_03_858ee8e79b",
+                  "name": "両手を後ろに回す",
+                  "name_ja": "両手を後ろに回す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "chest slightly forward",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_d647bfd2bd",
+                  "name": "少し前かがみ",
+                  "name_ja": "少し前かがみ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slightly leaning forward",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_93fd10cdb1",
+                  "name": "壁に背を預けて脚を交差",
+                  "name_ja": "壁に背を預けて脚を交差",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "leaning against wall",
+                    "legs crossed",
+                    "seductive pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_86ea0e6ce8",
+                  "name": "片手を腰に",
+                  "name_ja": "片手を腰に",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand on hip",
+                    "alluring pose",
+                    "body slightly turned"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_121db37bfa",
+                  "name": "片手を頭の後ろ",
+                  "name_ja": "片手を頭の後ろ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand behind head",
+                    "slight arched back",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_590209bb38",
+                  "name": "背中を反らす",
+                  "name_ja": "背中を反らす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "arched back",
+                    "sensual pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_6435eae6ad",
+                  "name": "肩を見せるように振り返る",
+                  "name_ja": "肩を見せるように振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "shoulder-baring turn",
+                    "over shoulder",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_b30f46c68e",
+                  "name": "腰をひねる",
+                  "name_ja": "腰をひねる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "twisted torso",
+                    "seductive pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "alice_youfukuten_2059252587912949796",
+                  "name": "伸び〜のポーズプロンプト",
+                  "name_ja": "伸び〜のポーズプロンプト",
+                  "name_en": "",
+                  "source_url": "https://x.com/AliceLavli/status/2059252587912949796",
+                  "tags": [
+                    "standing",
+                    "full body",
+                    "standing upright",
+                    "both feet firmly on the ground",
+                    "arms stretched straight upward above the head",
+                    "fingers extended",
+                    "elbows fully straight",
+                    "shoulders lifted",
+                    "chest pushed forward slightly",
+                    "back gently arched",
+                    "body fully elongated",
+                    "head tilted slightly upward",
+                    "relaxed sleepy stretch",
+                    "strong vertical body line",
+                    "full body extension",
+                    "morning stretch pose"
+                  ],
+                  "creator": "アリス服飾店　様"
+                },
+                {
                   "id": "alice_youfukuten_2066508923608445149",
                   "name": "スカートを押さえて立つポーズ",
                   "name_ja": "スカートを押さえて立つポーズ",
@@ -45,30 +172,2006 @@
                   "creator": "アリス服飾店　様"
                 },
                 {
-                  "id": "alice_youfukuten_2059252587912949796",
-                  "name": "伸び〜のポーズプロンプト",
-                  "name_ja": "伸び〜のポーズプロンプト",
+                  "id": "styles_workbench_addon_15_73da327aa4",
+                  "name": "上に手を伸ばす",
+                  "name_ja": "上に手を伸ばす",
                   "name_en": "",
-                  "source_url": "https://x.com/AliceLavli/status/2059252587912949796",
                   "tags": [
                     "standing",
-                    "full body",
-                    "standing upright",
-                    "both feet firmly on the ground",
-                    "arms stretched straight upward above the head",
-                    "fingers extended",
-                    "elbows fully straight",
-                    "shoulders lifted",
-                    "chest pushed forward slightly",
-                    "back gently arched",
-                    "body fully elongated",
-                    "head tilted slightly upward",
-                    "relaxed sleepy stretch",
-                    "strong vertical body line",
-                    "full body extension",
-                    "morning stretch pose"
+                    "reaching upward",
+                    "elongated pose"
                   ],
-                  "creator": "アリス服飾店　様"
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_12b2bbfc11",
+                  "name": "両手を後ろに回して立つ",
+                  "name_ja": "両手を後ろに回して立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "straight posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_cc51be027e",
+                  "name": "横に伸びる",
+                  "name_ja": "横に伸びる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "side stretch",
+                    "elongated pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_3356a41064",
+                  "name": "横に体を倒す",
+                  "name_ja": "横に体を倒す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "side lean",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_2c6879b988",
+                  "name": "片脚重心で立つ",
+                  "name_ja": "片脚重心で立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "weight on one leg",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_dd0de89e72",
+                  "name": "片腕を上げて体を伸ばす",
+                  "name_ja": "片腕を上げて体を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one arm raised",
+                    "side stretch"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_e80ad19dd6",
+                  "name": "片腰を出す",
+                  "name_ja": "片腰を出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hip out",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_45cf5ef4e1",
+                  "name": "背中を反らす",
+                  "name_ja": "背中を反らす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "arched back",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_18941d5742",
+                  "name": "胴をひねる",
+                  "name_ja": "胴をひねる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "twisted torso",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_cea128a406",
+                  "name": "胸を少し張る",
+                  "name_ja": "胸を少し張る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "shoulders back",
+                    "chest slightly forward"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_a29d775293",
+                  "name": "脚をクロスして立つ",
+                  "name_ja": "脚をクロスして立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "legs crossed lightly",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_89295138bb",
+                  "name": "腕を頭上に伸ばす",
+                  "name_ja": "腕を頭上に伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "arms overhead",
+                    "elongated pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_9d2b6e0eb4",
+                  "name": "腰からひねる",
+                  "name_ja": "腰からひねる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "waist twist",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_b8a3f16a9b",
+                  "name": "軽く背中を反らす",
+                  "name_ja": "軽く背中を反らす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slight arched back",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_6760385f0f",
+                  "name": "つま先立ち",
+                  "name_ja": "つま先立ち",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tiptoes",
+                    "elongated pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_fcccac859f",
+                  "name": "まっすぐ直立",
+                  "name_ja": "まっすぐ直立",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "straight posture",
+                    "arms at sides"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_fb84a7a75d",
+                  "name": "コントラポスト",
+                  "name_ja": "コントラポスト",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "contrapposto",
+                    "weight on one leg"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_2a305a33c7",
+                  "name": "上着の裾を持つ",
+                  "name_ja": "上着の裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding jacket hem",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_7d4dfd35bb",
+                  "name": "両手を前で重ねる",
+                  "name_ja": "両手を前で重ねる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands clasped in front",
+                    "polite pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_e21c48b0e9",
+                  "name": "両手を広げる",
+                  "name_ja": "両手を広げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "arms slightly open",
+                    "open posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_b20a44057c",
+                  "name": "両手を後ろに回す",
+                  "name_ja": "両手を後ろに回す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "shoulders slightly back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_e2275ed27b",
+                  "name": "両腕を上げる",
+                  "name_ja": "両腕を上げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "both arms up",
+                    "stretched pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_9a7f0ac89d",
+                  "name": "壁にもたれる",
+                  "name_ja": "壁にもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "leaning against wall",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_8f29927b1b",
+                  "name": "片手を腰に",
+                  "name_ja": "片手を腰に",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand on hip",
+                    "body slightly turned"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_86a6fcc41b",
+                  "name": "片手を頭の後ろ",
+                  "name_ja": "片手を頭の後ろ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand behind head",
+                    "slight arched back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_2cf67344dd",
+                  "name": "片腕を抱える",
+                  "name_ja": "片腕を抱える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one arm holding the other arm",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_5e7d1df3de",
+                  "name": "片膝を軽く曲げる",
+                  "name_ja": "片膝を軽く曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one knee bent",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_2bf90572b1",
+                  "name": "片足を前に出す",
+                  "name_ja": "片足を前に出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one foot forward",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_837ae5882d",
+                  "name": "肩越しに振り返る",
+                  "name_ja": "肩越しに振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "looking over shoulder",
+                    "turned body"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_97c48c5b6f",
+                  "name": "胸元に手を添える",
+                  "name_ja": "胸元に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand near chest",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_2bf5934b3d",
+                  "name": "軽く前かがみ立ち",
+                  "name_ja": "軽く前かがみ立ち",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slightly leaning forward"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_096d8256d8",
+                  "name": "軽く背伸びする",
+                  "name_ja": "軽く背伸びする",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "stretching",
+                    "arms raised lightly"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_d9820ac959",
+                  "name": "鎖骨に手を添える",
+                  "name_ja": "鎖骨に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching collarbone",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_03d1c4068e",
+                  "name": "骨盤を傾ける",
+                  "name_ja": "骨盤を傾ける",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "pelvic tilt",
+                    "body slightly turned"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_444ff90a12",
+                  "name": "スカートの裾を持って振り返る",
+                  "name_ja": "スカートの裾を持って振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding skirt hem",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_e68f159b1c",
+                  "name": "ドアノブに手をかけて振り返る",
+                  "name_ja": "ドアノブに手をかけて振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand on doorknob",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_3b7b64eab2",
+                  "name": "バッグを肩にかけて振り返る",
+                  "name_ja": "バッグを肩にかけて振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "bag over shoulder",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_07fa2cacff",
+                  "name": "上着を肩にかけて振り返る",
+                  "name_ja": "上着を肩にかけて振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "jacket over shoulder",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_1b074eaf65",
+                  "name": "壁際で振り返る",
+                  "name_ja": "壁際で振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing near wall",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_f2e7bdc24f",
+                  "name": "少し前かがみで振り返る",
+                  "name_ja": "少し前かがみで振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "leaning forward slightly",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_34f66ef97d",
+                  "name": "歩きながら振り返る",
+                  "name_ja": "歩きながら振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "walking",
+                    "looking back",
+                    "light movement"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_5b8f1ce4e3",
+                  "name": "立ったまま振り返る",
+                  "name_ja": "立ったまま振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "half-turned body",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_37f222a14f",
+                  "name": "肩だけのぞかせる",
+                  "name_ja": "肩だけのぞかせる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "shoulder peek",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_4f3aeb7129",
+                  "name": "肩に手を添えて振り返る",
+                  "name_ja": "肩に手を添えて振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand on shoulder",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_f55e0a014e",
+                  "name": "肩越しに見る",
+                  "name_ja": "肩越しに見る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "over shoulder glance",
+                    "turned body"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_cc2b63e535",
+                  "name": "腰をひねって振り返る",
+                  "name_ja": "腰をひねって振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "twisted torso",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_89fb5f0f19",
+                  "name": "髪を払って振り返る",
+                  "name_ja": "髪を払って振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hair flip",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_6957223414",
+                  "name": "しゃがんで近づく",
+                  "name_ja": "しゃがんで近づく",
+                  "name_en": "",
+                  "tags": [
+                    "crouching slightly",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_3541e85a5e",
+                  "name": "カップを差し出す",
+                  "name_ja": "カップを差し出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "offering cup",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_85468991e5",
+                  "name": "ガラス越しに手を添える",
+                  "name_ja": "ガラス越しに手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand against glass",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_62b0f6d3c6",
+                  "name": "一歩近づく",
+                  "name_ja": "一歩近づく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "stepping closer",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_b06a0d59f7",
+                  "name": "何かを差し出す",
+                  "name_ja": "何かを差し出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "offering something with hand",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_ca5ddf45ac",
+                  "name": "口元に手を寄せて近づく",
+                  "name_ja": "口元に手を寄せて近づく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand near mouth",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_514bcb8453",
+                  "name": "少し前に身を乗り出す",
+                  "name_ja": "少し前に身を乗り出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "leaning forward",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_8dc1621442",
+                  "name": "手を差し出す",
+                  "name_ja": "手を差し出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand reaching out",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_c149038e47",
+                  "name": "片手を伸ばす",
+                  "name_ja": "片手を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand extended",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_d98edbbbb1",
+                  "name": "物陰から近くのぞく",
+                  "name_ja": "物陰から近くのぞく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "peeking from nearby",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_e0e2d6ce19",
+                  "name": "胸元で手を組んで近づく",
+                  "name_ja": "胸元で手を組んで近づく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands clasped near chest",
+                    "leaning in"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_868aff8434",
+                  "name": "膝に手を置いて近づく",
+                  "name_ja": "膝に手を置いて近づく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands on knees",
+                    "leaning in"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_6e0ae1e309",
+                  "name": "顎を近くに寄せる",
+                  "name_ja": "顎を近くに寄せる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "chin close",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_bf656d0396",
+                  "name": "顔を近づける",
+                  "name_ja": "顔を近づける",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "face close",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_5d41c3bcea",
+                  "name": "スカートの裾をつまむ",
+                  "name_ja": "スカートの裾をつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding skirt hem",
+                    "teasing pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_3ed5d692ff",
+                  "name": "スカートを広げる",
+                  "name_ja": "スカートを広げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "spreading skirt",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_1e4ad8d954",
+                  "name": "リボンをいじる",
+                  "name_ja": "リボンをいじる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "playing with ribbon",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_4454268c45",
+                  "name": "一歩踏み出す",
+                  "name_ja": "一歩踏み出す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "stepping forward",
+                    "teasing pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_112f9032e3",
+                  "name": "両手を後ろに回して首をかしげる",
+                  "name_ja": "両手を後ろに回して首をかしげる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_6b6a9104ae",
+                  "name": "人差し指を立てる",
+                  "name_ja": "人差し指を立てる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "wagging finger",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_c9758cf535",
+                  "name": "少し前かがみ",
+                  "name_ja": "少し前かがみ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slightly leaning forward",
+                    "hands behind back",
+                    "teasing pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_01bfdc4a7f",
+                  "name": "机にもたれる",
+                  "name_ja": "机にもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "leaning on desk",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_fc9e9aa320",
+                  "name": "片手でハートを作る",
+                  "name_ja": "片手でハートを作る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand making heart shape",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_5a04378501",
+                  "name": "片手を口元に",
+                  "name_ja": "片手を口元に",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand near mouth",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_2c8eeceea4",
+                  "name": "片手を腰に",
+                  "name_ja": "片手を腰に",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand on hip",
+                    "playful pose",
+                    "confident pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_bc6db73491",
+                  "name": "片膝を曲げる",
+                  "name_ja": "片膝を曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one knee bent",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_1f721a6167",
+                  "name": "片足を軽く振る",
+                  "name_ja": "片足を軽く振る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one foot lifted lightly",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_a75c6afeb6",
+                  "name": "物陰からのぞく",
+                  "name_ja": "物陰からのぞく",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "peeking from behind object",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_079469071b",
+                  "name": "肩越しに振り返る",
+                  "name_ja": "肩越しに振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "looking over shoulder",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_f19bd479b7",
+                  "name": "髪先をつまむ",
+                  "name_ja": "髪先をつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding hair ends",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_ebf84c4b63",
+                  "name": "イヤリングに触れる",
+                  "name_ja": "イヤリングに触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching earring",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_da5d4d29e9",
+                  "name": "カップを持つ",
+                  "name_ja": "カップを持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding cup delicately",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_93674ab1e7",
+                  "name": "グラスに指先を添える",
+                  "name_ja": "グラスに指先を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fingertips on glass",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_993e9ee77e",
+                  "name": "ペンを持つ",
+                  "name_ja": "ペンを持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding pen delicately",
+                    "elegant hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_94561ff920",
+                  "name": "ペンダントに触れる",
+                  "name_ja": "ペンダントに触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching pendant",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_5893256f0b",
+                  "name": "リボンに触れる",
+                  "name_ja": "リボンに触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching ribbon",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_e22f93ea41",
+                  "name": "両手を組む",
+                  "name_ja": "両手を組む",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "interlaced fingers",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_a9527515b8",
+                  "name": "口元に指を添える",
+                  "name_ja": "口元に指を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "finger near lips",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_04f0c6b06f",
+                  "name": "唇に触れる",
+                  "name_ja": "唇に触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching lips",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_476d61e555",
+                  "name": "手のひらを見せる",
+                  "name_ja": "手のひらを見せる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_874effb67f",
+                  "name": "手袋を引く",
+                  "name_ja": "手袋を引く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "pulling glove",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_30d49eed2f",
+                  "name": "手首に触れる",
+                  "name_ja": "手首に触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand touching wrist",
+                    "refined pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_e4e72fdefd",
+                  "name": "指を絡める",
+                  "name_ja": "指を絡める",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fingers intertwined",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_aa0498f052",
+                  "name": "指先をそろえる",
+                  "name_ja": "指先をそろえる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fingertips together",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_f0a92182ab",
+                  "name": "指先を唇の前に置く",
+                  "name_ja": "指先を唇の前に置く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "finger to lips",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_1240837707",
+                  "name": "胸元のラインをなぞる",
+                  "name_ja": "胸元のラインをなぞる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tracing neckline with fingertips",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_90c5d1b2ee",
+                  "name": "鎖骨をなぞる",
+                  "name_ja": "鎖骨をなぞる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fingertips at collarbone",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_bd23d66517",
+                  "name": "頬に手を添える",
+                  "name_ja": "頬に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand on cheek",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_0fc3e1ca01",
+                  "name": "顎に手を添える",
+                  "name_ja": "顎に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand under chin",
+                    "thoughtful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_c2e81e8ebf",
+                  "name": "顔を両手で包む",
+                  "name_ja": "顔を両手で包む",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "cupping face with both hands",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_e01e507fa8",
+                  "name": "ウエストを整える",
+                  "name_ja": "ウエストを整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting waistband",
+                    "refined gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_6168ab1ac0",
+                  "name": "エプロンを整える",
+                  "name_ja": "エプロンを整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting apron",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_f7c6ce60e2",
+                  "name": "カフスを整える",
+                  "name_ja": "カフスを整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fixing cuff",
+                    "refined gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_5473626d43",
+                  "name": "カーディガンを閉じる",
+                  "name_ja": "カーディガンを閉じる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "pulling cardigan closed",
+                    "modest pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_baf009aa7a",
+                  "name": "シャツの裾を引く",
+                  "name_ja": "シャツの裾を引く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tugging shirt hem",
+                    "casual pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_9ebb719517",
+                  "name": "ジャケットのラペルを直す",
+                  "name_ja": "ジャケットのラペルを直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting blazer lapel",
+                    "neat gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_4336194d7d",
+                  "name": "ジャケットの裾を持つ",
+                  "name_ja": "ジャケットの裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding jacket hem",
+                    "casual pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_ba860055f6",
+                  "name": "スカートを整える",
+                  "name_ja": "スカートを整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "smoothing skirt",
+                    "graceful gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_79f8524e86",
+                  "name": "タートルネックを引く",
+                  "name_ja": "タートルネックを引く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tugging turtleneck",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_215722d8c6",
+                  "name": "ネクタイを直す",
+                  "name_ja": "ネクタイを直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "straightening tie",
+                    "composed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_d8a4d67ba4",
+                  "name": "ベルトを直す",
+                  "name_ja": "ベルトを直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fastening belt",
+                    "neat gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_749a424734",
+                  "name": "ボタンを留める",
+                  "name_ja": "ボタンを留める",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "buttoning blouse",
+                    "neat gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_8709ffdb05",
+                  "name": "リボンを直す",
+                  "name_ja": "リボンを直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting ribbon",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_895c12c293",
+                  "name": "手袋を直す",
+                  "name_ja": "手袋を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting gloves",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_5f8ba77df6",
+                  "name": "肩紐を直す",
+                  "name_ja": "肩紐を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting shoulder strap",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_b9e2713fd0",
+                  "name": "袖を引く",
+                  "name_ja": "袖を引く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tugging sleeve",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_e149bfc204",
+                  "name": "襟を直す",
+                  "name_ja": "襟を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting collar",
+                    "neat gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_03bbd6bdaa",
+                  "name": "スカートの裾をつまむ",
+                  "name_ja": "スカートの裾をつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding skirt hem",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_f1cc6b690b",
+                  "name": "スカートを軽く整える",
+                  "name_ja": "スカートを軽く整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "both hands lightly gathering skirt",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_303c5f2e60",
+                  "name": "バッグを前で持つ",
+                  "name_ja": "バッグを前で持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding bag in front",
+                    "polite pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_58b3fe202c",
+                  "name": "リボンを軽く直す",
+                  "name_ja": "リボンを軽く直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting ribbon",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_40a4ddabe4",
+                  "name": "両手を前で重ねる",
+                  "name_ja": "両手を前で重ねる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands clasped in front",
+                    "polite pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_e787ba12e5",
+                  "name": "両手を後ろに回す",
+                  "name_ja": "両手を後ろに回す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "gentle posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_1bcec89b95",
+                  "name": "少し前かがみ",
+                  "name_ja": "少し前かがみ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slightly leaning forward",
+                    "hands clasped"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_707875ba78",
+                  "name": "本を抱える",
+                  "name_ja": "本を抱える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding book to chest",
+                    "composed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_b4ced4514c",
+                  "name": "片手で手首を持つ",
+                  "name_ja": "片手で手首を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "one hand holding the other wrist",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_01c13aad00",
+                  "name": "胸に手を当てる",
+                  "name_ja": "胸に手を当てる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand over heart",
+                    "composed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_70e96b5210",
+                  "name": "胸元に手を添える",
+                  "name_ja": "胸元に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand near chest",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_64ead68abb",
+                  "name": "袖口を整える",
+                  "name_ja": "袖口を整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting sleeve cuff",
+                    "refined gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_27bb7be6b2",
+                  "name": "足をそろえて立つ",
+                  "name_ja": "足をそろえて立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "feet together",
+                    "straight posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_98f87253f5",
+                  "name": "軽く会釈する",
+                  "name_ja": "軽く会釈する",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "slight bow",
+                    "polite pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_e12db7a50e",
+                  "name": "鎖骨に手を添える",
+                  "name_ja": "鎖骨に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching collarbone",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_6cea6e604d",
+                  "name": "うなじに手を添える",
+                  "name_ja": "うなじに手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand at nape",
+                    "feminine gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_9a1154792b",
+                  "name": "お団子を直す",
+                  "name_ja": "お団子を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fixing hair bun",
+                    "neat pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_d2e59164be",
+                  "name": "ツインテールを持つ",
+                  "name_ja": "ツインテールを持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding twintails",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_2e56aa07a5",
+                  "name": "ポニーテールを持つ",
+                  "name_ja": "ポニーテールを持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding ponytail",
+                    "feminine gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_5857a34594",
+                  "name": "両手で髪を整える",
+                  "name_ja": "両手で髪を整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "both hands adjusting hair",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_6a140d4e4a",
+                  "name": "前髪に触れる",
+                  "name_ja": "前髪に触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching bangs",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_03a01419b2",
+                  "name": "後頭部に手を添える",
+                  "name_ja": "後頭部に手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand at back of head",
+                    "hair-touching pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_16a3e85193",
+                  "name": "横髪をまとめる",
+                  "name_ja": "横髪をまとめる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "gathering side hair",
+                    "feminine gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_420d15efa8",
+                  "name": "毛先を持つ",
+                  "name_ja": "毛先を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding hair ends",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_c32af8cf95",
+                  "name": "耳に髪をかける",
+                  "name_ja": "耳に髪をかける",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "tucking hair behind ear",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_75919e2834",
+                  "name": "肩の前に髪を流す",
+                  "name_ja": "肩の前に髪を流す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding hair over shoulder",
+                    "feminine gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_f162153ceb",
+                  "name": "風で乱れた髪を押さえる",
+                  "name_ja": "風で乱れた髪を押さえる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding down windblown hair",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_6437583b87",
+                  "name": "髪に手を入れる",
+                  "name_ja": "髪に手を入れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand in hair",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_862297f50b",
+                  "name": "髪の束を指で巻く",
+                  "name_ja": "髪の束を指で巻く",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "twisting a lock of hair",
+                    "playful gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_daa3894e5a",
+                  "name": "髪をかき上げる",
+                  "name_ja": "髪をかき上げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "brushing hair aside",
+                    "feminine gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_f7ddc68406",
+                  "name": "髪をなでる",
+                  "name_ja": "髪をなでる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "smoothing long hair",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_857fc4463d",
+                  "name": "髪を払う",
+                  "name_ja": "髪を払う",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "flipping hair lightly",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_5b10bbca31",
+                  "name": "髪を持ち上げる",
+                  "name_ja": "髪を持ち上げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "lifting hair",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_fe056abd81",
+                  "name": "髪を編む仕草",
+                  "name_ja": "髪を編む仕草",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "braiding hair",
+                    "delicate hand gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_463c4d25bd",
+                  "name": "カーテシーのように裾を持つ",
+                  "name_ja": "カーテシーのように裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "curtsey with skirt",
+                    "refined pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_3f18460908",
+                  "name": "スカートを広げる",
+                  "name_ja": "スカートを広げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "spreading skirt",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_ec838f55b3",
+                  "name": "プリーツを整える",
+                  "name_ja": "プリーツを整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting pleated skirt",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_3c58e8cb97",
+                  "name": "ロングスカートの端を持つ",
+                  "name_ja": "ロングスカートの端を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding long skirt edge",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_e6632aa17e",
+                  "name": "両手でスカートを軽く持つ",
+                  "name_ja": "両手でスカートを軽く持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "both hands lightly holding skirt",
+                    "gentle pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_6ff8c6283d",
+                  "name": "回りながら裾を持つ",
+                  "name_ja": "回りながら裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "turning while holding skirt hem",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_e4d30538e5",
+                  "name": "歩きながら裾をつまむ",
+                  "name_ja": "歩きながら裾をつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "walking",
+                    "holding skirt hem",
+                    "light pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_eb0deb8bbd",
+                  "name": "片側の裾を持ち上げる",
+                  "name_ja": "片側の裾を持ち上げる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "lifting one side of skirt slightly",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_22ef08ae5e",
+                  "name": "裾をふわっと浮かせる",
+                  "name_ja": "裾をふわっと浮かせる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "fluttering hem",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_f725e8916c",
+                  "name": "裾を両手でつまむ",
+                  "name_ja": "裾を両手でつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "both hands holding skirt hem",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_480e415d5a",
+                  "name": "裾を前でまとめる",
+                  "name_ja": "裾を前でまとめる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "gathering hem in front",
+                    "modest pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_8cb964732a",
+                  "name": "裾を指先でつまむ",
+                  "name_ja": "裾を指先でつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "pinching skirt hem with fingertips",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_5a72c3e3a4",
+                  "name": "裾を整える",
+                  "name_ja": "裾を整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "smoothing skirt hem",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_91626d3dc7",
+                  "name": "裾を横に流す",
+                  "name_ja": "裾を横に流す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "gathering skirt to one side",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_a9524a4f87",
+                  "name": "裾を片側に払う",
+                  "name_ja": "裾を片側に払う",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "sweeping skirt aside",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_9f91e17bb7",
+                  "name": "裾を片手でつまむ",
+                  "name_ja": "裾を片手でつまむ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding skirt hem",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_4b3ce68789",
+                  "name": "裾を見下ろすように整える",
+                  "name_ja": "裾を見下ろすように整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "looking at skirt while smoothing hem",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_b7ee6a17ab",
+                  "name": "ウエストに手を添える",
+                  "name_ja": "ウエストに手を添える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "touching waistband",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_cc8c6e8c8b",
+                  "name": "肩越しにストラップに触れる",
+                  "name_ja": "肩越しにストラップに触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "turned body",
+                    "touching strap over shoulder"
+                  ],
+                  "creator": "default"
                 }
               ]
             },
@@ -99,6 +2202,1121 @@
                     "asymmetrical seated posture"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "styles_workbench_addon_08_0d192e7ced",
+                  "name": "うつ伏せで頬杖",
+                  "name_ja": "うつ伏せで頬杖",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach",
+                    "propped on elbows",
+                    "hand on cheek"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_41ec50e473",
+                  "name": "ソファで寝そべる",
+                  "name_ja": "ソファで寝そべる",
+                  "name_en": "",
+                  "tags": [
+                    "reclining on sofa",
+                    "lounging pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_3dd1dd8dfa",
+                  "name": "クッションにもたれて脚を伸ばす",
+                  "name_ja": "クッションにもたれて脚を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "reclining with cushion",
+                    "legs extended",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_cd2444ac5a",
+                  "name": "ベッドで横向き",
+                  "name_ja": "ベッドで横向き",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side on bed",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_69b248d490",
+                  "name": "ベッドの端に座って片脚を伸ばす",
+                  "name_ja": "ベッドの端に座って片脚を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bed edge",
+                    "one leg extended",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_a98a0617bd",
+                  "name": "ベッドで仰向けに伸びる",
+                  "name_ja": "ベッドで仰向けに伸びる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back on bed",
+                    "stretched pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_e51415377b",
+                  "name": "椅子にまたがる",
+                  "name_ja": "椅子にまたがる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting astride chair",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_8d4d81b42c",
+                  "name": "片膝を立てて座る",
+                  "name_ja": "片膝を立てて座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "one knee up",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_33293a35dc",
+                  "name": "脚を横に流して座る",
+                  "name_ja": "脚を横に流して座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "legs to one side",
+                    "sensual pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_d6c5ffe7b3",
+                  "name": "脚を組んで座る",
+                  "name_ja": "脚を組んで座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "legs crossed",
+                    "alluring sitting pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_61934a15b3",
+                  "name": "膝立ちで上体をひねる",
+                  "name_ja": "膝立ちで上体をひねる",
+                  "name_en": "",
+                  "tags": [
+                    "upright kneeling",
+                    "twisted torso",
+                    "alluring pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_0b2810d013",
+                  "name": "床座りで後ろ手につく",
+                  "name_ja": "床座りで後ろ手につく",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on floor",
+                    "hands behind body",
+                    "chest forward",
+                    "alluring seated pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_b71e14878d",
+                  "name": "つま先を伸ばして座る",
+                  "name_ja": "つま先を伸ばして座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "pointed toes",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_s_e4449e4a1e",
+                  "name": "寝そべってS字を作る",
+                  "name_ja": "寝そべってS字を作る",
+                  "name_en": "",
+                  "tags": [
+                    "reclining",
+                    "curved spine",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_be61a8d814",
+                  "name": "寝たまま脚を伸ばす",
+                  "name_ja": "寝たまま脚を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "lying",
+                    "elongated legs",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_101c25dd13",
+                  "name": "脚をそろえて座る",
+                  "name_ja": "脚をそろえて座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "legs together",
+                    "elongated posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_95239ed482",
+                  "name": "脚を前に伸ばす",
+                  "name_ja": "脚を前に伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "long leg extension",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_28a03f15fa",
+                  "name": "膝立ちで背筋を伸ばす",
+                  "name_ja": "膝立ちで背筋を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "upright kneeling",
+                    "straight back",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_62b7eac3dd",
+                  "name": "うつ伏せ",
+                  "name_ja": "うつ伏せ",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_1f4a9f3f8b",
+                  "name": "うつ伏せで脚を曲げる",
+                  "name_ja": "うつ伏せで脚を曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach",
+                    "legs bent",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_332d06431f",
+                  "name": "クッションにもたれる",
+                  "name_ja": "クッションにもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "reclining",
+                    "leaning on cushion",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_f80171a454",
+                  "name": "ソファで寝そべる",
+                  "name_ja": "ソファで寝そべる",
+                  "name_en": "",
+                  "tags": [
+                    "reclining on sofa",
+                    "lounging pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_66332c6c81",
+                  "name": "ベッドで横になる",
+                  "name_ja": "ベッドで横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on bed",
+                    "body slightly turned",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_0b667de64c",
+                  "name": "丸くなる",
+                  "name_ja": "丸くなる",
+                  "name_en": "",
+                  "tags": [
+                    "lying down curled up",
+                    "knees drawn in"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_4002ac1cdf",
+                  "name": "仰向け",
+                  "name_ja": "仰向け",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "relaxed pose",
+                    "arms at sides"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_23e78fb3c2",
+                  "name": "大の字",
+                  "name_ja": "大の字",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "arms and legs spread lightly"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_cde18976c9",
+                  "name": "枕を抱える",
+                  "name_ja": "枕を抱える",
+                  "name_en": "",
+                  "tags": [
+                    "lying on bed",
+                    "hugging pillow",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_4cd2a2cf83",
+                  "name": "横向き",
+                  "name_ja": "横向き",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_d1092c4f97",
+                  "name": "横向きで肘をつく",
+                  "name_ja": "横向きで肘をつく",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "propped on one elbow",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_b0f710bd97",
+                  "name": "片腕を伸ばす",
+                  "name_ja": "片腕を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "one arm extended",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_763552b7e9",
+                  "name": "片膝を曲げる",
+                  "name_ja": "片膝を曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "one knee bent",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_a1f2c9bedc",
+                  "name": "脚をそろえて横になる",
+                  "name_ja": "脚をそろえて横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "legs aligned",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_0581741971",
+                  "name": "脚をたたんで横になる",
+                  "name_ja": "脚をたたんで横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "legs tucked slightly",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_8befd8c2cb",
+                  "name": "脚を軽く重ねる",
+                  "name_ja": "脚を軽く重ねる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "legs together",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_1b3de86982",
+                  "name": "腕を上に伸ばす",
+                  "name_ja": "腕を上に伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "arms above head",
+                    "stretched pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_6c133f3556",
+                  "name": "頬杖をつく",
+                  "name_ja": "頬杖をつく",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach",
+                    "propped on elbows",
+                    "hand on cheek"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_edcc781d5f",
+                  "name": "額に腕を置く",
+                  "name_ja": "額に腕を置く",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "one arm over forehead",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_445d82ec88",
+                  "name": "髪を広げて仰向け",
+                  "name_ja": "髪を広げて仰向け",
+                  "name_en": "",
+                  "tags": [
+                    "lying on back",
+                    "hair spread out",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_3a67aa39bb",
+                  "name": "クッションを抱える",
+                  "name_ja": "クッションを抱える",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "hugging cushion",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_978af11e17",
+                  "name": "ソファにもたれる",
+                  "name_ja": "ソファにもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on sofa",
+                    "leaning back",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_f718ef7f03",
+                  "name": "ベッドの端に座る",
+                  "name_ja": "ベッドの端に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bed edge",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_460e77fc46",
+                  "name": "両膝を抱える",
+                  "name_ja": "両膝を抱える",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "hugging knees",
+                    "compact pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_7c640b9898",
+                  "name": "前かがみで座る",
+                  "name_ja": "前かがみで座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "leaning forward slightly",
+                    "hands on knees"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_2b23d5c62c",
+                  "name": "女の子座り",
+                  "name_ja": "女の子座り",
+                  "name_en": "",
+                  "tags": [
+                    "wariza",
+                    "sitting pose",
+                    "knees together"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_c45bea5815",
+                  "name": "床に手をつく",
+                  "name_ja": "床に手をつく",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "hands on floor",
+                    "leaning back slightly"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_17408ba24e",
+                  "name": "机に肘をつく",
+                  "name_ja": "机に肘をつく",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "elbow on desk",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_4533815e45",
+                  "name": "椅子に座る",
+                  "name_ja": "椅子に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "hands on lap",
+                    "straight posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_dfe1aa0fb6",
+                  "name": "横座り",
+                  "name_ja": "横座り",
+                  "name_en": "",
+                  "tags": [
+                    "side sitting",
+                    "hands on lap",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_2edb8ebefb",
+                  "name": "浅く腰かける",
+                  "name_ja": "浅く腰かける",
+                  "name_en": "",
+                  "tags": [
+                    "sitting lightly on stool",
+                    "straight posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_eae0d2ab2f",
+                  "name": "片膝を立てる",
+                  "name_ja": "片膝を立てる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "one knee up",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_ef0283494a",
+                  "name": "窓辺に座る",
+                  "name_ja": "窓辺に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on windowsill",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_1e9e7f4372",
+                  "name": "背もたれを逆向きに使う",
+                  "name_ja": "背もたれを逆向きに使う",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair backwards",
+                    "arms resting"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_8a5c464227",
+                  "name": "脚を揃えて椅子に座る",
+                  "name_ja": "脚を揃えて椅子に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "legs together",
+                    "hands on lap"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_2d1991ac01",
+                  "name": "脚を組む",
+                  "name_ja": "脚を組む",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "legs crossed",
+                    "elegant sitting pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_112e5d5a8e",
+                  "name": "足を横に流して座る",
+                  "name_ja": "足を横に流して座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "legs to one side",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_f5fe654ace",
+                  "name": "足首を重ねる",
+                  "name_ja": "足首を重ねる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "ankles crossed",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_a65e0a4c1b",
+                  "name": "頬杖で座る",
+                  "name_ja": "頬杖で座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "hand on cheek",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_54aa4734fb",
+                  "name": "椅子で振り返る",
+                  "name_ja": "椅子で振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "upper body turned back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_c0c71f06b7",
+                  "name": "椅子を逆向きに座って振り返る",
+                  "name_ja": "椅子を逆向きに座って振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting backwards on chair",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_96f9833541",
+                  "name": "横になって振り返る",
+                  "name_ja": "横になって振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "lying on side",
+                    "head turned back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_c917e4fd0b",
+                  "name": "膝立ちで振り返る",
+                  "name_ja": "膝立ちで振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "upright kneeling",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_476e24eead",
+                  "name": "寝たまま手を伸ばす",
+                  "name_ja": "寝たまま手を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "lying",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_9997158183",
+                  "name": "座ったまま身を乗り出す",
+                  "name_ja": "座ったまま身を乗り出す",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "leaning in",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_cb8c51a51a",
+                  "name": "椅子の背にもたれて近づく",
+                  "name_ja": "椅子の背にもたれて近づく",
+                  "name_en": "",
+                  "tags": [
+                    "leaning over chair back",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_3a60dc0048",
+                  "name": "膝立ちで近づく",
+                  "name_ja": "膝立ちで近づく",
+                  "name_en": "",
+                  "tags": [
+                    "kneeling",
+                    "close pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_0005e0fc0a",
+                  "name": "うつ伏せで脚を曲げる",
+                  "name_ja": "うつ伏せで脚を曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach",
+                    "legs bent",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_970342d288",
+                  "name": "テーブルの端に座る",
+                  "name_ja": "テーブルの端に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on table edge",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_a03785ea14",
+                  "name": "椅子に座って脚を組む",
+                  "name_ja": "椅子に座って脚を組む",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "legs crossed",
+                    "teasing pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_59296b48d1",
+                  "name": "頬杖で座る",
+                  "name_ja": "頬杖で座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "hand on cheek",
+                    "playful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_6021c83f66",
+                  "name": "ストッキングを直す",
+                  "name_ja": "ストッキングを直す",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "adjusting stockings",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_8a267aa4e7",
+                  "name": "ティーカップを両手で持つ",
+                  "name_ja": "ティーカップを両手で持つ",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "holding teacup with both hands",
+                    "calm pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_daf2207bdf",
+                  "name": "両手を重ねて膝立ち",
+                  "name_ja": "両手を重ねて膝立ち",
+                  "name_en": "",
+                  "tags": [
+                    "upright kneeling",
+                    "hands folded",
+                    "straight posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_81f931fa0d",
+                  "name": "横座りで手を膝に置く",
+                  "name_ja": "横座りで手を膝に置く",
+                  "name_en": "",
+                  "tags": [
+                    "side sitting",
+                    "hands on lap",
+                    "legs together"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_94d9444b03",
+                  "name": "脚を揃えて椅子に座る",
+                  "name_ja": "脚を揃えて椅子に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on chair",
+                    "legs together",
+                    "hands on lap"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_ddb23a98e5",
+                  "name": "座って裾を整える",
+                  "name_ja": "座って裾を整える",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "arranging skirt",
+                    "elegant seated pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_71aa71e99f",
+                  "name": "ストッキングを整える",
+                  "name_ja": "ストッキングを整える",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "adjusting stockings",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_2436e83826",
+                  "name": "うつ伏せで読書する",
+                  "name_ja": "うつ伏せで読書する",
+                  "name_en": "",
+                  "tags": [
+                    "lying on stomach on bed",
+                    "propped on elbows"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_b13879aa3f",
+                  "name": "クッションにもたれて横向き",
+                  "name_ja": "クッションにもたれて横向き",
+                  "name_en": "",
+                  "tags": [
+                    "lying sideways against cushions",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_2b1ea9f922",
+                  "name": "クッションに埋もれる",
+                  "name_ja": "クッションに埋もれる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting among cushions",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_7ab508338b",
+                  "name": "ソファで横になる",
+                  "name_ja": "ソファで横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on sofa",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_843873312f",
+                  "name": "ソファで片脚を曲げる",
+                  "name_ja": "ソファで片脚を曲げる",
+                  "name_en": "",
+                  "tags": [
+                    "reclining on sofa",
+                    "one leg bent",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_6601abe577",
+                  "name": "ソファで膝立ち",
+                  "name_ja": "ソファで膝立ち",
+                  "name_en": "",
+                  "tags": [
+                    "kneeling on sofa",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_3e1e08bd65",
+                  "name": "ソファにもたれて座る",
+                  "name_ja": "ソファにもたれて座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on sofa",
+                    "leaning back",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_3f315f4848",
+                  "name": "ソファの肘掛けに座る",
+                  "name_ja": "ソファの肘掛けに座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on sofa armrest",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_e6a82db586",
+                  "name": "ソファの背にもたれる",
+                  "name_ja": "ソファの背にもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "leaning over sofa back",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_e825cb120a",
+                  "name": "ブランケットをかぶる",
+                  "name_ja": "ブランケットをかぶる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bed with blanket",
+                    "cozy pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_2b4ac9eaa8",
+                  "name": "ヘッドボードにもたれる",
+                  "name_ja": "ヘッドボードにもたれる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting against headboard",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_a89911d504",
+                  "name": "ベッドで丸くなる",
+                  "name_ja": "ベッドで丸くなる",
+                  "name_en": "",
+                  "tags": [
+                    "curling up on bed",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_8a08668ecc",
+                  "name": "ベッドで横になる",
+                  "name_ja": "ベッドで横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on bed",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_11b6106b76",
+                  "name": "ベッドで横座り",
+                  "name_ja": "ベッドで横座り",
+                  "name_en": "",
+                  "tags": [
+                    "side sitting on bed",
+                    "hands on lap"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_bbc6962789",
+                  "name": "ベッドで脚を伸ばす",
+                  "name_ja": "ベッドで脚を伸ばす",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bed",
+                    "legs extended",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_2c6437c180",
+                  "name": "ベッドで膝立ち",
+                  "name_ja": "ベッドで膝立ち",
+                  "name_en": "",
+                  "tags": [
+                    "kneeling on bed",
+                    "upright posture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_55751145f1",
+                  "name": "ベッドの端に座る",
+                  "name_ja": "ベッドの端に座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bed edge",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_ef56a5f0bb",
+                  "name": "半身を起こして寝そべる",
+                  "name_ja": "半身を起こして寝そべる",
+                  "name_en": "",
+                  "tags": [
+                    "half reclined on bed",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_f17c6bebdb",
+                  "name": "枕にもたれて座る",
+                  "name_ja": "枕にもたれて座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting against pillows",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_f43e086f16",
+                  "name": "枕を抱える",
+                  "name_ja": "枕を抱える",
+                  "name_en": "",
+                  "tags": [
+                    "lying on bed",
+                    "hugging pillow"
+                  ],
+                  "creator": "default"
                 }
               ]
             }
@@ -150,12 +3368,218 @@
                     "full upper breasts",
                     "smooth skin",
                     "soft skin",
-                    "a refined and delicate body line"
+                    "a refined and delicate body line",
+                    "white hair",
+                    "white eyelashes",
+                    "mole under left eye",
+                    "single mole",
+                    "beautiful detailed eyes",
+                    "silver hair",
+                    "pale hair",
+                    "long white hair",
+                    "specular highlights on hair"
                   ],
                   "source_url": "https://bsky.app/profile/matsukasa0608.bsky.social/post/3mtnumpahqv27",
                   "image_url": "/prompt-workbench-data/tag-set-images/ローツインテちゃん.webp",
                   "image_path": "/prompt-workbench-data/tag-set-images/ローツインテちゃん.webp",
                   "creator": "まつかさ"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tagset_major:people:medium:3",
+          "label_ja": "身体のパーツ",
+          "small_categories": [
+            {
+              "id": "tagset_major:people:medium:3:small:1",
+              "label_ja": "目",
+              "sets": [
+                {
+                  "id": "styles_workbench_illustrious_2fd12c897f",
+                  "name": "透明感のある瞳",
+                  "name_ja": "透明感のある瞳",
+                  "name_en": "",
+                  "tags": [
+                    "rounded almond-shaped eyes",
+                    "(large irises:1.2)",
+                    "irises nearly filling the eyes",
+                    "(small centered pupils:1.15)",
+                    "(translucent glossy irises:1.2)",
+                    "subtle iris gradient",
+                    "darker upper irises",
+                    "softly faded lower irises",
+                    "diffuse iris reflections",
+                    "tiny catchlights",
+                    "low-contrast sclera",
+                    "thick clean upper lash line",
+                    "long separated upper eyelashes",
+                    "sparse short lower eyelashes",
+                    "softly defined lower eyelids",
+                    "relaxed direct gaze",
+                    "gentle smiling eyes",
+                    "looking at viewer",
+                    "symmetrical eyes",
+                    "clean lineart"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_illustrious_8435ccec4e",
+                  "name": "透明感のあるやわらかい瞳",
+                  "name_ja": "透明感のあるやわらかい瞳",
+                  "name_en": "",
+                  "tags": [
+                    "large irises",
+                    "translucent irises",
+                    "subtle iris gradient",
+                    "glossy anime eyes",
+                    "soft limbal ring",
+                    "small pupils",
+                    "multiple soft catchlights",
+                    "long upper eyelashes",
+                    "fine lower eyelashes",
+                    "soft eyelids",
+                    "slightly relaxed gaze",
+                    "gentle confident expression",
+                    "looking at viewer",
+                    "highly detailed eyes",
+                    "clean lineart",
+                    "luminous eyes"
+                  ],
+                  "creator": "default"
+                }
+              ]
+            },
+            {
+              "id": "tagset_major:people:medium:3:small:2",
+              "label_ja": "体形",
+              "sets": [
+                {
+                  "id": "styles_workbench_danbooru_d967f93013",
+                  "name": "華奢な体型",
+                  "name_ja": "華奢な体型",
+                  "name_en": "",
+                  "tags": [
+                    "petite",
+                    "small frame",
+                    "narrow shoulders",
+                    "delicate neck",
+                    "collarbone",
+                    "slender arms",
+                    "slim waist",
+                    "flat stomach",
+                    "long legs",
+                    "elegant silhouette",
+                    "perky breasts",
+                    "high-set breasts",
+                    "full upper breasts"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_6de3a5c89c",
+                  "name": "胸と華奢体型の相性重視",
+                  "name_ja": "胸と華奢体型の相性重視",
+                  "name_en": "",
+                  "tags": [
+                    "petite",
+                    "small frame",
+                    "narrow shoulders",
+                    "delicate neck",
+                    "beautiful collarbone",
+                    "slender arms",
+                    "slim waist",
+                    "flat stomach",
+                    "elegant silhouette",
+                    "perky breasts",
+                    "high-set breasts",
+                    "full upper breasts",
+                    "breasts that suit a slim frame",
+                    "balanced petite proportions",
+                    "delicate body with a graceful bust line"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_5734b69e88",
+                  "name": "胸の上向き中くらい強調",
+                  "name_ja": "胸の上向き中くらい強調",
+                  "name_en": "",
+                  "tags": [
+                    "(perky breasts:1.2)",
+                    "high-set breasts",
+                    "full upper breasts",
+                    "beautiful bust line",
+                    "firm bust line",
+                    "lifted bust",
+                    "rounded upper breasts",
+                    "breasts that suit a slim frame",
+                    "well-defined bust shape"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_8e02c0f77d",
+                  "name": "胸の上向きかなり強調",
+                  "name_ja": "胸の上向きかなり強調",
+                  "name_en": "",
+                  "tags": [
+                    "(perky breasts:1.3)",
+                    "high-set breasts",
+                    "full upper breasts",
+                    "lifted bust",
+                    "firm bust line",
+                    "prominent upper breast fullness",
+                    "well-defined bust shape",
+                    "rounded upper breasts",
+                    "beautiful bust line",
+                    "breasts that sit high on a slim frame",
+                    "youthful bust shape",
+                    "upward breast contour",
+                    "natural standing pose",
+                    "relaxed posture",
+                    "arms at sides",
+                    "hands visible",
+                    "open hands"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_ef80aeced3",
+                  "name": "胸の上向き少し強調",
+                  "name_ja": "胸の上向き少し強調",
+                  "name_en": "",
+                  "tags": [
+                    "(perky breasts:1.1)",
+                    "high-set breasts",
+                    "full upper breasts",
+                    "beautiful bust line",
+                    "firm bust line",
+                    "breasts that suit a slim frame"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_816ff852b8",
+                  "name": "胸の丸み重視",
+                  "name_ja": "胸の丸み重視",
+                  "name_en": "",
+                  "tags": [
+                    "round breasts",
+                    "rounded breasts",
+                    "soft round breasts",
+                    "smooth breast contour",
+                    "beautiful rounded bust",
+                    "natural breast curve",
+                    "full upper breasts",
+                    "soft bust line",
+                    "balanced breast shape",
+                    "elegant breast silhouette",
+                    "breasts that suit a slim frame"
+                  ],
+                  "creator": "default"
                 }
               ]
             }
@@ -784,6 +4208,45 @@
                     "black and white color palette strictly fixed"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:3",
+                  "name": "原宿系カワイイ・ストリートファッション",
+                  "name_ja": "原宿系カワイイ・ストリートファッション",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092084553695252564",
+                  "image_url": "/prompt-workbench-data/tag-set-images/原宿系カワイイ・ストリートファッション.webp",
+                  "image_path": "/prompt-workbench-data/tag-set-images/原宿系カワイイ・ストリートファッション.webp",
+                  "tags": [
+                    "light blue denim street-fashion outfit",
+                    "fitted cropped denim corset top",
+                    "sweetheart neckline",
+                    "fitted light blue denim short sleeves ending at the middle of the upper arms",
+                    "slightly gathered sleeve caps",
+                    "narrow vivid pink cuffs",
+                    "vivid pink scalloped lace trim along the neckline",
+                    "structured pointed hem",
+                    "vertical corset seams",
+                    "asymmetrical gray-blue ribbon lacing across the right front panel",
+                    "small bow at the upper edge",
+                    "colorful pop-art patches in vivid pink",
+                    "yellow",
+                    "lime green and purple across the bodice",
+                    "matching low-rise light blue denim micro miniskirt",
+                    "fitted hip silhouette",
+                    "front metal button and zipper closure",
+                    "curved front pockets",
+                    "short asymmetrical frayed hem",
+                    "small blue and lime-green heart patches",
+                    "pale pink waistband piping",
+                    "white ribbed slouch socks gathered around the calves",
+                    "chunky vivid pink lace-up sneakers with thick pink soles",
+                    "strict light blue denim",
+                    "vivid pink accents",
+                    "small multicolored patches",
+                    "silver hardware",
+                    "youthful colorful streetwear styling"
+                  ]
                 }
               ]
             }
@@ -1572,6 +5035,18 @@
                   ],
                   "name_en": "Turtleneck Coat",
                   "creator": "まつかさ"
+                },
+                {
+                  "id": "styles_workbench_addon_17_17ffeb74a0",
+                  "name": "コートの襟を立てる",
+                  "name_ja": "コートの襟を立てる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "lifting coat collar",
+                    "composed pose"
+                  ],
+                  "creator": "default"
                 }
               ]
             },
@@ -1616,6 +5091,250 @@
                   ],
                   "name_en": "Clear Raincoat",
                   "creator": "まつかさ"
+                },
+                {
+                  "id": "styles_workbench_addon_19_c4a01a80bd",
+                  "name": "濡れた髪で振り返る",
+                  "name_ja": "濡れた髪で振り返る",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "wet hair",
+                    "looking back"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_e791390466",
+                  "name": "濡れた髪をしぼる",
+                  "name_ja": "濡れた髪をしぼる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "wringing wet hair",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_b9e585cbb8",
+                  "name": "コートの襟を押さえる",
+                  "name_ja": "コートの襟を押さえる",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "holding coat collar"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_9f20800aff",
+                  "name": "バス停で座る",
+                  "name_ja": "バス停で座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting at bus stop in rain",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_3443b84f8f",
+                  "name": "ベンチに座って濡れる",
+                  "name_ja": "ベンチに座って濡れる",
+                  "name_en": "",
+                  "tags": [
+                    "sitting on bench in rain",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_05_c4fee2dde4",
+                  "name": "傘の持ち手をゆるく持つ",
+                  "name_ja": "傘の持ち手をゆるく持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "holding umbrella handle loosely"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_4a4960ca7e",
+                  "name": "傘を肩にかける",
+                  "name_ja": "傘を肩にかける",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "umbrella over shoulder"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_a957bc2e02",
+                  "name": "壁にもたれて濡れる",
+                  "name_ja": "壁にもたれて濡れる",
+                  "name_en": "",
+                  "tags": [
+                    "leaning against wall in rain",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_daac177974",
+                  "name": "手を上げて雨に触れる",
+                  "name_ja": "手を上げて雨に触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "hand raised to catch rain"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_01dc698f11",
+                  "name": "水たまりのそばに立つ",
+                  "name_ja": "水たまりのそばに立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing near puddle",
+                    "rain pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_5cf5f99522",
+                  "name": "水たまりをまたぐ",
+                  "name_ja": "水たまりをまたぐ",
+                  "name_en": "",
+                  "tags": [
+                    "walking in rain",
+                    "stepping over puddle"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_32386e1177",
+                  "name": "濡れたリボンを直す",
+                  "name_ja": "濡れたリボンを直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "adjusting wet ribbon"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_014ef624b6",
+                  "name": "濡れた服の裾を持つ",
+                  "name_ja": "濡れた服の裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "holding wet hem"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_03_e1872f0e47",
+                  "name": "濡れた髪に触れる",
+                  "name_ja": "濡れた髪に触れる",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "touching wet hair"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_1eb0b1398a",
+                  "name": "濡れた髪をしぼる",
+                  "name_ja": "濡れた髪をしぼる",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "wringing wet hair"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_8ebc49fcf6",
+                  "name": "片手を空に向ける",
+                  "name_ja": "片手を空に向ける",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "palm up to sky"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_50ce5049df",
+                  "name": "窓際で濡れた体を寄せる",
+                  "name_ja": "窓際で濡れた体を寄せる",
+                  "name_en": "",
+                  "tags": [
+                    "standing by rainy window",
+                    "damp pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_12_d9239d211e",
+                  "name": "腕を抱いて雨に立つ",
+                  "name_ja": "腕を抱いて雨に立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "arms around body"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_20_649876f528",
+                  "name": "雨の中でしゃがむ",
+                  "name_ja": "雨の中でしゃがむ",
+                  "name_en": "",
+                  "tags": [
+                    "crouching in rain",
+                    "damp pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_c95177b1ed",
+                  "name": "雨の中を歩く",
+                  "name_ja": "雨の中を歩く",
+                  "name_en": "",
+                  "tags": [
+                    "walking in rain",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_847910e20a",
+                  "name": "雨を受けるように立つ",
+                  "name_ja": "雨を受けるように立つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "arms slightly open"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_13_30407ca555",
+                  "name": "鞄を頭上にかざす",
+                  "name_ja": "鞄を頭上にかざす",
+                  "name_en": "",
+                  "tags": [
+                    "standing in rain",
+                    "holding bag over head"
+                  ],
+                  "creator": "default"
                 }
               ]
             }
@@ -2245,7 +5964,136 @@
             {
               "id": "tagset_medium:outfit_fashion_formal:dress:small:1",
               "label_ja": "その他ドレス",
-              "sets": []
+              "sets": [
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:2",
+                  "name": "ダイヤをモチーフにしたカジノクイーン風ドレス",
+                  "name_ja": "ダイヤをモチーフにしたカジノクイーン風ドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092567746202489100",
+                  "tags": [
+                    "playing-card diamond queen outfit",
+                    "fitted pure white satin mini dress",
+                    "sharp asymmetrical one-shoulder neckline",
+                    "vivid red structured shoulder panel shaped like a diamond",
+                    "narrow black piping outlining every seam",
+                    "fitted white bodice decorated with a large centered vivid red diamond emblem",
+                    "vertical row of small antique-gold buttons",
+                    "wide vivid red waist belt with a polished gold diamond-shaped buckle",
+                    "short structured A-line skirt formed from alternating pure white and vivid red pointed panels",
+                    "each white panel decorated with a single vivid red playing-card diamond symbol",
+                    "black underskirt visible between the panels",
+                    "long detachable vivid red back drape extending from the waist",
+                    "white elbow-length gloves with red diamond cuffs",
+                    "white thigh-high boots with vivid red side panels and gold diamond buckles",
+                    "small tilted white top hat with a vivid red band and diamond-shaped ornament",
+                    "strict pure white base",
+                    "vivid red diamond motifs and panels",
+                    "narrow black piping",
+                    "antique-gold hardware",
+                    "clean symmetrical card-themed tailoring"
+                  ]
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:4",
+                  "name": "村娘の様な衣装",
+                  "name_ja": "村娘の様な衣装",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092809329317679442",
+                  "tags": [
+                    "olive-green one-shoulder summer midi dress",
+                    "lightweight matte cotton fabric",
+                    "fitted upper bodice",
+                    "one narrow olive-green shoulder strap",
+                    "asymmetrical neckline covered by a wide white eyelet-lace ruffle sweeping diagonally across the chest and over one shoulder",
+                    "scalloped embroidered ruffle edge",
+                    "opposite shoulder left bare",
+                    "high gathered elastic waist",
+                    "matching olive-green fabric sash tied into a large flat bow at the center front",
+                    "two long pointed ribbon tails",
+                    "softly gathered flared A-line skirt ending below the knees",
+                    "wide pure-white eyelet-lace hem panel",
+                    "delicate cutwork floral embroidery and scalloped lower edge",
+                    "strict olive-green bodice",
+                    "sash and main skirt",
+                    "pure-white neckline ruffle and hem panel",
+                    "clean two-color placement",
+                    "relaxed feminine summer silhouette",
+                    "wide-brim natural straw hat decorated with two small dusty-pink roses",
+                    "black flat slide sandals decorated with large white pearls"
+                  ]
+                },
+                {
+                  "id": "styles_workbench_addon_14_0e599e8343",
+                  "name": "ワンピースの裾を整える",
+                  "name_ja": "ワンピースの裾を整える",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "smoothing dress hem",
+                    "graceful pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_49d2b59c8e",
+                  "name": "ワンピースの裾を持つ",
+                  "name_ja": "ワンピースの裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding dress hem",
+                    "gentle pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_e479fa43b6",
+                  "name": "座ってワンピースの裾を引く",
+                  "name_ja": "座ってワンピースの裾を引く",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "pulling dress hem neatly",
+                    "elegant pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:340",
+                  "name": "青と白のハイロー風ドレス",
+                  "name_ja": "青と白のハイロー風ドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2093232112128188830",
+                  "tags": [
+                    "white maxi camisole dress with matching white chiffon tie-front bolero",
+                    "fitted structured bodice",
+                    "straight neckline",
+                    "thin spaghetti shoulder straps with small blue accents",
+                    "defined natural waist",
+                    "long flowing A-line skirt reaching the ankles",
+                    "smooth lightweight opaque white fabric",
+                    "large royal blue and deep cobalt blue floral motifs distributed across the bodice and skirt",
+                    "oversized blue blossoms with dark navy centers",
+                    "sweeping blue paisley leaves",
+                    "delicate gray and muted gold botanical vines and small ornamental flowers between the main blossoms",
+                    "large blue butterfly motifs across the lower skirt",
+                    "wide dark royal blue ornamental lace border continuously trimming the entire skirt hem",
+                    "elegant scalloped lace edge",
+                    "matching cropped white sheer chiffon bolero",
+                    "open front",
+                    "deep V-shaped opening",
+                    "elbow-length wide bell sleeves",
+                    "gathered center front tied into a long white bow at the waist",
+                    "soft flowing chiffon texture",
+                    "strict white base with royal blue and cobalt blue motifs",
+                    "dark royal blue hem lace only",
+                    "gray and muted gold botanical details only",
+                    "elegant resort-style silhouette",
+                    "clean fitted bodice and full flowing maxi skirt"
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -3329,6 +7177,39 @@
                     "white blue and red color coordination only"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:5",
+                  "name": "アクアブルーのロイヤルティーサロン風コルセットドレス",
+                  "name_ja": "アクアブルーのロイヤルティーサロン風コルセットドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092869727198532033",
+                  "tags": [
+                    "royal tea-salon corset mini dress",
+                    "fitted glossy aqua-blue bodice",
+                    "low curved sweetheart neckline framed with narrow white ruffles and antique-gold piping",
+                    "short aqua-blue puff sleeves ending above the elbows",
+                    "strongly gathered sleeve caps",
+                    "wide pure-white cuffs with small antique-gold buttons",
+                    "structured dark-aqua underbust corset with a sharply pointed lower edge",
+                    "vertical boning seams outlined in antique gold",
+                    "three pairs of round antique-gold buttons connected by short decorative gold chains",
+                    "sharply defined natural waist",
+                    "full short bell-shaped aqua-blue skirt",
+                    "wide white center-front inset",
+                    "antique-gold leaf appliqués arranged symmetrically along the skirt edge",
+                    "aqua-and-white vertical striped lower ruffle",
+                    "layered pure-white ruffled underskirt",
+                    "large dark-aqua bow at the back waist",
+                    "antique-gold choker with a large ruby-red pendant",
+                    "small aqua-blue crown with antique-gold framing and ruby-red gemstones",
+                    "strict aqua-blue dress",
+                    "pure-white ruffles and inset",
+                    "antique-gold trim and hardware",
+                    "ruby-red gemstones",
+                    "symmetrical color placement",
+                    "elegant royal tea-service aesthetic"
+                  ]
                 }
               ]
             },
@@ -6268,6 +10149,75 @@
                     "simple minimal design"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:3:dedup:7903c8d855",
+                  "name": "マニッシュ・ブルマセットアップ",
+                  "name_ja": "マニッシュ・ブルマセットアップ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092718728668414147",
+                  "tags": [
+                    "gray tailored vest and bloomer shorts ensemble",
+                    "crisp pure white long-sleeve button-up shirt",
+                    "fitted white shirt with pointed collar",
+                    "black and deep burgundy striped bow tie at the neck",
+                    "sleeveless charcoal gray tailored waistcoat",
+                    "deep V neckline",
+                    "fitted waist",
+                    "double-breasted front with two vertical rows of small metallic buttons",
+                    "subtle gray woven texture",
+                    "matching charcoal gray high-waisted bloomer shorts",
+                    "very full rounded balloon silhouette",
+                    "gathered fabric creating pronounced volume around the hips",
+                    "elasticized gathered leg openings at the upper thighs",
+                    "structured waistband",
+                    "layered three-tier ruffle detail attached only along the outer side of one hip",
+                    "matching charcoal gray fabric throughout vest and shorts",
+                    "black over-the-knee socks",
+                    "black platform lace-up shoes with thick contrasting tan wooden soles",
+                    "strict color placement",
+                    "pure white shirt only",
+                    "charcoal gray vest and shorts only",
+                    "black and burgundy bow tie only",
+                    "black socks and shoes only",
+                    "tan platform soles only"
+                  ]
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:1",
+                  "name": "青い格子柄のスカートとブラウスのコーデ",
+                  "name_ja": "青い格子柄のスカートとブラウスのコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2093534106252423525",
+                  "tags": [
+                    "summer fitted blouse and skirt outfit",
+                    "pure white lightweight cotton blouse",
+                    "wide gathered scoop neckline edged with a narrow white ruffle",
+                    "soft elastic gathering across the neckline",
+                    "short loose flutter sleeves ending at the middle of the upper arms",
+                    "delicate white lace trim along each sleeve hem",
+                    "softly gathered bust",
+                    "small matte black ribbon bow centered below the neckline",
+                    "three small round black buttons aligned vertically beneath the bow",
+                    "wide glossy black underbust waist cincher",
+                    "rigid boned construction",
+                    "high curved upper edge",
+                    "pointed lower front edge",
+                    "black front panel with symmetrical black crisscross ribbon lacing through small silver eyelets",
+                    "fitted side panels with short buckle straps",
+                    "tightly defined waist",
+                    "short full circle skirt in strict medium blue",
+                    "pale blue and pure white tartan check",
+                    "dense gathering at the waist",
+                    "wide flared silhouette",
+                    "smooth rounded mini length hem",
+                    "matching blue tartan bow tied at the back waist with short ribbon tails",
+                    "slim black headband tied into two tall pointed fabric loops resembling an upright bow",
+                    "strict pure white blouse",
+                    "glossy black bow buttons and waist cincher",
+                    "blue and white tartan skirt and back bow",
+                    "symmetrical color placement"
+                  ]
                 }
               ]
             },
@@ -6851,6 +10801,72 @@
                     "silver metal hardware only"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:5:dedup:51e402a8e0",
+                  "name": "黒いハイウエストのサスペンダースカートと、白いフリルブラウスを組み合わせたモノトーンゴスロリ",
+                  "name_ja": "黒いハイウエストのサスペンダースカートと、白いフリルブラウスを組み合わせたモノトーンゴスロリ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092205351626235975",
+                  "image_url": "",
+                  "image_path": "",
+                  "tags": [
+                    "black and white Victorian-inspired layered outfit",
+                    "pure white high-neck blouse",
+                    "short voluminous puff sleeves ending above the elbows",
+                    "gathered elastic sleeve cuffs with tiny white ribbon ties",
+                    "oversized cascading white ruffled jabot covering the entire chest",
+                    "long pointed white blouse hem visible beneath the vest",
+                    "fitted sleeveless black tailored waistcoat",
+                    "deep V-shaped front opening",
+                    "sharply cinched waist",
+                    "three diagonally arranged antique-silver buttons",
+                    "two small angled flap pockets",
+                    "long pointed front tails extending over the hips",
+                    "short black pleated miniskirt",
+                    "multiple layered tiers of matte black fabric",
+                    "wide black floral lace trim across each tier",
+                    "softly flared silhouette",
+                    "layered black bead choker with draped bead chains",
+                    "strict pure white blouse",
+                    "matte black waistcoat and skirt",
+                    "black lace and beads",
+                    "antique-silver buttons",
+                    "clean monochrome color placement"
+                  ]
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:1:dedup:c6d14419b6",
+                  "name": "クローバーをモチーフにしたゴシックロリータ",
+                  "name_ja": "クローバーをモチーフにしたゴシックロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092507337667842108",
+                  "tags": [
+                    "dark green four-leaf clover gothic lolita dress",
+                    "fitted deep forest-green velvet bodice",
+                    "high black lace collar",
+                    "short puff sleeves ending at the middle of the upper arms",
+                    "strongly gathered sleeve caps",
+                    "fitted black lace cuffs",
+                    "square neckline framed with black scalloped lace",
+                    "large black satin bow at the center chest with an antique-gold four-leaf clover brooch",
+                    "structured black underbust corset with deep green ribbon lacing",
+                    "sharply defined natural waist",
+                    "full knee-length bell-shaped skirt",
+                    "layered deep forest-green velvet and black tulle",
+                    "symmetrical antique-gold four-leaf clover embroidery across the bodice and lower skirt",
+                    "small emerald-green gemstone accents",
+                    "wide black floral lace hem",
+                    "deep green satin ribbon bands",
+                    "black lace underskirt",
+                    "black knee-high socks with small gold clover embroidery",
+                    "black strap shoes with antique-gold clover buckles",
+                    "dark green bonnet with black lace trim and a small clover ornament",
+                    "strict deep forest-green base",
+                    "black lace and ribbons",
+                    "antique-gold clover motifs",
+                    "symmetrical color placement"
+                  ]
                 }
               ]
             },
@@ -7934,6 +11950,68 @@
                     "clean color boundaries"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:2:dedup:13e8bfa3b6",
+                  "name": "パステルカラーのスイートロリータドレス",
+                  "name_ja": "パステルカラーのスイートロリータドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2091993954686304567",
+                  "image_url": "/prompt-workbench-data/tag-set-images/パステルカラーのスイートロリータドレス.webp",
+                  "image_path": "/prompt-workbench-data/tag-set-images/パステルカラーのスイートロリータドレス.webp",
+                  "tags": [
+                    "pastel sweet lolita ball dress",
+                    "fitted mint-green corset bodice",
+                    "vertical ivory lace trim",
+                    "dusty-pink ribbon lacing along both side panels",
+                    "three small pale-pink buttons down the center",
+                    "large pale-pink satin bow at the waist",
+                    "gathered ivory bust panel",
+                    "wide off-shoulder ruffled neckline made of layered mint-green and ivory lace",
+                    "multiple pale-pink bows decorating the neckline",
+                    "extremely full short bell-shaped skirt",
+                    "layered mint-green hip ruffles with ivory lace edging",
+                    "oversized ivory satin bows across the upper skirt",
+                    "pink oval appliqués framed with mint-green ruffles",
+                    "wide lavender middle skirt tier with pale-pink ribbon trim",
+                    "deep rose-pink lower tier with gathered ivory lace edging",
+                    "white tulle underskirt",
+                    "long dusty-pink ribbon bows at both sides",
+                    "strict mint-green bodice and upper ruffles",
+                    "lavender middle tier",
+                    "rose-pink lower tier",
+                    "ivory lace and bows",
+                    "pale-pink ribbon accents",
+                    "symmetrical color placement",
+                    "elaborate layered construction"
+                  ]
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:2:dedup:c68e01f69f",
+                  "name": "茶会風クラシカルロリータ",
+                  "name_ja": "茶会風クラシカルロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2093594499742064669",
+                  "tags": [
+                    "tea party inspired classical lolita dress",
+                    "strict deep navy blue",
+                    "warm ivory and pale antique gold color palette",
+                    "warm ivory high neck blouse with a ruffled stand collar",
+                    "vertical pintucks",
+                    "pearl buttons and a rounded layered ruffle bib",
+                    "large shoulder ruffles",
+                    "long ivory bishop sleeves with fitted lace cuffs",
+                    "deep navy throat bow with an oval pearl cameo",
+                    "fitted deep navy high waist corset waistband with a pointed center and four pearl buttons",
+                    "full knee length bell skirt",
+                    "rounded warm ivory overskirt edged with deep navy piping",
+                    "pale antique gold floral embroidery",
+                    "narrow deep navy ribbon band and evenly spaced navy bows above the ivory ruffled hem",
+                    "wide deep navy underskirt with antique gold scroll embroidery",
+                    "ivory floral lace peeking beneath the hem",
+                    "matching ivory ruffled headband with deep navy side bows",
+                    "strict symmetrical color placement"
+                  ]
                 }
               ]
             },
@@ -8271,6 +12349,76 @@
                     "rich fabric texture and sharp tailoring"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:4:dedup:d4f61dea34",
+                  "name": "武装アリス服の衣装",
+                  "name_ja": "武装アリス服の衣装",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092144949789970565",
+                  "image_url": "/prompt-workbench-data/tag-set-images/武装アリス服の衣装.webp",
+                  "image_path": "/prompt-workbench-data/tag-set-images/武装アリス服の衣装.webp",
+                  "tags": [
+                    "weaponized Alice dress",
+                    "classic royal-blue knee-length dress",
+                    "fitted bodice",
+                    "short puff sleeves",
+                    "white ruffled sleeve cuffs",
+                    "wide white Peter Pan collar",
+                    "large black ribbon bow at the neckline",
+                    "sharply defined natural waist",
+                    "full gathered A-line skirt",
+                    "white pinafore apron with a rounded bib",
+                    "wide white shoulder straps",
+                    "scalloped white apron hem",
+                    "black spade emblem embroidered near the lower right corner",
+                    "wide black tactical waist belt with antique-brass buckles",
+                    "compact black utility pouches attached at both hips",
+                    "black leather shoulder harness fitted over the bodice",
+                    "white lace thigh-high stockings",
+                    "black double thigh straps",
+                    "black lace-up combat boots",
+                    "black fingerless leather gloves",
+                    "blue crystalline dagger secured in a black right-thigh sheath",
+                    "compact black handgun secured in a left-hip holster",
+                    "oversized royal-blue Alice hair bow",
+                    "strict royal-blue dress",
+                    "pure white collar and apron",
+                    "black ribbons and tactical equipment",
+                    "antique-brass hardware",
+                    "clear classic Alice silhouette"
+                  ]
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:6",
+                  "name": "森のエルフの衣装",
+                  "name_ja": "森のエルフの衣装",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2092930137348075644",
+                  "tags": [
+                    "forest elf outfit",
+                    "fitted deep forest-green tunic dress",
+                    "modest V-shaped neckline",
+                    "fitted moss-green short sleeves ending at the middle of the upper arms",
+                    "layered leaf-shaped sleeve cuffs",
+                    "ivory linen chest inset with delicate olive vine embroidery",
+                    "dark brown leather underbust corset with antique-bronze leaf clasps",
+                    "sharply defined waist",
+                    "short flared skirt",
+                    "overlapping deep-green and moss-green pointed panels shaped like leaves",
+                    "subtle embroidered leaf veins",
+                    "narrow ivory ruffled underskirt",
+                    "dark brown leather belt with a bronze leaf buckle",
+                    "small utility pouch attached at one hip",
+                    "dark brown fitted thigh-high stockings",
+                    "knee-high brown leather boots with crossed straps and bronze leaf buckles",
+                    "brown leather forearm bracers with olive-green lacing",
+                    "strict deep forest-green and moss-green fabric",
+                    "ivory inset and underskirt",
+                    "dark brown leather",
+                    "antique-bronze hardware",
+                    "single full-frame composition"
+                  ]
                 }
               ]
             },
@@ -9702,6 +13850,152 @@
                     "fixed silhouette"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "tagset:major:2:medium:1:small:1:set:1:dedup:b67d09b363",
+                  "name": "黒を基調としたナイトプールな水着",
+                  "name_ja": "黒を基調としたナイトプールな水着",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2091842971637358873",
+                  "image_url": "/prompt-workbench-data/tag-set-images/黒を基調としたナイトプールな水着.webp",
+                  "image_path": "/prompt-workbench-data/tag-set-images/黒を基調としたナイトプールな水着.webp",
+                  "tags": [
+                    "elegant black night-pool swimsuit",
+                    "fitted black one-piece swimsuit",
+                    "asymmetrical one-shoulder neckline",
+                    "wide black shoulder strap with a polished silver ring connector",
+                    "curved sheer black mesh panel across the upper waist",
+                    "high-waisted silhouette",
+                    "moderate high-cut legs",
+                    "layered black chiffon ruffle flowing diagonally from the shoulder to the opposite hip",
+                    "narrow electric-blue piping along the neckline",
+                    "violet piping along the ruffle edge",
+                    "small iridescent blue and purple crystal accents scattered across the shoulder strap and hip",
+                    "detachable sheer black chiffon wrap skirt tied at one side with a silver ring",
+                    "knee-length flowing panels",
+                    "strict jet-black base",
+                    "electric-blue and violet accents",
+                    "silver hardware",
+                    "refined fitted silhouette",
+                    "luxurious modern resort style"
+                  ]
+                },
+                {
+                  "id": "styles_workbench_addon_12_e0129a7c14",
+                  "name": "タオルを肩にかける",
+                  "name_ja": "タオルを肩にかける",
+                  "name_en": "",
+                  "tags": [
+                    "standing in swimsuit",
+                    "towel over shoulders",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_14_678802b7f3",
+                  "name": "ビキニで片手を腰に",
+                  "name_ja": "ビキニで片手を腰に",
+                  "name_en": "",
+                  "tags": [
+                    "standing in bikini",
+                    "one hand on hip",
+                    "confident pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_02_3b9caa8afc",
+                  "name": "ビキニのサイドを持つ",
+                  "name_ja": "ビキニのサイドを持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding bikini side tie",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_01_69047eb468",
+                  "name": "ビキニの肩紐を直す",
+                  "name_ja": "ビキニの肩紐を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting bikini strap",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_18_3afcb0b8f8",
+                  "name": "ビーチタオルで横になる",
+                  "name_ja": "ビーチタオルで横になる",
+                  "name_en": "",
+                  "tags": [
+                    "lying on beach towel in swimsuit",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_17_6c3ec6195c",
+                  "name": "プールサイドに座る",
+                  "name_ja": "プールサイドに座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting poolside in swimsuit",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_15_870fe0f8fb",
+                  "name": "ワンピース水着の脇を持つ",
+                  "name_ja": "ワンピース水着の脇を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding one-piece swimsuit side",
+                    "soft pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_10_0a417d092d",
+                  "name": "水着で寝そべる",
+                  "name_ja": "水着で寝そべる",
+                  "name_en": "",
+                  "tags": [
+                    "reclining in swimsuit",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_07_8d051fbf72",
+                  "name": "水着の胸元を押さえる",
+                  "name_ja": "水着の胸元を押さえる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hand at bikini top",
+                    "composed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_11_3df53776cc",
+                  "name": "脚をそろえて座る",
+                  "name_ja": "脚をそろえて座る",
+                  "name_en": "",
+                  "tags": [
+                    "sitting in swimsuit",
+                    "legs together",
+                    "neat pose"
+                  ],
+                  "creator": "default"
                 }
               ]
             },
@@ -10017,6 +14311,88 @@
                     "provocative lingerie"
                   ],
                   "creator": "まつかさ"
+                },
+                {
+                  "id": "styles_workbench_addon_13_81c77ee3cb",
+                  "name": "オーバーシャツの裾を持つ",
+                  "name_ja": "オーバーシャツの裾を持つ",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding oversized shirt hem over lingerie",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_16_93b9eae2d6",
+                  "name": "ガーターを直す",
+                  "name_ja": "ガーターを直す",
+                  "name_en": "",
+                  "tags": [
+                    "sitting",
+                    "adjusting garter",
+                    "delicate pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_04_35b6bf2de9",
+                  "name": "ブラの肩紐を直す",
+                  "name_ja": "ブラの肩紐を直す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "adjusting bra strap",
+                    "delicate gesture"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_09_05da48c677",
+                  "name": "ベッドで膝立ちになる",
+                  "name_ja": "ベッドで膝立ちになる",
+                  "name_en": "",
+                  "tags": [
+                    "kneeling on bed",
+                    "lingerie pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_08_7088e32a0c",
+                  "name": "ランジェリーで両手を後ろに回す",
+                  "name_ja": "ランジェリーで両手を後ろに回す",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "hands behind back",
+                    "lingerie pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_06_56d33684dd",
+                  "name": "ローブを閉じる",
+                  "name_ja": "ローブを閉じる",
+                  "name_en": "",
+                  "tags": [
+                    "standing",
+                    "holding robe closed",
+                    "relaxed pose"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_addon_19_06cce1cef2",
+                  "name": "腕で体を軽く抱く",
+                  "name_ja": "腕で体を軽く抱く",
+                  "name_en": "",
+                  "tags": [
+                    "standing in lingerie",
+                    "arms lightly around body"
+                  ],
+                  "creator": "default"
                 }
               ]
             },
@@ -10369,25 +14745,236 @@
               ]
             }
           ]
+        },
+        {
+          "id": "tagset:major:1:medium:2",
+          "label_ja": "スタイル",
+          "small_categories": [
+            {
+              "id": "tagset_small:styles_workbench:363024ec65:ccc33c6323",
+              "label_ja": "スタイル",
+              "sets": [
+                {
+                  "id": "styles_workbench_soft_illustration_24a0c5d1de",
+                  "name": "やわらかいイラスト",
+                  "name_ja": "やわらかいイラスト",
+                  "name_en": "",
+                  "tags": [
+                    "soft lighting",
+                    "pastel colors",
+                    "dreamy atmosphere",
+                    "delicate lineart",
+                    "volumetric lighting",
+                    "soft rim light"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_watercolor_492583e075",
+                  "name": "水彩",
+                  "name_ja": "水彩",
+                  "name_en": "",
+                  "tags": [
+                    "watercolor",
+                    "transparent",
+                    "soft edges",
+                    "painterly",
+                    "pastel",
+                    "soft volumetric light",
+                    "gentle rim light"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_floral_fantasy_background_f3250a79f5",
+                  "name": "フローラルファンタジー背景",
+                  "name_ja": "フローラルファンタジー背景",
+                  "name_en": "",
+                  "tags": [
+                    "lush floral background",
+                    "blooming flowers everywhere",
+                    "dense botanicals",
+                    "flower garden",
+                    "colorful blossoms",
+                    "hanging vines",
+                    "petals falling",
+                    "overgrown with plants",
+                    "botanical illustration style",
+                    "volumetric light",
+                    "soft god rays"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_ultra_detailed_background_afe921a14a",
+                  "name": "超精密背景",
+                  "name_ja": "超精密背景",
+                  "name_en": "",
+                  "tags": [
+                    "ultra-detailed background",
+                    "intricate scenery",
+                    "highly detailed architecture",
+                    "complex environment",
+                    "elaborate details",
+                    "rich textures",
+                    "8k background",
+                    "volumetric lighting",
+                    "ray tracing",
+                    "atmospheric fog"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_anime_standard_9d9fcf7334",
+                  "name": "アニメ標準",
+                  "name_ja": "アニメ標準",
+                  "name_en": "",
+                  "tags": [
+                    "vibrant colors",
+                    "ray tracing",
+                    "volumetric lighting"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_cute_pop_c9bc22bf05",
+                  "name": "キュートポップ",
+                  "name_ja": "キュートポップ",
+                  "name_en": "",
+                  "tags": [
+                    "cute",
+                    "pastel",
+                    "bright colors",
+                    "kawaii",
+                    "clean lineart",
+                    "soft rim light"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_game_cg_855d5560e1",
+                  "name": "ゲームCG",
+                  "name_ja": "ゲームCG",
+                  "name_en": "",
+                  "tags": [
+                    "game cg",
+                    "official art",
+                    "beautiful detailed",
+                    "sharp focus",
+                    "ray tracing",
+                    "rim lighting"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_semi_realistic_8cc95bbf53",
+                  "name": "セミリアル",
+                  "name_ja": "セミリアル",
+                  "name_en": "",
+                  "tags": [
+                    "detailed skin texture",
+                    "realistic lighting",
+                    "cinematic",
+                    "ray tracing",
+                    "volumetric light",
+                    "rim lighting",
+                    "specular highlights"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_dark_fantasy_22b968c296",
+                  "name": "ダークファンタジー",
+                  "name_ja": "ダークファンタジー",
+                  "name_en": "",
+                  "tags": [
+                    "dark fantasy",
+                    "dramatic lighting",
+                    "moody atmosphere",
+                    "cinematic shadows",
+                    "volumetric fog",
+                    "ray tracing",
+                    "strong rim lighting"
+                  ],
+                  "creator": "default"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     {
-      "id": "tagset:major:2",
-      "label_ja": "未分類",
+      "id": "tagset:major:3",
+      "label_ja": "画面効果",
       "medium_categories": [
         {
-          "id": "tagset:major:2:medium:1",
-          "label_ja": "未分類",
+          "id": "tagset:major:3:medium:1",
+          "label_ja": "ライティング",
           "small_categories": [
             {
-              "id": "tagset:major:2:medium:1:small:1",
-              "label_ja": "未分類",
-              "sets": []
+              "id": "tagset:major:3:medium:1:small:1",
+              "label_ja": "ray tracing, rim lighting, volumetric lighting,",
+              "sets": [
+                {
+                  "id": "styles_workbench_light_a36ef8aba2",
+                  "name": "光演出",
+                  "name_ja": "光演出",
+                  "name_en": "",
+                  "tags": [
+                    "bokeh",
+                    "light leaks",
+                    "particles",
+                    "sparkling",
+                    "perfect shading",
+                    "raytracing",
+                    "volumetric lighting"
+                  ],
+                  "creator": "default"
+                },
+                {
+                  "id": "styles_workbench_illustrious_34bc8a18f1",
+                  "name": "白く透明感のある淡彩",
+                  "name_ja": "白く透明感のある淡彩",
+                  "name_en": "",
+                  "tags": [
+                    "high-key lighting",
+                    "pale pastel palette",
+                    "white-dominant palette",
+                    "delicate anime illustration",
+                    "thin clean lineart",
+                    "blue-gray lineart",
+                    "soft watercolor shading",
+                    "soft airbrush shading",
+                    "glossy highlights",
+                    "translucent skin",
+                    "luminous skin",
+                    "smooth skin",
+                    "soft blush",
+                    "large glassy eyes",
+                    "detailed eyelashes",
+                    "dreamy expression",
+                    "airy hair",
+                    "fine hair strands",
+                    "ethereal atmosphere",
+                    "elegant delicate rendering",
+                    "soft bloom",
+                    "minimal background",
+                    "clean background"
+                  ],
+                  "creator": "default"
+                }
+              ]
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "prompt_workbench_meta": {
+    "deleted_default_catalog_ids": [],
+    "deleted_default_catalog_category_ids": [],
+    "deleted_default_tagset_ids": [],
+    "deleted_default_tagset_category_ids": []
+  }
 }
