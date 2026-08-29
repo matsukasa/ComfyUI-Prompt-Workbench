@@ -13,11 +13,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Registry package catalog preflight
+      - name: Registry package data preflight
         run: |
           python - <<'PY'
           import json
-          import shutil
           from pathlib import Path
 
           import routes
@@ -38,18 +37,12 @@ jobs:
           full = load_catalog(default_catalog)
           sfw = load_catalog(sfw_catalog)
           if full.get("stats", {}).get("catalog_profile") == "registry_sfw":
-              raise SystemExit("data/tag_catalog.json is expected to be the local full catalog before packaging")
+              raise SystemExit("data/tag_catalog.json is expected to be the full default catalog before packaging")
           if sfw.get("stats", {}).get("catalog_profile") != "registry_sfw":
               raise SystemExit("data/sfw_tag_catalog.json must declare stats.catalog_profile = registry_sfw")
-
-          shutil.copyfile(sfw_catalog, default_catalog)
-          packaged = load_catalog(default_catalog)
-          if packaged.get("stats", {}).get("catalog_profile") != "registry_sfw":
-              raise SystemExit("Registry package catalog replacement did not produce an SFW default catalog")
           print(
-              "Registry package catalog is SFW:",
-              f"tags={packaged.get('stats', {}).get('tags')}",
-              f"source={sfw_catalog}",
+              "Registry package catalog is full default:",
+              f"tags={full.get('stats', {}).get('tags')}",
               f"target={default_catalog}",
           )
 
@@ -64,18 +57,12 @@ jobs:
           full_sets = load_tag_sets(default_tag_sets)
           sfw_sets = load_tag_sets(sfw_tag_sets)
           if full_sets.get("stats", {}).get("tag_set_profile") == "registry_sfw":
-              raise SystemExit("data/tag_sets.json is expected to be the local full tag sets before packaging")
+              raise SystemExit("data/tag_sets.json is expected to be the full default tag sets before packaging")
           if sfw_sets.get("stats", {}).get("tag_set_profile") != "registry_sfw":
               raise SystemExit("data/sfw_tag_sets.json must declare stats.tag_set_profile = registry_sfw")
-
-          shutil.copyfile(sfw_tag_sets, default_tag_sets)
-          packaged_sets = load_tag_sets(default_tag_sets)
-          if packaged_sets.get("stats", {}).get("tag_set_profile") != "registry_sfw":
-              raise SystemExit("Registry package tag set replacement did not produce SFW defaults")
           print(
-              "Registry package tag sets are SFW:",
-              f"sets={packaged_sets.get('stats', {}).get('sets')}",
-              f"source={sfw_tag_sets}",
+              "Registry package tag sets are full default:",
+              f"sets={sum(len(small.get('sets', [])) for major in full_sets.get('major_categories', []) for medium in major.get('medium_categories', []) for small in medium.get('small_categories', []))}",
               f"target={default_tag_sets}",
           )
           PY

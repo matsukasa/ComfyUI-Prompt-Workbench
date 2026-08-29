@@ -1,6 +1,6 @@
 [project]
 name = "prompt-workbench"
-version = "2.0.1"
+version = "2.0.2"
 description = "タグ選択、翻訳、編集、整理をまとめて扱うComfyUI向けプロンプト作業台 / A structured prompt workbench for ComfyUI with tag browsing, translation, editing, and organization."
 readme = "README.md"
 requires-python = ">=3.9"
