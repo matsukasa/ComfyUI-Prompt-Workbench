@@ -211,6 +211,13 @@ def default_examples_path(data_directory=None):
     return data_directory / "tag_catalog.json"
 
 
+def is_default_catalog_name(value):
+    try:
+        return normalize_catalog_name(value).casefold() == "tag_catalog"
+    except ValueError:
+        return False
+
+
 DEFAULT_TAG_SETS_CATALOG = {
     "schema_version": 1,
     "major_categories": [
@@ -475,7 +482,7 @@ def load_selected_tag_sets_catalog(data_directory=None, requested_name="", stora
 
 
 def examples_path(data_directory=None, requested_name="", storage_directory=None):
-    if requested_name:
+    if requested_name and not is_default_catalog_name(requested_name):
         requested = user_catalog_path(requested_name, storage_directory)
         if requested.is_file():
             return requested
@@ -484,7 +491,7 @@ def examples_path(data_directory=None, requested_name="", storage_directory=None
 
 def catalog_path_status(requested_name="", data_directory=None, storage_directory=None):
     selected = str(requested_name or "")
-    if selected:
+    if selected and not is_default_catalog_name(selected):
         selected_path = user_catalog_path(selected, storage_directory)
         exists = selected_path.is_file()
         active_path = selected_path if exists else default_examples_path(data_directory)

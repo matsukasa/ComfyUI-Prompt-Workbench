@@ -31,6 +31,7 @@ GitHub上で動画が表示されない場合は、[`docs/assets/comfyui_prompt_
 - 大分類・中分類・小分類を持つローカルタグカタログからタグを検索・追加できます。
 - タグセットを分類ツリーから探し、まとまったタグ群として追加できます。
 - タグセットのお気に入り登録、検索、画像表示、リスト高さ調整に対応しています。
+- プロンプト本文欄とタグ追加タブは折りたためます。
 - ローカル辞書、MyMemory、LibreTranslate、DeepL、OpenAI互換APIを使った翻訳に対応しています。
 - 原文 / 日本語 / 両方の表示を切り替えられます。
 - 日本語タグを英語タグへ置換する翻訳ボタンがあります。
@@ -109,7 +110,7 @@ Stability MatrixはPackageごとに `custom_nodes` が分かれます。
 
 1. ノード検索で `Prompt Workbench` を追加します。
 2. 上部の本文欄、または下部の追加欄へタグを入力します。
-3. 本文欄は `Ctrl+Enter` または `タグへ反映`、追加欄はEnterで確定します。
+3. 本文欄は入力した改行を表示上そのまま保ちます。`Ctrl+Enter` または `タグへ反映` でタグへ反映し、追加欄はEnterで確定します。
 4. タグボタンをドラッグすると順序を変更できます。
 5. タグボタンをクリックすると、有効 / 無効を切り替えられます。
 6. ダブルクリックでタグを直接編集できます。
@@ -141,7 +142,7 @@ Prompt Workbenchには、タグカタログとタグセットの2種類のロー
 タグカタログの閲覧、検索、追加で外部タグサービスへ通信することはありません。
 タグセットもローカルJSONから読み込まれます。
 
-Comfy Registry版にも、既定のタグカタログとタグセットを収録しています。ローカルのデータを差し替えたり、自分用のJSONを読み込んだりすることで、用途に合わせて内容を拡張できます。
+GitHub版とComfy Registry版のどちらも、既定の `data/tag_catalog.json` と `data/tag_sets.json` を同梱しています。どちらもImport済みデータやユーザー追加データではなく、配布用のFactory Defaultとして扱われます。ローカルのデータを差し替えたり、自分用のJSONを読み込んだりすることで、用途に合わせて内容を拡張できます。
 
 タグセットには、[アリス服飾店（@AliceLavli）様](https://x.com/AliceLavli) が公開されているプロンプトの一部を、ご厚意により収録させていただいています。使用を快く許可してくださり、本当にありがとうございます。どのプロンプトも雰囲気づくりや衣装表現の参考になる素敵なものばかりで、こうしてタグセットとして使わせていただけることを、とてもありがたく思っています。この場を借りて、心よりお礼申し上げます。
 
@@ -154,8 +155,7 @@ Comfy Registry版にも、既定のタグカタログとタグセットを収録
 SFW / 一般向けのカタログは `data/sfw_tag_catalog.json` として残しています。
 必要な場合は、Prompt Workbench設定の `タグ管理` から `ファイルを選んで読み込む` で読み込んでください。
 読み込んだファイルは、ComfyUIユーザーディレクトリの `prompt_workbench/tag_catalogs/` へ名前付きカタログとして保存されます。
-
-Comfy Registryへ公開するパッケージでも、既定カタログは `data/tag_catalog.json` です。
+カタログJSONは4 MB以下の `schema_version: 1` 形式、または従来のフラットな `prompt-workbench/tag-catalog` version 1形式を読み込めます。
 
 ### タグセットを使う
 
@@ -176,8 +176,7 @@ Comfy Registryへ公開するパッケージでも、既定カタログは `data
 別のタグセットJSONを使う場合は、Prompt Workbench設定の `タグ管理` からタグセットファイルを読み込んでください。
 読み込んだファイルは、ComfyUIユーザーディレクトリの `prompt_workbench/tag_sets/` へ名前付きファイルとして保存されます。
 同梱データを直接変更せずに、用途別のタグセットJSONを切り替えて使えます。
-
-Comfy Registryへ公開するパッケージでも、既定タグセットは `data/tag_sets.json` です。
+タグセットJSONは4 MB以下の `schema_version: 1` 形式を読み込めます。
 
 ## 本体内でタグカタログを編集する
 
@@ -211,6 +210,7 @@ Tag Editorでは、次の操作に対応しています。
 - タグやタグセットのドラッグ移動、並べ替え、直接編集
 - 複数選択、Undo / Redo、検索、重複検出
 - 保存前preview、上書き保存、別名保存
+- ページ画像の取得対象を番号で選ぶドロップダウン
 - 差分ZIPのImport / Export
 
 Import / ExportはTag Editor右上の歯車アイコン内にあります。
@@ -220,7 +220,7 @@ Import / ExportはTag Editor右上の歯車アイコン内にあります。
 Import時は、manifest確認、patch確認、Import対象選択、再Import検出、競合検出、変更件数、エラー、進捗フェーズをpreviewで確認してから適用します。競合がある場合は、現在の設定を保持して停止するか、競合箇所はImport側を採用するか、競合箇所だけ今回スキップするかを選べます。
 他のユーザーが追加した大分類・中分類・小分類は、タグカタログとタグセットの両方で追加されます。
 削除操作は共有差分に含めず、古いZIPに削除operationが含まれていてもImport側では削除を無視します。自分が削除したDefault由来の項目は `prompt_workbench_meta` に記録されるため、後から同じDefault項目を含む差分ZIPをImportしても復活しません。
-タグ、タグカタログ分類、タグセット分類、タグセットには `Default`、`Local`、`Imported` の由来が付き、行にマウスを置くと確認できます。Import適用前には現在のJSONをバックアップZIPとして書き出し、適用中に失敗した場合は画面上の編集状態を適用前に戻します。
+配布同梱の `data/tag_catalog.json` と `data/tag_sets.json` はFactory Defaultとして扱われます。Tag Editor上で追加した項目は `Local`、差分ZIPから取り込んだ項目は `Imported` として扱われ、行にマウスを置くと由来を確認できます。Import適用前には現在のJSONをバックアップZIPとして書き出し、適用中に失敗した場合は画面上の編集状態を適用前に戻します。
 
 Tag EditorはComfyUI本体とは独立して動くため、ComfyUIを起動していなくても `data/tag_catalog.json`、`data/sfw_tag_catalog.json`、`data/tag_sets.json` などを開いて編集できます。
 
@@ -292,7 +292,7 @@ UI文言は `web/locales/` にあります。
 
 - ユーザー文字列は `innerHTML` へ渡さず、フォーム値または `textContent` で描画します。
 - APIキーはサーバープロセスの環境変数だけから取得します。
-- Import JSONはスキーマ、件数、文字列長、1 MB上限を検証します。
+- カタログJSONとタグセットJSONはスキーマ、件数、文字列長、4 MB上限を検証します。状態JSONのImportは1 MB上限です。
 - 正規表現は長さ制限と、危険なネスト量指定子の簡易拒否を行います。
 - 翻訳URLは、サーバー管理者が設定したHTTP(S)環境変数だけを使います。
 - `eval`、`new Function`、任意コード実行機構は使いません。

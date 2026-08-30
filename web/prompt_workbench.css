@@ -56,15 +56,6 @@
   flex: 1 1 auto;
   min-width: 0;
 }
-.paio-current-catalog-path {
-  color: var(--paio-muted);
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-align: right;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .paio-sync-badge {
   color: var(--paio-muted);
   background: var(--paio-surface);
@@ -205,6 +196,8 @@
 .paio-collapsible-summary::-webkit-details-marker { display: none; }
 .paio-collapsible:not([open]) .paio-disclosure { transform: rotate(-90deg); }
 .paio-collapsible-summary strong { flex: 0 0 auto; font-size: 12px; }
+.paio-current-tags-pane { margin-top: 8px; }
+.paio-current-tags-pane .paio-bulk { margin-top: 0; }
 .paio-library-tabs-pane { margin-top: 8px; }
 .paio-library-tabs-pane .paio-library-tabs { margin: 0; }
 .paio-tag.is-drop-before, .paio-tag.is-drop-after {

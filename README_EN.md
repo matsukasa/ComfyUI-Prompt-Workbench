@@ -31,6 +31,7 @@ If GitHub does not display the video, open [`docs/assets/comfyui_prompt_workbenc
 - Search and add tags from a fully local hierarchical tag catalogue.
 - Search classified tag sets and add grouped tags at once.
 - Tag set favourites, search, image display, and adjustable tag set list height.
+- The main prompt pane and tag-add tab pane can be collapsed.
 - Translation through the local dictionary, MyMemory, LibreTranslate, DeepL, or an OpenAI-compatible API.
 - Original, Japanese, and bilingual display modes.
 - A translation button that replaces Japanese prompt tags with English tags.
@@ -107,7 +108,7 @@ Stability Matrix has a separate `custom_nodes` directory for each package. Insta
 
 1. Add `Prompt Workbench` from the node search.
 2. Enter tags in the main text area or the add field at the bottom.
-3. Apply the main text with `Ctrl+Enter` or `Apply to tags`; confirm the add field with Enter.
+3. The main text area keeps user-entered line breaks visible. Apply it with `Ctrl+Enter` or `Apply to tags`; confirm the add field with Enter.
 4. Drag tag buttons to reorder them.
 5. Click a tag button to enable or disable it.
 6. Double-click a tag to edit it inline.
@@ -137,7 +138,7 @@ The currently bundled data is:
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
-Comfy Registry packages include the default tag catalogue and tag sets. You can expand or replace them for your own workflow by loading local JSON files.
+Both the GitHub version and the Comfy Registry package include the default `data/tag_catalog.json` and `data/tag_sets.json`. They are treated as the distributed Factory Default, not as imported or user-added data. You can expand or replace them for your own workflow by loading local JSON files.
 
 Some bundled tag sets include a selection of publicly posted prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), included with kind permission. Thank you very much for allowing Prompt Workbench to include them. They are wonderfully expressive and practical references for outfits, mood, and prompt composition, and I am deeply grateful for the opportunity to include them as tag sets here.
 
@@ -151,7 +152,7 @@ The SFW/general-purpose catalogue remains available as `data/sfw_tag_catalog.jso
 prompt_workbench/tag_catalogs/
 ```
 
-For Comfy Registry packages, the bundled default catalogue is also `data/tag_catalog.json`.
+Catalogue JSON files can be loaded when they are 4 MB or smaller and use either `schema_version: 1` or the older flat `prompt-workbench/tag-catalog` version 1 format.
 
 ### Using Tag Sets
 
@@ -170,7 +171,7 @@ prompt_workbench/tag_sets/
 
 This lets you switch between purpose-specific tag set JSON files without editing the bundled defaults directly.
 
-For Comfy Registry packages, the bundled default tag sets are also `data/tag_sets.json`.
+Tag set JSON files can be loaded when they are 4 MB or smaller and use `schema_version: 1`.
 
 ## Editing The Catalogue In Prompt Workbench
 
@@ -198,13 +199,14 @@ Tag Editor supports:
 - Dragging, reordering, and directly editing tags and tag sets.
 - Multi-selection, Undo / Redo, search, and duplicate detection.
 - Save preview, overwrite, and Save As.
+- A dropdown for selecting which page image to fetch.
 - Differential ZIP Import / Export.
 
 Import / Export is available from the gear menu in the top-right of Tag Editor. `Export diff` packages only the difference between Factory Default and the current edited state. If Factory Default cannot be loaded, the loaded state is used as the comparison base. Export targets are `Export tag catalogue only`, `Export tag sets only`, and `Export both`.
 
 During Import, Tag Editor previews manifest validation, patch validation, Import target selection, repeated Import detection, conflict detection, change counts, errors, and progress phases before applying changes. When conflicts exist, you can stop while keeping the current settings, apply the Import-side data for conflicting entries, or skip only the conflicting entries for this Import. Top-level, middle-level, and subcategories added by another user are imported for both the tag catalogue and tag sets. Delete operations are not included in shared diffs, and old ZIP files that contain delete operations are ignored on Import. Default-origin items deleted by the current user are recorded in `prompt_workbench_meta`, so importing a later diff ZIP does not revive those deleted Default items.
 
-Tags, tag catalogue categories, tag set categories, and tag sets are marked as `Default`, `Local`, or `Imported`; hover over a row to check its origin. Before applying an Import, Tag Editor writes the current JSON files as a backup ZIP. If applying the Import fails, the in-memory editing state is restored to the pre-Import state.
+Bundled `data/tag_catalog.json` and `data/tag_sets.json` entries are treated as Factory Default. Items added in Tag Editor are treated as `Local`; items brought in from a diff ZIP are treated as `Imported`. Hover over a row to check its origin. Before applying an Import, Tag Editor writes the current JSON files as a backup ZIP. If applying the Import fails, the in-memory editing state is restored to the pre-Import state.
 
 Tag Editor runs independently from ComfyUI, so you can edit files such as `data/tag_catalog.json`, `data/sfw_tag_catalog.json`, and `data/tag_sets.json` without starting ComfyUI.
 
@@ -257,7 +259,7 @@ Complete tag state is stored in the versioned `node.properties.promptWorkbenchSt
 
 - User strings are rendered through form values or `textContent`, never passed to `innerHTML`.
 - API keys are read only from server-process environment variables.
-- Imported JSON is validated for schema, item counts, string lengths, and the 1 MB limit.
+- Catalogue and tag set JSON files are validated for schema, item counts, string lengths, and the 4 MB limit. State JSON import has a 1 MB limit.
 - Regular expressions have length limits and a basic rejection check for dangerous nested quantifiers.
 - Translation URLs must be HTTP(S) environment-variable values configured by the server administrator.
 - No `eval`, `new Function`, or arbitrary code execution mechanism is used.

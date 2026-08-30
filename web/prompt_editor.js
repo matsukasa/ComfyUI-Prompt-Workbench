@@ -698,7 +698,6 @@ export class PromptEditor {
     root.setAttribute("aria-label", "Prompt Workbench editor");
     containNodeContextMenu(root);
 
-    this.catalogPathLabel = element("span", { className: "paio-current-catalog-path", text: t("タグファイル: 確認中…") });
     this.syncBadge = element("span", { className: "paio-sync-badge", text: t("同期済み") });
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
@@ -723,7 +722,7 @@ export class PromptEditor {
       promptActions,
       this.translationBar,
     ]);
-    promptPane.summary.append(element("span", { className: "paio-section-header-meta" }, [this.catalogPathLabel, this.syncBadge]));
+    promptPane.summary.append(element("span", { className: "paio-section-header-meta" }, [this.syncBadge]));
 
     this.addInput = element("textarea", { className: "paio-add-input" });
     this.addInput.rows = 1;
@@ -861,6 +860,13 @@ export class PromptEditor {
     });
     this.status = element("p", { className: "paio-status", text: t("準備完了") });
     this.status.setAttribute("aria-live", "polite");
+    const currentTagsPane = collapsiblePane(t("現在のタグ"), "paio-current-tags-pane", [
+      this.bulkBar,
+      this.tagSummary,
+      this.tagList,
+      tagListResizeHandle,
+      this.status,
+    ]);
 
     this.settingsDialog = this.buildSettingsDialog();
     this.examplesPanel = this.buildExamplesPanel();
@@ -875,11 +881,7 @@ export class PromptEditor {
       promptPane.pane,
       addRow,
       tools,
-      this.bulkBar,
-      this.tagSummary,
-      this.tagList,
-      tagListResizeHandle,
-      this.status,
+      currentTagsPane.pane,
       libraryTabsPane.pane,
       this.examplesPanel,
       this.tagSetsPanel,
@@ -887,7 +889,6 @@ export class PromptEditor {
       this.blacklistDialog,
       this.ioDialog,
     );
-    this.refreshCurrentCatalogPath();
     return root;
   }
 
@@ -1160,7 +1161,6 @@ export class PromptEditor {
         fileStatus.hidden = true;
         fileStatus.textContent = "";
         fileStatus.title = "";
-        this.setCurrentCatalogPathStatus(responseBody);
       } catch (error) {
         overwriteButton.disabled = true;
         fileStatus.hidden = false;
@@ -2324,27 +2324,6 @@ export class PromptEditor {
     this.renderTranslationControls();
     this.renderBulk();
     this.renderTags();
-  }
-
-  async refreshCurrentCatalogPath() {
-    if (!this.catalogPathLabel) return;
-    try {
-      const query = this.settings.libraryFile ? `?selected=${encodeURIComponent(this.settings.libraryFile)}` : "";
-      const response = await this.api.fetchApi(`/prompt_workbench/catalogs${query}`);
-      const responseBody = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(responseBody.error || t("タグファイルの場所を確認できませんでした"));
-      this.setCurrentCatalogPathStatus(responseBody);
-    } catch (error) {
-      this.catalogPathLabel.textContent = t("タグファイル: 確認失敗");
-      this.catalogPathLabel.title = error.message || this.catalogPathLabel.textContent;
-    }
-  }
-
-  setCurrentCatalogPathStatus(status) {
-    if (!this.catalogPathLabel) return;
-    const path = String(status?.path || status?.default_path || "");
-    this.catalogPathLabel.textContent = path ? t("タグファイル: {path}", { path }) : t("タグファイル: 不明");
-    this.catalogPathLabel.title = path || this.catalogPathLabel.textContent;
   }
 
   renderSyncState() {
