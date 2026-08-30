@@ -3403,10 +3403,10 @@
                   "name_en": "",
                   "tags": [
                     "rounded almond-shaped eyes",
-                    "(large irises:1.2)",
+                    "large irises",
                     "irises nearly filling the eyes",
-                    "(small centered pupils:1.15)",
-                    "(translucent glossy irises:1.2)",
+                    "small centered pupils",
+                    "translucent glossy irises",
                     "subtle iris gradient",
                     "darker upper irises",
                     "softly faded lower irises",
@@ -3475,109 +3475,6 @@
                     "perky breasts",
                     "high-set breasts",
                     "full upper breasts"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_6de3a5c89c",
-                  "name": "胸と華奢体型の相性重視",
-                  "name_ja": "胸と華奢体型の相性重視",
-                  "name_en": "",
-                  "tags": [
-                    "petite",
-                    "small frame",
-                    "narrow shoulders",
-                    "delicate neck",
-                    "beautiful collarbone",
-                    "slender arms",
-                    "slim waist",
-                    "flat stomach",
-                    "elegant silhouette",
-                    "perky breasts",
-                    "high-set breasts",
-                    "full upper breasts",
-                    "breasts that suit a slim frame",
-                    "balanced petite proportions",
-                    "delicate body with a graceful bust line"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_5734b69e88",
-                  "name": "胸の上向き中くらい強調",
-                  "name_ja": "胸の上向き中くらい強調",
-                  "name_en": "",
-                  "tags": [
-                    "(perky breasts:1.2)",
-                    "high-set breasts",
-                    "full upper breasts",
-                    "beautiful bust line",
-                    "firm bust line",
-                    "lifted bust",
-                    "rounded upper breasts",
-                    "breasts that suit a slim frame",
-                    "well-defined bust shape"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_8e02c0f77d",
-                  "name": "胸の上向きかなり強調",
-                  "name_ja": "胸の上向きかなり強調",
-                  "name_en": "",
-                  "tags": [
-                    "(perky breasts:1.3)",
-                    "high-set breasts",
-                    "full upper breasts",
-                    "lifted bust",
-                    "firm bust line",
-                    "prominent upper breast fullness",
-                    "well-defined bust shape",
-                    "rounded upper breasts",
-                    "beautiful bust line",
-                    "breasts that sit high on a slim frame",
-                    "youthful bust shape",
-                    "upward breast contour",
-                    "natural standing pose",
-                    "relaxed posture",
-                    "arms at sides",
-                    "hands visible",
-                    "open hands"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_ef80aeced3",
-                  "name": "胸の上向き少し強調",
-                  "name_ja": "胸の上向き少し強調",
-                  "name_en": "",
-                  "tags": [
-                    "(perky breasts:1.1)",
-                    "high-set breasts",
-                    "full upper breasts",
-                    "beautiful bust line",
-                    "firm bust line",
-                    "breasts that suit a slim frame"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_816ff852b8",
-                  "name": "胸の丸み重視",
-                  "name_ja": "胸の丸み重視",
-                  "name_en": "",
-                  "tags": [
-                    "round breasts",
-                    "rounded breasts",
-                    "soft round breasts",
-                    "smooth breast contour",
-                    "beautiful rounded bust",
-                    "natural breast curve",
-                    "full upper breasts",
-                    "soft bust line",
-                    "balanced breast shape",
-                    "elegant breast silhouette",
-                    "breasts that suit a slim frame"
                   ],
                   "creator": "default"
                 }
@@ -4215,8 +4112,8 @@
                   "name_ja": "原宿系カワイイ・ストリートファッション",
                   "creator": "アリス服飾店　様",
                   "source_url": "https://x.com/AliceLavli/status/2092084553695252564",
-                  "image_url": "/prompt-workbench-data/tag-set-images/原宿系カワイイ・ストリートファッション.webp",
-                  "image_path": "/prompt-workbench-data/tag-set-images/原宿系カワイイ・ストリートファッション.webp",
+                  "image_url": "",
+                  "image_path": "",
                   "tags": [
                     "light blue denim street-fashion outfit",
                     "fitted cropped denim corset top",
@@ -5035,18 +4932,6 @@
                   ],
                   "name_en": "Turtleneck Coat",
                   "creator": "まつかさ"
-                },
-                {
-                  "id": "styles_workbench_addon_17_17ffeb74a0",
-                  "name": "コートの襟を立てる",
-                  "name_ja": "コートの襟を立てる",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "lifting coat collar",
-                    "composed pose"
-                  ],
-                  "creator": "default"
                 }
               ]
             },
@@ -5091,250 +4976,6 @@
                   ],
                   "name_en": "Clear Raincoat",
                   "creator": "まつかさ"
-                },
-                {
-                  "id": "styles_workbench_addon_19_c4a01a80bd",
-                  "name": "濡れた髪で振り返る",
-                  "name_ja": "濡れた髪で振り返る",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "wet hair",
-                    "looking back"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_10_e791390466",
-                  "name": "濡れた髪をしぼる",
-                  "name_ja": "濡れた髪をしぼる",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "wringing wet hair",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_19_b9e585cbb8",
-                  "name": "コートの襟を押さえる",
-                  "name_ja": "コートの襟を押さえる",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "holding coat collar"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_08_9f20800aff",
-                  "name": "バス停で座る",
-                  "name_ja": "バス停で座る",
-                  "name_en": "",
-                  "tags": [
-                    "sitting at bus stop in rain",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_18_3443b84f8f",
-                  "name": "ベンチに座って濡れる",
-                  "name_ja": "ベンチに座って濡れる",
-                  "name_en": "",
-                  "tags": [
-                    "sitting on bench in rain",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_05_c4fee2dde4",
-                  "name": "傘の持ち手をゆるく持つ",
-                  "name_ja": "傘の持ち手をゆるく持つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "holding umbrella handle loosely"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_06_4a4960ca7e",
-                  "name": "傘を肩にかける",
-                  "name_ja": "傘を肩にかける",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "umbrella over shoulder"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_11_a957bc2e02",
-                  "name": "壁にもたれて濡れる",
-                  "name_ja": "壁にもたれて濡れる",
-                  "name_en": "",
-                  "tags": [
-                    "leaning against wall in rain",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_02_daac177974",
-                  "name": "手を上げて雨に触れる",
-                  "name_ja": "手を上げて雨に触れる",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "hand raised to catch rain"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_10_01dc698f11",
-                  "name": "水たまりのそばに立つ",
-                  "name_ja": "水たまりのそばに立つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing near puddle",
-                    "rain pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_15_5cf5f99522",
-                  "name": "水たまりをまたぐ",
-                  "name_ja": "水たまりをまたぐ",
-                  "name_en": "",
-                  "tags": [
-                    "walking in rain",
-                    "stepping over puddle"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_14_32386e1177",
-                  "name": "濡れたリボンを直す",
-                  "name_ja": "濡れたリボンを直す",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "adjusting wet ribbon"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_09_014ef624b6",
-                  "name": "濡れた服の裾を持つ",
-                  "name_ja": "濡れた服の裾を持つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "holding wet hem"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_03_e1872f0e47",
-                  "name": "濡れた髪に触れる",
-                  "name_ja": "濡れた髪に触れる",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "touching wet hair"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_04_1eb0b1398a",
-                  "name": "濡れた髪をしぼる",
-                  "name_ja": "濡れた髪をしぼる",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "wringing wet hair"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_16_8ebc49fcf6",
-                  "name": "片手を空に向ける",
-                  "name_ja": "片手を空に向ける",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "palm up to sky"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_17_50ce5049df",
-                  "name": "窓際で濡れた体を寄せる",
-                  "name_ja": "窓際で濡れた体を寄せる",
-                  "name_en": "",
-                  "tags": [
-                    "standing by rainy window",
-                    "damp pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_12_d9239d211e",
-                  "name": "腕を抱いて雨に立つ",
-                  "name_ja": "腕を抱いて雨に立つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "arms around body"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_20_649876f528",
-                  "name": "雨の中でしゃがむ",
-                  "name_ja": "雨の中でしゃがむ",
-                  "name_en": "",
-                  "tags": [
-                    "crouching in rain",
-                    "damp pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_07_c95177b1ed",
-                  "name": "雨の中を歩く",
-                  "name_ja": "雨の中を歩く",
-                  "name_en": "",
-                  "tags": [
-                    "walking in rain",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_01_847910e20a",
-                  "name": "雨を受けるように立つ",
-                  "name_ja": "雨を受けるように立つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "arms slightly open"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_13_30407ca555",
-                  "name": "鞄を頭上にかざす",
-                  "name_ja": "鞄を頭上にかざす",
-                  "name_en": "",
-                  "tags": [
-                    "standing in rain",
-                    "holding bag over head"
-                  ],
-                  "creator": "default"
                 }
               ]
             }
@@ -6022,42 +5663,6 @@
                     "wide-brim natural straw hat decorated with two small dusty-pink roses",
                     "black flat slide sandals decorated with large white pearls"
                   ]
-                },
-                {
-                  "id": "styles_workbench_addon_14_0e599e8343",
-                  "name": "ワンピースの裾を整える",
-                  "name_ja": "ワンピースの裾を整える",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "smoothing dress hem",
-                    "graceful pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_08_49d2b59c8e",
-                  "name": "ワンピースの裾を持つ",
-                  "name_ja": "ワンピースの裾を持つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "holding dress hem",
-                    "gentle pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_18_e479fa43b6",
-                  "name": "座ってワンピースの裾を引く",
-                  "name_ja": "座ってワンピースの裾を引く",
-                  "name_en": "",
-                  "tags": [
-                    "sitting",
-                    "pulling dress hem neatly",
-                    "elegant pose"
-                  ],
-                  "creator": "default"
                 },
                 {
                   "id": "tagset:major:2:medium:1:small:1:set:340",
@@ -10274,30 +9879,6 @@
                   "creator": "まつかさ"
                 },
                 {
-                  "id": "outfit_gothic_mourning_style",
-                  "name": "ゴシック・モーニング風",
-                  "name_ja": "ゴシック・モーニング風",
-                  "tags": [
-                    "mourning dress",
-                    "black dress",
-                    "gothic dress",
-                    "victorian dress",
-                    "black veil",
-                    "veil",
-                    "long dress",
-                    "long sleeves",
-                    "high collar",
-                    "lace trim",
-                    "frills",
-                    "corset",
-                    "black gloves",
-                    "choker",
-                    "boots"
-                  ],
-                  "name_en": "Gothic Mourning Style",
-                  "creator": "まつかさ"
-                },
-                {
                   "id": "alice_youfukuten_2056993328605118710",
                   "name": "カジュアルな白ゴスロリ",
                   "name_ja": "カジュアルな白ゴスロリ",
@@ -11957,8 +11538,8 @@
                   "name_ja": "パステルカラーのスイートロリータドレス",
                   "creator": "アリス服飾店　様",
                   "source_url": "https://x.com/AliceLavli/status/2091993954686304567",
-                  "image_url": "/prompt-workbench-data/tag-set-images/パステルカラーのスイートロリータドレス.webp",
-                  "image_path": "/prompt-workbench-data/tag-set-images/パステルカラーのスイートロリータドレス.webp",
+                  "image_url": "",
+                  "image_path": "",
                   "tags": [
                     "pastel sweet lolita ball dress",
                     "fitted mint-green corset bodice",
@@ -12356,8 +11937,8 @@
                   "name_ja": "武装アリス服の衣装",
                   "creator": "アリス服飾店　様",
                   "source_url": "https://x.com/AliceLavli/status/2092144949789970565",
-                  "image_url": "/prompt-workbench-data/tag-set-images/武装アリス服の衣装.webp",
-                  "image_path": "/prompt-workbench-data/tag-set-images/武装アリス服の衣装.webp",
+                  "image_url": "",
+                  "image_path": "",
                   "tags": [
                     "weaponized Alice dress",
                     "classic royal-blue knee-length dress",
@@ -13051,58 +12632,6 @@
               "label_ja": "オフィス",
               "sets": [
                 {
-                  "id": "outfit_office_lady_suit",
-                  "name": "オフィススーツ",
-                  "name_ja": "オフィススーツ",
-                  "tags": [
-                    "office lady suit outfit",
-                    "tailored blazer",
-                    "fitted blouse",
-                    "pencil skirt",
-                    "slim belt",
-                    "sheer stockings",
-                    "low-heel pumps",
-                    "neat business style",
-                    "professional formalwear"
-                  ],
-                  "name_en": "Office Lady Suit",
-                  "creator": "まつかさ"
-                },
-                {
-                  "id": "outfit_business_pantsuit",
-                  "name": "ビジネスパンツスーツ",
-                  "name_ja": "ビジネスパンツスーツ",
-                  "tags": [
-                    "business pantsuit outfit",
-                    "tailored blazer",
-                    "button-up blouse",
-                    "straight-leg trousers",
-                    "slim belt",
-                    "low-heel pumps",
-                    "structured handbag",
-                    "clean professional office style"
-                  ],
-                  "name_en": "Business Pantsuit",
-                  "creator": "まつかさ"
-                },
-                {
-                  "id": "outfit_office_blouse_skirt",
-                  "name": "ブラウス・タイトスカート",
-                  "name_ja": "ブラウス・タイトスカート",
-                  "tags": [
-                    "office blouse skirt outfit",
-                    "fitted office blouse",
-                    "pencil skirt",
-                    "slim belt",
-                    "sheer stockings",
-                    "low-heel pumps",
-                    "simple wristwatch",
-                    "neat professional business style"
-                  ],
-                  "name_en": "Office Blouse Skirt",
-                  "creator": "まつかさ"
-                },
-                {
                   "id": "alice_youfukuten_2069374910821236895",
                   "name": "ガーリーなビジネススーツ",
                   "name_ja": "ガーリーなビジネススーツ",
@@ -13241,6 +12770,58 @@
                     "clean color boundaries"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "id": "outfit_office_lady_suit",
+                  "name": "オフィススーツ",
+                  "name_ja": "オフィススーツ",
+                  "tags": [
+                    "office lady suit outfit",
+                    "tailored blazer",
+                    "fitted blouse",
+                    "pencil skirt",
+                    "slim belt",
+                    "sheer stockings",
+                    "low-heel pumps",
+                    "neat business style",
+                    "professional formalwear"
+                  ],
+                  "name_en": "Office Lady Suit",
+                  "creator": "まつかさ"
+                },
+                {
+                  "id": "outfit_business_pantsuit",
+                  "name": "ビジネスパンツスーツ",
+                  "name_ja": "ビジネスパンツスーツ",
+                  "tags": [
+                    "business pantsuit outfit",
+                    "tailored blazer",
+                    "button-up blouse",
+                    "straight-leg trousers",
+                    "slim belt",
+                    "low-heel pumps",
+                    "structured handbag",
+                    "clean professional office style"
+                  ],
+                  "name_en": "Business Pantsuit",
+                  "creator": "まつかさ"
+                },
+                {
+                  "id": "outfit_office_blouse_skirt",
+                  "name": "ブラウス・タイトスカート",
+                  "name_ja": "ブラウス・タイトスカート",
+                  "tags": [
+                    "office blouse skirt outfit",
+                    "fitted office blouse",
+                    "pencil skirt",
+                    "slim belt",
+                    "sheer stockings",
+                    "low-heel pumps",
+                    "simple wristwatch",
+                    "neat professional business style"
+                  ],
+                  "name_en": "Office Blouse Skirt",
+                  "creator": "まつかさ"
                 }
               ]
             },
@@ -13857,8 +13438,8 @@
                   "name_ja": "黒を基調としたナイトプールな水着",
                   "creator": "アリス服飾店　様",
                   "source_url": "https://x.com/AliceLavli/status/2091842971637358873",
-                  "image_url": "/prompt-workbench-data/tag-set-images/黒を基調としたナイトプールな水着.webp",
-                  "image_path": "/prompt-workbench-data/tag-set-images/黒を基調としたナイトプールな水着.webp",
+                  "image_url": "",
+                  "image_path": "",
                   "tags": [
                     "elegant black night-pool swimsuit",
                     "fitted black one-piece swimsuit",
@@ -13879,123 +13460,6 @@
                     "refined fitted silhouette",
                     "luxurious modern resort style"
                   ]
-                },
-                {
-                  "id": "styles_workbench_addon_12_e0129a7c14",
-                  "name": "タオルを肩にかける",
-                  "name_ja": "タオルを肩にかける",
-                  "name_en": "",
-                  "tags": [
-                    "standing in swimsuit",
-                    "towel over shoulders",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_14_678802b7f3",
-                  "name": "ビキニで片手を腰に",
-                  "name_ja": "ビキニで片手を腰に",
-                  "name_en": "",
-                  "tags": [
-                    "standing in bikini",
-                    "one hand on hip",
-                    "confident pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_02_3b9caa8afc",
-                  "name": "ビキニのサイドを持つ",
-                  "name_ja": "ビキニのサイドを持つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "holding bikini side tie",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_01_69047eb468",
-                  "name": "ビキニの肩紐を直す",
-                  "name_ja": "ビキニの肩紐を直す",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "adjusting bikini strap",
-                    "delicate gesture"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_18_3afcb0b8f8",
-                  "name": "ビーチタオルで横になる",
-                  "name_ja": "ビーチタオルで横になる",
-                  "name_en": "",
-                  "tags": [
-                    "lying on beach towel in swimsuit",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_17_6c3ec6195c",
-                  "name": "プールサイドに座る",
-                  "name_ja": "プールサイドに座る",
-                  "name_en": "",
-                  "tags": [
-                    "sitting poolside in swimsuit",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_15_870fe0f8fb",
-                  "name": "ワンピース水着の脇を持つ",
-                  "name_ja": "ワンピース水着の脇を持つ",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "holding one-piece swimsuit side",
-                    "soft pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_10_0a417d092d",
-                  "name": "水着で寝そべる",
-                  "name_ja": "水着で寝そべる",
-                  "name_en": "",
-                  "tags": [
-                    "reclining in swimsuit",
-                    "relaxed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_07_8d051fbf72",
-                  "name": "水着の胸元を押さえる",
-                  "name_ja": "水着の胸元を押さえる",
-                  "name_en": "",
-                  "tags": [
-                    "standing",
-                    "hand at bikini top",
-                    "composed pose"
-                  ],
-                  "creator": "default"
-                },
-                {
-                  "id": "styles_workbench_addon_11_3df53776cc",
-                  "name": "脚をそろえて座る",
-                  "name_ja": "脚をそろえて座る",
-                  "name_en": "",
-                  "tags": [
-                    "sitting in swimsuit",
-                    "legs together",
-                    "neat pose"
-                  ],
-                  "creator": "default"
                 }
               ]
             },
@@ -14786,6 +14250,38 @@
                   "creator": "default"
                 },
                 {
+                  "id": "styles_workbench_illustrious_34bc8a18f1",
+                  "name": "白く透明感のある淡彩",
+                  "name_ja": "白く透明感のある淡彩",
+                  "name_en": "",
+                  "tags": [
+                    "high-key lighting",
+                    "pale pastel palette",
+                    "white-dominant palette",
+                    "delicate anime illustration",
+                    "thin clean lineart",
+                    "blue-gray lineart",
+                    "soft watercolor shading",
+                    "soft airbrush shading",
+                    "glossy highlights",
+                    "translucent skin",
+                    "luminous skin",
+                    "smooth skin",
+                    "soft blush",
+                    "large glassy eyes",
+                    "detailed eyelashes",
+                    "dreamy expression",
+                    "airy hair",
+                    "fine hair strands",
+                    "ethereal atmosphere",
+                    "elegant delicate rendering",
+                    "soft bloom",
+                    "minimal background",
+                    "clean background"
+                  ],
+                  "creator": "default"
+                },
+                {
                   "id": "styles_workbench_floral_fantasy_background_f3250a79f5",
                   "name": "フローラルファンタジー背景",
                   "name_ja": "フローラルファンタジー背景",
@@ -14914,7 +14410,7 @@
           "small_categories": [
             {
               "id": "tagset:major:3:medium:1:small:1",
-              "label_ja": "ray tracing, rim lighting, volumetric lighting,",
+              "label_ja": "光",
               "sets": [
                 {
                   "id": "styles_workbench_light_a36ef8aba2",
@@ -14931,38 +14427,65 @@
                     "volumetric lighting"
                   ],
                   "creator": "default"
-                },
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "prompt_workbench_meta": {
+        "origin": "local"
+      },
+      "id": "tagset:major:2",
+      "label_ja": "未分類",
+      "medium_categories": [
+        {
+          "prompt_workbench_meta": {
+            "origin": "local"
+          },
+          "id": "tagset:major:2:medium:1",
+          "label_ja": "未分類",
+          "small_categories": [
+            {
+              "prompt_workbench_meta": {
+                "origin": "local"
+              },
+              "id": "tagset:major:2:medium:1:small:1",
+              "label_ja": "未分類",
+              "sets": [
                 {
-                  "id": "styles_workbench_illustrious_34bc8a18f1",
-                  "name": "白く透明感のある淡彩",
-                  "name_ja": "白く透明感のある淡彩",
-                  "name_en": "",
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:1",
+                  "name": "バニースイートロリータ",
+                  "name_ja": "バニースイートロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2093654902312689978",
                   "tags": [
-                    "high-key lighting",
-                    "pale pastel palette",
-                    "white-dominant palette",
-                    "delicate anime illustration",
-                    "thin clean lineart",
-                    "blue-gray lineart",
-                    "soft watercolor shading",
-                    "soft airbrush shading",
-                    "glossy highlights",
-                    "translucent skin",
-                    "luminous skin",
-                    "smooth skin",
-                    "soft blush",
-                    "large glassy eyes",
-                    "detailed eyelashes",
-                    "dreamy expression",
-                    "airy hair",
-                    "fine hair strands",
-                    "ethereal atmosphere",
-                    "elegant delicate rendering",
-                    "soft bloom",
-                    "minimal background",
-                    "clean background"
-                  ],
-                  "creator": "default"
+                    "pink bunny themed sweet lolita dress",
+                    "strict soft rose pink and pure white color palette",
+                    "fitted rose pink bodice",
+                    "wide square neckline framed with layered white lace ruffles",
+                    "short rose pink puff sleeves ending at the middle of the upper arms",
+                    "white lace sleeve cuffs with small pink bows",
+                    "large white satin bow centered at the chest with a pink heart shaped brooch",
+                    "high fitted waist",
+                    "full knee length bell skirt supported by a rounded petticoat",
+                    "alternating rose pink panels and white lace inset panels",
+                    "embroidered white rabbits",
+                    "tiny pink hearts and small ribbon motifs arranged symmetrically around the lower skirt",
+                    "layered white scalloped lace hem",
+                    "large rose pink bow at the back waist",
+                    "matching rose pink bunny ear headband with white inner ears",
+                    "white lace base and small pink side bows",
+                    "small white pompom tail attached at the back waist",
+                    "white over knee socks with pink ribbon garters",
+                    "rose pink Mary Jane shoes with white bows",
+                    "strict symmetrical color placement"
+                  ]
                 }
               ]
             }
@@ -14974,7 +14497,51 @@
   "prompt_workbench_meta": {
     "deleted_default_catalog_ids": [],
     "deleted_default_catalog_category_ids": [],
-    "deleted_default_tagset_ids": [],
-    "deleted_default_tagset_category_ids": []
+    "deleted_default_tagset_ids": [
+      "outfit_gothic_mourning_style",
+      "styles_workbench_addon_01_69047eb468",
+      "styles_workbench_addon_01_847910e20a",
+      "styles_workbench_addon_02_3b9caa8afc",
+      "styles_workbench_addon_02_daac177974",
+      "styles_workbench_addon_03_e1872f0e47",
+      "styles_workbench_addon_04_1eb0b1398a",
+      "styles_workbench_addon_05_c4fee2dde4",
+      "styles_workbench_addon_06_4a4960ca7e",
+      "styles_workbench_addon_07_8d051fbf72",
+      "styles_workbench_addon_07_c95177b1ed",
+      "styles_workbench_addon_08_49d2b59c8e",
+      "styles_workbench_addon_08_9f20800aff",
+      "styles_workbench_addon_09_014ef624b6",
+      "styles_workbench_addon_10_01dc698f11",
+      "styles_workbench_addon_10_0a417d092d",
+      "styles_workbench_addon_10_e791390466",
+      "styles_workbench_addon_11_3df53776cc",
+      "styles_workbench_addon_11_a957bc2e02",
+      "styles_workbench_addon_12_d9239d211e",
+      "styles_workbench_addon_12_e0129a7c14",
+      "styles_workbench_addon_13_30407ca555",
+      "styles_workbench_addon_14_0e599e8343",
+      "styles_workbench_addon_14_32386e1177",
+      "styles_workbench_addon_14_678802b7f3",
+      "styles_workbench_addon_15_5cf5f99522",
+      "styles_workbench_addon_15_870fe0f8fb",
+      "styles_workbench_addon_16_8ebc49fcf6",
+      "styles_workbench_addon_17_17ffeb74a0",
+      "styles_workbench_addon_17_50ce5049df",
+      "styles_workbench_addon_17_6c3ec6195c",
+      "styles_workbench_addon_18_3443b84f8f",
+      "styles_workbench_addon_18_3afcb0b8f8",
+      "styles_workbench_addon_18_e479fa43b6",
+      "styles_workbench_addon_19_b9e585cbb8",
+      "styles_workbench_addon_19_c4a01a80bd",
+      "styles_workbench_addon_20_649876f528",
+      "styles_workbench_addon_5734b69e88",
+      "styles_workbench_addon_6de3a5c89c",
+      "styles_workbench_addon_816ff852b8",
+      "styles_workbench_addon_8e02c0f77d",
+      "styles_workbench_addon_ef80aeced3"
+    ],
+    "deleted_default_tagset_category_ids": [],
+    "imports": {}
   }
 }
