@@ -173,6 +173,18 @@ def tag_set_storage_directory(base_directory=None):
     return user_directory / "prompt_workbench" / "tag_sets"
 
 
+def favorites_storage_path(base_directory=None):
+    if base_directory is not None:
+        return Path(base_directory) / "favorites.json"
+    try:
+        import folder_paths
+
+        user_directory = Path(folder_paths.get_user_directory())
+    except (ImportError, AttributeError):
+        user_directory = Path(__file__).with_name("user_data")
+    return user_directory / "prompt_workbench" / "favorites.json"
+
+
 def normalize_catalog_name(value):
     name = unicodedata.normalize("NFKC", str(value or "")).strip()
     if name.lower().endswith(".json"):
@@ -534,6 +546,83 @@ def list_user_tag_sets(storage_directory=None):
         (path.stem for path in directory.glob("*.json") if path.is_file()),
         key=str.casefold,
     )[:500]
+
+
+def _normalize_favorite_key(value):
+    return re.sub(r"\s+", " ", str(value or "").strip()).casefold()
+
+
+def _sanitize_favorite_list(values, limit):
+    if not isinstance(values, list):
+        return []
+    seen = set()
+    result = []
+    for value in values:
+        key = _normalize_favorite_key(value)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        result.append(key)
+        if len(result) >= limit:
+            break
+    return sorted(result)
+
+
+def validate_favorites(data):
+    if isinstance(data, list):
+        return {
+            "schema": "prompt-workbench/favorites",
+            "version": 1,
+            "favorites": _sanitize_favorite_list(data, 20000),
+            "favoriteTagSets": [],
+        }
+    if not isinstance(data, dict):
+        raise ValueError("Unsupported favorites schema")
+    if data.get("schema") and (data.get("schema") != "prompt-workbench/favorites" or data.get("version") != 1):
+        raise ValueError("Unsupported favorites schema")
+    return {
+        "schema": "prompt-workbench/favorites",
+        "version": 1,
+        "favorites": _sanitize_favorite_list(data.get("favorites"), 20000),
+        "favoriteTagSets": _sanitize_favorite_list(data.get("favoriteTagSets"), 2000),
+    }
+
+
+def load_favorites(path=None):
+    target = Path(path) if path is not None else favorites_storage_path()
+    try:
+        data = json.loads(target.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return validate_favorites({})
+    return validate_favorites(data)
+
+
+def save_favorites(data, path=None):
+    favorites = validate_favorites(data)
+    target = Path(path) if path is not None else favorites_storage_path()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(favorites, ensure_ascii=False, indent=2) + "\n"
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            newline="\n",
+            dir=target.parent,
+            prefix=f".{target.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as output:
+            temporary_path = Path(output.name)
+            output.write(serialized)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary_path, target)
+        temporary_path = None
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
+    return favorites
 
 
 def _iter_small_categories(data):
@@ -1042,6 +1131,23 @@ def register_routes():
         except ValueError as exc:
             return web.json_response({"error": str(exc)}, status=400)
         return web.json_response({"files": files, **status})
+
+    @routes.get("/prompt_workbench/favorites")
+    async def get_favorites(_request):
+        try:
+            return web.json_response(load_favorites())
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+
+    @routes.put("/prompt_workbench/favorites")
+    async def put_favorites(request):
+        if request.content_length and request.content_length > MAX_REQUEST_BYTES:
+            return web.json_response({"error": "Favorites request is too large"}, status=413)
+        try:
+            body = await request.json()
+            return web.json_response(save_favorites(body))
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
 
     @routes.post("/prompt_workbench/tag_sets/files")
     async def post_tag_set_file(request):

@@ -1,6 +1,7 @@
 import { sanitizeLibraryEdits } from "./tag_library.js";
 
 export const DEFAULT_CATALOG_NAME = "tag_catalog";
+export const FAVORITES_SCHEMA = "prompt-workbench/favorites";
 
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
@@ -28,6 +29,46 @@ export const DEFAULT_SETTINGS = Object.freeze({
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
+
+export function sanitizeFavorites(values, limit = 20000) {
+  if (!Array.isArray(values)) return [];
+  const seen = new Set();
+  for (const value of values) {
+    const key = String(value || "").trim().replace(/\s+/gu, " ").toLocaleLowerCase();
+    if (key) seen.add(key);
+    if (seen.size >= limit) break;
+  }
+  return [...seen].sort();
+}
+
+export function parseFavoriteSettings(value = {}) {
+  if (Array.isArray(value)) return { favorites: sanitizeFavorites(value), favoriteTagSets: [] };
+  if (!value || typeof value !== "object") return { favorites: [], favoriteTagSets: [] };
+  if (value.schema && (value.schema !== FAVORITES_SCHEMA || value.version !== 1)) {
+    return { favorites: [], favoriteTagSets: [] };
+  }
+  return {
+    favorites: sanitizeFavorites(value.favorites),
+    favoriteTagSets: sanitizeFavorites(value.favoriteTagSets, 2000),
+  };
+}
+
+export function mergeFavoriteSettings(...settingsList) {
+  return parseFavoriteSettings({
+    favorites: settingsList.flatMap((settings) => settings?.favorites || []),
+    favoriteTagSets: settingsList.flatMap((settings) => settings?.favoriteTagSets || []),
+  });
+}
+
+export function favoriteSettingsPayload(settings = {}) {
+  const sanitized = parseFavoriteSettings(settings);
+  return {
+    schema: FAVORITES_SCHEMA,
+    version: 1,
+    favorites: sanitized.favorites,
+    favoriteTagSets: sanitized.favoriteTagSets,
+  };
+}
 
 export function sanitizeSettings(input = {}) {
   const settings = { ...DEFAULT_SETTINGS };
@@ -68,26 +109,10 @@ export function sanitizeSettings(input = {}) {
   }
   settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
   if (Array.isArray(input.favorites)) {
-    const seen = new Set();
-    settings.favorites = input.favorites
-      .map((value) => String(value || "").trim().replace(/\s+/gu, " ").toLocaleLowerCase())
-      .filter((value) => {
-        if (!value || seen.has(value)) return false;
-        seen.add(value);
-        return true;
-      })
-      .slice(0, 20000);
+    settings.favorites = sanitizeFavorites(input.favorites);
   }
   if (Array.isArray(input.favoriteTagSets)) {
-    const seen = new Set();
-    settings.favoriteTagSets = input.favoriteTagSets
-      .map((value) => String(value || "").trim().replace(/\s+/gu, " ").toLocaleLowerCase())
-      .filter((value) => {
-        if (!value || seen.has(value)) return false;
-        seen.add(value);
-        return true;
-      })
-      .slice(0, 2000);
+    settings.favoriteTagSets = sanitizeFavorites(input.favoriteTagSets, 2000);
   }
   settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
   if (typeof input.libraryFile === "string") {

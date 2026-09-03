@@ -142,6 +142,8 @@
     "有効にする": "Enable",
     "JSONタグファイル": "JSON tag file",
     "タグファイルの読込に失敗しました ({status})": "Failed to load the tag file ({status})",
+    "お気に入りの読込に失敗しました ({status})": "Failed to load favourites ({status})",
+    "お気に入りの保存に失敗しました ({status})": "Failed to save favourites ({status})",
     "保存済みファイルの確認に失敗しました ({status})": "Failed to check saved files ({status})",
     "この保存機能を有効にするにはComfyUIを再起動してください": "Restart ComfyUI to enable this save feature",
     "タグファイルの保存に失敗しました ({status})": "Failed to save the tag file ({status})",

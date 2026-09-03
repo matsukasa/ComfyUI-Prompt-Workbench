@@ -19,6 +19,9 @@ import {
   DEFAULT_CATALOG_NAME,
   DEFAULT_SETTINGS,
   exportEditorState,
+  favoriteSettingsPayload,
+  mergeFavoriteSettings,
+  parseFavoriteSettings,
   parseImportedState,
   sanitizeEditorState,
 } from "./settings.js";
@@ -184,6 +187,24 @@ export async function fetchSelectedTagSetCatalog(api, tagSetFile = "") {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || t("タグセットの読込に失敗しました ({status})", { status: response.status }));
   return body;
+}
+
+export async function fetchSharedFavorites(api) {
+  const response = await api.fetchApi("/prompt_workbench/favorites");
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || t("お気に入りの読込に失敗しました ({status})", { status: response.status }));
+  return parseFavoriteSettings(body);
+}
+
+export async function saveSharedFavorites(api, favorites) {
+  const response = await api.fetchApi("/prompt_workbench/favorites", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(favoriteSettingsPayload(favorites)),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || t("お気に入りの保存に失敗しました ({status})", { status: response.status }));
+  return parseFavoriteSettings(body);
 }
 
 export function catalogNameFromFileName(fileName) {
@@ -545,6 +566,7 @@ export class PromptEditor {
     this.exampleLoadPromise = null;
     this.tagSetData = null;
     this.tagSetLoadPromise = null;
+    this.sharedFavoritesPromise = null;
     this.activeLibraryTab = "tags";
     this.refreshExamplesPanel = null;
     this.refreshTagSetsPanel = null;
@@ -552,6 +574,7 @@ export class PromptEditor {
     this.restore();
     this.root = this.build();
     this.attach();
+    this.loadSharedFavorites();
     this.loadModelRegistry();
     this.pollTimer = window.setInterval(() => this.syncFromWidgets(), 400);
   }
@@ -578,6 +601,7 @@ export class PromptEditor {
     this.settings.favorites = [...favorites].sort();
     this.clearSelectionState();
     this.persist();
+    this.saveSharedFavorites();
     this.renderTags();
     this.refreshExamplesPanel?.();
   }
@@ -599,18 +623,54 @@ export class PromptEditor {
     else favorites.delete(key);
     this.settings.favoriteTagSets = [...favorites].sort();
     this.persist();
+    this.saveSharedFavorites();
     this.refreshExamplesPanel?.();
     this.refreshTagSetsPanel?.();
   }
 
   syncFavoritesWithCatalog(catalog) {
-    const available = new Set(buildTagLibrary(catalog, this.settings.libraryEdits).tags.map((tag) => favoriteTagKey(tag.prompt)));
-    const next = [...this.favoriteSet()].filter((key) => available.has(key)).sort();
-    if (next.length === (this.settings.favorites || []).length && next.every((key, index) => key === this.settings.favorites[index])) return 0;
-    const removed = (this.settings.favorites || []).length - next.length;
-    this.settings.favorites = next;
-    this.persist();
-    return removed;
+    buildTagLibrary(catalog, this.settings.libraryEdits);
+    return 0;
+  }
+
+  currentFavoriteSettings() {
+    return parseFavoriteSettings({
+      favorites: this.settings.favorites,
+      favoriteTagSets: this.settings.favoriteTagSets,
+    });
+  }
+
+  applyFavoriteSettings(favorites) {
+    const merged = mergeFavoriteSettings(this.currentFavoriteSettings(), favorites);
+    const changed = merged.favorites.join("\0") !== (this.settings.favorites || []).join("\0")
+      || merged.favoriteTagSets.join("\0") !== (this.settings.favoriteTagSets || []).join("\0");
+    this.settings.favorites = merged.favorites;
+    this.settings.favoriteTagSets = merged.favoriteTagSets;
+    if (changed) {
+      this.persist();
+      this.renderTags();
+      this.refreshExamplesPanel?.();
+      this.refreshTagSetsPanel?.();
+    }
+    return merged;
+  }
+
+  loadSharedFavorites() {
+    if (!this.sharedFavoritesPromise) {
+      this.sharedFavoritesPromise = fetchSharedFavorites(this.api)
+        .then((favorites) => {
+          const merged = this.applyFavoriteSettings(favorites);
+          return saveSharedFavorites(this.api, merged).catch(() => merged);
+        })
+        .catch(() => this.currentFavoriteSettings());
+    }
+    return this.sharedFavoritesPromise;
+  }
+
+  saveSharedFavorites() {
+    this.sharedFavoritesPromise = saveSharedFavorites(this.api, this.currentFavoriteSettings())
+      .catch(() => this.currentFavoriteSettings());
+    return this.sharedFavoritesPromise;
   }
 
   promptEditorValue() {
