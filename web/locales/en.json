@@ -146,6 +146,8 @@
     "この保存機能を有効にするにはComfyUIを再起動してください": "Restart ComfyUI to enable this save feature",
     "タグファイルの保存に失敗しました ({status})": "Failed to save the tag file ({status})",
     "タグファイルの内容が正しくありません": "The tag file content is invalid",
+    "これはタグセットファイルです。タグセットファイル欄から読み込んでください": "This is a tag set file. Load it from the tag set file field.",
+    "これはタグファイルです。タグファイル欄から読み込んでください": "This is a tag file. Load it from the tag file field.",
     "読み込めるカテゴリーがありません": "The file contains no usable categories",
     "タグファイルのカテゴリー構造が正しくありません": "The tag file category structure is invalid",
     "元に戻す操作はありません": "Nothing to undo",

@@ -5931,6 +5931,13 @@
               "label_ja": "立ち・座り・寝姿勢",
               "tags": [
                 {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "contrapposto",
+                  "translation_ja": "コントラポスト"
+                },
+                {
                   "id": "manual:20260814:jp_prompt_notes:back_view",
                   "name": "back_view",
                   "post_count": 0,
@@ -16583,14 +16590,6 @@
                   "aliases": [],
                   "rank": 9999,
                   "translation_ja": "屋内"
-                },
-                {
-                  "id": "legacy:243c144e68911987",
-                  "name": "traditional_chinese_room",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "伝統的な中国の部屋",
-                  "rank": 94
                 }
               ]
             },
@@ -26093,5 +26092,14 @@
       ]
     }
   ],
-  "metadata": {}
+  "metadata": {},
+  "prompt_workbench_meta": {
+    "deleted_default_catalog_ids": [
+      "legacy:243c144e68911987"
+    ],
+    "deleted_default_catalog_category_ids": [],
+    "deleted_default_tagset_ids": [],
+    "deleted_default_tagset_category_ids": [],
+    "imports": {}
+  }
 }

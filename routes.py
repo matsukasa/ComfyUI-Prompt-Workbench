@@ -536,9 +536,42 @@ def list_user_tag_sets(storage_directory=None):
     )[:500]
 
 
+def _iter_small_categories(data):
+    if not isinstance(data, dict) or not isinstance(data.get("major_categories"), list):
+        return
+    for major in data.get("major_categories", []):
+        if not isinstance(major, dict):
+            continue
+        for medium in major.get("medium_categories") if isinstance(major.get("medium_categories"), list) else []:
+            if not isinstance(medium, dict):
+                continue
+            for small in medium.get("small_categories") if isinstance(medium.get("small_categories"), list) else []:
+                if isinstance(small, dict):
+                    yield small
+
+
+def detect_prompt_workbench_json_kind(data):
+    if not isinstance(data, dict):
+        return "unknown"
+    if data.get("schema") == "prompt-workbench/tag-catalog" and data.get("version") == 1:
+        return "catalog"
+    if data.get("schema_version") != 1 or not isinstance(data.get("major_categories"), list):
+        return "unknown"
+    small_categories = list(_iter_small_categories(data))
+    has_tags = any(isinstance(small.get("tags"), list) for small in small_categories)
+    has_sets = any(isinstance(small.get("sets"), list) for small in small_categories)
+    if has_tags and not has_sets:
+        return "catalog"
+    if has_sets and not has_tags:
+        return "tagSets"
+    return "unknown"
+
+
 def validate_user_catalog(data):
     if not isinstance(data, dict):
         raise ValueError("Unsupported user catalog schema")
+    if detect_prompt_workbench_json_kind(data) == "tagSets":
+        raise ValueError("This is a tag set file. Load it from the tag set file field.")
     is_stored = data.get("schema") == "prompt-workbench/tag-catalog" and data.get("version") == 1
     is_bundled = data.get("schema_version") == 1 and isinstance(data.get("major_categories"), list)
     if not is_stored and not is_bundled:
@@ -605,6 +638,8 @@ def validate_user_catalog(data):
 def validate_user_tag_sets(data):
     if not isinstance(data, dict):
         raise ValueError("Unsupported tag set schema")
+    if detect_prompt_workbench_json_kind(data) == "catalog":
+        raise ValueError("This is a tag file. Load it from the tag file field.")
     if data.get("schema_version") != 1 or not isinstance(data.get("major_categories"), list):
         raise ValueError("Tag set file must contain schema_version: 1 and major_categories")
     normalized = normalize_tag_sets_catalog(data)

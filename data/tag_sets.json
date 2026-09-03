@@ -14486,6 +14486,104 @@
                     "rose pink Mary Jane shoes with white bows",
                     "strict symmetrical color placement"
                   ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:2",
+                  "name": "ランニングウェア",
+                  "name_ja": "ランニングウェア",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2094621279256993825",
+                  "tags": [
+                    "modern running outfit",
+                    "fitted vivid turquoise short-sleeve athletic top",
+                    "round neckline",
+                    "black breathable mesh panels beneath both arms and along both sides",
+                    "thin white reflective piping following the shoulder seams",
+                    "high-waisted matte black running shorts",
+                    "wide turquoise waistband",
+                    "curved turquoise side panels",
+                    "small concealed side pocket",
+                    "short split outer hems",
+                    "fitted black compression shorts visible beneath",
+                    "white ankle socks with turquoise stripes",
+                    "lightweight black running shoes with turquoise soles and white reflective accents",
+                    "moisture-wicking stretch fabric",
+                    "streamlined close-fitting silhouette",
+                    "symmetrical panel placement",
+                    "strict turquoise",
+                    "black and white color scheme"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:3",
+                  "name": "光を纏ったレースクイーンのコスチューム",
+                  "name_ja": "光を纏ったレースクイーンのコスチューム",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2094530676825399381",
+                  "tags": [
+                    "luminous futuristic race-queen costume",
+                    "fitted pearl-white sleeveless racing bodysuit with a high stand collar",
+                    "sculpted sweetheart bust panel",
+                    "narrow silver waist sections and symmetrical hip cutouts",
+                    "glossy white fabric with translucent icy-blue panels",
+                    "bright electric-cyan electroluminescent piping tracing the neckline",
+                    "bust",
+                    "waist",
+                    "hips and leg openings",
+                    "short detachable white peplum panels flaring from both hips",
+                    "transparent organza overskirt strips glowing pale cyan along every edge",
+                    "silver geometric fasteners",
+                    "small crystal ornaments reflecting rainbow light",
+                    "cropped translucent shoulder cape with illuminated cyan borders",
+                    "white elbow-length fingerless gloves with silver cuffs and glowing lines",
+                    "white thigh-high boots with silver heels",
+                    "translucent side panels and electric-cyan illuminated soles",
+                    "matching slim white waist belt with a faceted blue crystal buckle",
+                    "clean aerodynamic silhouette",
+                    "radiant prismatic highlights",
+                    "strict pearl-white base",
+                    "strict silver hardware",
+                    "strict electric-cyan luminous accents",
+                    "symmetrical light placement"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:4",
+                  "name": "半袖にミニ丈の夏用ゴシックロリータドレス",
+                  "name_ja": "半袖にミニ丈の夏用ゴシックロリータドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2094983664115597633",
+                  "tags": [
+                    "summer gothic lolita mini dress",
+                    "strict jet-black color scheme",
+                    "lightweight black fabric with fine vertical charcoal pinstripes",
+                    "fitted bodice",
+                    "wide black Peter Pan collar",
+                    "black floral-lace chest yoke framed with narrow ruffles",
+                    "very short rounded puff sleeves covering only the shoulders and ending immediately below the armpits",
+                    "high upper-arm sleeve cuffs",
+                    "completely bare arms from the upper arms to the wrists",
+                    "wide structured underbust corset belt with symmetrical silver eyelets",
+                    "black side lacing and a vertical row of small silver studs",
+                    "sharply fitted waist",
+                    "short mid-thigh bell skirt",
+                    "layered flared silhouette",
+                    "curved striped overskirt panels",
+                    "black ribbon drawstrings with small metal tips",
+                    "soft black ruffled underskirt",
+                    "scalloped black floral-lace hem",
+                    "fixed black and dark-charcoal palette",
+                    "lightweight summer construction"
+                  ]
                 }
               ]
             }

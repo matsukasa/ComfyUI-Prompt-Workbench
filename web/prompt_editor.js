@@ -272,10 +272,38 @@ export async function buildCompleteCatalogForSave(loadSource, edits) {
   return libraryToBundledCatalog(buildTagLibrary(completeSource, edits), completeSource);
 }
 
+function firstSmallCategories(data) {
+  if (!data || typeof data !== "object" || Array.isArray(data) || !Array.isArray(data.major_categories)) return [];
+  const smalls = [];
+  for (const major of data.major_categories) {
+    for (const medium of Array.isArray(major?.medium_categories) ? major.medium_categories : []) {
+      for (const small of Array.isArray(medium?.small_categories) ? medium.small_categories : []) {
+        if (small && typeof small === "object" && !Array.isArray(small)) smalls.push(small);
+      }
+    }
+  }
+  return smalls;
+}
+
+export function detectPromptWorkbenchJsonKind(data) {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return "unknown";
+  if (data.schema === "prompt-workbench/tag-catalog" && data.version === 1) return "catalog";
+  if (data.schema_version !== 1 || !Array.isArray(data.major_categories)) return "unknown";
+  const smalls = firstSmallCategories(data);
+  const hasTags = smalls.some((small) => Array.isArray(small.tags));
+  const hasSets = smalls.some((small) => Array.isArray(small.sets));
+  if (hasTags && !hasSets) return "catalog";
+  if (hasSets && !hasTags) return "tagSets";
+  return "unknown";
+}
+
 export function parseImportedCatalogText(value) {
   const parsed = JSON.parse(String(value || ""));
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
     throw new Error(t("タグファイルの内容が正しくありません"));
+  }
+  if (detectPromptWorkbenchJsonKind(parsed) === "tagSets") {
+    throw new Error(t("これはタグセットファイルです。タグセットファイル欄から読み込んでください"));
   }
   const library = buildTagLibrary(parsed);
   if (!library.categories.length) throw new Error(t("読み込めるカテゴリーがありません"));
@@ -288,6 +316,9 @@ export function parseImportedCatalogText(value) {
 
 export function parseImportedTagSetText(value) {
   const parsed = JSON.parse(String(value || ""));
+  if (detectPromptWorkbenchJsonKind(parsed) === "catalog") {
+    throw new Error(t("これはタグファイルです。タグファイル欄から読み込んでください"));
+  }
   const library = buildTagSetLibrary(parsed);
   if (!library.categories.length) throw new Error(t("読み込めるタグセット分類がありません"));
   if (!library.sets.length) throw new Error(t("読み込めるタグセットがありません"));
