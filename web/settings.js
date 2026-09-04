@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   favorites: [],
   favoriteTagSets: [],
   showFavoritesOnly: false,
+  promptTextHeight: 140,
   tagListHeight: 260,
   exampleListHeight: 118,
   tagSetListHeight: 160,
@@ -126,6 +127,9 @@ export function sanitizeSettings(input = {}) {
   }
   if (Number.isFinite(Number(input.tagSetListHeight))) {
     settings.tagSetListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagSetListHeight))));
+  }
+  if (Number.isFinite(Number(input.promptTextHeight))) {
+    settings.promptTextHeight = Math.min(420, Math.max(96, Math.round(Number(input.promptTextHeight))));
   }
   if (Number.isFinite(Number(input.tagListHeight))) {
     settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));

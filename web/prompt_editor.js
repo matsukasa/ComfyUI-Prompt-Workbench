@@ -69,6 +69,9 @@ const MAX_EXAMPLE_LIST_HEIGHT = 520;
 const DEFAULT_TAG_SET_LIST_HEIGHT = 160;
 const MIN_TAG_SET_LIST_HEIGHT = 96;
 const MAX_TAG_SET_LIST_HEIGHT = 720;
+const DEFAULT_PROMPT_TEXT_HEIGHT = 140;
+const MIN_PROMPT_TEXT_HEIGHT = 96;
+const MAX_PROMPT_TEXT_HEIGHT = 420;
 const DEFAULT_TAG_LIST_HEIGHT = 260;
 const MIN_TAG_LIST_HEIGHT = 96;
 const MAX_TAG_LIST_HEIGHT = 720;
@@ -82,6 +85,10 @@ const COLOR_DEFAULTS = {
 
 export function clampTagListHeight(value) {
   return Math.min(MAX_TAG_LIST_HEIGHT, Math.max(MIN_TAG_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_LIST_HEIGHT)));
+}
+
+export function clampPromptTextHeight(value) {
+  return Math.min(MAX_PROMPT_TEXT_HEIGHT, Math.max(MIN_PROMPT_TEXT_HEIGHT, Math.round(Number(value) || DEFAULT_PROMPT_TEXT_HEIGHT)));
 }
 
 function clampTagSetListHeight(value) {
@@ -793,6 +800,7 @@ export class PromptEditor {
 
     this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
     this.promptTextarea.rows = 4;
+    this.promptTextarea.style.height = `${clampPromptTextHeight(this.settings.promptTextHeight)}px`;
     this.promptTextarea.placeholder = t("プロンプトを入力するか、下のタグ追加から選んでください");
     this.promptTextarea.setAttribute("aria-label", t("現在のプロンプト本文"));
     this.promptTextarea.addEventListener("input", () => {
@@ -807,9 +815,78 @@ export class PromptEditor {
     });
     this.applyPromptButton = button(t("タグへ反映"), () => this.applyPromptText(), t("本文を解析してタグへ反映（Ctrl+Enter）"));
     const promptActions = element("div", { className: "paio-prompt-actions" }, [this.applyPromptButton]);
+    const promptResizeHandle = element("div", { className: "paio-example-resize-handle paio-prompt-textarea-resize-handle" }, [
+      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
+    ]);
+    promptResizeHandle.tabIndex = 0;
+    promptResizeHandle.setAttribute("role", "separator");
+    promptResizeHandle.setAttribute("aria-orientation", "horizontal");
+    promptResizeHandle.setAttribute("aria-label", t("プロンプト本文の高さを変更"));
+    const applyPromptTextHeight = (height, nodeHeight = null, persist = false) => {
+      const nextHeight = clampPromptTextHeight(height);
+      this.settings.promptTextHeight = nextHeight;
+      this.promptTextarea.style.height = `${nextHeight}px`;
+      promptResizeHandle.setAttribute("aria-valuemin", String(MIN_PROMPT_TEXT_HEIGHT));
+      promptResizeHandle.setAttribute("aria-valuemax", String(MAX_PROMPT_TEXT_HEIGHT));
+      promptResizeHandle.setAttribute("aria-valuenow", String(nextHeight));
+      if (this.node && nodeHeight !== null) {
+        this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), nodeHeight]);
+      }
+      this.node?.graph?.setDirtyCanvas?.(true, true);
+      if (persist) this.persist();
+      return nextHeight;
+    };
+    applyPromptTextHeight(this.settings.promptTextHeight);
+    promptResizeHandle.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      const startY = event.clientY;
+      const startHeight = this.settings.promptTextHeight;
+      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      promptResizeHandle.classList.add("is-dragging");
+      promptResizeHandle.setPointerCapture?.(pointerId);
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        const nextHeight = clampPromptTextHeight(startHeight + moveEvent.clientY - startY);
+        applyPromptTextHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        promptResizeHandle.removeEventListener("pointermove", move);
+        promptResizeHandle.removeEventListener("pointerup", finish);
+        promptResizeHandle.removeEventListener("pointercancel", finish);
+        promptResizeHandle.releasePointerCapture?.(pointerId);
+        promptResizeHandle.classList.remove("is-dragging");
+        applyPromptTextHeight(this.settings.promptTextHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
+      };
+      promptResizeHandle.addEventListener("pointermove", move);
+      promptResizeHandle.addEventListener("pointerup", finish);
+      promptResizeHandle.addEventListener("pointercancel", finish);
+    });
+    promptResizeHandle.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const currentHeight = this.settings.promptTextHeight;
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyPromptTextHeight(DEFAULT_PROMPT_TEXT_HEIGHT, currentNodeHeight + DEFAULT_PROMPT_TEXT_HEIGHT - currentHeight, true);
+    });
+    promptResizeHandle.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const currentHeight = this.settings.promptTextHeight;
+      const nextHeight = event.key === "Home"
+        ? DEFAULT_PROMPT_TEXT_HEIGHT
+        : currentHeight + (event.key === "ArrowDown" ? 20 : -20);
+      const applied = clampPromptTextHeight(nextHeight);
+      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
+      applyPromptTextHeight(applied, currentNodeHeight + applied - currentHeight, true);
+    });
     this.translationBar = this.buildTranslationBar();
     const promptPane = collapsiblePane(t("プロンプト本文"), "paio-prompt-pane", [
       this.promptTextarea,
+      promptResizeHandle,
       promptActions,
       this.translationBar,
     ]);
@@ -999,6 +1076,7 @@ export class PromptEditor {
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
     domWidget.computeSize = (width) => [width,
       BASE_DOM_WIDGET_HEIGHT
+      + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
       + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
       + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT];
     removeWidgetFromLayout(this.node, promptWidget);
@@ -1007,6 +1085,7 @@ export class PromptEditor {
       Math.max(this.node.size?.[0] || 0, 540),
       Math.max(this.node.size?.[1] || 0,
         BASE_NODE_HEIGHT
+        + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
         + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
         + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT),
     ]);

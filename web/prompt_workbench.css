@@ -89,12 +89,12 @@
 .paio-prompt-textarea {
   display: block;
   width: 100%;
-  min-height: 72px;
-  max-height: 160px;
+  min-height: 96px;
+  max-height: 420px;
   padding: 7px 8px;
-  font-size: 13px;
-  line-height: 1.4;
-  resize: vertical;
+  font-size: 15px;
+  line-height: 1.45;
+  resize: none;
   overflow-wrap: anywhere;
 }
 .paio-prompt-actions { justify-content: space-between; margin-top: 4px; }
@@ -417,6 +417,7 @@
 }
 .paio-example-resize-handle:hover, .paio-example-resize-handle.is-dragging { color: var(--paio-ink); background: var(--paio-raised); }
 .paio-tag-list-resize-handle { margin-top: 0; margin-bottom: 1px; }
+.paio-prompt-textarea-resize-handle { margin-top: 2px; margin-bottom: 1px; }
 .paio-example-resize-handle:focus-visible { outline: 2px solid var(--paio-info); outline-offset: 1px; }
 .paio-example-resize-mark { font-size: 18px; line-height: 0.5; letter-spacing: 2px; transform: rotate(90deg); }
 .paio-example-chip { display: grid; grid-template-columns: 13px minmax(0, 1fr); align-items: center; column-gap: 5px; row-gap: 1px; flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 44px; border-radius: 6px; overflow: hidden; white-space: nowrap; }
