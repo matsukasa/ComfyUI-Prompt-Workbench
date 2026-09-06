@@ -72,6 +72,7 @@ export function favoriteSettingsPayload(settings = {}) {
 }
 
 export function sanitizeSettings(input = {}) {
+  input = input && typeof input === "object" ? input : {};
   const settings = { ...DEFAULT_SETTINGS };
   if ([0.05, 0.1, 0.25].includes(Number(input.weightStep))) {
     settings.weightStep = Number(input.weightStep);
@@ -163,6 +164,7 @@ export function sanitizeEditorState(input = {}) {
   const tags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
   return {
     version: 1,
+    trailingSeparator: Boolean(state.trailingSeparator),
     tags: tags.slice(0, 2000).map(sanitizeTag),
     settings: sanitizeSettings(state.settings),
   };

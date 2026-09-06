@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20260823-tagset-preview-1";
+import { PromptEditor } from "./prompt_editor.js?v=20260906-audit-fixes";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -11,7 +11,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20260823-tagset-preview-1", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20260906-audit-fixes", import.meta.url).href;
   document.head.append(link);
 }
 
@@ -35,6 +35,7 @@ app.registerExtension({
     const previousConfigured = nodeType.prototype.onConfigure;
     nodeType.prototype.onConfigure = function onConfigure() {
       const result = previousConfigured?.apply(this, arguments);
+      this.promptWorkbenchEditor?.configureFromNode();
       const stabilize = () => this.promptWorkbenchEditor?.stabilizeLayout();
       stabilize();
       queueMicrotask(stabilize);

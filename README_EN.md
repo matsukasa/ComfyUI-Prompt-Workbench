@@ -134,7 +134,7 @@ The currently bundled data is:
 | Data | Top-level | Middle-level | Subcategories | Items |
 | --- | ---: | ---: | ---: | ---: |
 | Tag catalogue `data/tag_catalog.json` | 8 | 33 | 139 | 2,922 tags |
-| Tag sets `data/tag_sets.json` | 5 | 19 | 49 | 670 sets |
+| Tag sets `data/tag_sets.json` | 6 | 20 | 50 | 632 sets |
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
@@ -159,6 +159,8 @@ Catalogue JSON files can be loaded when they are 4 MB or smaller and use either 
 Open the `Tag sets` tab to search classified tag sets and add them to the prompt. Tag sets are presets for groups of tags that are often used together, such as outfits, hairstyles, composition, poses, and atmosphere. You can insert a whole group with one click instead of typing every detail by hand.
 
 A tag set can include a name, Japanese name, English name, author, reference URL, image URL, image path, description, and tag contents. The UI can show the image, name, description, tags, author, and reference URL before insertion. Insertion goes through the normal tag-add flow, so duplicate handling, translated display, blocklist marking, and widget synchronisation work the same way as individual tag additions.
+
+Tag sets expand into individual tags when added. Enable/disable, reordering, and weight changes apply to each tag separately. Files support up to 2,000 sets, 500 categories, and 100 tags per set within 4 MB. Oversized input is rejected instead of silently truncated. Duplicate IDs in older files keep the first occurrence unchanged and receive `:duplicate:2` (or the next available suffix) on subsequent occurrences. Existing favorites continue to refer to the first set.
 
 Use the star button to mark a tag set as a favourite. Favourites are saved in node settings as `favoriteTagSets`. The tag set list can be resized, and its height is saved as `tagSetListHeight`.
 Search covers tag set names, English names, descriptions, tag contents, and category names.
@@ -213,6 +215,10 @@ Tag Editor runs independently from ComfyUI, so you can edit files such as `data/
 ## State JSON And Favourites
 
 `Export state JSON` saves Prompt Workbench state as `prompt_workbench_state.json`. Tag catalogue favourites are included in `settings.favorites`. Tag set favourites are included in `settings.favoriteTagSets`.
+
+Favorites are also shared through the ComfyUI user directory. Each addition or removal is saved as an operation, so another node cannot overwrite unrelated changes. Nodes in the same page update together; other windows refresh approximately every five seconds. Workflow favorites seed the shared file only when it does not yet exist. Opening an older workflow does not resurrect removed favorites. Explicitly importing state JSON adds its favorites to the shared list.
+
+Translation requests are split into batches of at most 100 tags and bounded request sizes, with progress updates. Results follow tag IDs across reordering; stale results for edited or deleted tags are discarded. Weight changes remain effective when outputting a translation, and directly editing a tag clears its old translation.
 
 Before replacing catalogues, replacing tag sets, or moving to another environment, back up the state JSON, the active tag catalogue JSON, and the active tag set JSON together.
 

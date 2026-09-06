@@ -4,6 +4,7 @@ import json
 import os
 import re
 import tempfile
+import threading
 import time
 import unicodedata
 from collections import OrderedDict, defaultdict, deque
@@ -14,7 +15,7 @@ MAX_REQUEST_BYTES = 64 * 1024
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
 MAX_CATALOG_CATEGORIES = 500
 MAX_CATALOG_TAGS = 10_000
-MAX_TAG_SETS = 500
+MAX_TAG_SETS = 2000
 MAX_TAG_SET_TAGS = 100
 MAX_TEXT_LENGTH = 8_000
 MAX_BATCH_SIZE = 100
@@ -26,6 +27,7 @@ _CACHE = OrderedDict()
 _RATE_BUCKETS = defaultdict(deque)
 _REMOTE_SEMAPHORE = asyncio.Semaphore(3)
 _ROUTES_REGISTERED = False
+_FAVORITES_LOCK = threading.RLock()
 SUPPORTED_PROVIDERS = {"local", "offline", "libretranslate", "deepl", "openai"}
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
 _DICTIONARY_CACHE_SIGNATURE = None
@@ -358,6 +360,12 @@ def normalize_tag_sets_catalog(data):
     if not isinstance(data, dict) or data.get("schema_version") != 1:
         return _empty_tag_sets_catalog(["Unsupported tag set schema"])
     output = {"schema_version": 1, "major_categories": [], "warnings": []}
+    _validate_tag_set_structure(data)
+    used_ids = set()
+    reserved_ids = {
+        _short_text(item.get("id"), 160)
+        for small in _iter_small_categories(data) for item in small.get("sets", [])
+    }
     set_count = 0
     for major_index, major in enumerate(data.get("major_categories") if isinstance(data.get("major_categories"), list) else []):
         if not isinstance(major, dict):
@@ -396,9 +404,6 @@ def normalize_tag_sets_catalog(data):
                 if small.get("label_en"):
                     small_output["label_en"] = _short_text(small.get("label_en"))
                 for set_index, item in enumerate(small.get("sets") if isinstance(small.get("sets"), list) else []):
-                    if set_count >= MAX_TAG_SETS:
-                        output["warnings"].append("Skipped tag sets beyond the limit")
-                        break
                     if not isinstance(item, dict):
                         output["warnings"].append(f"Skipped invalid tag set under {small_id}")
                         continue
@@ -411,6 +416,17 @@ def normalize_tag_sets_catalog(data):
                         output["warnings"].append(f"Skipped empty tag set under {small_id}")
                         continue
                     set_id = _short_text(item.get("id"), 160) or f"{small_id}:set:{set_index}"
+                    if set_id in used_ids:
+                        old_id = set_id
+                        suffix = 2
+                        while True:
+                            candidate = f"{old_id[:140]}:duplicate:{suffix}"
+                            if candidate not in used_ids and candidate not in reserved_ids:
+                                set_id = candidate
+                                break
+                            suffix += 1
+                        output["warnings"].append(f"Duplicate tag set id migrated: {old_id} -> {set_id}")
+                    used_ids.add(set_id)
                     set_output = {
                         "id": set_id,
                         "name": _short_text(item.get("name") or item.get("name_en") or item.get("name_ja") or set_id),
@@ -422,6 +438,8 @@ def normalize_tag_sets_catalog(data):
                         set_output["name_en"] = _short_text(item.get("name_en"))
                     if item.get("creator"):
                         set_output["creator"] = _short_text(item.get("creator"), 200)
+                    if item.get("description"):
+                        set_output["description"] = _short_text(item.get("description"), 10000)
                     if item.get("source_url"):
                         set_output["source_url"] = _short_text(item.get("source_url"), 1000)
                     if item.get("image_url"):
@@ -593,13 +611,21 @@ def load_favorites(path=None):
     try:
         data = json.loads(target.read_text(encoding="utf-8"))
     except FileNotFoundError:
-        return validate_favorites({})
-    return validate_favorites(data)
+        return {**validate_favorites({}), "revision": 0, "initialized": False}
+    return {**validate_favorites(data), "revision": max(0, int(data.get("revision", 0))) if isinstance(data, dict) else 0,
+            "initialized": True}
 
 
 def save_favorites(data, path=None):
+    with _FAVORITES_LOCK:
+        return _save_favorites(data, path)
+
+
+def _save_favorites(data, path=None):
     favorites = validate_favorites(data)
     target = Path(path) if path is not None else favorites_storage_path()
+    favorites["revision"] = load_favorites(target)["revision"] + 1
+    favorites["initialized"] = True
     target.parent.mkdir(parents=True, exist_ok=True)
     serialized = json.dumps(favorites, ensure_ascii=False, indent=2) + "\n"
     temporary_path = None
@@ -623,6 +649,37 @@ def save_favorites(data, path=None):
         if temporary_path is not None and temporary_path.exists():
             temporary_path.unlink()
     return favorites
+
+
+def update_favorites(data, path=None):
+    """Apply only the requested changes; never replace another client's list."""
+    if not isinstance(data, dict) or not isinstance(data.get("operations", []), list):
+        raise ValueError("Favorites operations must be an array")
+    operations = data.get("operations", [])
+    if len(operations) > 22000:
+        raise ValueError("Too many favorites operations")
+    for operation in operations:
+        if (not isinstance(operation, dict) or operation.get("kind") not in {"favorites", "favoriteTagSets"}
+                or not isinstance(operation.get("key"), str) or not operation["key"].strip()
+                or not isinstance(operation.get("favorite"), bool)):
+            raise ValueError("Invalid favorites operation")
+    with _FAVORITES_LOCK:
+        current = load_favorites(path)
+        # Import old workflow favorites only on first initialization. Loading an
+        # older workflow must not resurrect items deliberately removed later.
+        if not current["initialized"] and "seed" in data:
+            current = validate_favorites(data["seed"])
+        values = {kind: set(current[kind]) for kind in ("favorites", "favoriteTagSets")}
+        for operation in operations:
+            target = values[operation["kind"]]
+            key = _normalize_favorite_key(operation["key"])
+            if operation["favorite"]:
+                target.add(key)
+            else:
+                target.discard(key)
+        if len(values["favorites"]) > 20000 or len(values["favoriteTagSets"]) > MAX_TAG_SETS:
+            raise ValueError("Too many favorites")
+        return _save_favorites({kind: sorted(items) for kind, items in values.items()}, path)
 
 
 def _iter_small_categories(data):
@@ -724,6 +781,50 @@ def validate_user_catalog(data):
     return data
 
 
+def _validate_tag_set_structure(data):
+    """Validate original sizes before normalization; accepted sets are never truncated."""
+    if not isinstance(data, dict) or data.get("schema_version") != 1 or not isinstance(data.get("major_categories"), list):
+        raise ValueError("Tag set file must contain schema_version: 1 and major_categories")
+    if len(json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")) > MAX_CATALOG_BYTES:
+        raise ValueError("Tag set file exceeds the 4 MB limit")
+    category_count = 0
+    set_count = 0
+    category_ids = set()
+    def categories(items, children):
+        nonlocal category_count
+        for category in items:
+            if not isinstance(category, dict) or not isinstance(category.get(children), list):
+                raise ValueError(f"Every tag set category must contain {children}")
+            category_count += 1
+            category_id = _short_text(category.get("id"), 120)
+            if category_id and category_id in category_ids:
+                raise ValueError(f"Duplicate tag set category id: {category_id}")
+            if category_id:
+                category_ids.add(category_id)
+            yield category
+    for major in categories(data["major_categories"], "medium_categories"):
+        for medium in categories(major["medium_categories"], "small_categories"):
+            for small in categories(medium["small_categories"], "sets"):
+                set_count += len(small["sets"])
+                for item in small["sets"]:
+                    if not isinstance(item, dict) or not isinstance(item.get("tags"), list):
+                        raise ValueError("Every tag set must contain a tags array")
+                    tags = item["tags"]
+                    if not 1 <= len(tags) <= MAX_TAG_SET_TAGS:
+                        raise ValueError(f"A tag set must contain 1 to {MAX_TAG_SET_TAGS} tags")
+                    if any(not isinstance(tag, str) or not tag.strip() or len(tag) > 10000 for tag in tags):
+                        raise ValueError("Every tag in a set must be a non-empty string of at most 10000 characters")
+                    for field, limit in (("id", 160), ("name", 200), ("name_ja", 200), ("name_en", 200),
+                                         ("creator", 200), ("description", 10000), ("source_url", 1000),
+                                         ("image_url", 1000), ("image_path", 1000)):
+                        if field in item and (not isinstance(item[field], str) or len(item[field]) > limit):
+                            raise ValueError(f"Invalid tag set field: {field}")
+    if category_count > MAX_CATALOG_CATEGORIES:
+        raise ValueError("Tag set file contains too many categories")
+    if set_count > MAX_TAG_SETS:
+        raise ValueError(f"Tag set file contains too many sets (maximum {MAX_TAG_SETS})")
+
+
 def validate_user_tag_sets(data):
     if not isinstance(data, dict):
         raise ValueError("Unsupported tag set schema")
@@ -731,16 +832,9 @@ def validate_user_tag_sets(data):
         raise ValueError("This is a tag file. Load it from the tag file field.")
     if data.get("schema_version") != 1 or not isinstance(data.get("major_categories"), list):
         raise ValueError("Tag set file must contain schema_version: 1 and major_categories")
-    normalized = normalize_tag_sets_catalog(data)
-    set_count = 0
-    for major in normalized.get("major_categories", []):
-        for medium in major.get("medium_categories", []):
-            for small in medium.get("small_categories", []):
-                set_count += len(small.get("sets", []))
-    if not normalized.get("major_categories"):
+    _validate_tag_set_structure(data)
+    if not data.get("major_categories"):
         raise ValueError("Tag set category count is invalid")
-    if set_count > 2000:
-        raise ValueError("Tag set file contains too many sets")
     encoded = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     if len(encoded) > MAX_CATALOG_BYTES:
         raise ValueError("Tag set file exceeds the 4 MB limit")
@@ -1106,8 +1200,11 @@ def register_routes():
 
     @routes.get("/prompt_workbench/tag_sets")
     async def get_tag_sets(request):
-        requested_name = request.rel_url.query.get("file", "")
-        return web.json_response(load_selected_tag_sets_catalog(requested_name=requested_name))
+        try:
+            requested_name = request.rel_url.query.get("file", "")
+            return web.json_response(load_selected_tag_sets_catalog(requested_name=requested_name))
+        except (OSError, ValueError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
 
     @routes.get("/prompt-workbench-data/tag-set-images/{file_name}")
     async def get_tag_set_image(request):
@@ -1146,6 +1243,15 @@ def register_routes():
         try:
             body = await request.json()
             return web.json_response(save_favorites(body))
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.patch("/prompt_workbench/favorites")
+    async def patch_favorites(request):
+        if request.content_length and request.content_length > MAX_CATALOG_BYTES:
+            return web.json_response({"error": "Favorites request is too large"}, status=413)
+        try:
+            return web.json_response(update_favorites(await request.json()))
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
 

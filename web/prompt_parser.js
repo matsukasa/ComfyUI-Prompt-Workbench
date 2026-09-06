@@ -39,6 +39,8 @@ export function normalizeTranslationText(value) {
 export function createTag(raw, overrides = {}) {
   const legacy = normalizeLegacyDisabledValue(raw);
   const value = legacy.value;
+  const restoredId = /^paio-(\d+)$/u.exec(String(overrides.id || ""));
+  if (restoredId && Number.isSafeInteger(Number(restoredId[1]) + 1)) nextTagId = Math.max(nextTagId, Number(restoredId[1]) + 1);
   return {
     id: overrides.id || `paio-${nextTagId++}`,
     value,
@@ -208,11 +210,45 @@ export function outputPrompt(tags, outputLanguage = "en", options = {}) {
       ...tag,
       value:
         normalizeTranslationText(tag.translation) && tag.translatedTo === outputLanguage
-          ? normalizeTranslationText(tag.translation)
+          ? replacePromptBody(tag.value, promptBody(normalizeTranslationText(tag.translation)))
           : tag.value,
     })),
     options,
   );
+}
+
+// Translation is text; weight/attention syntax belongs to the current tag.
+// Only unwrap a pair that encloses the entire value, not '(a), (b)'.
+function outerAttention(value) {
+  const text = String(value || "").trim();
+  const close = { "(": ")", "[": "]" }[text[0]];
+  if (!close || text.at(-1) !== close || splitPrompt(text).values.length !== 1) return null;
+  let depth = 0;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    if (escaped) { escaped = false; continue; }
+    if (text[index] === "\\") { escaped = true; continue; }
+    if (text[index] === text[0]) depth += 1;
+    if (text[index] === close && --depth === 0 && index !== text.length - 1) return null;
+  }
+  if (depth !== 0) return null;
+  const weighted = parseExplicitWeight(text);
+  return { prefix: text[0], suffix: weighted ? `:${weighted.weight.toFixed(2)}${close}` : close,
+    body: weighted ? weighted.body : text.slice(1, -1) };
+}
+
+export function promptBody(value) {
+  const text = String(value || "").trim();
+  const attention = outerAttention(text);
+  return attention ? promptBody(attention.body) : text;
+}
+
+export function replacePromptBody(value, replacement) {
+  const text = String(value || "").trim();
+  const next = String(replacement || "").trim();
+  if (!next) return text;
+  const attention = outerAttention(text);
+  return attention ? `${attention.prefix}${replacePromptBody(attention.body, next)}${attention.suffix}` : next;
 }
 
 export function classifyTag(value) {

@@ -1,13 +1,78 @@
 const MAX_TEXT = 200;
 const MAX_TAG_TEXT = 10000;
 const LEVELS = ["large", "medium", "small"];
+export const MAX_TAG_SETS = 2000;
+
+export function validateTagSetCatalog(source) {
+  if (!source || source.schema_version !== 1 || !Array.isArray(source.major_categories)) {
+    throw new Error("Tag set file must contain schema_version: 1 and major_categories");
+  }
+  if (new TextEncoder().encode(JSON.stringify(source)).length > 4 * 1024 * 1024) throw new Error("Tag set file exceeds the 4 MB limit");
+  let categoryCount = 0;
+  let setCount = 0;
+  const categoryIds = new Set();
+  const category = (item, children) => {
+    if (!item || !Array.isArray(item[children])) throw new Error(`Every tag set category must contain ${children}`);
+    categoryCount += 1;
+    const id = text(item.id, 120);
+    if (id && categoryIds.has(id)) throw new Error(`Duplicate tag set category id: ${id}`);
+    if (id) categoryIds.add(id);
+    return item[children];
+  };
+  for (const major of source.major_categories) {
+    for (const medium of category(major, "medium_categories")) {
+      for (const small of category(medium, "small_categories")) {
+        const sets = category(small, "sets");
+        setCount += sets.length;
+        for (const item of sets) {
+          if (!item || !Array.isArray(item.tags) || !item.tags.length || item.tags.length > 100) {
+            throw new Error("A tag set must contain 1 to 100 tags");
+          }
+          if (item.tags.some((tag) => typeof tag !== "string" || !tag.trim() || [...tag].length > MAX_TAG_TEXT)) {
+            throw new Error("Every tag in a set must be a non-empty string of at most 10000 characters");
+          }
+          for (const [field, limit] of Object.entries({ id: 160, name: 200, name_ja: 200, name_en: 200,
+            creator: 200, description: 10000, source_url: 1000, image_url: 1000, image_path: 1000 })) {
+            if (field in item && (typeof item[field] !== "string" || [...item[field]].length > limit)) {
+              throw new Error(`Invalid tag set field: ${field}`);
+            }
+          }
+        }
+      }
+    }
+  }
+  if (categoryCount > 500) throw new Error("Tag set file contains too many categories");
+  if (setCount > MAX_TAG_SETS) throw new Error(`Tag set file contains too many sets (maximum ${MAX_TAG_SETS})`);
+}
+
+export function normalizeTagSetIds(source) {
+  validateTagSetCatalog(source);
+  const result = JSON.parse(JSON.stringify(source));
+  const sets = result.major_categories.flatMap((a) => a.medium_categories.flatMap((b) => b.small_categories.flatMap((c) => c.sets)));
+  const reserved = new Set(sets.map((item) => text(item.id, 160)).filter(Boolean));
+  const used = new Set();
+  for (const item of sets) {
+    const id = text(item.id, 160);
+    if (!id) continue;
+    if (used.has(id)) {
+      let suffix = 2;
+      let replacement;
+      do { replacement = `${id.slice(0, 140)}:duplicate:${suffix++}`; } while (used.has(replacement) || reserved.has(replacement));
+      item.id = replacement;
+      if (!Array.isArray(result.warnings)) result.warnings = [];
+      result.warnings.push(`Duplicate tag set id migrated: ${id} -> ${replacement}`);
+    }
+    used.add(item.id);
+  }
+  return result;
+}
 
 function text(value, max = MAX_TEXT) {
   return String(value ?? "").trim().slice(0, max);
 }
 
 function key(value) {
-  return text(value).normalize("NFKC").toLocaleLowerCase().replace(/[\s_]+/gu, " ");
+  return text(value, MAX_TAG_TEXT).normalize("NFKC").toLocaleLowerCase().replace(/[\s_]+/gu, " ");
 }
 
 function searchableText(parts) {
@@ -28,6 +93,7 @@ export async function fetchTagSetCatalog(api) {
 }
 
 export function buildTagSetLibrary(source = {}) {
+  if (source.schema_version === 1) source = normalizeTagSetIds(source);
   const categories = [];
   const sets = [];
   const warnings = Array.isArray(source?.warnings) ? source.warnings.map((item) => text(item, 500)).filter(Boolean) : [];
@@ -99,6 +165,8 @@ export function buildTagSetLibrary(source = {}) {
             nameJa: text(item.name_ja || item.name || id),
             nameEn: text(item.name_en || item.name || ""),
             creator: text(item.creator, 200),
+            description: text(item.description, MAX_TAG_TEXT),
+            sourceUrl: text(item.source_url, 1000),
             imageUrl: text(item.image_url, 1000),
             imagePath: text(item.image_path, 1000),
             tags,
@@ -136,7 +204,7 @@ export function filterTagSets(library, selectedSmallId, query = "") {
     const medium = categories.get(small?.parentId);
     const large = categories.get(medium?.parentId);
     return searchableText([
-      item.name, item.nameJa, item.nameEn, ...item.tags,
+      item.name, item.nameJa, item.nameEn, item.description, item.creator, ...item.tags,
       large?.ja, large?.en, medium?.ja, medium?.en, small?.ja, small?.en,
     ]).includes(normalizedQuery);
   });

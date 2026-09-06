@@ -230,5 +230,9 @@
     "{language}形式で選択タグをコピーしました": "Copied the selected tags in {language} format",
     "プロンプトをコピーしました": "Copied the prompt",
     "配下のタグがあるため、削除前に移動先の小分類を選択してください": "This category contains tags. Choose a destination subcategory before deleting it."
-  }
+  },
+  "参照元を開く": "Open source",
+  "お気に入りを読み込めませんでした: {error}": "Could not load favorites: {error}",
+  "お気に入りを保存できませんでした: {error}": "Could not save favorites: {error}",
+  "翻訳中… {done}/{total}件": "Translating… {done}/{total}"
 }

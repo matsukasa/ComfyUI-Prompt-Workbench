@@ -9,8 +9,9 @@ import {
   matchesBlacklist,
   normalizePromptTags,
   outputPrompt,
-  parseExplicitWeight,
   parsePrompt,
+  promptBody,
+  replacePromptBody,
   serializeEditorPrompt,
   serializePrompt,
   setTagWeight,
@@ -19,12 +20,11 @@ import {
   DEFAULT_CATALOG_NAME,
   DEFAULT_SETTINGS,
   exportEditorState,
-  favoriteSettingsPayload,
-  mergeFavoriteSettings,
   parseFavoriteSettings,
   parseImportedState,
   sanitizeEditorState,
 } from "./settings.js";
+import { sharedFavoritesStore } from "./favorites.js";
 import { translateTags } from "./translation.js";
 import {
   getAvailableUiLanguages,
@@ -46,6 +46,7 @@ import {
 import {
   buildTagSetLibrary,
   filterTagSets,
+  normalizeTagSetIds,
   resolveTagSetCategoryPath,
   tagSetFavoriteKey,
 } from "./tag_sets.js";
@@ -101,6 +102,15 @@ function tagSetImageSource(value) {
   if (!source.startsWith("/prompt-workbench-data/tag-set-images/")) return source;
   const encoded = encodeURI(source);
   return `${encoded}${encoded.includes("?") ? "&" : "?"}v=2`;
+}
+
+export function safeSourceUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
 }
 
 function element(tagName, options = {}, children = []) {
@@ -194,24 +204,6 @@ export async function fetchSelectedTagSetCatalog(api, tagSetFile = "") {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || t("タグセットの読込に失敗しました ({status})", { status: response.status }));
   return body;
-}
-
-export async function fetchSharedFavorites(api) {
-  const response = await api.fetchApi("/prompt_workbench/favorites");
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || t("お気に入りの読込に失敗しました ({status})", { status: response.status }));
-  return parseFavoriteSettings(body);
-}
-
-export async function saveSharedFavorites(api, favorites) {
-  const response = await api.fetchApi("/prompt_workbench/favorites", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(favoriteSettingsPayload(favorites)),
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || t("お気に入りの保存に失敗しました ({status})", { status: response.status }));
-  return parseFavoriteSettings(body);
 }
 
 export function catalogNameFromFileName(fileName) {
@@ -347,10 +339,11 @@ export function parseImportedTagSetText(value) {
   if (detectPromptWorkbenchJsonKind(parsed) === "catalog") {
     throw new Error(t("これはタグファイルです。タグファイル欄から読み込んでください"));
   }
-  const library = buildTagSetLibrary(parsed);
+  const normalized = normalizeTagSetIds(parsed);
+  const library = buildTagSetLibrary(normalized);
   if (!library.categories.length) throw new Error(t("読み込めるタグセット分類がありません"));
   if (!library.sets.length) throw new Error(t("読み込めるタグセットがありません"));
-  return parsed;
+  return normalized;
 }
 
 export function containsJapaneseText(value) {
@@ -358,25 +351,11 @@ export function containsJapaneseText(value) {
 }
 
 export function translatableTagText(value) {
-  const text = String(value || "").trim();
-  const weighted = parseExplicitWeight(text);
-  if (weighted) return weighted.body.trim();
-  const wrapped = text.match(/^([([])([\s\S]+)([)\]])$/u);
-  const pairs = { "(": ")", "[": "]" };
-  if (wrapped && pairs[wrapped[1]] === wrapped[3]) return wrapped[2].trim();
-  return text;
+  return promptBody(value);
 }
 
 export function replaceTagTextPreservingSyntax(value, replacement) {
-  const text = String(value || "").trim();
-  const next = String(replacement || "").trim();
-  if (!next) return text;
-  const weighted = parseExplicitWeight(text);
-  if (weighted) return `${weighted.open}${next}:${weighted.weight.toFixed(2)}${weighted.close}`;
-  const wrapped = text.match(/^([([])([\s\S]+)([)\]])$/u);
-  const pairs = { "(": ")", "[": "]" };
-  if (wrapped && pairs[wrapped[1]] === wrapped[3]) return `${wrapped[1]}${next}${wrapped[3]}`;
-  return next;
+  return replacePromptBody(value, replacement);
 }
 
 export function applySmartTranslationResult(tag, translatedValue, target, localLanguage = "ja") {
@@ -578,10 +557,15 @@ export class PromptEditor {
     this.refreshExamplesPanel = null;
     this.refreshTagSetsPanel = null;
     this.domWidget = null;
+    this.dataGeneration = 0;
+    this.translationGeneration = 0;
+    this.disposed = false;
     this.restore();
     this.root = this.build();
     this.attach();
-    this.loadSharedFavorites();
+    // Graph.configure assigns properties after onNodeCreated. Delay shared
+    // state initialization until that synchronous lifecycle has completed.
+    queueMicrotask(() => { if (!this.disposed) this.loadSharedFavorites(); });
     this.loadModelRegistry();
     this.pollTimer = window.setInterval(() => this.syncFromWidgets(), 400);
   }
@@ -608,7 +592,7 @@ export class PromptEditor {
     this.settings.favorites = [...favorites].sort();
     this.clearSelectionState();
     this.persist();
-    this.saveSharedFavorites();
+    this.saveSharedFavorites([{ kind: "favorites", key, favorite }]);
     this.renderTags();
     this.refreshExamplesPanel?.();
   }
@@ -630,7 +614,7 @@ export class PromptEditor {
     else favorites.delete(key);
     this.settings.favoriteTagSets = [...favorites].sort();
     this.persist();
-    this.saveSharedFavorites();
+    this.saveSharedFavorites([{ kind: "favoriteTagSets", key, favorite }]);
     this.refreshExamplesPanel?.();
     this.refreshTagSetsPanel?.();
   }
@@ -648,7 +632,7 @@ export class PromptEditor {
   }
 
   applyFavoriteSettings(favorites) {
-    const merged = mergeFavoriteSettings(this.currentFavoriteSettings(), favorites);
+    const merged = parseFavoriteSettings(favorites);
     const changed = merged.favorites.join("\0") !== (this.settings.favorites || []).join("\0")
       || merged.favoriteTagSets.join("\0") !== (this.settings.favoriteTagSets || []).join("\0");
     this.settings.favorites = merged.favorites;
@@ -663,20 +647,23 @@ export class PromptEditor {
   }
 
   loadSharedFavorites() {
-    if (!this.sharedFavoritesPromise) {
-      this.sharedFavoritesPromise = fetchSharedFavorites(this.api)
-        .then((favorites) => {
-          const merged = this.applyFavoriteSettings(favorites);
-          return saveSharedFavorites(this.api, merged).catch(() => merged);
-        })
-        .catch(() => this.currentFavoriteSettings());
-    }
+    const store = this.favoritesStore ||= sharedFavoritesStore(this.api);
+    const seed = this.currentFavoriteSettings();
+    this.unsubscribeFavorites ||= store.subscribe((favorites) => {
+      if (!this.disposed) this.applyFavoriteSettings(favorites);
+    });
+    this.sharedFavoritesPromise = store.initialize(seed).catch((error) => {
+      this.setStatus(t("お気に入りを読み込めませんでした: {error}", { error: error.message }), true);
+    });
     return this.sharedFavoritesPromise;
   }
 
-  saveSharedFavorites() {
-    this.sharedFavoritesPromise = saveSharedFavorites(this.api, this.currentFavoriteSettings())
-      .catch(() => this.currentFavoriteSettings());
+  saveSharedFavorites(operations) {
+    if (!this.favoritesStore) this.loadSharedFavorites();
+    this.sharedFavoritesPromise = this.favoritesStore.update(operations, this.currentFavoriteSettings())
+      .catch((error) => {
+        this.setStatus(t("お気に入りを保存できませんでした: {error}", { error: error.message }), true);
+      });
     return this.sharedFavoritesPromise;
   }
 
@@ -704,6 +691,12 @@ export class PromptEditor {
     this.settings = snapshot.settings;
     this.trailingSeparator = Boolean(snapshot.trailingSeparator);
     this.promptDirty = false;
+    this.translationGeneration += 1;
+    this.translationBusy = false;
+    if (this.favoritesStore?.base.revision >= 0) {
+      Object.assign(this.settings, this.favoritesStore.value);
+    }
+    this.rebuildControls();
     this.syncToWidgets();
     this.render();
   }
@@ -731,16 +724,51 @@ export class PromptEditor {
       const state = sanitizeEditorState(saved);
       this.settings = state.settings;
       this.tags = state.tags.map((tag) => createTag(tag.value, tag));
+      if (Object.hasOwn(saved, "trailingSeparator")) this.trailingSeparator = state.trailingSeparator;
       const savedValue = outputPrompt(this.tags, this.settings.outputLanguage, {
         trailingSeparator: true,
         stripLineBreaks: true,
       });
-      if (widgetValue !== savedValue) this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
+      // Accept the previous version's translation-only output as well, so
+      // fixing weight serialization does not discard an older saved state.
+      const legacyValue = serializePrompt(this.tags.map((tag) => ({ ...tag,
+        value: tag.translation && tag.translatedTo === this.settings.outputLanguage ? tag.translation : tag.value,
+      })), { trailingSeparator: true, stripLineBreaks: true });
+      const comparable = (value) => String(value).trim().replace(/,+$/u, "").trim();
+      if (comparable(widgetValue) !== comparable(savedValue) && comparable(widgetValue) !== comparable(legacyValue)) {
+        this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
+      }
     } else {
       this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
     }
     this.lastWidgetValue = widgetValue;
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
+  }
+
+  configureFromNode() {
+    this.translationGeneration += 1;
+    this.translationBusy = false;
+    this.undoStack.length = 0;
+    this.redoStack.length = 0;
+    this.promptDirty = false;
+    this.restore();
+    if (this.favoritesStore?.base.revision >= 0) Object.assign(this.settings, this.favoritesStore.value);
+    this.rebuildControls();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  rebuildControls() {
+    this.closeContextMenu();
+    this.dataGeneration += 1;
+    this.exampleData = null;
+    this.exampleLoadPromise = null;
+    this.tagSetData = null;
+    this.tagSetLoadPromise = null;
+    if (!this.root) return;
+    const rebuilt = this.build();
+    this.root.replaceChildren(...rebuilt.childNodes);
+    this.stabilizeLayout();
   }
 
   persist() {
@@ -749,6 +777,7 @@ export class PromptEditor {
       version: 1,
       tags: this.tags,
       settings: this.settings,
+      trailingSeparator: this.trailingSeparator,
     });
     this.node.graph?.setDirtyCanvas?.(true, true);
   }
@@ -1091,6 +1120,9 @@ export class PromptEditor {
     ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
+      this.disposed = true;
+      this.translationGeneration += 1;
+      this.unsubscribeFavorites?.();
       clearInterval(this.pollTimer);
       clearTimeout(this.clickTimer);
       this.closeContextMenu();
@@ -1804,12 +1836,15 @@ export class PromptEditor {
   loadExampleData() {
     if (this.exampleData) return Promise.resolve(this.exampleData);
     if (!this.exampleLoadPromise) {
-      this.exampleLoadPromise = fetchExampleCatalog(this.api, this.settings.libraryFile).then((body) => {
+      const generation = this.dataGeneration;
+      const file = this.settings.libraryFile;
+      this.exampleLoadPromise = fetchExampleCatalog(this.api, file).then((body) => {
+        if (generation !== this.dataGeneration || file !== this.settings.libraryFile) return this.loadExampleData();
         this.exampleData = body;
         this.syncFavoritesWithCatalog(body);
         return body;
       }).catch((error) => {
-        this.exampleLoadPromise = null;
+        if (generation === this.dataGeneration && file === this.settings.libraryFile) this.exampleLoadPromise = null;
         throw error;
       });
     }
@@ -1819,11 +1854,14 @@ export class PromptEditor {
   loadTagSetData() {
     if (this.tagSetData) return Promise.resolve(this.tagSetData);
     if (!this.tagSetLoadPromise) {
-      this.tagSetLoadPromise = fetchSelectedTagSetCatalog(this.api, this.settings.tagSetFile).then((body) => {
+      const generation = this.dataGeneration;
+      const file = this.settings.tagSetFile;
+      this.tagSetLoadPromise = fetchSelectedTagSetCatalog(this.api, file).then((body) => {
+        if (generation !== this.dataGeneration || file !== this.settings.tagSetFile) return this.loadTagSetData();
         this.tagSetData = body;
         return body;
       }).catch((error) => {
-        this.tagSetLoadPromise = null;
+        if (generation === this.dataGeneration && file === this.settings.tagSetFile) this.tagSetLoadPromise = null;
         throw error;
       });
     }
@@ -2028,7 +2066,7 @@ export class PromptEditor {
           this.pushUndo();
           this.addValues(item.tags.map((value) => ({ value })), { trailingSeparator: true });
           this.setStatus(t("{name} を追加しました", { name: item.nameJa || item.name }));
-        }, item.preview);
+        }, item.tags.join(", "));
         row.classList.add("paio-tag-set-row");
         row.classList.toggle("is-favorite", favorite);
         row.dataset.setId = item.id;
@@ -2069,7 +2107,20 @@ export class PromptEditor {
           previewImage.src = imageSource;
           previewImage.loading = "lazy";
         }
-        list.append(row);
+        const entry = element("div", { className: "paio-tag-set-entry" }, row);
+        const metadata = element("div", { className: "paio-tag-set-metadata" });
+        if (item.description) metadata.append(element("p", { className: "paio-tag-set-description", text: item.description }));
+        const sourceUrl = safeSourceUrl(item.sourceUrl);
+        if (sourceUrl) {
+          const link = element("a", { className: "paio-tag-set-source", text: t("参照元を開く") });
+          link.href = sourceUrl;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.title = sourceUrl;
+          metadata.append(link);
+        }
+        if (metadata.childNodes.length) entry.append(metadata);
+        list.append(entry);
       }
       if (!matches.length) list.append(element("p", { className: "paio-empty", text: t("一致するタグセットはありません") }));
       if (!search.value.trim() && matches.length > renderLimit) {
@@ -2463,9 +2514,20 @@ export class PromptEditor {
           const state = parseImportedState(text);
           this.tags = state.tags.map((tag) => createTag(tag.value, tag));
           this.settings = state.settings;
+          this.trailingSeparator = state.trailingSeparator;
         } else {
-          this.tags = parsePrompt(text).tags;
+          const parsed = parsePrompt(text);
+          this.tags = tagsWithoutTrailingPlaceholder(parsed);
+          this.trailingSeparator = parsed.trailingSeparator;
         }
+        this.promptDirty = false;
+        this.translationGeneration += 1;
+        this.translationBusy = false;
+        const favorites = this.currentFavoriteSettings();
+        const operations = ["favorites", "favoriteTagSets"].flatMap((kind) =>
+          favorites[kind].map((key) => ({ kind, key, favorite: true })));
+        this.rebuildControls();
+        if (operations.length) this.saveSharedFavorites(operations);
         this.applyBlacklist(this.settings.blacklistAction !== "warn");
         this.syncToWidgets();
         this.render();
@@ -2481,7 +2543,7 @@ export class PromptEditor {
       button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
       button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
       button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage, { trailingSeparator: true, stripLineBreaks: true }), "text/plain;charset=utf-8")),
-      button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings }), "application/json;charset=utf-8")),
+      button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
     return dialog;
@@ -2736,6 +2798,10 @@ export class PromptEditor {
       if (save && editor.value.trim() !== tag.value) {
         this.pushUndo();
         tag.value = editor.value.trim();
+        tag.translation = "";
+        tag.translatedTo = "";
+        tag.translationError = "";
+        tag.translationErrorTarget = "";
         tag.type = classifyTag(tag.value);
         this.applyBlacklist(this.settings.blacklistAction !== "warn");
         this.syncToWidgets();
@@ -3109,7 +3175,17 @@ export class PromptEditor {
     this.commitPromptBeforeAction();
     const unique = ids.map((id) => this.tags.findIndex((tag) => tag.id === id)).filter((index) => index >= 0);
     if (!unique.length) return;
-    const values = unique.map((index) => this.tags[index].value);
+    const generation = this.translationGeneration;
+    const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
+    const tasks = unique.map((index) => {
+      const tag = this.tags[index];
+      tag.translationRequestId = requestId;
+      return { id: tag.id, originalValue: tag.value, text: translatableTagText(tag.value) };
+    });
+    const values = tasks.map((task) => task.text);
+    const currentTag = (task) => generation === this.translationGeneration && !this.disposed
+      ? this.tags.find((tag) => tag.id === task.id && tag.value === task.originalValue && tag.translationRequestId === requestId)
+      : null;
     unique.forEach((index) => { this.tags[index].translationError = ""; });
     this.setStatus(t("{count}件を翻訳中…", { count: values.length }));
     try {
@@ -3119,13 +3195,18 @@ export class PromptEditor {
         target,
         catalog: this.settings.libraryFile,
         timeoutMs: translationBatchTimeoutMs(values.length),
+        isCancelled: () => this.disposed || generation !== this.translationGeneration,
+        onProgress: (done, total) => {
+          if (generation === this.translationGeneration && !this.disposed) this.setStatus(t("翻訳中… {done}/{total}件", { done, total }));
+        },
       });
+      if (!tasks.some(currentTag)) return;
       this.pushUndo();
       let emptyCount = 0;
       results.forEach((result, offset) => {
-        const tag = this.tags[unique[offset]];
+        const tag = tasks[offset] && currentTag(tasks[offset]);
         if (!tag) return;
-        const translated = cleanTranslation(result?.translated);
+        const translated = promptBody(cleanTranslation(result?.translated));
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
         tag.translationError = translated ? "" : (result?.error || t("翻訳結果が空でした"));
@@ -3137,9 +3218,12 @@ export class PromptEditor {
       if (emptyCount) this.setStatus(t("{count}件の翻訳結果が空でした。翻訳ボタンから再試行できます", { count: emptyCount }), true);
       else this.setStatus(t("翻訳しました"));
     } catch (error) {
-      unique.forEach((index) => {
-        this.tags[index].translationError = error.message;
-        this.tags[index].translationErrorTarget = target;
+      if (!tasks.some(currentTag)) return;
+      tasks.forEach((task) => {
+        const tag = currentTag(task);
+        if (!tag) return;
+        tag.translationError = error.message;
+        tag.translationErrorTarget = target;
       });
       this.persist();
       this.render();
@@ -3150,6 +3234,7 @@ export class PromptEditor {
   async translatePrompt() {
     if (this.translationBusy) return;
     this.commitPromptBeforeAction();
+    const generation = this.translationGeneration;
     this.exampleData = null;
     this.exampleLoadPromise = null;
     try {
@@ -3157,13 +3242,16 @@ export class PromptEditor {
     } catch (error) {
       return this.setStatus(t("タグ設定ファイルを再読み込みできませんでした: {error}", { error: error.message }), true);
     }
+    if (generation !== this.translationGeneration || this.disposed) return;
     const specialTypes = new Set(["lora", "lycoris", "embedding", "wildcard", "dynamic"]);
     const japaneseTasks = [];
     const localTasks = [];
+    const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
     for (const tag of this.currentTags) {
       if (specialTypes.has(tag.type)) continue;
       const sourceText = translatableTagText(tag.value);
       const task = { id: tag.id, originalValue: tag.value, text: sourceText };
+      tag.translationRequestId = requestId;
       if (containsJapaneseText(sourceText)) japaneseTasks.push(task);
       else if (!cleanTranslation(tag.translation) || tag.translatedTo !== this.settings.localLanguage) localTasks.push(task);
     }
@@ -3183,6 +3271,7 @@ export class PromptEditor {
     });
     this.setStatus(t("{count}件を翻訳中…", { count: taskCount }));
 
+    const progress = new Map();
     const execute = async (tasks, target) => {
       if (!tasks.length) return [];
       try {
@@ -3192,6 +3281,13 @@ export class PromptEditor {
           target,
           catalog: this.settings.libraryFile,
           timeoutMs: translationBatchTimeoutMs(tasks.length),
+          isCancelled: () => this.disposed || generation !== this.translationGeneration,
+          onProgress: (done) => {
+            progress.set(tasks, done);
+            if (generation === this.translationGeneration && !this.disposed) {
+              this.setStatus(t("翻訳中… {done}/{total}件", { done: [...progress.values()].reduce((a, b) => a + b, 0), total: taskCount }));
+            }
+          },
         });
         return tasks.map((task, index) => ({ task, target, result: results[index] || {} }));
       } catch (error) {
@@ -3204,12 +3300,13 @@ export class PromptEditor {
         execute(japaneseTasks, "en"),
         execute(localTasks, this.settings.localLanguage),
       ]);
+      if (generation !== this.translationGeneration || this.disposed) return;
       let replaced = 0;
       let supplemented = 0;
       let failed = 0;
       for (const { task, target, result } of batches.flat()) {
         const tag = this.tags.find((item) => item.id === task.id);
-        if (!tag || tag.value !== task.originalValue) continue;
+        if (!tag || tag.value !== task.originalValue || tag.translationRequestId !== requestId) continue;
         const translated = cleanTranslation(result?.translated);
         if (applySmartTranslationResult(tag, translated, target, this.settings.localLanguage)) {
           if (target === "en") replaced += 1;
@@ -3231,8 +3328,8 @@ export class PromptEditor {
       this.render();
       this.setStatus(t("{error}。翻訳ボタンで再試行できます", { error: error.message }), true);
     } finally {
-      this.translationBusy = false;
-      if (this.translateButton) {
+      if (generation === this.translationGeneration) this.translationBusy = false;
+      if (generation === this.translationGeneration && this.translateButton) {
         this.translateButton.disabled = false;
         this.translateButton.textContent = t("翻訳");
       }
