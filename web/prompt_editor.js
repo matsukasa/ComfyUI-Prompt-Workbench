@@ -23,6 +23,7 @@ import {
   parseFavoriteSettings,
   parseImportedState,
   sanitizeEditorState,
+  sanitizeSettings,
 } from "./settings.js";
 import { sharedFavoritesStore } from "./favorites.js";
 import { translateTags } from "./translation.js";
@@ -274,6 +275,22 @@ export async function upsertTagSetCopy(api, fileName, tagSets, options = {}) {
   }
   if (!result.response.ok) throw new Error(result.body.error || t("タグセットの保存に失敗しました ({status})", { status: result.response.status }));
   return result.body;
+}
+
+export async function fetchDefaultSettings(api) {
+  const response = await api.fetchApi("/prompt_workbench/settings");
+  if (!response.ok) throw new Error(t("設定を読み込めませんでした ({status})", { status: response.status }));
+  return sanitizeSettings(await response.json());
+}
+
+export async function saveDefaultSettings(api, settings) {
+  const response = await api.fetchApi("/prompt_workbench/settings", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ settings: sanitizeSettings(settings) }),
+  });
+  if (!response.ok) throw new Error(t("設定を保存できませんでした ({status})", { status: response.status }));
+  return sanitizeSettings(await response.json());
 }
 
 export async function writeCatalogFile(handle, catalog) {
@@ -566,6 +583,7 @@ export class PromptEditor {
     // Graph.configure assigns properties after onNodeCreated. Delay shared
     // state initialization until that synchronous lifecycle has completed.
     queueMicrotask(() => { if (!this.disposed) this.loadSharedFavorites(); });
+    queueMicrotask(() => { if (!this.disposed) this.loadDefaultSettings(); });
     this.loadModelRegistry();
     this.pollTimer = window.setInterval(() => this.syncFromWidgets(), 400);
   }
@@ -665,6 +683,29 @@ export class PromptEditor {
         this.setStatus(t("お気に入りを保存できませんでした: {error}", { error: error.message }), true);
       });
     return this.sharedFavoritesPromise;
+  }
+
+  hasSavedEditorState() {
+    return this.node.properties?.[STATE_KEY]?.version === 1;
+  }
+
+  async loadDefaultSettings() {
+    if (this.hasSavedEditorState()) return;
+    try {
+      const defaults = await fetchDefaultSettings(this.api);
+      if (this.disposed || this.hasSavedEditorState()) return;
+      this.settings = sanitizeSettings({
+        ...defaults,
+        favorites: this.settings.favorites,
+        favoriteTagSets: this.settings.favoriteTagSets,
+      });
+      if (this.favoritesStore?.base.revision >= 0) Object.assign(this.settings, this.favoritesStore.value);
+      this.rebuildControls();
+      this.syncToWidgets();
+      this.render();
+    } catch (error) {
+      this.setStatus(t("設定を読み込めませんでした: {error}", { error: error.message }), true);
+    }
   }
 
   promptEditorValue() {
@@ -1291,7 +1332,8 @@ export class PromptEditor {
       if (id === "general") navButton.classList.add("is-active");
       navigation.append(navButton);
     }
-    const save = button(t("変更を保存"), () => {
+    const save = button(t("変更を保存"), async () => {
+      save.disabled = true;
       this.pushUndo();
       this.settings.weightStep = Number(step.value);
       this.settings.duplicatePolicy = duplicate.value;
@@ -1307,10 +1349,24 @@ export class PromptEditor {
       this.syncToWidgets();
       this.render();
       this.refreshExamplesPanel?.();
-      closeDialog(dialog);
-      this.setStatus(t(previousUiLanguage === nextUiLanguage
-        ? "設定を保存しました。APIキーはワークフローに保存されません"
-        : "設定を保存しました。UI言語はComfyUIの再読み込み後に反映されます"));
+      try {
+        const currentFavorites = this.currentFavoriteSettings();
+        this.settings = sanitizeSettings({
+          ...await saveDefaultSettings(this.api, this.settings),
+          favorites: currentFavorites.favorites,
+          favoriteTagSets: currentFavorites.favoriteTagSets,
+        });
+        if (this.favoritesStore?.base.revision >= 0) Object.assign(this.settings, this.favoritesStore.value);
+        this.syncToWidgets();
+        closeDialog(dialog);
+        this.setStatus(t(previousUiLanguage === nextUiLanguage
+          ? "設定を保存しました。APIキーはワークフローに保存されません"
+          : "設定を保存しました。UI言語はComfyUIの再読み込み後に反映されます"));
+      } catch (error) {
+        this.setStatus(t("設定を保存できませんでした: {error}", { error: error.message }), true);
+      } finally {
+        save.disabled = false;
+      }
     });
     const shell = element("div", { className: "paio-settings-shell" }, [navigation, content]);
     dialog.body.append(shell);

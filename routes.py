@@ -28,10 +28,35 @@ _RATE_BUCKETS = defaultdict(deque)
 _REMOTE_SEMAPHORE = asyncio.Semaphore(3)
 _ROUTES_REGISTERED = False
 _FAVORITES_LOCK = threading.RLock()
+_DEFAULT_SETTINGS_LOCK = threading.RLock()
 SUPPORTED_PROVIDERS = {"local", "offline", "libretranslate", "deepl", "openai"}
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
 _DICTIONARY_CACHE_SIGNATURE = None
 _DICTIONARY_CACHE_VALUE = {}
+DEFAULT_SETTINGS_KEYS = {
+    "weightStep",
+    "weightMin",
+    "weightMax",
+    "duplicatePolicy",
+    "translationProvider",
+    "localLanguage",
+    "outputLanguage",
+    "translationDisplay",
+    "autoTranslate",
+    "blacklist",
+    "blacklistAction",
+    "tagColors",
+    "filter",
+    "libraryFile",
+    "tagSetFile",
+    "libraryEdits",
+    "showFavoritesOnly",
+    "replaceUnderscoresForOutput",
+    "promptTextHeight",
+    "tagListHeight",
+    "exampleListHeight",
+    "tagSetListHeight",
+}
 
 
 class TranslationError(RuntimeError):
@@ -185,6 +210,43 @@ def favorites_storage_path(base_directory=None):
     except (ImportError, AttributeError):
         user_directory = Path(__file__).with_name("user_data")
     return user_directory / "prompt_workbench" / "favorites.json"
+
+
+def default_settings_path(path=None):
+    return Path(path) if path is not None else Path(__file__).with_name("data") / "default_settings.json"
+
+
+def validate_default_settings(value):
+    if not isinstance(value, dict):
+        raise ValueError("Settings must be a JSON object")
+    settings = {}
+    for key, item in value.items():
+        if key in DEFAULT_SETTINGS_KEYS:
+            settings[key] = item
+    return settings
+
+
+def load_default_settings(path=None):
+    target = default_settings_path(path)
+    try:
+        data = json.loads(target.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
+    if not isinstance(data, dict):
+        raise ValueError("Settings must be a JSON object")
+    return validate_default_settings(data)
+
+
+def save_default_settings(value, path=None):
+    settings = validate_default_settings(value)
+    target = default_settings_path(path)
+    with _DEFAULT_SETTINGS_LOCK:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(
+            json.dumps(settings, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    return settings
 
 
 def normalize_catalog_name(value):
@@ -1252,6 +1314,24 @@ def register_routes():
             return web.json_response({"error": "Favorites request is too large"}, status=413)
         try:
             return web.json_response(update_favorites(await request.json()))
+        except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.get("/prompt_workbench/settings")
+    async def get_settings(_request):
+        try:
+            return web.json_response(load_default_settings())
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+
+    @routes.put("/prompt_workbench/settings")
+    async def put_settings(request):
+        if request.content_length and request.content_length > MAX_REQUEST_BYTES:
+            return web.json_response({"error": "Settings request is too large"}, status=413)
+        try:
+            body = await request.json()
+            settings = body.get("settings") if isinstance(body, dict) else body
+            return web.json_response(save_default_settings(settings))
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
 
