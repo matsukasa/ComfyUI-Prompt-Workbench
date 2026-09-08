@@ -1109,7 +1109,8 @@ export class PromptEditor {
       BASE_DOM_WIDGET_HEIGHT
       + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
       + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT];
+      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
+      + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
     this.node.setSize([
@@ -1118,7 +1119,8 @@ export class PromptEditor {
         BASE_NODE_HEIGHT
         + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
         + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-        + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT),
+        + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
+        + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT),
     ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
