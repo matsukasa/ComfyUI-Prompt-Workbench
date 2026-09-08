@@ -728,6 +728,7 @@ export class PromptEditor {
       const savedValue = outputPrompt(this.tags, this.settings.outputLanguage, {
         trailingSeparator: true,
         stripLineBreaks: true,
+        replaceUnderscores: this.settings.replaceUnderscoresForOutput,
       });
       // Accept the previous version's translation-only output as well, so
       // fixing weight serialization does not discard an older saved state.
@@ -787,6 +788,7 @@ export class PromptEditor {
     const value = outputPrompt(this.tags, this.settings.outputLanguage, {
       trailingSeparator: true,
       stripLineBreaks: true,
+      replaceUnderscores: this.settings.replaceUnderscoresForOutput,
     });
     const widget = this.widgets.prompt;
     if (widget && widget.value !== value) {
@@ -1214,6 +1216,8 @@ export class PromptEditor {
     output.value = this.settings.outputLanguage;
     const auto = element("input", { type: "checkbox" });
     auto.checked = this.settings.autoTranslate;
+    const replaceUnderscores = element("input", { type: "checkbox" });
+    replaceUnderscores.checked = this.settings.replaceUnderscoresForOutput;
     const uiLanguage = element("select", { className: "paio-select" });
     for (const { code, label } of getAvailableUiLanguages()) {
       const option = element("option", { text: label });
@@ -1259,6 +1263,8 @@ export class PromptEditor {
       this.labeled(t("重み刻み"), step),
       this.labeled(t("重複時"), duplicate),
       this.labeled(t("出力言語"), output),
+      this.labeled(t("_を半角空白に変換して出力"), replaceUnderscores),
+      element("p", { className: "paio-settings-help", text: t("表示中のタグは変更せず、次のノードへ渡すSTRINGとコピー/書き出しだけを変換します。") }),
       element("p", { className: "paio-settings-caption", text: t("タグ状態の色") }),
       colorGrid,
     );
@@ -1290,6 +1296,7 @@ export class PromptEditor {
       this.settings.translationProvider = provider.value;
       this.settings.outputLanguage = output.value;
       this.settings.autoTranslate = auto.checked;
+      this.settings.replaceUnderscoresForOutput = replaceUnderscores.checked;
       this.settings.tagColors = Object.fromEntries(Object.entries(colorInputs).map(([key, input]) => [key, input.value]));
       this.settings.libraryEdits = libraryManager.getEdits();
       const previousUiLanguage = getUiLanguage();
@@ -2542,7 +2549,7 @@ export class PromptEditor {
       button(t("プロンプトをコピー"), () => this.copyPrompt()),
       button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
       button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
-      button(t("TXTを書き出す"), () => download("prompt.txt", outputPrompt(this.currentTags, this.settings.outputLanguage, { trailingSeparator: true, stripLineBreaks: true }), "text/plain;charset=utf-8")),
+      button(t("TXTを書き出す"), () => download("prompt.txt", this.outputPromptForExport(this.currentTags, { trailingSeparator: true }), "text/plain;charset=utf-8")),
       button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
@@ -2577,6 +2584,7 @@ export class PromptEditor {
     this.render();
     if (parsed.errors.length) this.setStatus(t("本文を反映しましたが構文警告が{count}件あります", { count: parsed.errors.length }), true);
     else this.setStatus(t("本文をタグへ反映しました"));
+    if (this.settings.autoTranslate) this.translatePrompt();
   }
 
   commitPromptBeforeAction() {
@@ -3043,8 +3051,7 @@ export class PromptEditor {
     this.syncToWidgets();
     this.render();
     if (this.settings.autoTranslate) {
-      const indexes = target.map((tag, index) => ({ tag, index })).filter(({ tag }) => !cleanTranslation(tag.translation)).map(({ index }) => index);
-      this.translateIndexes(indexes, this.settings.localLanguage);
+      this.translatePrompt();
     }
   }
 
@@ -3360,7 +3367,7 @@ export class PromptEditor {
     const selected = this.currentTags.filter((tag) => tag.selected);
     const value = withTranslation
       ? selected.map((tag) => cleanTranslation(tag.translation) ? `${tag.value} (${cleanTranslation(tag.translation)})` : tag.value).join(", ")
-      : outputPrompt(selected, this.settings.outputLanguage);
+      : this.outputPromptForExport(selected);
     await copyText(value);
     this.setStatus(t("選択タグをコピーしました"));
   }
@@ -3376,8 +3383,16 @@ export class PromptEditor {
   }
 
   async copyPrompt() {
-    await copyText(outputPrompt(this.tags, this.settings.outputLanguage, { trailingSeparator: true, stripLineBreaks: true }));
+    await copyText(this.outputPromptForExport(this.tags, { trailingSeparator: true }));
     this.setStatus(t("プロンプトをコピーしました"));
+  }
+
+  outputPromptForExport(tags, options = {}) {
+    return outputPrompt(tags, this.settings.outputLanguage, {
+      trailingSeparator: Boolean(options.trailingSeparator),
+      stripLineBreaks: true,
+      replaceUnderscores: this.settings.replaceUnderscoresForOutput,
+    });
   }
 
   applyBlacklist(mutate) {

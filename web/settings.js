@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   favorites: [],
   favoriteTagSets: [],
   showFavoritesOnly: false,
+  replaceUnderscoresForOutput: false,
   promptTextHeight: 140,
   tagListHeight: 260,
   exampleListHeight: 118,
@@ -117,6 +118,7 @@ export function sanitizeSettings(input = {}) {
     settings.favoriteTagSets = sanitizeFavorites(input.favoriteTagSets, 2000);
   }
   settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
+  settings.replaceUnderscoresForOutput = Boolean(input.replaceUnderscoresForOutput);
   if (typeof input.libraryFile === "string") {
     settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);
   }

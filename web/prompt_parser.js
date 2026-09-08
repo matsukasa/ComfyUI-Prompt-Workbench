@@ -205,7 +205,7 @@ export function serializeEditorPrompt(tags, options = {}) {
 }
 
 export function outputPrompt(tags, outputLanguage = "en", options = {}) {
-  return serializePrompt(
+  const value = serializePrompt(
     (tags || []).map((tag) => ({
       ...tag,
       value:
@@ -215,6 +215,7 @@ export function outputPrompt(tags, outputLanguage = "en", options = {}) {
     })),
     options,
   );
+  return options.replaceUnderscores ? value.replace(/_/gu, " ") : value;
 }
 
 // Translation is text; weight/attention syntax belongs to the current tag.
