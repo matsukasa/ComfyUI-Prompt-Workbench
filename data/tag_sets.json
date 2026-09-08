@@ -14459,7 +14459,7 @@
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
-                  "id": "tagset:major:2:medium:1:small:1:set:1",
+                  "id": "tagset:major:2:medium:1:small:1:set:1:duplicate:2",
                   "name": "バニースイートロリータ",
                   "name_ja": "バニースイートロリータ",
                   "creator": "アリス服飾店　様",
@@ -14491,7 +14491,7 @@
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
-                  "id": "tagset:major:2:medium:1:small:1:set:2",
+                  "id": "tagset:major:2:medium:1:small:1:set:2:duplicate:2",
                   "name": "ランニングウェア",
                   "name_ja": "ランニングウェア",
                   "creator": "アリス服飾店　様",
@@ -14521,7 +14521,7 @@
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
-                  "id": "tagset:major:2:medium:1:small:1:set:3",
+                  "id": "tagset:major:2:medium:1:small:1:set:3:duplicate:2",
                   "name": "光を纏ったレースクイーンのコスチューム",
                   "name_ja": "光を纏ったレースクイーンのコスチューム",
                   "creator": "アリス服飾店　様",
@@ -14557,7 +14557,7 @@
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
-                  "id": "tagset:major:2:medium:1:small:1:set:4",
+                  "id": "tagset:major:2:medium:1:small:1:set:4:duplicate:2",
                   "name": "半袖にミニ丈の夏用ゴシックロリータドレス",
                   "name_ja": "半袖にミニ丈の夏用ゴシックロリータドレス",
                   "creator": "アリス服飾店　様",
@@ -14583,6 +14583,239 @@
                     "scalloped black floral-lace hem",
                     "fixed black and dark-charcoal palette",
                     "lightweight summer construction"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:5",
+                  "name": "黒いアイドルドレス",
+                  "name_ja": "黒いアイドルドレス",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095104463165968419",
+                  "tags": [
+                    "monochrome jet-black gothic idol mini dress",
+                    "fitted sweetheart bodice with a glossy black sequin center panel",
+                    "matte black satin side panels",
+                    "black glitter trim outlining the neckline",
+                    "narrow black shoulder straps edged with upright black organza ruffles and tiny black studs",
+                    "wide black faux-leather waist belt with black eyelets and a black star buckle",
+                    "short asymmetrical black satin overskirt with black glitter edging",
+                    "curved open front revealing a layered black ruffled mini skirt",
+                    "vertical black ruffle cascade exclusively along the right hip",
+                    "layered black bow fixed at the right waist with a black star ornament",
+                    "two black metal chains draped across the left hip",
+                    "black star appliqués on the front skirt panel",
+                    "black tulle ruffle hem",
+                    "matching black choker with black eyelets and a dangling black star",
+                    "black wrist cuffs with black ruffles",
+                    "black headband with a layered black side bow and black star",
+                    "black ankle combat boots with black laces",
+                    "strict jet-black color scheme only",
+                    "contrasting matte",
+                    "glossy and glittering black textures",
+                    "polished stage-idol construction"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:6",
+                  "name": "黒ブラウスとベージュのフレアスカートを組み合わせた、クラシカルフェミニンコーデ",
+                  "name_ja": "黒ブラウスとベージュのフレアスカートを組み合わせた、クラシカルフェミニンコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095255448265826591",
+                  "tags": [
+                    "elegant minimalist summer outfit",
+                    "loose jet-black blouse tucked neatly into the skirt",
+                    "smooth lightweight fabric",
+                    "simple round neckline",
+                    "elbow-length wide flutter sleeves",
+                    "gently gathered shoulders",
+                    "relaxed straight bodice",
+                    "high-waisted warm beige maxi skirt with fine evenly spaced dark-brown vertical pinstripes",
+                    "smooth fitted waistband",
+                    "softly gathered upper section",
+                    "subtle horizontal tier seam below the hips",
+                    "extremely full flowing A-line silhouette",
+                    "ankle-length flared hem with broad fluid folds",
+                    "strict jet-black",
+                    "warm beige and dark-brown color palette",
+                    "refined understated tailoring",
+                    "lightweight breathable fabric",
+                    "highly detailed seams and natural draping"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:7",
+                  "name": "オフショルダーブラウスとデニムのサスペンダー付きプリーツミニスカートの組み合わせコーデ",
+                  "name_ja": "オフショルダーブラウスとデニムのサスペンダー付きプリーツミニスカートの組み合わせコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095406440458441043",
+                  "tags": [
+                    "girly floral and denim two-piece outfit",
+                    "ivory chiffon blouse printed with delicate dusty-pink roses",
+                    "muted sage-green leaves and tiny beige flowers",
+                    "softly gathered square neckline with a narrow ruffled edge",
+                    "short off-shoulder puff sleeves ending above the elbows",
+                    "elastic sleeve cuffs with small ivory ruffles",
+                    "fitted dark-blue denim suspender skirt worn over the blouse",
+                    "two wide straight denim shoulder straps",
+                    "very high structured waistband shaped like a corset",
+                    "three round antique-gold buttons aligned vertically at the center front",
+                    "fitted waist",
+                    "short full pleated denim skirt ending at mid-thigh",
+                    "evenly spaced wide vertical pleats",
+                    "softly flared silhouette",
+                    "narrow black ruffled underskirt visible beneath the denim hem",
+                    "strict ivory",
+                    "dusty pink",
+                    "sage green",
+                    "dark denim blue",
+                    "antique gold and black color placement",
+                    "sweet feminine tailoring",
+                    "delicate floral fabric contrasted with structured denim"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:8",
+                  "name": "モノトーンギンガムチェックのゴシックメイドロリータ",
+                  "name_ja": "モノトーンギンガムチェックのゴシックメイドロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095617831245115598",
+                  "tags": [
+                    "black-and-white gothic gingham lolita mini dress",
+                    "strict large-scale black-and-white gingham check pattern made of equal alternating square blocks",
+                    "crisp uninterrupted square grid covering the entire bust panel and every skirt tier",
+                    "wide square neckline framed with gathered pure-white ruffles",
+                    "fitted gingham bust with a small black satin bow at the center",
+                    "short solid-black puff sleeves",
+                    "white ruffled sleeve cuffs and narrow black ribbon bows on both outer arms",
+                    "fitted solid-black underbust corset extending to the natural waist",
+                    "pointed center-front hem",
+                    "symmetrical black lacing through silver eyelets",
+                    "short full bell-shaped gingham skirt",
+                    "three broad gathered tiers",
+                    "continuous bold gingham pattern across all tiers",
+                    "wide black floral-lace bands separating each tier",
+                    "scalloped black lace along the skirt hem",
+                    "black ribbon choker with white neck ruffles and a narrow black bow at the center",
+                    "strict pure white and jet-black color scheme",
+                    "precise symmetrical construction"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:9",
+                  "name": "彼岸花の浴衣",
+                  "name_ja": "彼岸花の浴衣",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095768833575272584",
+                  "tags": [
+                    "girly September Japanese yukata",
+                    "soft ivory cotton fabric",
+                    "repeating coral-pink red spider lily textile pattern printed clearly across the entire yukata",
+                    "each flower formed from six narrow strongly recurved petals with long curved stamens radiating outward",
+                    "small clusters of red spider lilies attached to slender muted-green stems",
+                    "flat fabric print confined entirely to the yukata",
+                    "crossed wrap front",
+                    "pale pink inner collar",
+                    "ankle-length straight silhouette",
+                    "wide rectangular sleeves",
+                    "deep burgundy obi tied into a large structured bow at the back",
+                    "narrow dusty-pink obijime cord",
+                    "small red spider lily ornament centered on the obi",
+                    "strict ivory",
+                    "coral pink",
+                    "deep burgundy",
+                    "dusty pink and muted-green color placement",
+                    "lightweight cotton",
+                    "sweet feminine early-autumn styling"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:10",
+                  "name": "グレーのチェックのクラシカルガーリー",
+                  "name_ja": "グレーのチェックのクラシカルガーリー",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095829224997490960",
+                  "tags": [
+                    "dark-gray plaid girly mini dress",
+                    "fine low-contrast tartan pattern in charcoal gray and muted black covering the entire dress",
+                    "fitted straight bodice",
+                    "large pure-white rectangular bib yoke covering the upper chest",
+                    "crisp pointed white shirt collar",
+                    "three round gray buttons aligned vertically at the center of the bib",
+                    "narrow charcoal-gray ribbon tied into a small flat bow beneath the collar with two long straight tails",
+                    "short rounded puff sleeves made from matching plaid fabric",
+                    "narrow fitted sleeve cuffs",
+                    "small gathered ruffles along both shoulder seams",
+                    "natural waist seam",
+                    "short three-tiered gathered skirt",
+                    "three evenly spaced horizontal plaid flounces with soft structured volume",
+                    "narrow pure-white scalloped lace trim visible only beneath the lowest tier",
+                    "strict charcoal gray",
+                    "muted black",
+                    "pure white and medium-gray color placement",
+                    "modest preppy girly silhouette"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:11",
+                  "name": "秋口の街行きカジュアルウェア",
+                  "name_ja": "秋口の街行きカジュアルウェア",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2095980223863132440",
+                  "tags": [
+                    "casual summer layered outfit",
+                    "fitted solid deep-navy cropped tank top",
+                    "straight square neckline",
+                    "narrow shoulder straps",
+                    "waist-length hem",
+                    "oversized pale-blue button-down shirt worn completely open over the tank top",
+                    "fine vertical white pinstripes covering the entire shirt",
+                    "pointed shirt collar",
+                    "dropped shoulders",
+                    "loose straight silhouette extending below the hips",
+                    "long sleeves neatly rolled up to the forearms",
+                    "small white buttons",
+                    "light-wash blue denim high-waisted short pants",
+                    "fitted waist",
+                    "five-pocket construction",
+                    "visible belt loops",
+                    "silver front button",
+                    "front zipper seam",
+                    "softly faded thighs",
+                    "straight wide leg openings",
+                    "short upper-thigh length",
+                    "slightly raw-cut denim hems",
+                    "deep-navy cotton baseball cap with a curved brim and a single white interlocking letter emblem centered on the front",
+                    "small white side embroidery",
+                    "compact black crescent-shaped shoulder bag with a short narrow strap",
+                    "plain white ribbed crew socks gathered slightly above the ankles",
+                    "white low-top lace-up sneakers with three black side stripes",
+                    "light-gray suede toe panels and dark-gray rubber soles",
+                    "strictly fixed deep navy",
+                    "pale blue",
+                    "light-wash denim blue",
+                    "pure white",
+                    "black and light gray color palette"
                   ]
                 }
               ]

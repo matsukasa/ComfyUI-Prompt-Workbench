@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 2975,
-    "tags": 2922,
+    "tags": 2921,
     "major_categories": 8,
     "medium_categories": 33,
     "small_categories": 139
@@ -694,6 +694,13 @@
                   "rank": 15
                 },
                 {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "wolf cut",
+                  "translation_ja": "ウルフカット"
+                },
+                {
                   "id": 479563,
                   "name": "low_twintails",
                   "post_count": 133654,
@@ -881,81 +888,12 @@
                   "translation_ja": "浮いた髪"
                 },
                 {
-                  "id": 413908,
-                  "name": "spiked_hair",
-                  "post_count": 105784,
-                  "aliases": [],
-                  "rank": 9999,
-                  "translation_ja": "逆立った髪"
-                },
-                {
-                  "id": "legacy:62a5d8d4414ec284",
-                  "name": "hair_in_mouth",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "口に髪が入っている",
-                  "rank": 30
-                },
-                {
-                  "id": "legacy:9d3d7a66e03606a4",
-                  "name": "hair_tie_in_mouth",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "口に髪の結び目を持っている",
-                  "rank": 31
-                },
-                {
                   "id": 454933,
                   "name": "hair_bun",
                   "post_count": 292293,
                   "aliases": [],
                   "rank": 44,
                   "translation_ja": "髪の束"
-                },
-                {
-                  "id": "manual:20260814:jp_prompt_notes:entangled_hair",
-                  "name": "entangled_hair",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "髪が絡む",
-                  "note_ja": "髪が絡んでいる",
-                  "rank": 17
-                },
-                {
-                  "id": "manual:20260814:jp_prompt_notes:full_hair_view",
-                  "name": "full_hair_view",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "髪全体",
-                  "note_ja": "髪全体が見える",
-                  "rank": 24
-                },
-                {
-                  "id": "manual:20260814:jp_prompt_notes:hair_floating",
-                  "name": "hair_floating",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "髪が舞う",
-                  "note_ja": "髪が舞っている",
-                  "rank": 29
-                },
-                {
-                  "id": "manual:20260814:jp_prompt_notes:hair_gathered_on_head",
-                  "name": "hair_gathered_on_head",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "髪を頭にまとめる",
-                  "note_ja": "髪を頭にまとめている",
-                  "rank": 30
-                },
-                {
-                  "id": "manual:20260814:jp_prompt_notes:hair_hanging_down",
-                  "name": "hair_hanging_down",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "髪が垂れる",
-                  "note_ja": "髪が垂れている",
-                  "rank": 31
                 }
               ]
             },
@@ -1199,6 +1137,59 @@
                   "translation_ja": "サラサラ",
                   "note_ja": "スムーズな髪",
                   "rank": 390
+                },
+                {
+                  "id": "manual:20260814:jp_prompt_notes:hair_hanging_down",
+                  "name": "hair_hanging_down",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "髪が垂れる",
+                  "note_ja": "髪が垂れている",
+                  "rank": 31
+                },
+                {
+                  "id": "manual:20260814:jp_prompt_notes:hair_gathered_on_head",
+                  "name": "hair_gathered_on_head",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "髪を頭にまとめる",
+                  "note_ja": "髪を頭にまとめている",
+                  "rank": 30
+                },
+                {
+                  "id": "manual:20260814:jp_prompt_notes:hair_floating",
+                  "name": "hair_floating",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "髪が舞う",
+                  "note_ja": "髪が舞っている",
+                  "rank": 29
+                },
+                {
+                  "id": "manual:20260814:jp_prompt_notes:full_hair_view",
+                  "name": "full_hair_view",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "髪全体",
+                  "note_ja": "髪全体が見える",
+                  "rank": 24
+                },
+                {
+                  "id": 413908,
+                  "name": "spiked_hair",
+                  "post_count": 105784,
+                  "aliases": [],
+                  "rank": 9999,
+                  "translation_ja": "逆立った髪"
+                },
+                {
+                  "id": "manual:20260814:jp_prompt_notes:entangled_hair",
+                  "name": "entangled_hair",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "髪が絡む",
+                  "note_ja": "髪が絡んでいる",
+                  "rank": 17
                 }
               ]
             }
@@ -26095,7 +26086,9 @@
   "metadata": {},
   "prompt_workbench_meta": {
     "deleted_default_catalog_ids": [
-      "legacy:243c144e68911987"
+      "legacy:243c144e68911987",
+      "legacy:62a5d8d4414ec284",
+      "legacy:9d3d7a66e03606a4"
     ],
     "deleted_default_catalog_category_ids": [],
     "deleted_default_tagset_ids": [],
