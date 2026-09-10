@@ -14,6 +14,24 @@ async function requestFavorites(api, change) {
     initialized: body.initialized !== false };
 }
 
+export async function fetchSharedFavorites(api) {
+  const response = await api.fetchApi("/prompt_workbench/favorites");
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || `Favorites request failed (${response.status})`);
+  return parseFavoriteSettings(body);
+}
+
+export async function saveSharedFavorites(api, settings = {}) {
+  const response = await api.fetchApi("/prompt_workbench/favorites", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(favoriteSettingsPayload(settings)),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || `Favorites request failed (${response.status})`);
+  return parseFavoriteSettings(body);
+}
+
 export class SharedFavoritesStore {
   constructor(api) {
     this.api = api;

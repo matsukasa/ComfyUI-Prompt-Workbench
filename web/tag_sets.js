@@ -37,6 +37,7 @@ export function validateTagSetCatalog(source) {
               throw new Error(`Invalid tag set field: ${field}`);
             }
           }
+          if ("favorite" in item && typeof item.favorite !== "boolean") throw new Error("Invalid tag set field: favorite");
         }
       }
     }
@@ -93,7 +94,9 @@ export async function fetchTagSetCatalog(api) {
 }
 
 export function buildTagSetLibrary(source = {}) {
-  if (source.schema_version === 1) source = normalizeTagSetIds(source);
+  if (source.schema_version === 1) {
+    try { source = normalizeTagSetIds(source); } catch {}
+  }
   const categories = [];
   const sets = [];
   const warnings = Array.isArray(source?.warnings) ? source.warnings.map((item) => text(item, 500)).filter(Boolean) : [];
@@ -169,6 +172,7 @@ export function buildTagSetLibrary(source = {}) {
             sourceUrl: text(item.source_url, 1000),
             imageUrl: text(item.image_url, 1000),
             imagePath: text(item.image_path, 1000),
+            favorite: item.favorite === true,
             tags,
             preview: tags.slice(0, 6).join(", "),
           });

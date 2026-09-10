@@ -20,12 +20,13 @@ import {
   DEFAULT_CATALOG_NAME,
   DEFAULT_SETTINGS,
   exportEditorState,
-  parseFavoriteSettings,
+  mergeFavoriteSettings,
   parseImportedState,
   sanitizeEditorState,
   sanitizeSettings,
 } from "./settings.js";
-import { sharedFavoritesStore } from "./favorites.js";
+import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
+export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
 import {
   getAvailableUiLanguages,
@@ -543,6 +544,83 @@ export function tagsWithoutTrailingPlaceholder(parsed) {
   return [...(parsed?.tags || [])].filter((tag) => String(tag?.value || "").trim());
 }
 
+function catalogFavoriteKeys(catalog, edits = {}) {
+  return buildTagLibrary(catalog || {}, edits).tags
+    .filter((tag) => tag.favorite === true)
+    .map((tag) => favoriteTagKey(tag.prompt))
+    .filter(Boolean);
+}
+
+function tagSetFavoriteKeys(catalog) {
+  return buildTagSetLibrary(catalog || {}).sets
+    .filter((item) => item.favorite === true)
+    .map((item) => tagSetFavoriteKey(item.id))
+    .filter(Boolean);
+}
+
+function updateCatalogFavoriteFlag(catalog, value, favorite) {
+  const target = favoriteTagKey(value);
+  if (!target || !catalog || typeof catalog !== "object") return false;
+  let changed = false;
+  const apply = (item, field) => {
+    if (!item || typeof item !== "object" || favoriteTagKey(item[field]) !== target) return;
+    if (favorite) {
+      if (item.favorite !== true) {
+        item.favorite = true;
+        changed = true;
+      }
+    } else if (Object.hasOwn(item, "favorite")) {
+      delete item.favorite;
+      changed = true;
+    }
+  };
+  if (catalog.schema === "prompt-workbench/tag-catalog" && Array.isArray(catalog.tags)) {
+    for (const item of catalog.tags) apply(item, "prompt");
+    return changed;
+  }
+  for (const small of firstSmallCategories(catalog)) {
+    for (const item of Array.isArray(small.tags) ? small.tags : []) apply(item, "name");
+  }
+  return changed;
+}
+
+function updateLibraryEditFavoriteFlag(rawEdits, value, favorite) {
+  const target = favoriteTagKey(value);
+  if (!target) return rawEdits;
+  const edits = sanitizeLibraryEdits(rawEdits);
+  let changed = false;
+  const tags = edits.tags.map((tag) => {
+    if (favoriteTagKey(tag.prompt) !== target) return tag;
+    changed = true;
+    const next = { ...tag };
+    if (favorite) next.favorite = true;
+    else delete next.favorite;
+    return next;
+  });
+  return changed ? { ...edits, tags } : rawEdits;
+}
+
+function updateTagSetFavoriteFlag(catalog, id, favorite) {
+  const target = tagSetFavoriteKey(id);
+  if (!target || !catalog || typeof catalog !== "object") return false;
+  let changed = false;
+  for (const small of firstSmallCategories(catalog)) {
+    for (const item of Array.isArray(small.sets) ? small.sets : []) {
+      if (!item || typeof item !== "object" || tagSetFavoriteKey(item.id) !== target) continue;
+      if (favorite) {
+        if (item.favorite !== true) {
+          item.favorite = true;
+          changed = true;
+        }
+      } else if (Object.hasOwn(item, "favorite")) {
+        delete item.favorite;
+        changed = true;
+      }
+    }
+  }
+  return changed;
+}
+
 export class PromptEditor {
   constructor(node, widgets, api) {
     this.node = node;
@@ -608,6 +686,8 @@ export class PromptEditor {
     if (favorite) favorites.add(key);
     else favorites.delete(key);
     this.settings.favorites = [...favorites].sort();
+    this.settings.libraryEdits = updateLibraryEditFavoriteFlag(this.settings.libraryEdits, value, favorite);
+    updateCatalogFavoriteFlag(this.exampleData, value, favorite);
     this.clearSelectionState();
     this.persist();
     this.saveSharedFavorites([{ kind: "favorites", key, favorite }]);
@@ -631,6 +711,7 @@ export class PromptEditor {
     if (favorite) favorites.add(key);
     else favorites.delete(key);
     this.settings.favoriteTagSets = [...favorites].sort();
+    updateTagSetFavoriteFlag(this.tagSetData, id, favorite);
     this.persist();
     this.saveSharedFavorites([{ kind: "favoriteTagSets", key, favorite }]);
     this.refreshExamplesPanel?.();
@@ -638,19 +719,42 @@ export class PromptEditor {
   }
 
   syncFavoritesWithCatalog(catalog) {
-    buildTagLibrary(catalog, this.settings.libraryEdits);
-    return 0;
+    const fileFavorites = catalogFavoriteKeys(catalog, this.settings.libraryEdits);
+    const merged = mergeFavoriteSettings(this.settings, { favorites: fileFavorites });
+    const changed = merged.favorites.join("\0") !== (this.settings.favorites || []).join("\0");
+    this.settings.favorites = merged.favorites;
+    if (changed && this.favoritesStore?.base.revision >= 0) {
+      this.saveSharedFavorites(fileFavorites.map((key) => ({ kind: "favorites", key, favorite: true })));
+    }
+    return fileFavorites.length;
+  }
+
+  syncFavoritesWithTagSets(catalog) {
+    const fileFavorites = tagSetFavoriteKeys(catalog);
+    const merged = mergeFavoriteSettings(this.settings, { favoriteTagSets: fileFavorites });
+    const changed = merged.favoriteTagSets.join("\0") !== (this.settings.favoriteTagSets || []).join("\0");
+    this.settings.favoriteTagSets = merged.favoriteTagSets;
+    if (changed && this.favoritesStore?.base.revision >= 0) {
+      this.saveSharedFavorites(fileFavorites.map((key) => ({ kind: "favoriteTagSets", key, favorite: true })));
+    }
+    return fileFavorites.length;
   }
 
   currentFavoriteSettings() {
-    return parseFavoriteSettings({
+    return mergeFavoriteSettings({
       favorites: this.settings.favorites,
       favoriteTagSets: this.settings.favoriteTagSets,
+    }, {
+      favorites: this.exampleData ? catalogFavoriteKeys(this.exampleData, this.settings.libraryEdits) : [],
+      favoriteTagSets: this.tagSetData ? tagSetFavoriteKeys(this.tagSetData) : [],
     });
   }
 
   applyFavoriteSettings(favorites) {
-    const merged = parseFavoriteSettings(favorites);
+    const merged = mergeFavoriteSettings(favorites, {
+      favorites: this.exampleData ? catalogFavoriteKeys(this.exampleData, this.settings.libraryEdits) : [],
+      favoriteTagSets: this.tagSetData ? tagSetFavoriteKeys(this.tagSetData) : [],
+    });
     const changed = merged.favorites.join("\0") !== (this.settings.favorites || []).join("\0")
       || merged.favoriteTagSets.join("\0") !== (this.settings.favoriteTagSets || []).join("\0");
     this.settings.favorites = merged.favorites;
@@ -1924,6 +2028,7 @@ export class PromptEditor {
       this.tagSetLoadPromise = fetchSelectedTagSetCatalog(this.api, file).then((body) => {
         if (generation !== this.dataGeneration || file !== this.settings.tagSetFile) return this.loadTagSetData();
         this.tagSetData = body;
+        this.syncFavoritesWithTagSets(body);
         return body;
       }).catch((error) => {
         if (generation === this.dataGeneration && file === this.settings.tagSetFile) this.tagSetLoadPromise = null;

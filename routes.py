@@ -508,6 +508,8 @@ def normalize_tag_sets_catalog(data):
                         set_output["image_url"] = _short_text(item.get("image_url"), 1000)
                     if item.get("image_path"):
                         set_output["image_path"] = _short_text(item.get("image_path"), 1000)
+                    if item.get("favorite") is True:
+                        set_output["favorite"] = True
                     small_output["sets"].append(set_output)
                     set_count += 1
                 medium_output["small_categories"].append(small_output)
@@ -801,6 +803,8 @@ def validate_user_catalog(data):
         for item in data["tags"]:
             if not isinstance(item, dict) or not isinstance(item.get("prompt"), str) or not item["prompt"].strip():
                 raise ValueError("Every catalog tag must have a prompt")
+            if "favorite" in item and not isinstance(item["favorite"], bool):
+                raise ValueError("Invalid catalog tag field: favorite")
         category_count = len(categories)
         tag_count = len(data["tags"])
     else:
@@ -831,6 +835,8 @@ def validate_user_catalog(data):
                     for item in items:
                         if not isinstance(item, dict) or not isinstance(item.get("name"), str) or not item["name"].strip():
                             raise ValueError("Every catalog tag must have a name")
+                        if "favorite" in item and not isinstance(item["favorite"], bool):
+                            raise ValueError("Invalid catalog tag field: favorite")
                     tag_count += len(items)
 
     if category_count > MAX_CATALOG_CATEGORIES:
@@ -881,6 +887,8 @@ def _validate_tag_set_structure(data):
                                          ("image_url", 1000), ("image_path", 1000)):
                         if field in item and (not isinstance(item[field], str) or len(item[field]) > limit):
                             raise ValueError(f"Invalid tag set field: {field}")
+                    if "favorite" in item and not isinstance(item["favorite"], bool):
+                        raise ValueError("Invalid tag set field: favorite")
     if category_count > MAX_CATALOG_CATEGORIES:
         raise ValueError("Tag set file contains too many categories")
     if set_count > MAX_TAG_SETS:

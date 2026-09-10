@@ -39,6 +39,7 @@ export function sanitizeLibraryEdits(input = {}) {
         custom: Boolean(entry?.custom),
       };
       if (Number.isInteger(entry?.order) && entry.order >= 0) sanitized.order = Math.min(entry.order, MAX_EDITS);
+      if (entry?.favorite === true) sanitized.favorite = true;
       return sanitized;
     }).filter((entry) => entry.id),
   };
@@ -85,6 +86,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
         prompt: text(tag?.prompt, 10000),
         ja: text(tag?.ja, 10000),
         order: Number.isInteger(tag?.order) ? Math.max(0, tag.order) : index,
+        favorite: tag?.favorite === true,
         builtin: true,
       });
     }
@@ -115,6 +117,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
               order: Number.isInteger(item.rank) ? Math.max(0, item.rank - 1) : index,
               postCount: Number.isInteger(item.post_count) ? Math.max(0, item.post_count) : 0,
               aliases: Array.isArray(item.aliases) ? item.aliases.map((alias) => text(alias, 200)).filter(Boolean) : [],
+              favorite: item.favorite === true,
               builtin: true,
             });
           });
@@ -152,7 +155,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       const id = `tag:${text(group.id, 80)}:${index}`;
       tags.set(id, {
         id, categoryId: smallId, prompt: text(item.prompt, 10000),
-        ja: text(item.translation?.ja, 10000), order: index, builtin: true,
+        ja: text(item.translation?.ja, 10000), order: index, favorite: item.favorite === true, builtin: true,
       });
     });
   }
@@ -247,6 +250,8 @@ export function saveTagEdit(rawEdits, tag) {
     deleted: false, custom: Boolean(tag.custom),
   };
   if (Number.isInteger(tag.order) && tag.order >= 0) entry.order = Math.min(tag.order, MAX_EDITS);
+  if (tag.favorite === true) entry.favorite = true;
+  else if (Object.hasOwn(tag, "favorite")) entry.favorite = false;
   upsert(edits.tags, entry);
   return sanitizeLibraryEdits(edits);
 }
@@ -333,13 +338,17 @@ export function libraryToStoredCatalog(library) {
       en: text(category.en),
       ja: text(category.ja),
     })),
-    tags: (library?.tags || []).map((tag, index) => ({
-      id: text(tag.id, 160),
-      categoryId: text(tag.categoryId, 120),
-      prompt: text(tag.prompt, 10000),
-      ja: text(tag.ja, 10000),
-      order: Number.isInteger(tag.order) ? tag.order : index,
-    })),
+    tags: (library?.tags || []).map((tag, index) => {
+      const output = {
+        id: text(tag.id, 160),
+        categoryId: text(tag.categoryId, 120),
+        prompt: text(tag.prompt, 10000),
+        ja: text(tag.ja, 10000),
+        order: Number.isInteger(tag.order) ? tag.order : index,
+      };
+      if (tag.favorite === true) output.favorite = true;
+      return output;
+    }),
   };
 }
 
@@ -400,6 +409,8 @@ export function libraryToBundledCatalog(library, source = {}) {
     if (tag.ja || Object.hasOwn(original, "translation_ja")) output.translation_ja = text(tag.ja, 10000);
     if (tag.aliases?.length || Object.hasOwn(original, "aliases")) output.aliases = [...(tag.aliases || [])];
     if (Number.isInteger(tag.postCount) || Object.hasOwn(original, "post_count")) output.post_count = Number.isInteger(tag.postCount) ? tag.postCount : 0;
+    if (tag.favorite === true) output.favorite = true;
+    else delete output.favorite;
     return output;
   };
   const smallObject = (small) => categoryObject(
