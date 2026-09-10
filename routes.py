@@ -878,8 +878,8 @@ def _validate_tag_set_structure(data):
                     if not isinstance(item, dict) or not isinstance(item.get("tags"), list):
                         raise ValueError("Every tag set must contain a tags array")
                     tags = item["tags"]
-                    if not 1 <= len(tags) <= MAX_TAG_SET_TAGS:
-                        raise ValueError(f"A tag set must contain 1 to {MAX_TAG_SET_TAGS} tags")
+                    if len(tags) > MAX_TAG_SET_TAGS:
+                        raise ValueError(f"A tag set must contain at most {MAX_TAG_SET_TAGS} tags")
                     if any(not isinstance(tag, str) or not tag.strip() or len(tag) > 10000 for tag in tags):
                         raise ValueError("Every tag in a set must be a non-empty string of at most 10000 characters")
                     for field, limit in (("id", 160), ("name", 200), ("name_ja", 200), ("name_en", 200),

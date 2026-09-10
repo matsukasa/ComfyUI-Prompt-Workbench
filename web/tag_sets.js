@@ -25,8 +25,11 @@ export function validateTagSetCatalog(source) {
         const sets = category(small, "sets");
         setCount += sets.length;
         for (const item of sets) {
-          if (!item || !Array.isArray(item.tags) || !item.tags.length || item.tags.length > 100) {
-            throw new Error("A tag set must contain 1 to 100 tags");
+          if (!item || !Array.isArray(item.tags)) {
+            throw new Error("Every tag set must contain a tags array");
+          }
+          if (item.tags.length > 100) {
+            throw new Error("A tag set must contain at most 100 tags");
           }
           if (item.tags.some((tag) => typeof tag !== "string" || !tag.trim() || [...tag].length > MAX_TAG_TEXT)) {
             throw new Error("Every tag in a set must be a non-empty string of at most 10000 characters");
@@ -99,7 +102,10 @@ export function buildTagSetLibrary(source = {}) {
   }
   const categories = [];
   const sets = [];
-  const warnings = Array.isArray(source?.warnings) ? source.warnings.map((item) => text(item, 500)).filter(Boolean) : [];
+  const warnings = Array.isArray(source?.warnings) ? source.warnings
+    .map((item) => text(item, 500))
+    .filter((item) => item && !item.startsWith("Duplicate tag set id migrated:")
+      && !item.startsWith("Skipped empty tag set under ")) : [];
   const majors = Array.isArray(source?.major_categories) ? source.major_categories : [];
 
   const addCategory = (id, level, parentId, labelJa, labelEn = "") => {
@@ -157,7 +163,6 @@ export function buildTagSetLibrary(source = {}) {
             .map((tag) => text(tag, MAX_TAG_TEXT))
             .filter(Boolean);
           if (!tags.length) {
-            warnings.push(`Skipped empty tag set under ${smallCategory.id}`);
             continue;
           }
           const id = text(item.id, 160) || `${smallCategory.id}:set:${setIndex}`;
