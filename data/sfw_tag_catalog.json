@@ -9011,7 +9011,8 @@
                 },
                 {
                   "name": "Italian_Greyhound",
-                  "translation_ja": "イタリアングレーハウンド"
+                  "translation_ja": "イタリアングレーハウンド",
+                  "id": "manual:20260910:id_repair:italian_greyhound"
                 },
                 {
                   "id": 2716,
@@ -10230,7 +10231,7 @@
     {
       "id": "styles:20260815:major:ea81c0b8427a",
       "label_ja": "要確認",
-      "description_ja": "styles.txt ????????",
+      "description_ja": "styles.txt 由来の要確認項目",
       "medium_categories": [
         {
           "id": "styles:20260815:medium:6050a85e0b2a",
