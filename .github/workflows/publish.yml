@@ -73,4 +73,5 @@ jobs:
       - name: Publish Custom Node
         uses: Comfy-Org/publish-node-action@main
         with:
+          skip_checkout: 'true'
           personal_access_token: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
