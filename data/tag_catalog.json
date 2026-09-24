@@ -19,7 +19,7 @@
     "tags": 2921,
     "major_categories": 8,
     "medium_categories": 33,
-    "small_categories": 151
+    "small_categories": 150
   },
   "major_categories": [
     {
@@ -717,20 +717,6 @@
                   "aliases": [],
                   "translation_ja": "いたずらっ子",
                   "rank": 32
-                }
-              ]
-            },
-            {
-              "id": "catalog_small:review_84fe1d1f443d",
-              "label_ja": "キャラクター名",
-              "tags": [
-                {
-                  "id": "legacy:d87bafa96931df65",
-                  "name": "suigintou",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "水銀燈",
-                  "rank": 24
                 }
               ]
             }
@@ -5797,6 +5783,13 @@
                   "aliases": [],
                   "rank": 92,
                   "translation_ja": "頭を下げる"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "dynamic_pose",
+                  "translation_ja": "ダイナミックなポーズ"
                 },
                 {
                   "id": 431755,
@@ -26177,9 +26170,12 @@
     "deleted_default_catalog_ids": [
       "legacy:243c144e68911987",
       "legacy:62a5d8d4414ec284",
-      "legacy:9d3d7a66e03606a4"
+      "legacy:9d3d7a66e03606a4",
+      "legacy:d87bafa96931df65"
     ],
-    "deleted_default_catalog_category_ids": [],
+    "deleted_default_catalog_category_ids": [
+      "catalog_small:review_84fe1d1f443d"
+    ],
     "deleted_default_tagset_ids": [],
     "deleted_default_tagset_category_ids": [],
     "imports": {}

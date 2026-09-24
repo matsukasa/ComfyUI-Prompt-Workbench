@@ -5,3 +5,4 @@ __pycache__/
 tests/
 data/sfw_tag_catalog.json
 data/sfw_tag_sets.json
+data/*_report.md

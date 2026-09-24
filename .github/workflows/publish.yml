@@ -41,8 +41,8 @@ jobs:
           if sfw.get("stats", {}).get("catalog_profile") != "registry_sfw":
               raise SystemExit("data/sfw_tag_catalog.json must declare stats.catalog_profile = registry_sfw")
           print(
-              "Registry package catalog is full default:",
-              f"tags={full.get('stats', {}).get('tags')}",
+              "Registry package catalog is SFW:",
+              f"tags={sfw.get('stats', {}).get('tags')}",
               f"target={default_catalog}",
           )
 
@@ -61,10 +61,14 @@ jobs:
           if sfw_sets.get("stats", {}).get("tag_set_profile") != "registry_sfw":
               raise SystemExit("data/sfw_tag_sets.json must declare stats.tag_set_profile = registry_sfw")
           print(
-              "Registry package tag sets are full default:",
-              f"sets={sum(len(small.get('sets', [])) for major in full_sets.get('major_categories', []) for medium in major.get('medium_categories', []) for small in medium.get('small_categories', []))}",
+              "Registry package tag sets are SFW:",
+              f"sets={sum(len(small.get('sets', [])) for major in sfw_sets.get('major_categories', []) for medium in major.get('medium_categories', []) for small in medium.get('small_categories', []))}",
               f"target={default_tag_sets}",
           )
+          default_catalog.write_bytes(sfw_catalog.read_bytes())
+          default_tag_sets.write_bytes(sfw_tag_sets.read_bytes())
+          load_catalog(default_catalog)
+          load_tag_sets(default_tag_sets)
           PY
       - name: Publish Custom Node
         uses: Comfy-Org/publish-node-action@main
