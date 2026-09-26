@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Disabled prompt tags browser check</title>
+  <link rel="stylesheet" href="../web/prompt_workbench.css">
+</head>
+<body style="margin:24px;background:#171717;color:#eee;font:15px sans-serif">
+  <main style="max-width:900px;margin:auto">
+    <h1>Disabled prompt tags</h1>
+    <p>Click a tag to disable or enable it. Ctrl-click tags to reveal the real bulk controls. Edit the upper text and apply it to check that disabled tags remain below.</p>
+    <button id="reset">Reset fixture</button>
+    <button id="check">Run browser checks</button>
+    <output id="result" aria-live="polite">READY</output>
+    <div id="mount" style="margin-top:16px"></div>
+  </main>
+  <script type="module">
+    import { PromptEditor } from "../web/prompt_editor.js";
+    import { createTag } from "../web/prompt_parser.js";
+    import { sanitizeSettings } from "../web/settings.js";
+
+    // Use the production builder, textarea listeners, tag rows, and mutation
+    // handlers. Omit unrelated library/network panels and ComfyUI attachment.
+    const editor = Object.create(PromptEditor.prototype);
+    Object.assign(editor, {
+      node: { size: [900, 800], properties: {}, setSize(size) { this.size = size; } },
+      widgets: { prompt: { value: "" } },
+      settings: sanitizeSettings({ autoTranslate: false }),
+      filterText: "", filterMode: "all", renderLimit: 200,
+      undoStack: [], redoStack: [], lastSelectedIndex: null,
+      dragIndex: null, didDrag: false, clickTimer: null,
+      promptDirty: false, trailingSeparator: false, translationGeneration: 0,
+      modelRegistry: { loras: null, embeddings: null },
+      tags: [],
+    });
+    for (const name of ["buildSettingsDialog", "buildExamplesPanel", "buildTagSetsPanel", "buildLibraryTabs", "buildBlacklistDialog", "buildIoDialog"]) {
+      editor[name] = () => document.createElement("div");
+    }
+    editor.setLibraryTab = () => {};
+    editor.rebuildControls = () => {};
+    editor.root = editor.build();
+    document.querySelector("#mount").append(editor.root);
+
+    function reset() {
+      clearTimeout(editor.clickTimer);
+      editor.tags = [createTag("cat"), createTag("(dog:1.2)", { translation: "犬", translatedTo: "ja" }), createTag("forest")];
+      editor.undoStack = [];
+      editor.redoStack = [];
+      editor.promptDirty = false;
+      editor.trailingSeparator = false;
+      editor.lastSelectedIndex = null;
+      editor.syncToWidgets();
+      editor.render();
+    }
+    const result = document.querySelector("#result");
+    document.querySelector("#reset").onclick = () => { reset(); result.textContent = "READY"; };
+    async function waitFor(condition, message) {
+      const deadline = performance.now() + 2000;
+      while (!condition()) {
+        if (performance.now() >= deadline) throw new Error(`Timeout: ${message}`);
+        await new Promise((resolve) => setTimeout(resolve, 25));
+      }
+    }
+    const row = (index) => editor.tagList.querySelector(`[data-tag-index="${index}"]`);
+    function assert(condition, message) { if (!condition) throw new Error(message); }
+    document.querySelector("#check").onclick = async () => {
+      const check = document.querySelector("#check");
+      check.disabled = true;
+      result.textContent = "RUNNING";
+      try {
+        reset();
+        const dogId = editor.tags[1].id;
+        row(1).click();
+        await waitFor(() => editor.tags.find((tag) => tag.id === dogId)?.enabled === false, "single disable");
+        assert(!editor.promptTextarea.value.includes("dog") && row(1).classList.contains("is-disabled"), "single disable");
+        editor.promptTextarea.value = "cat, river, forest";
+        editor.promptTextarea.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.applyPromptButton.click();
+        assert(editor.tags.some((tag) => tag.id === dogId && !tag.enabled && tag.translation === "犬"), "disabled metadata after text edit");
+        const dogIndex = editor.tags.findIndex((tag) => tag.id === dogId);
+        row(dogIndex).click();
+        await waitFor(() => editor.tags.find((tag) => tag.id === dogId)?.enabled === true, "single re-enable");
+        assert(editor.promptTextarea.value.includes("(dog:1.2)"), "single re-enable");
+        for (let index = 0; index < editor.tags.length; index += 1) row(index).dispatchEvent(new MouseEvent("click", { bubbles: true, ctrlKey: true }));
+        editor.bulkBar.querySelectorAll("button")[2].click();
+        assert(editor.promptTextarea.value === "" && editor.tags.every((tag) => !tag.enabled), "bulk disable all");
+        editor.bulkBar.querySelectorAll("button")[1].click();
+        assert(editor.tags.every((tag) => tag.enabled) && editor.promptTextarea.value.includes("dog"), "bulk re-enable");
+        editor.undo();
+        assert(editor.promptTextarea.value === "" && editor.tags.length === 4, "undo");
+        editor.redo();
+        assert(editor.promptTextarea.value.includes("dog"), "redo");
+        result.textContent = "PASS: single, edit/apply, metadata, bulk, undo/redo";
+      } catch (error) {
+        result.textContent = `FAIL: ${error.message}`;
+      } finally {
+        check.disabled = false;
+      }
+    };
+    reset();
+    window.disabledPromptEditor = editor;
+  </script>
+</body>
+</html>

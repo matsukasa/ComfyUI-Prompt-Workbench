@@ -120,7 +120,11 @@ Stability Matrix has a separate `custom_nodes` directory for each package. Insta
 12. Open the `Tag sets` tab to search classified tag sets and add grouped tags.
 13. Connect the `prompt` output to any node that accepts a `STRING` input.
 
-Disabled tags remain in the workflow as UI state, but are excluded from `STRING` output. During API or headless execution where the browser UI is unavailable, the saved `STRING` is output as-is.
+Disabling a tag immediately removes it from the main prompt text and `STRING` output. It remains in the tag list below, and enabling it again restores it to the prompt in the current list order. Bulk actions behave the same way. Disabling every tag leaves the prompt text empty.
+
+Editing the prompt text and choosing `Apply to tags` preserves disabled tags, including their weights and translations. Each disabled tag is placed before the first tag that followed it in the previous list and survives the text edit. If none survives, it remains at the end of the list. Typing the same text as a disabled tag creates a separate enabled tag. Disabled tags are saved in workflows and state JSON, and can be restored with Undo / Redo.
+
+During API or headless execution where the browser UI is unavailable, the saved `STRING` is output as-is.
 
 ## Tag Catalogue And Tag Sets
 
@@ -129,16 +133,18 @@ Prompt Workbench uses two local data sources.
 - Tag catalogue: a dictionary for adding individual tags.
 - Tag sets: classified groups of tags for adding common prompt patterns at once.
 
-The currently bundled data is:
+Bundled data differs by distribution. These counts describe the JSON files in this repository:
 
 | Data | Top-level | Middle-level | Subcategories | Items |
 | --- | ---: | ---: | ---: | ---: |
-| Tag catalogue `data/tag_catalog.json` | 8 | 33 | 139 | 2,922 tags |
-| Tag sets `data/tag_sets.json` | 6 | 20 | 50 | 632 sets |
+| GitHub tag catalogue | 8 | 33 | 150 | 2,921 tags |
+| GitHub tag sets | 6 | 22 | 67 | 664 sets |
+| SFW tag catalogue for Registry | 10 | 32 | 129 | 964 tags |
+| SFW tag sets for Registry | 5 | 15 | 42 | 292 sets |
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
-Both the GitHub version and the Comfy Registry package include the default `data/tag_catalog.json` and `data/tag_sets.json`. They are treated as the distributed Factory Default, not as imported or user-added data. You can expand or replace them for your own workflow by loading local JSON files.
+The GitHub version includes the full data, including adult tags. The Comfy Registry publishing workflow replaces the default `data/tag_catalog.json` and `data/tag_sets.json` with `data/sfw_tag_catalog.json` and `data/sfw_tag_sets.json` to distribute SFW/general-purpose data. Counts vary by the installed version. Both distributions treat their bundled data as Factory Default. Load your own JSON files to extend the available content.
 
 Some bundled tag sets include a selection of publicly posted prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), included with kind permission. Thank you very much for allowing Prompt Workbench to include them. They are wonderfully expressive and practical references for outfits, mood, and prompt composition, and I am deeply grateful for the opportunity to include them as tag sets here.
 
@@ -146,7 +152,7 @@ Some bundled tag sets include a selection of publicly posted prompts created by 
 
 Open `Add tags` to use the tag catalogue. Search covers English names, aliases, and Japanese top-level, middle-level, and subcategory names. Tag buttons display the English name and Japanese translation.
 
-The SFW/general-purpose catalogue remains available as `data/sfw_tag_catalog.json`. If you need it, load it from Prompt Workbench Settings -> Tag manager -> `Choose and load a file`. The loaded file is saved as a named catalogue under the ComfyUI user directory at:
+The GitHub version also includes the SFW/general-purpose catalogue as `data/sfw_tag_catalog.json`. To switch to it, load it from Prompt Workbench Settings -> Files -> `Choose and load a file`. The Registry package uses the SFW catalogue by default and omits the separately named SFW source file. The loaded file is saved as a named catalogue under the ComfyUI user directory at:
 
 ```text
 prompt_workbench/tag_catalogs/
@@ -162,10 +168,10 @@ A tag set can include a name, Japanese name, English name, author, reference URL
 
 Tag sets expand into individual tags when added. Enable/disable, reordering, and weight changes apply to each tag separately. Files support up to 2,000 sets, 500 categories, and 100 tags per set within 4 MB. Oversized input is rejected instead of silently truncated. Duplicate IDs in older files keep the first occurrence unchanged and receive `:duplicate:2` (or the next available suffix) on subsequent occurrences. Existing favorites continue to refer to the first set.
 
-Use the star button to mark a tag set as a favourite. Favourites are saved in node settings as `favoriteTagSets`. The tag set list can be resized, and its height is saved as `tagSetListHeight`.
+Right-click a tag set and choose `Add to favourites` to mark it as a favourite. Favourite sets display a star; use the same menu to remove them from favourites. Favourites are saved in node settings as `favoriteTagSets`. The tag set list can be resized, and its height is saved as `tagSetListHeight`.
 Search covers tag set names, English names, descriptions, tag contents, and category names.
 
-The default tag set file is `data/tag_sets.json`. To use another tag set JSON file, load it from Prompt Workbench Settings -> Tag manager. The loaded file is saved as a named file under the ComfyUI user directory at:
+The default tag set file is `data/tag_sets.json`. The GitHub version also includes SFW/general-purpose sets in `data/sfw_tag_sets.json`; the Registry package uses that content as its default `data/tag_sets.json`. To use another tag set JSON file, load it from Prompt Workbench Settings -> Files. The loaded file is saved as a named file under the ComfyUI user directory at:
 
 ```text
 prompt_workbench/tag_sets/
@@ -222,6 +228,12 @@ Translation requests are split into batches of at most 100 tags and bounded requ
 
 Before replacing catalogues, replacing tag sets, or moving to another environment, back up the state JSON, the active tag catalogue JSON, and the active tag set JSON together.
 
+Loading a catalogue or tag set file with `favorite: true` also adds those entries to the shared favourites. Favourite actions in the UI update shared data and the current editing state; they do not automatically overwrite the original catalogue or tag set JSON.
+
+## Saving Settings
+
+`Save changes` in Settings applies settings to the current node and saves defaults for new nodes in `data/default_settings.json`. Workflows with saved editor state retain their own settings. UI language is saved separately in the browser.
+
 ## Translation
 
 For Japanese translation, Prompt Workbench first checks the built-in dictionary and saved Japanese tag translations, regardless of the selected provider. Only missing tags are sent to an external service.
@@ -257,7 +269,7 @@ UI locale files are stored under `web/locales/`. `en.json` is the template conta
 
 ## Input And Synchronisation
 
-Tag buttons and add actions are immediately synchronised to the corresponding standard `STRING` widget. Direct edits in the main text area require an explicit apply action to avoid parsing text during IME composition. The editor also detects and reparses `STRING` changes caused by workflow loading or external operations.
+Tag buttons and add actions are immediately synchronised to the corresponding standard `STRING` widget. Direct edits in the main text area require an explicit apply action to avoid parsing text during IME composition. If text edits are pending when you toggle a tag, change its weight, or perform a bulk action, the editor applies the text first. The editor also detects and reparses `STRING` changes caused by workflow loading or external operations.
 
 Complete tag state is stored in the versioned `node.properties.promptWorkbenchState`, separately from the executable `STRING`.
 
@@ -299,7 +311,7 @@ Confirm that ComfyUI can serve `/object_info` or `/embeddings`. The warning does
 
 ### Tag Sets Not Displayed
 
-Check the tag set file status in Settings -> Tag manager. Corrupt JSON or unsupported schemas produce a load error. If no tag set file is selected, Prompt Workbench uses the bundled `data/tag_sets.json`.
+Check the tag set file status in Settings -> Files. Corrupt JSON or unsupported schemas produce a load error. If no tag set file is selected, Prompt Workbench uses the bundled `data/tag_sets.json`.
 
 ## Uninstallation
 

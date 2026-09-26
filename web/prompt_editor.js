@@ -814,7 +814,6 @@ export class PromptEditor {
 
   promptEditorValue() {
     return serializeEditorPrompt(this.tags, {
-      includeDisabled: true,
       trailingSeparator: this.trailingSeparator,
     });
   }
@@ -2738,8 +2737,24 @@ export class PromptEditor {
   applyPromptText() {
     if (!this.promptTextarea || !this.promptDirty) return;
     this.pushUndo();
-    const parsed = parsePrompt(this.promptTextarea.value, this.currentTags);
-    this.tags = tagsWithoutTrailingPlaceholder(parsed);
+    const previousTags = this.currentTags;
+    const parsed = parsePrompt(this.promptTextarea.value, previousTags.filter((tag) => tag.enabled !== false));
+    const nextTags = tagsWithoutTrailingPlaceholder(parsed);
+    const survivingIds = new Set(nextTags.map((tag) => tag.id));
+    const disabledBefore = new Map();
+    let anchorId = null;
+    // Keep hidden tags beside the next surviving tag without parsing them again.
+    for (let index = previousTags.length - 1; index >= 0; index -= 1) {
+      const tag = previousTags[index];
+      if (tag.enabled === false) {
+        if (!disabledBefore.has(anchorId)) disabledBefore.set(anchorId, []);
+        disabledBefore.get(anchorId).push(tag);
+      } else if (survivingIds.has(tag.id)) {
+        anchorId = tag.id;
+      }
+    }
+    this.tags = nextTags.flatMap((tag) => [...(disabledBefore.get(tag.id) || []).reverse(), tag]);
+    this.tags.push(...(disabledBefore.get(null) || []).reverse());
     this.trailingSeparator = parsed.trailingSeparator;
     this.promptDirty = false;
     this.applyBlacklist(this.settings.blacklistAction !== "warn");

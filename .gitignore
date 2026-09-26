@@ -11,7 +11,9 @@ user_data/
 /artifacts/
 /promotion/
 /workbench_tagset_video/
-/tests/
+/tests/*
+!/tests/disabled_prompt.test.js
+!/tests/disabled_prompt_harness.html
 /DESIGN.md
 /PRODUCT.md
 /SOURCE_AUDIT.md
