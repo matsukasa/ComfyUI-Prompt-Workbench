@@ -267,13 +267,13 @@ export function classifyTag(value) {
 
 export function canonicalTagKey(value) {
   let text = String(value || "").trim();
-  const explicit = parseExplicitWeight(text);
-  if (explicit) text = explicit.body;
-  while (
-    (text.startsWith("(") && text.endsWith(")")) ||
-    (text.startsWith("[") && text.endsWith("]"))
-  ) {
-    text = text.slice(1, -1).trim();
+  // Only remove attention delimiters when they enclose the whole tag. Merely
+  // checking the first and last characters corrupts multi-tag text such as
+  // "(cat), (dog)" and can make unrelated values share a duplicate key.
+  while (true) {
+    const attention = outerAttention(text);
+    if (!attention) break;
+    text = attention.body.trim();
   }
   return text.replace(/\s+/g, " ").toLocaleLowerCase();
 }
