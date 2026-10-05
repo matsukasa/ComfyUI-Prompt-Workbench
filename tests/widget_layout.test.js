@@ -19,7 +19,7 @@ function attachEditor(width = 800) {
     },
   };
   const editor = Object.assign(Object.create(PromptEditor.prototype), {
-    node, widgets: { prompt }, root: {}, settings: sanitizeSettings({}), render() {},
+    node, widgets: { prompt }, root: { style: {} }, settings: sanitizeSettings({}), render() {},
   });
   editor.attach();
   return editor;
@@ -69,4 +69,55 @@ test("width synchronization keeps prompt serialization attached to the DOM widge
   editor.domWidget.options.onDraw?.(editor.domWidget);
   assert.equal(editor.domWidget.options.getValue(), "dog");
   assert.equal(await editor.domWidget.serializeValue(), "dog");
+});
+
+test("draw grows the outer node to contain the actual editor height", () => {
+  const editor = attachEditor();
+  editor.root.offsetHeight = 1100;
+  editor.domWidget.options.onDraw?.(editor.domWidget);
+  assert.equal(editor.domWidget.computeSize()[1], 1120);
+  assert.ok(editor.node.size[1] >= 1120);
+  assert.ok(editor.domWidget.computedHeight >= 1120);
+  const size = [...editor.node.size];
+  for (let frame = 0; frame < 5; frame++) editor.domWidget.options.onDraw?.(editor.domWidget);
+  assert.deepEqual(editor.node.size, size, "height must not grow on every frame");
+});
+
+test("shorter content preserves a user-sized outer node", () => {
+  const editor = attachEditor();
+  editor.root.offsetHeight = 1100;
+  editor.domWidget.options.onDraw?.(editor.domWidget);
+  editor.node.setSize([800, 1600]);
+  editor.root.offsetHeight = 600;
+  editor.domWidget.options.onDraw?.(editor.domWidget);
+  assert.equal(editor.node.size[1], 1600);
+  assert.equal(editor.domWidget.computeSize()[1], 620);
+  assert.equal(editor.root.style.height, "auto");
+  assert.equal(editor.root.style.flex, "0 0 auto");
+});
+
+test("content resize observation updates bounds and disconnects when removed", () => {
+  const previousObserver = globalThis.ResizeObserver;
+  let callback, observedRoot, disconnected = false;
+  globalThis.ResizeObserver = class {
+    constructor(action) { callback = action; }
+    observe(root) { observedRoot = root; }
+    disconnect() { disconnected = true; }
+  };
+  try {
+    const editor = attachEditor();
+    assert.equal(observedRoot, editor.root);
+    editor.root.offsetHeight = 1200;
+    callback();
+    assert.ok(editor.node.size[1] >= 1220);
+    editor.node.onRemoved();
+    assert.equal(disconnected, true);
+    const size = [...editor.node.size];
+    editor.root.offsetHeight = 1500;
+    callback();
+    assert.deepEqual(editor.node.size, size);
+  } finally {
+    if (previousObserver === undefined) delete globalThis.ResizeObserver;
+    else globalThis.ResizeObserver = previousObserver;
+  }
 });

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Prompt Workbench node bounds check</title>
+  <link rel="stylesheet" href="../web/prompt_workbench.css">
+  <style>
+    body { margin: 24px; background: #202020; color: #eee; font: 14px system-ui; }
+    #node { position: relative; margin-top: 16px; background: #353535; border: 2px solid #666; border-radius: 8px; }
+    #frame { position: absolute; left: 10px; top: 10px; }
+    .h-full { height: 100%; }
+  </style>
+</head>
+<body>
+  <button id="check">Run layout checks</button>
+  <output id="result">READY</output>
+  <div id="node"><div id="frame"></div></div>
+  <script type="module">
+    import { PromptEditor } from "../web/prompt_editor.js";
+    const shell = document.querySelector("#node");
+    const frame = document.querySelector("#frame");
+    let widget, scheduled = false;
+    function redraw() {
+      scheduled = false;
+      if (!widget) return;
+      widget.computedHeight = widget.computeSize()[1] + 4;
+      widget.options.onDraw?.(widget);
+      shell.style.width = `${node.size[0]}px`;
+      shell.style.height = `${node.size[1]}px`;
+      frame.style.width = `${(widget.width ?? node.size[0]) - 20}px`;
+      frame.style.height = `${widget.computedHeight - 20}px`;
+    }
+    const prompt = { name: "prompt", value: "", options: {} };
+    const node = {
+      size: [800, 760], properties: {}, widgets: [prompt],
+      graph: { setDirtyCanvas() {
+        if (!scheduled) { scheduled = true; requestAnimationFrame(redraw); }
+      } },
+      addDOMWidget(name, type, root, options) {
+        root.classList.add("h-full");
+        frame.append(root);
+        widget = { name, type, element: root, options, margin: 10 };
+        this.widgets.push(widget);
+        return widget;
+      },
+      setSize(size) {
+        this.size = size;
+        widget?.options.afterResize?.call(widget, this);
+        this.graph.setDirtyCanvas();
+      },
+    };
+    const json = (value) => new Response(JSON.stringify(value), {
+      headers: { "Content-Type": "application/json" },
+    });
+    const api = { async fetchApi(path) {
+      if (path.startsWith("/prompt_workbench/examples")) return fetch("../data/sfw_tag_catalog.json");
+      if (path.startsWith("/prompt_workbench/tag_sets/files")) return json({ files: [] });
+      if (path.startsWith("/prompt_workbench/tag_sets")) return fetch("../data/sfw_tag_sets.json");
+      if (path === "/embeddings") return json([]);
+      if (path === "/prompt_workbench/favorites") return json({ favorites: [], favoriteTagSets: [], revision: 1, initialized: true });
+      return json({});
+    } };
+    const editor = new PromptEditor(node, { prompt }, api);
+    redraw();
+    const settle = async () => {
+      for (let i = 0; i < 8; i++) await new Promise(requestAnimationFrame);
+    };
+    function assertBounds() {
+      const outer = shell.getBoundingClientRect();
+      const content = editor.root.getBoundingClientRect();
+      if (content.bottom > outer.bottom || content.right > outer.right) throw new Error("Editor extends beyond outer node");
+      const viewport = frame.getBoundingClientRect();
+      if (content.bottom > viewport.bottom + 1) throw new Error("Editor extends beyond DOM widget");
+    }
+    document.querySelector("#check").onclick = async () => {
+      const result = document.querySelector("#result");
+      try {
+        await editor.loadExampleData();
+        await settle();
+        assertBounds();
+        for (const width of [540, 1100, 800]) {
+          node.setSize([width, 760]);
+          widget.width = 250;
+          redraw();
+          await settle();
+          assertBounds();
+        }
+        editor.setLibraryTab("tagSets");
+        await settle();
+        assertBounds();
+        editor.setLibraryTab("tags");
+        await settle();
+        assertBounds();
+        const height = node.size[1];
+        await settle();
+        if (node.size[1] !== height) throw new Error("Node height keeps growing");
+        result.textContent = `PASS: node ${node.size[0]} x ${height}, editor ${editor.root.offsetHeight}px; widths, tabs, stable bounds`;
+      } catch (error) { result.textContent = `FAIL: ${error.message}`; }
+    };
+  </script>
+</body>
+</html>

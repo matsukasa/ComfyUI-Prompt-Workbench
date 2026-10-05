@@ -301,6 +301,14 @@ Confirm the location of `custom_nodes/ComfyUI-Prompt-Workbench/__init__.py`, and
 
 Force-reload the browser. If it still does not appear, confirm that `WEB_DIRECTORY = "./web"` is loaded. `STRING` output continues to work without the UI.
 
+### Editor Or Node Size Is Incorrect In ComfyUI Desktop
+
+On 5 October 2026, we fixed the editor narrowing after interaction in the ComfyUI Desktop new UI ([Issue #6](https://github.com/matsukasa/ComfyUI-Prompt-Workbench/issues/6)) and the lower tag browser extending beyond the node boundary.
+The editor width follows the node width, and the outer node grows as needed when category rows wrap or list heights change.
+The node does not automatically shrink when content becomes shorter, preserving any larger size set by the user.
+
+After updating to a version containing these fixes, press `Ctrl+R` in ComfyUI Desktop to reload the interface.
+
 ### Translation Fails
 
 Check the configured provider environment variables, URL, and usage limits, then retry from the tag translation button.

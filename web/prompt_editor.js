@@ -1238,11 +1238,14 @@ export class PromptEditor {
   attach() {
     const promptWidget = this.widgets.prompt;
     hideWidgetForGood(promptWidget, ":prompt");
+    // Keep intrinsic height measurable even when the frontend adds h-full/flex-1.
+    this.root.style.height = "auto";
+    this.root.style.flex = "0 0 auto";
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
       hideOnZoom: false,
-      onDraw: (widget) => this.syncWidgetWidth(widget),
-      afterResize: () => this.syncWidgetWidth(),
+      onDraw: (widget) => this.syncWidgetLayout(widget),
+      afterResize: () => this.syncWidgetLayout(),
       getValue: () => String(promptWidget?.value || ""),
       setValue: (value) => {
         if (promptWidget) promptWidget.value = String(value || "");
@@ -1251,12 +1254,7 @@ export class PromptEditor {
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
-    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [width,
-      BASE_DOM_WIDGET_HEIGHT
-      + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
-      + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
-      + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT];
+    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [width, this.widgetHeight()];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
     this.node.setSize([
@@ -1273,12 +1271,45 @@ export class PromptEditor {
       this.disposed = true;
       this.translationGeneration += 1;
       this.unsubscribeFavorites?.();
+      this.layoutObserver?.disconnect();
       clearInterval(this.pollTimer);
       clearTimeout(this.clickTimer);
       this.closeContextMenu();
       previousRemoved?.apply(this.node);
     };
     this.render();
+    if (typeof ResizeObserver === "function") {
+      this.layoutObserver = new ResizeObserver(() => {
+        if (!this.disposed) this.syncWidgetLayout();
+      });
+      this.layoutObserver.observe(this.root);
+    }
+  }
+
+  widgetHeight() {
+    const measuredHeight = this.root.offsetHeight;
+    if (measuredHeight > 0) return measuredHeight + (this.domWidget?.margin ?? 10) * 2;
+    return BASE_DOM_WIDGET_HEIGHT
+      + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
+      + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
+      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
+      + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT;
+  }
+
+  syncWidgetLayout(widget = this.domWidget) {
+    if (!widget) return;
+    this.syncWidgetWidth(widget);
+    const height = this.widgetHeight();
+    // LiteGraph adds a four-pixel gap to computeSize() heights.
+    const computedHeight = height + 4;
+    const changed = widget.computedHeight !== computedHeight;
+    widget.computedHeight = computedHeight;
+    const minimumNodeHeight = height + BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+    if (this.node.size?.[1] < minimumNodeHeight) {
+      this.node.setSize([this.node.size[0], minimumNodeHeight]);
+    } else if (changed) {
+      this.node.graph?.setDirtyCanvas?.(true, true);
+    }
   }
 
   syncWidgetWidth(widget = this.domWidget) {
@@ -1294,7 +1325,7 @@ export class PromptEditor {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
     }
     if (this.domWidget) {
-      this.syncWidgetWidth();
+      this.syncWidgetLayout();
       this.domWidget.y = 0;
       this.domWidget.last_y = 0;
     }
