@@ -14,6 +14,7 @@ user_data/
 /tests/*
 !/tests/disabled_prompt.test.js
 !/tests/disabled_prompt_harness.html
+!/tests/widget_layout.test.js
 /DESIGN.md
 /PRODUCT.md
 /SOURCE_AUDIT.md

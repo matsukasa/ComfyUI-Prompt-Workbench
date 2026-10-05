@@ -1241,6 +1241,8 @@ export class PromptEditor {
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
       hideOnZoom: false,
+      onDraw: (widget) => this.syncWidgetWidth(widget),
+      afterResize: () => this.syncWidgetWidth(),
       getValue: () => String(promptWidget?.value || ""),
       setValue: (value) => {
         if (promptWidget) promptWidget.value = String(value || "");
@@ -1249,7 +1251,7 @@ export class PromptEditor {
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
-    domWidget.computeSize = (width) => [width,
+    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [width,
       BASE_DOM_WIDGET_HEIGHT
       + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
       + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
@@ -1279,6 +1281,12 @@ export class PromptEditor {
     this.render();
   }
 
+  syncWidgetWidth(widget = this.domWidget) {
+    // The frontend can retain a legacy widget width after interaction.
+    // DOM rendering must follow the node instead of that cached measurement.
+    if (widget) widget.width = this.node.size?.[0] || 540;
+  }
+
   stabilizeLayout() {
     removeUnlinkedWidgetInput(this.node, "prompt");
     compactNodeWidgetLayout(this.node);
@@ -1286,6 +1294,7 @@ export class PromptEditor {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
     }
     if (this.domWidget) {
+      this.syncWidgetWidth();
       this.domWidget.y = 0;
       this.domWidget.last_y = 0;
     }
