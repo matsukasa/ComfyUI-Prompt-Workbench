@@ -6232,6 +6232,15 @@
                   "translation_ja": "背後で手を組む"
                 },
                 {
+                  "id": "reviewfix:20260822:4cf5724c41bd8708",
+                  "name": "curtsey",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "カーテシー",
+                  "rank": 7,
+                  "favorite": true
+                },
+                {
                   "id": "legacy:a9f0b740bdc52866",
                   "name": "arm_above_head",
                   "post_count": 0,
@@ -6597,14 +6606,6 @@
                   "aliases": [],
                   "translation_ja": "M字開脚",
                   "rank": 5
-                },
-                {
-                  "id": "reviewfix:20260822:4cf5724c41bd8708",
-                  "name": "curtsey",
-                  "post_count": 0,
-                  "aliases": [],
-                  "translation_ja": "カーテシー",
-                  "rank": 7
                 },
                 {
                   "id": "legacy:b01ab3cc8c4fc789",
