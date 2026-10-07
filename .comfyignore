@@ -3,6 +3,6 @@
 __pycache__/
 *.pyc
 tests/
-data/sfw_tag_catalog.json
-data/sfw_tag_sets.json
+data/tag_catalog.json
+data/tag_sets.json
 data/*_report.md

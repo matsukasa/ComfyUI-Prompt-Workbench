@@ -42,9 +42,9 @@
 
 ## カタログと同梱物
 
-- Registry 同梱版は SFW / 一般タグを既定とし、成人向け・フルカタログを明示なしに Registry ZIP へ入れない。
-- GitHub / ローカル / live install のフルカタログと、Registry 用 SFW カタログの目的を分けて扱う。
-- `data/tag_catalog.json`、`data/sfw_tag_catalog.json`、`data/nsfw_full_tag_catalog.json` を変更するときは、事前に次を示す。
+- Registry ZIP には `data/tag_catalog.json` と `data/tag_sets.json` を入れない。`.comfyignore` の除外設定を公開前に確認する。
+- タグカタログとタグセットは GitHub から別途ダウンロードする運用とし、README に配置手順を記載する。
+- `data/tag_catalog.json` を変更するときは、事前に次を示す。
   - 対象ファイル
   - 変更件数
   - 重複・衝突リスク

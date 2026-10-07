@@ -53,9 +53,9 @@
       headers: { "Content-Type": "application/json" },
     });
     const api = { async fetchApi(path) {
-      if (path.startsWith("/prompt_workbench/examples")) return fetch("../data/sfw_tag_catalog.json");
+      if (path.startsWith("/prompt_workbench/examples")) return fetch("../data/tag_catalog.json");
       if (path.startsWith("/prompt_workbench/tag_sets/files")) return json({ files: [] });
-      if (path.startsWith("/prompt_workbench/tag_sets")) return fetch("../data/sfw_tag_sets.json");
+      if (path.startsWith("/prompt_workbench/tag_sets")) return fetch("../data/tag_sets.json");
       if (path === "/embeddings") return json([]);
       if (path === "/prompt_workbench/favorites") return json({ favorites: [], favoriteTagSets: [], revision: 1, initialized: true });
       return json({});

@@ -11,5 +11,6 @@
   "blacklistAction": "warn",
   "tagColors": {},
   "filter": "all",
-  "libraryFile": "tag_catalog"
+  "libraryFile": "tag_catalog",
+  "tagSetFile": "tag_sets"
 }

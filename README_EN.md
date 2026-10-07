@@ -75,6 +75,22 @@ The Registry listing is available at [ComfyUI Prompt Workbench](https://registry
 
 If Manager cannot find or install the node, use the GitHub clone method above.
 
+### Add Tag Data To A Registry Installation
+
+Installation through Comfy Registry does not include the tag catalogue file `tag_catalog.json` or the tag set file `tag_sets.json`. Download both files from GitHub. They contain the full data, including adult tags.
+
+- [Download tag_catalog.json](https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/data/tag_catalog.json)
+- [Download tag_sets.json](https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/data/tag_sets.json)
+
+Place the downloaded files at these locations in your installation, then restart ComfyUI:
+
+```text
+ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/data/tag_catalog.json
+ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/data/tag_sets.json
+```
+
+If your browser displays the JSON text, save the linked content as a file. Both files are included when you clone the repository from GitHub.
+
 ### Standard ComfyUI
 
 Place this folder at the following location, then restart ComfyUI:
@@ -133,18 +149,11 @@ Prompt Workbench uses two local data sources.
 - Tag catalogue: a dictionary for adding individual tags.
 - Tag sets: classified groups of tags for adding common prompt patterns at once.
 
-Bundled data differs by distribution. These counts describe the JSON files in this repository:
-
-| Data | Top-level | Middle-level | Subcategories | Items |
-| --- | ---: | ---: | ---: | ---: |
-| GitHub tag catalogue | 8 | 33 | 150 | 2,921 tags |
-| GitHub tag sets | 6 | 22 | 67 | 664 sets |
-| SFW tag catalogue for Registry | 10 | 32 | 129 | 964 tags |
-| SFW tag sets for Registry | 5 | 15 | 42 | 292 sets |
+The tag catalogue is stored in `data/tag_catalog.json`, and tag sets are stored in `data/tag_sets.json`. After a Registry installation, follow the [tag data setup instructions](#add-tag-data-to-a-registry-installation).
 
 Browsing, searching, and adding catalogue tags never contacts an external tag service. Tag sets are also loaded from local JSON.
 
-The GitHub version includes the full data, including adult tags. The Comfy Registry publishing workflow replaces the default `data/tag_catalog.json` and `data/tag_sets.json` with `data/sfw_tag_catalog.json` and `data/sfw_tag_sets.json` to distribute SFW/general-purpose data. Counts vary by the installed version. Both distributions treat their bundled data as Factory Default. Load your own JSON files to extend the available content.
+The GitHub tag data is treated as Factory Default. Load your own JSON files to extend the available content.
 
 Some bundled tag sets include a selection of publicly posted prompts created by [Alice Youfukuten (@AliceLavli)](https://x.com/AliceLavli), included with kind permission. Thank you very much for allowing Prompt Workbench to include them. They are wonderfully expressive and practical references for outfits, mood, and prompt composition, and I am deeply grateful for the opportunity to include them as tag sets here.
 
@@ -152,7 +161,7 @@ Some bundled tag sets include a selection of publicly posted prompts created by 
 
 Open `Add tags` to use the tag catalogue. Search covers English names, aliases, and Japanese top-level, middle-level, and subcategory names. Tag buttons display the English name and Japanese translation.
 
-The GitHub version also includes the SFW/general-purpose catalogue as `data/sfw_tag_catalog.json`. To switch to it, load it from Prompt Workbench Settings -> Files -> `Choose and load a file`. The Registry package uses the SFW catalogue by default and omits the separately named SFW source file. The loaded file is saved as a named catalogue under the ComfyUI user directory at:
+To use another catalogue, load it from Prompt Workbench Settings -> Files -> `Choose and load a file`. The loaded file is saved as a named catalogue under the ComfyUI user directory at:
 
 ```text
 prompt_workbench/tag_catalogs/
@@ -171,7 +180,7 @@ Tag sets expand into individual tags when added. Enable/disable, reordering, and
 Right-click a tag set and choose `Add to favourites` to mark it as a favourite. Favourite sets display a star; use the same menu to remove them from favourites. Favourites are saved in node settings as `favoriteTagSets`. The tag set list can be resized, and its height is saved as `tagSetListHeight`.
 Search covers tag set names, English names, descriptions, tag contents, and category names.
 
-The default tag set file is `data/tag_sets.json`. The GitHub version also includes SFW/general-purpose sets in `data/sfw_tag_sets.json`; the Registry package uses that content as its default `data/tag_sets.json`. To use another tag set JSON file, load it from Prompt Workbench Settings -> Files. The loaded file is saved as a named file under the ComfyUI user directory at:
+The default tag set file is `data/tag_sets.json`. To use another tag set JSON file, load it from Prompt Workbench Settings -> Files. The loaded file is saved as a named file under the ComfyUI user directory at:
 
 ```text
 prompt_workbench/tag_sets/
@@ -216,7 +225,7 @@ During Import, Tag Editor previews manifest validation, patch validation, Import
 
 Bundled `data/tag_catalog.json` and `data/tag_sets.json` entries are treated as Factory Default. Items added in Tag Editor are treated as `Local`; items brought in from a diff ZIP are treated as `Imported`. Hover over a row to check its origin. Before applying an Import, Tag Editor writes the current JSON files as a backup ZIP. If applying the Import fails, the in-memory editing state is restored to the pre-Import state.
 
-Tag Editor runs independently from ComfyUI, so you can edit files such as `data/tag_catalog.json`, `data/sfw_tag_catalog.json`, and `data/tag_sets.json` without starting ComfyUI.
+Tag Editor runs independently from ComfyUI, so you can edit `data/tag_catalog.json` and `data/tag_sets.json` without starting ComfyUI.
 
 ## State JSON And Favourites
 
@@ -319,7 +328,7 @@ Confirm that ComfyUI can serve `/object_info` or `/embeddings`. The warning does
 
 ### Tag Sets Not Displayed
 
-Check the tag set file status in Settings -> Files. Corrupt JSON or unsupported schemas produce a load error. If no tag set file is selected, Prompt Workbench uses the bundled `data/tag_sets.json`.
+Check the tag set file status in Settings -> Files. Corrupt JSON or unsupported schemas produce a load error. If no tag set file is selected, Prompt Workbench uses `data/tag_sets.json` in the installation. For Registry installations, follow the [tag data setup instructions](#add-tag-data-to-a-registry-installation).
 
 ## Uninstallation
 

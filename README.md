@@ -76,6 +76,22 @@ clone後、ComfyUIを再起動してください。
 Registryの公開ページは [ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench) です。
 Managerで見つからない、またはインストールできない場合は、上記のGitHub cloneを使ってください。
 
+### Registry版のタグデータを追加する
+
+Comfy Registry経由でインストールした場合、タグファイル `tag_catalog.json` とタグセットファイル `tag_sets.json` はインストールされません。次の2ファイルをGitHubからダウンロードしてください。成人向けタグを含むフルデータです。
+
+- [tag_catalog.jsonをダウンロード](https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/data/tag_catalog.json)
+- [tag_sets.jsonをダウンロード](https://raw.githubusercontent.com/matsukasa/ComfyUI-Prompt-Workbench/main/data/tag_sets.json)
+
+ダウンロードしたファイルを、インストール先の次の場所へ配置し、ComfyUIを再起動してください。
+
+```text
+ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/data/tag_catalog.json
+ComfyUI/custom_nodes/ComfyUI-Prompt-Workbench/data/tag_sets.json
+```
+
+ブラウザにJSON本文が表示される場合は、リンク先をファイルとして保存してください。GitHubからcloneした場合は、2ファイルとも同梱されています。
+
 ### 手動で入れる
 
 このフォルダを次の場所へ配置し、ComfyUIを再起動します。
@@ -135,20 +151,12 @@ Prompt Workbenchには、タグカタログとタグセットの2種類のロー
 - タグカタログ: 1つずつ追加するタグの辞書です。
 - タグセット: よく使うタグのまとまりを分類して追加するためのデータです。
 
-同梱データは配布方法によって異なります。件数はこのリポジトリのJSONを基準としています。
-
-| データ | 大分類 | 中分類 | 小分類 | 件数 |
-| --- | ---: | ---: | ---: | ---: |
-| GitHub版のタグカタログ | 8 | 33 | 150 | 2,921タグ |
-| GitHub版のタグセット | 6 | 22 | 67 | 664セット |
-| Registry用SFWタグカタログ | 10 | 32 | 129 | 964タグ |
-| Registry用SFWタグセット | 5 | 15 | 42 | 292セット |
+タグカタログは `data/tag_catalog.json`、タグセットは `data/tag_sets.json` に保存されています。Registry版のインストール後は、[タグデータの追加手順](#registry版のタグデータを追加する)に従って配置してください。
 
 タグカタログの閲覧、検索、追加で外部タグサービスへ通信することはありません。
 タグセットもローカルJSONから読み込まれます。
 
-GitHub版は成人向けタグを含むフルデータを同梱します。Comfy Registryの公開処理では、`data/sfw_tag_catalog.json` と `data/sfw_tag_sets.json` を既定の `data/tag_catalog.json` と `data/tag_sets.json` に差し替え、SFW / 一般向けデータを配布します。インストールされたバージョンによって件数は異なります。
-どちらの配布版でも同梱データはFactory Defaultとして扱われます。自分用のJSONを読み込むことで、用途に合わせて内容を拡張できます。
+GitHubのタグデータはFactory Defaultとして扱われます。自分用のJSONを読み込むことで、用途に合わせて内容を拡張できます。
 
 タグセットには、[アリス服飾店（@AliceLavli）様](https://x.com/AliceLavli) が公開されているプロンプトの一部を、ご厚意により収録させていただいています。使用を快く許可してくださり、本当にありがとうございます。どのプロンプトも雰囲気づくりや衣装表現の参考になる素敵なものばかりで、こうしてタグセットとして使わせていただけることを、とてもありがたく思っています。この場を借りて、心よりお礼申し上げます。
 
@@ -158,8 +166,7 @@ GitHub版は成人向けタグを含むフルデータを同梱します。Comfy
 英語名、エイリアス、日本語の大分類・中分類・小分類名を検索できます。
 タグボタンには英語名と日本語訳が表示されます。
 
-GitHub版にはSFW / 一般向けのカタログも `data/sfw_tag_catalog.json` として同梱しています。
-切り替える場合は、Prompt Workbench設定の `ファイル` から `ファイルを選んで読み込む` で読み込んでください。Registry版はSFWカタログが既定で、別名のSFW元ファイルは同梱しません。
+別のカタログを使う場合は、Prompt Workbench設定の `ファイル` から `ファイルを選んで読み込む` で読み込んでください。
 読み込んだファイルは、ComfyUIユーザーディレクトリの `prompt_workbench/tag_catalogs/` へ名前付きカタログとして保存されます。
 カタログJSONは4 MB以下の `schema_version: 1` 形式、または従来のフラットな `prompt-workbench/tag-catalog` version 1形式を読み込めます。
 
@@ -181,7 +188,6 @@ GitHub版にはSFW / 一般向けのカタログも `data/sfw_tag_catalog.json` 
 検索欄ではタグセット名、英語名、説明、タグ本文、分類名を探せます。
 
 既定のタグセットは `data/tag_sets.json` です。
-GitHub版にはSFW / 一般向けの `data/sfw_tag_sets.json` もあります。Registry版はこの内容を既定の `data/tag_sets.json` として同梱します。
 別のタグセットJSONを使う場合は、Prompt Workbench設定の `ファイル` からタグセットファイルを読み込んでください。
 読み込んだファイルは、ComfyUIユーザーディレクトリの `prompt_workbench/tag_sets/` へ名前付きファイルとして保存されます。
 同梱データを直接変更せずに、用途別のタグセットJSONを切り替えて使えます。
@@ -233,7 +239,7 @@ Import時は、manifest確認、patch確認、Import対象選択、再Import検�
 削除操作は共有差分に含めず、古いZIPに削除operationが含まれていてもImport側では削除を無視します。自分が削除したDefault由来の項目は `prompt_workbench_meta` に記録されるため、後から同じDefault項目を含む差分ZIPをImportしても復活しません。
 配布同梱の `data/tag_catalog.json` と `data/tag_sets.json` はFactory Defaultとして扱われます。Tag Editor上で追加した項目は `Local`、差分ZIPから取り込んだ項目は `Imported` として扱われ、行にマウスを置くと由来を確認できます。Import適用前には現在のJSONをバックアップZIPとして書き出し、適用中に失敗した場合は画面上の編集状態を適用前に戻します。
 
-Tag EditorはComfyUI本体とは独立して動くため、ComfyUIを起動していなくても `data/tag_catalog.json`、`data/sfw_tag_catalog.json`、`data/tag_sets.json` などを開いて編集できます。
+Tag EditorはComfyUI本体とは独立して動くため、ComfyUIを起動していなくても `data/tag_catalog.json`、`data/tag_sets.json` などを開いて編集できます。
 
 ## 状態JSONとお気に入り
 
@@ -365,7 +371,7 @@ ComfyUIの `/object_info` または `/embeddings` を取得できるか確認し
 
 設定の `ファイル` でタグセットファイルの読み込み状態を確認してください。
 破損したJSONや対応外schemaの場合は、読み込みエラーになります。
-未指定の場合は同梱の `data/tag_sets.json` を使います。
+未指定の場合はインストール先の `data/tag_sets.json` を使います。Registry版のデータ配置については、[タグデータの追加手順](#registry版のタグデータを追加する)を参照してください。
 
 ## アンインストール
 
