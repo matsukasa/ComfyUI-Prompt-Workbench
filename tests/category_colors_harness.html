@@ -84,6 +84,7 @@ document.querySelector('#run').onclick = async () => {
     bodyTag.classList.add('is-selected', 'is-favorite', 'is-disabled');
     assert(getComputedStyle(bodyTag).borderStyle === 'dashed', 'Disabled state remains visible');
     assert(getComputedStyle(bodyTag.querySelector('.paio-tag-label')).textDecorationLine.includes('line-through'), 'Disabled strike-through remains');
+    assert(getComputedStyle(bodyTag.querySelector('.paio-tag-label')).textDecorationStyle === 'double', 'Disabled strike-through is double');
     bodyTag.classList.remove('is-selected', 'is-favorite', 'is-disabled');
     const otherSettings = JSON.stringify({ ...editor.settings, categoryColors: null });
     await openColors();

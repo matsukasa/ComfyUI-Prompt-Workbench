@@ -232,7 +232,10 @@
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
 }
 .paio-tag.is-disabled .paio-tag-label,
-.paio-tag.is-disabled .paio-tag-translation { text-decoration: line-through; }
+.paio-tag.is-disabled .paio-tag-translation {
+  text-decoration: line-through;
+  text-decoration-style: double;
+}
 .paio-tag.is-disabled .paio-tag-translation { color: #aeb4bc; }
 .paio-tag.is-duplicate { box-shadow: inset 0 0 0 1px var(--paio-color-duplicate, var(--paio-warning)); }
 .paio-tag.is-blacklisted { --paio-tag-fill: var(--paio-color-blacklist, var(--paio-rose)); }
