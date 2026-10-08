@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 2975,
-    "tags": 2921,
+    "tags": 2924,
     "major_categories": 8,
     "medium_categories": 33,
     "small_categories": 150
@@ -24583,6 +24583,26 @@
                   "name": "NSFW",
                   "translation_ja": "職場で見るのに適さない",
                   "id": "manual:20260813:repair:NSFW"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "explicit"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "questionable",
+                  "translation_ja": "軽度のエロ要素あり"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "sensitive",
+                  "translation_ja": "センシティブ"
                 },
                 {
                   "name": "rating_explicit",

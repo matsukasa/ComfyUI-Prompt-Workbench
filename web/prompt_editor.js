@@ -28,6 +28,8 @@ import {
 import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
 export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
+import { applyCategoryColor, categoryColorId, categoryBaseColor, majorCategory,
+  sanitizeCategoryColors, validCategoryColor, tagCategoryIndex, categoryPromptKey } from "./category_colors.js";
 import {
   getAvailableUiLanguages,
   getUiLanguage,
@@ -54,6 +56,7 @@ import {
 } from "./tag_sets.js";
 
 const STATE_KEY = "promptWorkbenchState";
+let categoryColorErrorSerial = 0;
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
@@ -1125,7 +1128,7 @@ export class PromptEditor {
       button(t("整形"), () => this.normalize(false)),
       button(t("重複削除"), () => this.normalize(true)),
       button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
-      button(t("設定"), () => openDialog(this.settingsDialog)),
+      button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
@@ -1451,8 +1454,6 @@ export class PromptEditor {
       this.labeled(t("出力言語"), output),
       this.labeled(t("_を半角空白に変換して出力"), replaceUnderscores),
       element("p", { className: "paio-settings-help", text: t("表示中のタグは変更せず、次のノードへ渡すSTRINGとコピー/書き出しだけを変換します。") }),
-      element("p", { className: "paio-settings-caption", text: t("タグ状態の色") }),
-      colorGrid,
     );
     const translationPanel = element("section", { className: "paio-settings-panel", dataset: { panel: "translation" } });
     translationPanel.append(
@@ -1463,19 +1464,29 @@ export class PromptEditor {
     );
     const filePanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "files" } }, libraryManager.fileRoot);
     const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.editorRoot);
-    const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, filePanel, libraryPanel]);
+    const categoryColors = this.buildCategoryColorSettings();
+    categoryColors.panel.append(element("h4", { text: t("タグ状態の色") }), colorGrid);
+    const content = element("div", { className: "paio-settings-content" }, [generalPanel, translationPanel, filePanel, libraryPanel, categoryColors.panel]);
     const navigation = element("nav", { className: "paio-settings-nav", ariaLabel: t("設定項目") });
-    for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["files", "ファイル"], ["library", "タグ管理"]]) {
+    for (const [id, label] of [["general", "一般"], ["translation", "翻訳"], ["files", "ファイル"], ["library", "タグ管理"], ["categoryColors", "ボタン色"]]) {
       const navButton = button(t(label), () => {
         navigation.querySelectorAll(".paio-button").forEach((item) => item.classList.toggle("is-active", item === navButton));
         content.querySelectorAll(".paio-settings-panel").forEach((item) => item.classList.toggle("is-active", item.dataset.panel === id));
         if (id === "files" || id === "library") libraryManager.refresh();
+        if (id === "categoryColors") categoryColors.refreshCategories();
       });
       navButton.classList.add("paio-settings-nav-button");
       if (id === "general") navButton.classList.add("is-active");
       navigation.append(navButton);
     }
     const save = button(t("変更を保存"), async () => {
+      if (!categoryColors.valid()) {
+        content.querySelectorAll(".paio-settings-panel").forEach((item) => item.classList.toggle("is-active", item === categoryColors.panel));
+        navigation.querySelectorAll(".paio-button").forEach((item) => item.classList.toggle("is-active", item.textContent === t("ボタン色")));
+        categoryColors.panel.querySelector('[aria-invalid="true"]')?.focus();
+        return;
+      }
+      const previousCategoryColors = this.settings.categoryColors;
       save.disabled = true;
       this.pushUndo();
       this.settings.weightStep = Number(step.value);
@@ -1485,6 +1496,7 @@ export class PromptEditor {
       this.settings.autoTranslate = auto.checked;
       this.settings.replaceUnderscoresForOutput = replaceUnderscores.checked;
       this.settings.tagColors = Object.fromEntries(Object.entries(colorInputs).map(([key, input]) => [key, input.value]));
+      this.settings.categoryColors = categoryColors.value();
       this.settings.libraryEdits = libraryManager.getEdits();
       const previousUiLanguage = getUiLanguage();
       const nextUiLanguage = saveUiLanguage(uiLanguage.value);
@@ -1492,6 +1504,7 @@ export class PromptEditor {
       this.syncToWidgets();
       this.render();
       this.refreshExamplesPanel?.();
+      this.refreshTagSetsPanel?.();
       try {
         const currentFavorites = this.currentFavoriteSettings();
         this.settings = sanitizeSettings({
@@ -1506,6 +1519,9 @@ export class PromptEditor {
           ? "設定を保存しました。APIキーはワークフローに保存されません"
           : "設定を保存しました。UI言語はComfyUIの再読み込み後に反映されます"));
       } catch (error) {
+        this.settings.categoryColors = previousCategoryColors;
+        this.refreshCategoryButtonColors();
+        this.syncToWidgets();
         this.setStatus(t("設定を保存できませんでした: {error}", { error: error.message }), true);
       } finally {
         save.disabled = false;
@@ -1515,6 +1531,95 @@ export class PromptEditor {
     dialog.body.append(shell);
     dialog.querySelector(".paio-dialog-footer")?.prepend(save);
     return dialog;
+  }
+
+  buildCategoryColorSettings() {
+    const panel = element("section", { className: "paio-settings-panel", dataset: { panel: "categoryColors" } });
+    const rows = element("div", { className: "paio-category-color-rows" });
+    let draft = sanitizeCategoryColors(this.settings.categoryColors);
+    let generation = 0;
+    const invalid = new Set();
+    const controls = new Map();
+    const addRow = (id, label) => {
+      if (controls.has(id)) return;
+      const picker = element("input", { type: "color" });
+      const hex = element("input", { className: "paio-search" });
+      hex.maxLength = 7;
+      hex.setAttribute("aria-label", t("{label}のHEXカラー", { label }));
+      picker.setAttribute("aria-label", t("{label}の色", { label }));
+      const error = element("small", { className: "paio-error", text: "" });
+      error.id = `paio-color-error-${++categoryColorErrorSerial}`;
+      hex.setAttribute("aria-describedby", error.id);
+      const preview = button(label, () => {});
+      preview.tabIndex = -1;
+      const sync = () => {
+        picker.value = hex.value = categoryBaseColor(id, draft);
+        hex.setAttribute("aria-invalid", "false");
+        error.textContent = "";
+        invalid.delete(id);
+        applyCategoryColor(preview, id, draft);
+      };
+      const set = (value) => {
+        if (id) draft.overrides[id] = value;
+        else draft.unknown = value;
+        sync();
+      };
+      picker.addEventListener("input", () => set(picker.value));
+      hex.addEventListener("input", () => {
+        const value = validCategoryColor(hex.value.trim());
+        if (value) set(value);
+        else {
+          invalid.add(id);
+          hex.setAttribute("aria-invalid", "true");
+          error.textContent = t("#と6桁の16進数で入力してください");
+        }
+      });
+      const reset = button(t("初期値に戻す"), () => {
+        if (id) delete draft.overrides[id]; else draft.unknown = null;
+        sync();
+      });
+      controls.set(id, sync);
+      rows.append(element("div", { className: "paio-category-color-row", dataset: { categoryId: id } }, [
+        element("strong", { text: label }), picker,
+        element("div", { className: "paio-category-hex-field" }, [hex, error]), preview, reset,
+      ]));
+      sync();
+    };
+    const refreshCategories = async () => {
+      const request = ++generation;
+      const results = await Promise.allSettled([this.loadExampleData(), this.loadTagSetData()]);
+      if (request !== generation || this.disposed) return;
+      rows.replaceChildren(); controls.clear(); invalid.clear();
+      const libraries = [buildTagLibrary(this.exampleData || {}, this.settings.libraryEdits), buildTagSetLibrary(this.tagSetData || {})];
+      libraries.forEach((library, index) => {
+        rows.append(element("h4", { text: t(index ? "タグセット" : "タグ") }));
+        for (const category of library.categories.filter((item) => item.level === "large")) {
+          const id = categoryColorId(category);
+          if (id) addRow(id, category.ja || category.en || category.id);
+        }
+      });
+      addRow("", t("未分類・分類不明"));
+      if (results.some((result) => result.status === "rejected")) rows.append(element("p", { className: "paio-error", text: t("分類を読み込めませんでした。ファイル設定を確認してください。") }));
+    };
+    this.refreshCategoryColorSettings = () => {
+      draft = sanitizeCategoryColors(this.settings.categoryColors);
+      refreshCategories();
+    };
+    panel.append(element("h4", { text: t("ボタン色") }), element("p", { className: "paio-settings-caption", text: t("大分類の色") }), rows,
+      button(t("大分類の色をすべて初期値に戻す"), () => {
+        draft = sanitizeCategoryColors(null);
+        for (const sync of controls.values()) sync();
+      }));
+    return { panel, refreshCategories, valid: () => invalid.size === 0, value: () => sanitizeCategoryColors(draft) };
+  }
+
+  refreshCategoryButtonColors() {
+    const library = buildTagLibrary(this.exampleData || {}, this.settings.libraryEdits);
+    this.colorTagIndex = tagCategoryIndex(library);
+    for (const control of this.root?.querySelectorAll(".paio-category-colored") || []) {
+      if (!control.closest(".paio-settings-dialog")) applyCategoryColor(control, control.dataset.colorCategory || "", this.settings.categoryColors);
+    }
+    this.renderTags();
   }
 
   buildLibraryManager() {
@@ -2049,6 +2154,8 @@ export class PromptEditor {
       this.exampleLoadPromise = fetchExampleCatalog(this.api, file).then((body) => {
         if (generation !== this.dataGeneration || file !== this.settings.libraryFile) return this.loadExampleData();
         this.exampleData = body;
+        this.colorTagIndex = tagCategoryIndex(buildTagLibrary(body, this.settings.libraryEdits));
+        this.renderTags();
         this.syncFavoritesWithCatalog(body);
         return body;
       }).catch((error) => {
@@ -2231,6 +2338,7 @@ export class PromptEditor {
         for (const category of options) {
           const chip = button(category.ja || category.en, () => selectCategory(level, category.id), category.en || category.ja);
           chip.classList.add("paio-example-category-chip", `is-${level}`);
+          if (level === "large") applyCategoryColor(chip, categoryColorId(category), this.settings.categoryColors);
           chip.classList.toggle("is-active", category.id === activeId);
           chip.setAttribute("aria-pressed", String(category.id === activeId));
           chips.append(chip);
@@ -2277,6 +2385,7 @@ export class PromptEditor {
           this.setStatus(t("{name} を追加しました", { name: item.nameJa || item.name }));
         }, item.tags.join(", "));
         row.classList.add("paio-tag-set-row");
+        applyCategoryColor(row, categoryColorId(majorCategory(library, item.categoryId)), this.settings.categoryColors);
         row.classList.toggle("is-favorite", favorite);
         row.dataset.setId = item.id;
         const openMenu = (event) => {
@@ -2527,6 +2636,7 @@ export class PromptEditor {
         for (const category of options) {
           const chip = button(category.ja || category.en, () => selectCategory(level, category.id), category.en || category.ja);
           chip.classList.add("paio-example-category-chip", `is-${level}`);
+          if (level === "large") applyCategoryColor(chip, categoryColorId(category), this.settings.categoryColors);
           chip.classList.toggle("is-active", category.id === activeId);
           chip.setAttribute("aria-pressed", String(category.id === activeId));
           chips.append(chip);
@@ -2586,6 +2696,7 @@ export class PromptEditor {
           translation ? `${item.prompt} — ${translation}` : item.prompt,
         ].filter(Boolean).join("\n"));
         chip.classList.add("paio-example-chip");
+        applyCategoryColor(chip, categoryColorId(majorCategory(library, item.categoryId)), this.settings.categoryColors);
         chip.dataset.prompt = item.prompt;
         chip.classList.toggle("is-favorite", favorite);
         const openFavoriteMenu = (event) => {
@@ -2618,6 +2729,8 @@ export class PromptEditor {
     };
     const populate = () => {
       library = buildTagLibrary(this.exampleData || { categories: [] }, this.settings.libraryEdits);
+      this.colorTagIndex = tagCategoryIndex(library);
+      this.renderTags();
       redraw();
     };
     this.refreshExamplesPanel = populate;
@@ -2881,6 +2994,8 @@ export class PromptEditor {
 
   renderTag(tag, index, duplicate) {
     const row = element("div", { className: "paio-tag", dataset: { type: tag.type, tagIndex: index } });
+    const key = categoryPromptKey(canonicalTagKey(tag.value));
+    applyCategoryColor(row, this.colorTagIndex?.get(key) || "", this.settings.categoryColors);
     row.setAttribute("role", "button");
     row.setAttribute("aria-pressed", String(tag.enabled));
     const translation = cleanTranslation(tag.translation);

@@ -46,6 +46,7 @@ DEFAULT_SETTINGS_KEYS = {
     "blacklist",
     "blacklistAction",
     "tagColors",
+    "categoryColors",
     "filter",
     "libraryFile",
     "tagSetFile",

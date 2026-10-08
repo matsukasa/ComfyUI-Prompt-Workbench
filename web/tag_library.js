@@ -97,6 +97,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       const largeId = `danbooru:${text(major.id, 100)}`;
       categories.set(largeId, {
         id: largeId, level: "large", parentId: "", en: "", ja: text(major.label_ja), builtin: true,
+        colorId: major.id ? largeId : `catalog-label:${text(major.label_ja)}`,
       });
       for (const medium of major.medium_categories || []) {
         const mediumId = `danbooru:${text(medium.id, 100)}`;
@@ -136,6 +137,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       largeIds.set(parentKey, largeId);
       categories.set(largeId, {
         id: largeId, level: "large", parentId: "",
+        colorId: `legacy-label:${text(group.parent?.en)}:${text(group.parent?.ja)}`,
         en: text(group.parent?.en) || "Category", ja: text(group.parent?.ja) || "カテゴリー",
         builtin: true,
       });

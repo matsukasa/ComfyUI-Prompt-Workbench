@@ -1,5 +1,13 @@
 {
   "messages": {
+    "ボタン色": "Button colours",
+    "大分類の色": "Top-level category colours",
+    "{label}のHEXカラー": "HEX colour for {label}",
+    "初期値に戻す": "Reset to default",
+    "大分類の色をすべて初期値に戻す": "Reset all category colours",
+    "未分類・分類不明": "Unclassified or unknown",
+    "#と6桁の16進数で入力してください": "Enter # followed by six hexadecimal digits",
+    "分類を読み込めませんでした。ファイル設定を確認してください。": "Categories could not be loaded. Check the file settings.",
     "プロンプト本文": "Prompt text",
     "同期済み": "Synced",
     "未反映": "Not applied",

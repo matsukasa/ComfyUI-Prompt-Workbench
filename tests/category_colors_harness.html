@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>Prompt Workbench category colour checks</title>
+<link rel="stylesheet" href="../web/prompt_workbench.css">
+<style>
+body { background: #202329; color: #eee; font: 14px system-ui; margin: 24px; }
+#frame { width: 1000px; }
+</style>
+<button id="run">Run colour checks</button>
+<button id="theme">Light / dark</button>
+<output id="result">READY</output>
+<div id="frame"></div>
+<script type="module">
+const { PromptEditor } = await import(`../web/prompt_editor.js?verify=${Date.now()}`);
+import { sanitizeSettings } from '../web/settings.js';
+import { defaultCategoryColor } from '../web/category_colors.js';
+let stored = JSON.parse(localStorage.getItem('pw-color-harness-settings') || '{}');
+const json = (value) => new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } });
+const api = { async fetchApi(path, options) {
+  if (path === '/prompt_workbench/settings') {
+    if (options?.method === 'PUT') {
+      stored = sanitizeSettings(JSON.parse(options.body).settings);
+      localStorage.setItem('pw-color-harness-settings', JSON.stringify(stored));
+    }
+    return json(stored);
+  }
+  if (path.startsWith('/prompt_workbench/examples')) return fetch('../data/tag_catalog.json');
+  if (path.startsWith('/prompt_workbench/tag_sets/files')) return json({ files: [] });
+  if (path.startsWith('/prompt_workbench/tag_sets')) return fetch('../data/tag_sets.json');
+  if (path === '/prompt_workbench/favorites') return json({ favorites: [], favoriteTagSets: [], revision: 1, initialized: true });
+  return json({});
+} };
+const prompt = { name: 'prompt', value: '1girl, long_hair, white_shirt, looking_at_viewer, classroom, anime_style, unknown_test_tag', options: {} };
+const node = { size: [1000, 800], properties: {}, widgets: [prompt], graph: { setDirtyCanvas() {} },
+  setSize(size) { this.size = size; },
+  addDOMWidget(name, type, root, options) { document.querySelector('#frame').append(root); const widget = { name, type, element: root, options, margin: 10 }; this.widgets.push(widget); return widget; } };
+const editor = new PromptEditor(node, { prompt }, api);
+const settle = async () => { for (let i = 0; i < 6; i++) await new Promise(requestAnimationFrame); };
+const clickText = (root, text) => { const control = [...root.querySelectorAll('button')].find((item) => item.textContent === text); if (!control) throw Error('Missing control: ' + text); control.click(); };
+const assert = (condition, message) => { if (!condition) throw Error(message); };
+document.querySelector('#theme').onclick = () => {
+  const light = editor.root.dataset.colorTheme !== 'light';
+  editor.root.dataset.colorTheme = light ? 'light' : 'dark';
+  document.body.style.background = light ? '#f3f4f6' : '#202329';
+  editor.root.style.setProperty('--comfy-menu-bg', light ? '#f3f4f6' : '#202329');
+  editor.root.style.setProperty('--comfy-input-bg', light ? '#ffffff' : '#292e35');
+  editor.root.style.setProperty('--input-text', light ? '#171b22' : '#f6f7f9');
+};
+document.querySelector('#run').onclick = async () => {
+  try {
+    await Promise.all([editor.loadExampleData(), editor.loadTagSetData()]); await settle();
+    const beforePrompt = editor.outputPromptForExport(editor.currentTags);
+    const openColors = async () => { clickText(editor.root, '設定'); await settle(); clickText(editor.settingsDialog, 'ボタン色'); await settle(); };
+    await openColors();
+    let row = editor.settingsDialog.querySelector('[data-category-id="catalog_major:person_body"]');
+    assert(row, 'Actual major categories loaded');
+    const hex = row.querySelector('input:not([type="color"])');
+    const input = (value) => { hex.value = value; hex.dispatchEvent(new Event('input', { bubbles: true })); };
+    const previous = editor.settings.categoryColors?.overrides?.['catalog_major:person_body'];
+    input('#ffffff');
+    assert(row.querySelector('input[type="color"]').value === '#ffffff', 'Picker and HEX sync');
+    input('#zzzzzz');
+    assert(hex.getAttribute('aria-invalid') === 'true', 'Invalid HEX feedback');
+    clickText(editor.settingsDialog, '変更を保存'); await settle();
+    assert(editor.settingsDialog.open, 'Invalid HEX blocks saving');
+    clickText(editor.settingsDialog, '閉じる');
+    assert(editor.settings.categoryColors?.overrides?.['catalog_major:person_body'] === previous, 'Cancel preserves settings');
+    await openColors();
+    row = editor.settingsDialog.querySelector('[data-category-id="catalog_major:person_body"]');
+    const validHex = row.querySelector('input:not([type="color"])'); validHex.value = '#123456'; validHex.dispatchEvent(new Event('input', { bubbles: true }));
+    clickText(editor.settingsDialog, '変更を保存'); await settle();
+    assert(!editor.settingsDialog.open, 'Saved and closed');
+    assert(stored.categoryColors.overrides['catalog_major:person_body'] === '#123456', 'Saved through existing settings API');
+    assert(JSON.parse(localStorage.getItem('pw-color-harness-settings')).categoryColors.overrides['catalog_major:person_body'] === '#123456', 'Reload storage retained');
+    for (const control of editor.root.querySelectorAll('[data-color-category="catalog_major:person_body"]')) assert(control.dataset.colorBase === '#123456', 'Same major colour on all surfaces');
+    const search = editor.root.querySelector('[aria-label="内蔵例を検索"]');
+    search.value = 'long_hair'; search.dispatchEvent(new Event('input', { bubbles: true }));
+    await settle();
+    assert(editor.root.querySelector('.paio-example-chip[data-prompt="long_hair"]').dataset.colorBase === '#123456', 'Search result retains major colour');
+    search.value = ''; search.dispatchEvent(new Event('input', { bubbles: true }));
+    const bodyTag = editor.root.querySelector('.paio-tag[data-color-category="catalog_major:person_body"]');
+    assert(bodyTag, 'Prompt tag resolved from catalogue');
+    bodyTag.classList.add('is-selected', 'is-favorite', 'is-disabled');
+    assert(getComputedStyle(bodyTag).borderStyle === 'dashed', 'Disabled state remains visible');
+    assert(getComputedStyle(bodyTag.querySelector('.paio-tag-label')).textDecorationLine.includes('line-through'), 'Disabled strike-through remains');
+    bodyTag.classList.remove('is-selected', 'is-favorite', 'is-disabled');
+    const otherSettings = JSON.stringify({ ...editor.settings, categoryColors: null });
+    await openColors();
+    row = editor.settingsDialog.querySelector('[data-category-id="catalog_major:person_body"]');
+    clickText(row, '初期値に戻す');
+    assert(row.querySelector('input[type="color"]').value === defaultCategoryColor('catalog_major:person_body'), 'Per-category reset');
+    clickText(editor.settingsDialog, '大分類の色をすべて初期値に戻す');
+    clickText(editor.settingsDialog, '変更を保存'); await settle();
+    assert(Object.keys(stored.categoryColors.overrides).length === 0, 'Only colour overrides reset');
+    assert(JSON.stringify({ ...editor.settings, categoryColors: null }) === otherSettings, 'Reset leaves other settings unchanged');
+    assert(editor.outputPromptForExport(editor.currentTags) === beforePrompt, 'Prompt output unchanged');
+    editor.setLibraryTab('tagSets'); await settle();
+    assert(editor.root.querySelector('.paio-tag-set-row.paio-category-colored'), 'Set buttons coloured');
+    const setRow = editor.root.querySelector('.paio-tag-set-row.paio-category-colored');
+    const setCategory = [...editor.root.querySelectorAll('.paio-tag-sets .paio-example-category-chip.is-large')].find(chip => chip.dataset.colorCategory === setRow.dataset.colorCategory);
+    assert(setCategory?.dataset.colorBase === setRow.dataset.colorBase, 'Set and its own major category use the same colour');
+    assert(!editor.root.querySelector('.paio-example-category-chip.is-medium.paio-category-colored'), 'Middle categories unchanged');
+    editor.setLibraryTab('tags'); await settle();
+    document.querySelector('#result').textContent = 'PASS: colour consistency, valid/invalid HEX, picker sync, save, persistence, cancel, reset, states, set buttons, unchanged prompt';
+  } catch (error) { document.querySelector('#result').textContent = 'FAIL: ' + error.message; }
+};
+</script>
+</html>

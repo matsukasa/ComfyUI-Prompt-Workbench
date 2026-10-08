@@ -6,6 +6,21 @@ A ComfyUI custom node for editing prompts as individual tags. It helps you reord
 
 The runtime source of truth remains the standard multiline `STRING` widget. Prompt Workbench adds a tag editing interface on top of it, so saved workflows can still output the stored `STRING` when the browser UI is unavailable.
 
+## User Data And Backups
+
+Settings, favourites, and edited tag data are saved in the following files. In this table, `data/` is relative to this node's installation directory, and `prompt_workbench/` is inside the ComfyUI user directory.
+
+| File | Contents and saving method |
+| --- | --- |
+| `data/default_settings.json` | Default colours, display preferences, and selected data files. Saved through `Save changes` in Settings. |
+| Active tag catalogue and tag set JSON files | Edited tag data, including `data/tag_catalog.json`, `data/tag_sets.json`, and files at a location you choose. Saved explicitly from the editor. |
+| `prompt_workbench/tag_catalogs/*.json` | Copies of loaded catalogues and named catalogues saved inside Prompt Workbench. |
+| `prompt_workbench/tag_sets/*.json` | Copies of loaded tag sets. |
+| `prompt_workbench/favorites.json` | Shared tag and tag set favourites. Saved automatically when you add or remove a favourite. |
+| Saved workflow JSON files and `prompt_workbench_state.json` | Each node's prompt, settings, and editing state. Saved with the workflow or through `Export state JSON`. |
+
+After editing, and before updating, reinstalling, or moving to another environment, back up the files you use to a location outside the installation directory. If you use local images, include those images in the backup.
+
 ## Demo
 
 <video src="docs/assets/comfyui_prompt_workbench_intro.mp4" controls></video>
@@ -235,13 +250,16 @@ Favorites are also shared through the ComfyUI user directory. Each addition or r
 
 Translation requests are split into batches of at most 100 tags and bounded request sizes, with progress updates. Results follow tag IDs across reordering; stale results for edited or deleted tags are discarded. Weight changes remain effective when outputting a translation, and directly editing a tag clears its old translation.
 
-Before replacing catalogues, replacing tag sets, or moving to another environment, back up the state JSON, the active tag catalogue JSON, and the active tag set JSON together.
+For the files and locations to back up, see [User Data And Backups](#user-data-and-backups).
 
 Loading a catalogue or tag set file with `favorite: true` also adds those entries to the shared favourites. Favourite actions in the UI update shared data and the current editing state; they do not automatically overwrite the original catalogue or tag set JSON.
 
 ## Saving Settings
 
 `Save changes` in Settings applies settings to the current node and saves defaults for new nodes in `data/default_settings.json`. Workflows with saved editor state retain their own settings. UI language is saved separately in the browser.
+
+Open Settings -> `Button colours` to change top-level category colours and tag state colours, such as disabled or duplicate tags. The category colour picker and HEX input stay in sync, with a button preview on each row. Choose `Save changes` to apply the colours; closing without saving discards the colour changes.
+`Reset to default` and `Reset all category colours` reset only these colour preferences. You can also change the colour for unclassified or unknown items. Colours are saved in user settings and are not written to the tag catalogue or tag set JSON files.
 
 ## Translation
 

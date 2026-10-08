@@ -128,6 +128,7 @@ export function buildTagSetLibrary(source = {}) {
     }
     const large = addCategory(major.id || `tagset:major:${majorIndex}`, "large", "", major.label_ja || major.name_ja || major.name, major.label_en || "");
     if (!large) continue;
+    large.colorId = major.id || `tagset-label:${large.ja || large.en}`;
     for (const [mediumIndex, medium] of (Array.isArray(major.medium_categories) ? major.medium_categories : []).entries()) {
       if (!medium || typeof medium !== "object") {
         warnings.push(`Skipped invalid medium category under ${large.id}`);

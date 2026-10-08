@@ -1,4 +1,5 @@
 import { sanitizeLibraryEdits } from "./tag_library.js";
+import { sanitizeCategoryColors } from "./category_colors.js";
 
 export const DEFAULT_CATALOG_NAME = "tag_catalog";
 export const FAVORITES_SCHEMA = "prompt-workbench/favorites";
@@ -16,6 +17,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   blacklist: [],
   blacklistAction: "warn",
   tagColors: {},
+  categoryColors: { overrides: {}, unknown: null },
   filter: "all",
   libraryFile: DEFAULT_CATALOG_NAME,
   tagSetFile: "",
@@ -111,6 +113,7 @@ export function sanitizeSettings(input = {}) {
     }
   }
   settings.libraryEdits = sanitizeLibraryEdits(input.libraryEdits);
+  settings.categoryColors = sanitizeCategoryColors(input.categoryColors);
   if (Array.isArray(input.favorites)) {
     settings.favorites = sanitizeFavorites(input.favorites);
   }
