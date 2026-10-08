@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 2975,
-    "tags": 2924,
+    "tags": 3231,
     "major_categories": 8,
     "medium_categories": 33,
     "small_categories": 150
@@ -241,6 +241,70 @@
                   ],
                   "rank": 32,
                   "translation_ja": "作品の主要なキャラクターが集まったもの"
+                },
+                {
+                  "id": "legacy:89271b56eac9a245",
+                  "name": "5girls",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "女の子5人",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0ad53f01179381db",
+                  "name": "side-by-side",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "横並び",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e21c7247a62f7dd0",
+                  "name": "height difference",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "身長差",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7b935a9de09f4ade",
+                  "name": "age difference",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "年齢差",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ff84f49d24d69de5",
+                  "name": "size difference",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "体格差",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:aaf6fd97230863ea",
+                  "name": "yuri",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "百合",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1e1dac5eb5d84194",
+                  "name": "mini person",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "小人",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0d956e868cfeb496",
+                  "name": "giant",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "巨人",
+                  "rank": 9999
                 }
               ]
             },
@@ -16289,6 +16353,174 @@
                   "aliases": [],
                   "rank": 16,
                   "translation_ja": "都市風景"
+                },
+                {
+                  "id": "legacy:0306aba0f621dd6e",
+                  "name": "city lights",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "街の灯り",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a6aa056700ca54ca",
+                  "name": "amusement park",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "遊園地",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ae171351725b890f",
+                  "name": "rooftop",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "屋上",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f114308994e541e1",
+                  "name": "festival",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "祭り",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c390f9a2b1bd5356",
+                  "name": "food stall",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "屋台",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:92920ac21499d845",
+                  "name": "crosswalk",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "横断歩道",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:59f947e5613fcf37",
+                  "name": "sidewalk",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "歩道",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dd58cb9dec60ad6a",
+                  "name": "railroad crossing",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "踏切",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e49ee11dbb49bd82",
+                  "name": "traffic light",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "信号機",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0ebe53fc820a5447",
+                  "name": "lighthouse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "灯台",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:17798ea4d337bc1c",
+                  "name": "utility pole",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "電柱",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5be93480bd8b7434",
+                  "name": "house",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "家",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dd6f68210b117c4d",
+                  "name": "pier",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "桟橋",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:059236676b64e33a",
+                  "name": "clock tower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "時計塔",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:94efdd6f628eda9c",
+                  "name": "train",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "電車（外観）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0561c01caf716d57",
+                  "name": "statue",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "像",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5a6022786c4c8879",
+                  "name": "billboard",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "看板（大型）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:81e9209e64bdd3a5",
+                  "name": "sign",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "看板",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0cd0b19231db9a2b",
+                  "name": "town",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "町",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3bdc3ec682bfbb47",
+                  "name": "village",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "村",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:eaa200b8126a7976",
+                  "name": "european architecture",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "西洋建築",
+                  "rank": 9999
                 }
               ]
             },
@@ -16769,6 +17001,166 @@
                   "aliases": [],
                   "translation_ja": "駅",
                   "rank": 16
+                },
+                {
+                  "id": "legacy:f6e8ca748c728fe1",
+                  "name": "shrine",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "神社",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2b11fa44e48edca0",
+                  "name": "graveyard",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "墓地",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dce9cb15e64beebb",
+                  "name": "pagoda",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "五重塔",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9bf235d7e9a3d65f",
+                  "name": "mansion",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "洋館",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:512c585ec88c7fa2",
+                  "name": "windmill",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "風車",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9b6d1553a6c3fc91",
+                  "name": "stone wall",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "石壁",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3c5b492776742690",
+                  "name": "gate",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "門",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:30212f05289f7f61",
+                  "name": "medieval",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "中世風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:11f495007c4f4ac8",
+                  "name": "steampunk",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "スチームパンク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:29a7ed2f68c3145e",
+                  "name": "science fiction",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "SF",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b0e44b65638d87a6",
+                  "name": "spacecraft",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "宇宙船",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7f176bdd1374e516",
+                  "name": "spacecraft interior",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "宇宙船の中",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:89bd21f83054d45f",
+                  "name": "dungeon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ダンジョン",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1659d39ceb2950a7",
+                  "name": "magic circle",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "魔法陣",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:4399a2e87c743e84",
+                  "name": "post-apocalypse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "終末世界",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:82b1af481c08a95e",
+                  "name": "overgrown",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "草木に覆われた廃墟",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ba1a91b4a623f64f",
+                  "name": "hologram",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ホログラム",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:80099327e78b69fc",
+                  "name": "holographic interface",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ホログラムUI",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:02f9cd75b0906c3e",
+                  "name": "retrofuturism",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "レトロフューチャー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ea8dfba2ac61b366",
+                  "name": "cowboy western",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "西部劇",
+                  "rank": 9999
                 }
               ]
             },
@@ -16879,6 +17271,278 @@
                   "aliases": [],
                   "rank": 9999,
                   "translation_ja": "屋内"
+                },
+                {
+                  "id": "legacy:122604decb5a6e39",
+                  "name": "living room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "リビング",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5878e319bec7e8a9",
+                  "name": "locker room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ロッカールーム",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:35359e7e4df2c036",
+                  "name": "changing room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "更衣室",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:84ff265cc33970a0",
+                  "name": "fitting room",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "試着室",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:4862b605803a8d9a",
+                  "name": "hallway",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "廊下",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e6427457497fe0f4",
+                  "name": "office",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "オフィス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:24c298183722e760",
+                  "name": "train interior",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "電車の中",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:804c9caf15facb99",
+                  "name": "bus interior",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "バスの中",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d63eda9e43592590",
+                  "name": "car interior",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "車の中",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:4f82600d6841e9ac",
+                  "name": "convenience store",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "コンビニ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ee710b916549901c",
+                  "name": "bookstore",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "書店",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b483b668ed18bcf5",
+                  "name": "bath",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "風呂",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1f5dda43f53eb5f9",
+                  "name": "bathhouse",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "銭湯",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:655f83be7512e5b5",
+                  "name": "school",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "学校",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2b2d005e88ce14a4",
+                  "name": "hospital",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "病院",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d9808031aa3be583",
+                  "name": "bar \\(place\\)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "バー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f9d20f9bd790d5c8",
+                  "name": "karaoke",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "カラオケ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c16c6aeeed290415",
+                  "name": "arcade",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ゲームセンター",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6356f05bbb8a05f8",
+                  "name": "movie theater",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "映画館",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ac5d84bfae726a96",
+                  "name": "stage",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ステージ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9ff2adb3c7909f42",
+                  "name": "concert",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "コンサート",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d5360d9be832b5fe",
+                  "name": "elevator",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "エレベーター",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1728e8156c5d9639",
+                  "name": "veranda",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ベランダ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6d55c0974cae7bb4",
+                  "name": "balcony",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "バルコニー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2708dfee202dc4ff",
+                  "name": "porch",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "縁側",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7412055c1b3b31c2",
+                  "name": "doorway",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "戸口",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:46e7cfa080913f4d",
+                  "name": "desk",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "机",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2af26745de3cf4a5",
+                  "name": "throne",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "玉座",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:51a4b13bc79072fe",
+                  "name": "pool",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "プール",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2cdbffdcaef5be53",
+                  "name": "apartment",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "アパート",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e4475bc2121ed1ff",
+                  "name": "cockpit",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "コックピット",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:71391b26ac3aec89",
+                  "name": "prison cell",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "独房",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f7c0d1b90ae174a3",
+                  "name": "shouji",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "障子",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2cc815a825f9ee8f",
+                  "name": "sauna",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "サウナ",
+                  "rank": 9999
                 }
               ]
             },
@@ -17174,6 +17838,46 @@
                   "aliases": [],
                   "rank": 9999,
                   "translation_ja": "窓"
+                },
+                {
+                  "id": "legacy:8a8fa066fa3914ae",
+                  "name": "brick wall",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "レンガ壁",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:513b565ac53be7fe",
+                  "name": "wooden wall",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "木の壁",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:28f6e27708ab80f1",
+                  "name": "wallpaper \\(object\\)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "壁紙",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e0c073ad0139af1f",
+                  "name": "wooden floor",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "木の床",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0e8783427b114503",
+                  "name": "checkered floor",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "チェッカー床",
+                  "rank": 9999
                 }
               ]
             }
@@ -17452,6 +18156,150 @@
                   "aliases": [],
                   "translation_ja": "風景",
                   "rank": 15
+                },
+                {
+                  "id": "legacy:0a2f2cd978d1f218",
+                  "name": "landscape",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "風景画",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f3c45b69bb63a924",
+                  "name": "lake",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "湖",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d79ac4a2b1ac0251",
+                  "name": "mountain",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "山",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cf185b44b0888372",
+                  "name": "meadow",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "草原",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:29ad5faaeeb5ad69",
+                  "name": "flower field",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "花畑",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b1ade531057f51c2",
+                  "name": "garden",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "庭園",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:52e1fb5c03c15855",
+                  "name": "poolside",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "プールサイド",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2d5128d7e4e85ee1",
+                  "name": "desert",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "砂漠",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2e1a00b4a2a5c9aa",
+                  "name": "horizon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "地平線・水平線",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:24dc631636ba6694",
+                  "name": "shore",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "岸",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9dba6a05bc1c150b",
+                  "name": "cave",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "洞窟",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5ce9c4dfa820636e",
+                  "name": "hill",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "丘",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cfd47b3bb99a5c3b",
+                  "name": "jungle",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ジャングル",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:17b30a3b01d2dbc0",
+                  "name": "pond",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "池",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7bd1a907a1ec4630",
+                  "name": "island",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "島",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cd2f5f1f07db2335",
+                  "name": "lava",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "溶岩",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:38464bf083d958b5",
+                  "name": "rock",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "岩",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:77a95648a0154d20",
+                  "name": "bush",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "茂み",
+                  "rank": 9999
                 }
               ]
             },
@@ -17636,6 +18484,54 @@
                   "aliases": [],
                   "translation_ja": "緋色の月",
                   "rank": 11
+                },
+                {
+                  "id": "legacy:1b7e5d4ee169057b",
+                  "name": "rainbow background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "虹色",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f4c435dd202ae372",
+                  "name": "sunburst background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "放射線状",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6e741d4dc4afc4c9",
+                  "name": "cloud background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "雲",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:700b1b5b17084479",
+                  "name": "snowflake background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "雪の結晶",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:85fd59709f8dc17f",
+                  "name": "star symbol background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "星マーク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9cc816a8763ac90e",
+                  "name": "starry background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "星空背景",
+                  "rank": 9999
                 }
               ]
             },
@@ -18280,6 +19176,22 @@
                   "aliases": [],
                   "rank": 20,
                   "translation_ja": "ピンク色の花びら"
+                },
+                {
+                  "id": "legacy:2d25c526fb8ec84f",
+                  "name": "floral background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "花柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e76be8b5951c9049",
+                  "name": "leaf background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "葉っぱ",
+                  "rank": 9999
                 }
               ]
             },
@@ -18344,6 +19256,142 @@
                   ],
                   "rank": 19,
                   "translation_ja": "残り火"
+                },
+                {
+                  "id": "legacy:421a987eea59b43d",
+                  "name": "bubble background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "泡",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:88c83ad55cf0a431",
+                  "name": "butterfly background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "蝶",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e3ecc3d71ce8c434",
+                  "name": "fiery background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "炎",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f6011d5cad0bdbd7",
+                  "name": "sparks",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "火花",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:73cf721920392111",
+                  "name": "falling feathers",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "舞い落ちる羽根",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1fd634abaffe9f6b",
+                  "name": "falling leaves",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "舞い散る葉",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fe38d39e766dab78",
+                  "name": "confetti",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紙吹雪",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:912befa6f46df97e",
+                  "name": "star \\(symbol\\)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "星マーク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:553ea2d972ee3691",
+                  "name": "fireflies",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "蛍",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6aa5cd51ee8eab5a",
+                  "name": "debris",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "瓦礫・破片",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:46000ca839ceac63",
+                  "name": "broken glass",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "割れたガラス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:184f28ef012f612c",
+                  "name": "glass shards",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ガラス片",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ebfaaf32d607eff8",
+                  "name": "flying paper",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "舞う紙",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6d550ebcc73169d3",
+                  "name": "streamers",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紙テープ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ef8201e13a29bcc3",
+                  "name": "heart",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ハートマーク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:54b1d51db0541573",
+                  "name": "musical note",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "音符",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:95e5ee9118c461df",
+                  "name": "afterimage",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "残像",
+                  "rank": 9999
                 }
               ]
             }
@@ -18388,6 +19436,214 @@
                   "aliases": [],
                   "translation_ja": "冬",
                   "rank": 4
+                },
+                {
+                  "id": "legacy:aa4a90298e73fd2b",
+                  "name": "spring \\(season\\)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "春",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6420ed4d831b436d",
+                  "name": "summer",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "夏",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:91fb64276c08bb21",
+                  "name": "autumn",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "秋",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a40bf952ec5c18e5",
+                  "name": "autumn leaves",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紅葉",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1ef41af4175fe164",
+                  "name": "winter",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "冬",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a678a63d6add51c3",
+                  "name": "sunflower",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ひまわり",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3b62f46d486309f1",
+                  "name": "fallen leaves",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "落ち葉",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a1b39dd41fb439c6",
+                  "name": "tulip",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "チューリップ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a6b688071b67c710",
+                  "name": "lily \\(flower\\)",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ユリ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e91ea6bc0662284a",
+                  "name": "lily of the valley",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "すずらん",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3f4a3a4efd2cd2d3",
+                  "name": "lily pad",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "睡蓮の葉",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ae5cb6c6fc65524d",
+                  "name": "morning glory",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "朝顔",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:04370e04e1e8bae7",
+                  "name": "dandelion",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "たんぽぽ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3a03be06a4a7a952",
+                  "name": "camellia",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "椿",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0de4b80a5f67aec2",
+                  "name": "moss",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "苔",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:917eaf5e285100d7",
+                  "name": "mushroom",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "きのこ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:625ca8fb7bc2daea",
+                  "name": "christmas lights",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "イルミネーション",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7b8277bb892d9a32",
+                  "name": "easter",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "イースター",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a7b31b066b123919",
+                  "name": "hanami",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "花見",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a561609311858d03",
+                  "name": "graduation",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "卒業",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d98f2c581b10506c",
+                  "name": "birthday",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "誕生日",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c7c8f003650f6c72",
+                  "name": "white day",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ホワイトデー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c27fc159d31c7eeb",
+                  "name": "wedding",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "結婚式",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:99adb8ab20f7a02d",
+                  "name": "kagami mochi",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "鏡餅",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ef0723ba49c25bb2",
+                  "name": "setsubun",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "節分",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ec55fd396d2db98e",
+                  "name": "golden week",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ゴールデンウィーク",
+                  "rank": 9999
                 }
               ]
             },
@@ -18546,6 +19802,110 @@
                   "aliases": [],
                   "rank": 32,
                   "translation_ja": "薄明"
+                },
+                {
+                  "id": "legacy:45a21e4b5b2a90eb",
+                  "name": "morning",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "朝",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:54bf3dc2c4f98fab",
+                  "name": "sunrise",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "日の出",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fa7ba8fe58ae4223",
+                  "name": "red moon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "赤い月",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d57fd91679ff5808",
+                  "name": "evening",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "夕方",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:659d5a3199013ac0",
+                  "name": "milky way",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "天の川",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f6241bb09f0e24d1",
+                  "name": "shooting star",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "流れ星",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c8251d848e225e4d",
+                  "name": "aurora",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "オーロラ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:038c340fe78831dc",
+                  "name": "dawn",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "夜明け",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2b4a87d84a2d6e8c",
+                  "name": "clear sky",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "快晴",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7b77c51fb1d58b12",
+                  "name": "overcast",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "どんより曇り",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6ad3a9478f1c4162",
+                  "name": "storm",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "嵐",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1837160558588554",
+                  "name": "contrail",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "飛行機雲",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:bce302f015d52217",
+                  "name": "puddle",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水たまり",
+                  "rank": 9999
                 }
               ]
             },
@@ -18907,6 +20267,526 @@
                   "negative_prompt_count": 0,
                   "style_count": 1,
                   "translation_ja": "精細な背景"
+                },
+                {
+                  "id": "legacy:6a6cc4672935929a",
+                  "name": "red background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "赤",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f5bf8d79dee61770",
+                  "name": "orange background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "オレンジ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:08a5774a880990e5",
+                  "name": "green background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "緑",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cc3201659c2e7c5d",
+                  "name": "aqua background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水色",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:75952224971da5cf",
+                  "name": "purple background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紫",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f8d67ae2e1b4ba6d",
+                  "name": "monochrome background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "モノクロ・白黒",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dd17ec3dc93b9da2",
+                  "name": "colorful background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "カラフル",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f17d100638729842",
+                  "name": "halftone background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ハーフトーン（網点）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1efa320fdf81ceaa",
+                  "name": "blue theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "青基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e0ac4f2eb934b7f9",
+                  "name": "red theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "赤基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:285c45ab998c8b88",
+                  "name": "pink theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ピンク基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e1f693ae2f0b7242",
+                  "name": "purple theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紫基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:843fb5159f67a0dc",
+                  "name": "green theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "緑基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:0a720d31ecc83ad0",
+                  "name": "orange theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "オレンジ基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cbb27771a4142d20",
+                  "name": "yellow theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "黄基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f508b2025e8e7ae3",
+                  "name": "black theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "黒基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:97bc24635e441010",
+                  "name": "white theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "白基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9cfebe1c315a09d0",
+                  "name": "aqua theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水色基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cebf28c053b08c5a",
+                  "name": "brown theme",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "茶基調",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:00ca01d5c117e494",
+                  "name": "argyle background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "アーガイル柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1776ea6c9d50eafc",
+                  "name": "checkered background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "チェック柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3310a490c4ce1e0b",
+                  "name": "cross background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "十字模様",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:eb3e279d60516a6b",
+                  "name": "grid background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "グリッド（格子）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e62a78fcb840ae80",
+                  "name": "honeycomb background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ハニカム柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:287c97b35b838813",
+                  "name": "lace background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "レース模様",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:34fb4c53319280ec",
+                  "name": "marble background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "大理石模様",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2a54c3ea091f9143",
+                  "name": "plaid background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "格子柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9a001ccd156202cf",
+                  "name": "polka dot background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水玉模様",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:096399c4e3d8c250",
+                  "name": "dotted background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ドット背景",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:27d1d9b65bdad283",
+                  "name": "spiral background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "渦巻模様",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:8973830a731dda1a",
+                  "name": "splatter background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "スプラッター",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fef66dd36a3eeff2",
+                  "name": "striped background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ストライプ柄",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:df269b6ced3b5328",
+                  "name": "diagonal-striped background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "斜めストライプ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:4bee98b7a3171e19",
+                  "name": "stained glass",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ステンドグラス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3d6b63e28051e16b",
+                  "name": "drama layer",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ドラマチック",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:98a374c2bdc68214",
+                  "name": "still life",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "静物",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:814b8ea066abe023",
+                  "name": "rose background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "バラ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d5c2454ddc50255c",
+                  "name": "lightning background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "雷",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3358d32f85dbc220",
+                  "name": "paw print background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "肉球",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fb9b9d38685dc39d",
+                  "name": "rabbit background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ウサギ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:093527b05004567c",
+                  "name": "spider web background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "クモの巣",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:55b6b91ba10cbe88",
+                  "name": "food-themed background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "食べ物テーマ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fdb58e296de102ad",
+                  "name": "fruit background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "果物",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:fbfaa7217ba1346c",
+                  "name": "strawberry background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "いちご",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:10389ba9668b5576",
+                  "name": "card background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "カード風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dd6eac5b321ce4b3",
+                  "name": "flag background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "国旗",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:28867e84b5dd2e85",
+                  "name": "heart background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ハート",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2b7fcd28de1d5a3c",
+                  "name": "text background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "文字",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c6bbdb5144441e79",
+                  "name": "weapon background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "武器",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:924baa1d2482f832",
+                  "name": "3d background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "3D風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c3d80736cb140bc4",
+                  "name": "photo background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "写真風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7add3d80663032ce",
+                  "name": "paper background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紙質感",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f8ee12789fea3cc3",
+                  "name": "sketch background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "スケッチ風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b83225b46a568fdd",
+                  "name": "watercolor background",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水彩画風",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:114f69e6029128dc",
+                  "name": "fading border",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "縁をなじませる",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d2fbf01cb7e42c91",
+                  "name": "black border",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "黒い枠",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6271ec6f799714e4",
+                  "name": "rounded corners",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "角丸",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:8a670849eafc3e58",
+                  "name": "letterboxed",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "レターボックス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e4497c9f8cb353a7",
+                  "name": "pillarboxed",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ピラーボックス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:766d05e0d0971868",
+                  "name": "vignetting",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ビネット",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ac954cd33a815a42",
+                  "name": "blending",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "背景と溶け込む",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:28ce27175fd35ce6",
+                  "name": "projected inset",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "小窓風映り込み",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:db396816fadde83a",
+                  "name": "zoom layer",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "拡大演出レイヤー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:426b41cb49816617",
+                  "name": "text focus",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "文字メイン",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a2e4e35d95ee3da6",
+                  "name": "english text",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "英語の文字",
+                  "rank": 9999
                 }
               ]
             }
@@ -21296,6 +23176,118 @@
                   ],
                   "rank": 31,
                   "translation_ja": "横顔"
+                },
+                {
+                  "id": "legacy:4603dafa4c062133",
+                  "name": "facing to the side",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "横向き",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:45ede53ad7533ab4",
+                  "name": "sideways",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "横倒しの画面",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d82ba5491b1aa93e",
+                  "name": "straight-on",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "正面から",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:aa6af31d2a0329fa",
+                  "name": "perspective",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "遠近感",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:94437f94b6a876af",
+                  "name": "vanishing point",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "消失点",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d818ad4c5a578563",
+                  "name": "pov",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "一人称視点",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d29014e391b7725f",
+                  "name": "pov hands",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "一人称の手",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b7ba658439710370",
+                  "name": "pov across table",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "テーブル越しの視点",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d844757808e0e7aa",
+                  "name": "pov doorway",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ドア越しの視点",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9d006dfff86ff7c5",
+                  "name": "selfie",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "自撮り",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2ee575e1cbc8db28",
+                  "name": "viewfinder",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ファインダー越し",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:4f9e370d91f50f2a",
+                  "name": "reaching towards viewer",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "こちらへ手を伸ばす",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:65f667ceb1d22b2d",
+                  "name": "through screen",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "画面越し",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:aef6a863b4506009",
+                  "name": "soft focus",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ソフトフォーカス",
+                  "rank": 9999
                 }
               ]
             },
@@ -21341,6 +23333,46 @@
                   ],
                   "rank": 5,
                   "translation_ja": "X線"
+                },
+                {
+                  "id": "legacy:8460362f8bc68dcb",
+                  "name": "very wide shot",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "超引き",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:505768b486e7ed44",
+                  "name": "hand focus",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "手にフォーカス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:a41daa278b58400c",
+                  "name": "back focus",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "背中にフォーカス",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9a29f58ff41230a7",
+                  "name": "out of frame",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "画面外",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ba85e4ff1e6b1124",
+                  "name": "cropped torso",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "胴でトリミング",
+                  "rank": 9999
                 }
               ]
             },
@@ -21449,6 +23481,78 @@
                   "aliases": [],
                   "rank": 9999,
                   "translation_ja": "白い縁取り"
+                },
+                {
+                  "id": "legacy:18e1be4e7941651d",
+                  "name": "symmetry",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "シンメトリー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:2a8019204a44efcf",
+                  "name": "negative space",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ネガティブスペース",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b3054a43ce6bdd40",
+                  "name": "split screen",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "分割画面",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:cd457b0254091a71",
+                  "name": "multiple expressions",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "表情集",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b5f64f67a4c5ce67",
+                  "name": "reference sheet",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "設定資料",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:46dc6ff9f3fcdfad",
+                  "name": "turnaround",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "三面図",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:aa297b17eada28c5",
+                  "name": "concept art",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "コンセプトアート",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ba0f04cc6538bba5",
+                  "name": "2koma",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "2コマ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b37299e1f1f93a4a",
+                  "name": "sequential",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "連続コマ",
+                  "rank": 9999
                 }
               ]
             }
@@ -23040,6 +25144,102 @@
                   "aliases": [],
                   "rank": 34,
                   "translation_ja": "暗闇"
+                },
+                {
+                  "id": "legacy:360cb76b4a6c3756",
+                  "name": "rim lighting",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "輪郭光（リムライト）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9d3248f4a078700c",
+                  "name": "dramatic lighting",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ドラマチックな光",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:ab0f61d9c74bd8fa",
+                  "name": "candlelight",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ろうそくの灯り",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6401783c0459ef34",
+                  "name": "light trail",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "光の軌跡",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:22b46af34901bb06",
+                  "name": "glowing weapon",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "光る武器",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7f5bb03cf507c861",
+                  "name": "shade",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "日陰",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:8b5a87ce0bb4b4e1",
+                  "name": "caustics",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "コースティクス（水の光模様）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:50c0788f5b4c0f5b",
+                  "name": "reflection",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "反射・映り込み",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:137a8d3edcb1b136",
+                  "name": "reflective floor",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "反射する床",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:82d529f0dc4e978b",
+                  "name": "reflective liquid",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "反射する水面",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:8dafc0601f4ba0c5",
+                  "name": "glint",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "光の反射（キラッ）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5812e2b7356193b6",
+                  "name": "bloom",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ブルーム",
+                  "rank": 9999
                 }
               ]
             },
@@ -24559,6 +26759,262 @@
                   "aliases": [],
                   "rank": 7,
                   "translation_ja": "色収差"
+                },
+                {
+                  "id": "legacy:2c2a89c1c45d2977",
+                  "name": "aura",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "オーラ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:534405866c01a730",
+                  "name": "dark aura",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "黒いオーラ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3894e20772402596",
+                  "name": "electricity",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "電撃",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:6b9b01998d37da4a",
+                  "name": "fireball",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "火の玉",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:f72cf0dc49ccc30a",
+                  "name": "blue fire",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "青い炎",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:35ec4f6df887845f",
+                  "name": "green fire",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "緑の炎",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:eb3ec20bfdcb79e4",
+                  "name": "purple fire",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "紫の炎",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c23db48d6d623858",
+                  "name": "water drop",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水滴",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:d13f6bb91fde83c9",
+                  "name": "splashing",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "水しぶき",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:173d9168467e6c36",
+                  "name": "energy",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "エネルギー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:458475f95721db11",
+                  "name": "energy ball",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "エネルギー弾",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:c97a7124afced115",
+                  "name": "hitodama",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "人魂",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1e8a8b7e8eb8fd61",
+                  "name": "laser",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "レーザー",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b16fd4a736694d98",
+                  "name": "lightning bolt symbol",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "稲妻マーク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:3420980410e94fe1",
+                  "name": "runes",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ルーン文字",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:5df01dc7026b431e",
+                  "name": "emphasis lines",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "集中線",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:df3564cccb5346e5",
+                  "name": "notice lines",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "気づきの線",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:9bc5e6d52b8c1977",
+                  "name": "thought bubble",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "思考の吹き出し",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1d94ec9362ef9c0e",
+                  "name": "spoken heart",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出しハート",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:b7733a001e205bf9",
+                  "name": "spoken question mark",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し？",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:e949dc2842efcc96",
+                  "name": "spoken exclamation mark",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し！",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:dfa623ffd8d247f8",
+                  "name": "spoken ellipsis",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し…",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:adbeb34316cb57c1",
+                  "name": "spoken sweatdrop",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し汗",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:7e9afcb70db8e29e",
+                  "name": "spoken anger vein",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し怒りマーク",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:bca7cb76248daeff",
+                  "name": "spoken musical note",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し音符",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:294453f5c7ef6795",
+                  "name": "spoken blush",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出し赤面",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:8b70ca182196c1e1",
+                  "name": "spoken zzz",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "吹き出しZzz",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:66f327061f34b100",
+                  "name": "squiggle",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ぐるぐる線（動揺）",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:34858a787cd66571",
+                  "name": "light bulb",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "ひらめき電球",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:40fa37ec00c761c7",
+                  "name": "zzz",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "眠りのZ",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:353d66341285bc09",
+                  "name": "sound effects",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "効果音文字",
+                  "rank": 9999
+                },
+                {
+                  "id": "legacy:1dfe47e5a156f35e",
+                  "name": "screentones",
+                  "post_count": 0,
+                  "aliases": [],
+                  "translation_ja": "トーン",
+                  "rank": 9999
                 }
               ]
             }
