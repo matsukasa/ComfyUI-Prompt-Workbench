@@ -5853,7 +5853,8 @@
                     "origin": "local"
                   },
                   "name": "dynamic_pose",
-                  "translation_ja": "ダイナミックなポーズ"
+                  "translation_ja": "ダイナミックなポーズ",
+                  "id": "legacy:86ed218427e70ef0"
                 },
                 {
                   "id": 431755,
@@ -27044,21 +27045,25 @@
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
-                  "name": "explicit"
+                  "name": "explicit",
+                  "id": "legacy:a45c2264b8cab0f1",
+                  "translation_ja": "露骨な内容"
                 },
                 {
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
                   "name": "questionable",
-                  "translation_ja": "軽度のエロ要素あり"
+                  "translation_ja": "軽度のエロ要素あり",
+                  "id": "legacy:caf941634566c297"
                 },
                 {
                   "prompt_workbench_meta": {
                     "origin": "local"
                   },
                   "name": "sensitive",
-                  "translation_ja": "センシティブ"
+                  "translation_ja": "センシティブ",
+                  "id": "legacy:7a9b93cfa651fbc2"
                 },
                 {
                   "name": "rating_explicit",
