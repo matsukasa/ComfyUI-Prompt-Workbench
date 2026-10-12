@@ -476,9 +476,11 @@ export function containNodeContextMenu(root) {
     if (event.button === 2) event.stopPropagation();
   });
   root?.addEventListener?.("contextmenu", (event) => {
-    event.stopPropagation();
     const editingTarget = event.target?.closest?.("input, textarea, [contenteditable='true']");
     if (!editingTarget) event.preventDefault();
+  }, { capture: true });
+  root?.addEventListener?.("contextmenu", (event) => {
+    event.stopPropagation();
   });
 }
 
