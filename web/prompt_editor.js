@@ -477,11 +477,10 @@ export function containNodeContextMenu(root) {
   });
   root?.addEventListener?.("contextmenu", (event) => {
     const editingTarget = event.target?.closest?.("input, textarea, [contenteditable='true']");
-    if (!editingTarget) event.preventDefault();
-  }, { capture: true });
-  root?.addEventListener?.("contextmenu", (event) => {
+    if (editingTarget) return;
+    event.preventDefault();
     event.stopPropagation();
-  });
+  }, { capture: true });
 }
 
 export function resolveExampleCategoryPath(library, requested = {}) {
