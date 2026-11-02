@@ -3271,6 +3271,7 @@ export class PromptEditor {
       return control;
     };
     const title = element("strong", { className: "paio-context-title", text: tag.value || t("空タグ") });
+    const selectedCount = tag.selected ? this.currentTags.filter((item) => item.selected).length : 0;
     const currentWeight = getTagWeight(tag.value);
     const weightLabel = tag.type === "lora" ? t("LoRA強度") : tag.type === "lycoris" ? t("LyCORIS強度") : t("重み");
     const weightInput = element("input", { className: "paio-context-weight-input" });
@@ -3342,7 +3343,9 @@ export class PromptEditor {
       action(t("英語へ翻訳"), () => this.translateIndexes([index], "en")),
       action(t("日本語へ翻訳"), () => this.translateIndexes([index], this.settings.localLanguage)),
       action(t(tag.enabled ? "無効にする" : "有効にする"), () => this.toggleOne(index)),
-      action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
+      selectedCount > 1
+        ? action(t("{count}件をコピー", { count: selectedCount }), () => this.copySelected(false))
+        : action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
       action(t("削除"), () => this.deleteOneById(tag.id), "is-danger"),
     );
     menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;

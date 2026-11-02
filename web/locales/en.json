@@ -238,6 +238,7 @@
     "{completed}しました": "{completed}.",
     "{error}。翻訳ボタンで再試行できます": "{error}. Use Translate to retry.",
     "再試行が必要な翻訳はありません": "No translations need retrying",
+    "{count}件をコピー": "Copy {count} tags",
     "選択タグをコピーしました": "Copied the selected tags",
     "{language}形式で選択タグをコピーしました": "Copied the selected tags in {language} format",
     "プロンプトをコピーしました": "Copied the prompt",
