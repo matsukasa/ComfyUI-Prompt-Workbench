@@ -250,17 +250,14 @@
 .paio-state-mark { width: 13px; color: #fff; font-weight: 800; text-align: center; }
 .paio-tag.is-favorite .paio-state-mark { color: #ffd56a; }
 .paio-select-mark:empty, .paio-state-mark:empty { display: none; }
-.paio-tag-content { display: flex; min-width: 0; width: max-content; flex-direction: column; }
-.paio-tag-label { min-width: 0; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paio-tag-content { display: flex; min-width: 0; flex-direction: column; }
+.paio-tag-label { min-width: 0; overflow-wrap: anywhere; }
 .paio-tag-translation {
-  max-width: 340px;
-  overflow: hidden;
   color: #fff;
   font-size: 11px;
   font-weight: 600;
   line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .paio-translation-bar { border-color: color-mix(in srgb, var(--paio-purple) 45%, var(--paio-border)); background: color-mix(in srgb, var(--paio-purple) 11%, var(--paio-bg)); }
 .paio-add-row > .paio-button, .paio-prompt-actions > .paio-button:not(:disabled) { border-color: #55aaff; background: var(--paio-blue); color: #fff; }
