@@ -101,6 +101,21 @@ class TagDbTest(unittest.TestCase):
         self.assertEqual(results["nothing"]["state"], "unknown")
         self.assertEqual(results["1000 users bookmark"]["state"], "unknown")
 
+    def test_translate_tag_to_japanese(self):
+        self.assertEqual(tagdb.translate("Long_Hair", "ja"), "長い髪")
+        self.assertEqual(tagdb.translate("longhair", "ja"), "長い髪")
+
+    def test_translate_translation_to_tag(self):
+        self.assertEqual(tagdb.translate("長い髪", "en"), "long hair")
+
+    def test_translate_only_matches_whole_tags(self):
+        self.assertEqual(tagdb.translate("a girl with long hair", "ja"), "")
+        self.assertEqual(tagdb.translate("長い髪の女の子", "en"), "")
+
+    def test_translate_keeps_text_already_in_target_language(self):
+        self.assertEqual(tagdb.translate("longhair", "en"), "")
+        self.assertEqual(tagdb.translate("長い髪", "ja"), "")
+
     def test_status(self):
         self.assertEqual(
             tagdb.status(),
