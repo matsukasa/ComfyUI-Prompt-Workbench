@@ -3734,6 +3734,7 @@ export class PromptEditor {
         const tag = tasks[offset] && currentTag(tasks[offset]);
         if (!tag) return;
         const translated = promptBody(cleanTranslation(result?.translated));
+        if (target === "en" && applySmartTranslationResult(tag, translated, target, this.settings.localLanguage)) return;
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
         tag.translationError = translated ? "" : (result?.error || t("翻訳結果が空でした"));

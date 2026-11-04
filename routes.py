@@ -1182,6 +1182,11 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
         return cached, True
 
     local_result = _local_translate(text, target, catalog_name)
+    if local_result == text:
+        try:
+            local_result = await asyncio.to_thread(tagdb.translate, text, target) or text
+        except sqlite3.Error:
+            pass
     if target.lower().startswith("ja") and local_result != text:
         _cache_set(key, local_result)
         return local_result, False

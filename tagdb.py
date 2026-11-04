@@ -39,6 +39,8 @@ _TAG_PREFIX = "SELECT tag_id, tag AS matched FROM TAGS WHERE tag >= :low AND tag
 _TRANSLATION_PREFIX = (
     "SELECT tag_id, translation AS matched FROM TAG_TRANSLATIONS WHERE translation >= :low AND translation < :high"
 )
+_TAG_EXACT = "SELECT tag_id, tag AS matched FROM TAGS WHERE tag = :name"
+_TRANSLATION_EXACT = "SELECT tag_id, translation AS matched FROM TAG_TRANSLATIONS WHERE translation = :name"
 _TAG_CONTAINS = "SELECT tag_id, tag AS matched FROM TAGS WHERE tag LIKE :pattern ESCAPE '\\'"
 _TRANSLATION_CONTAINS = (
     "SELECT tag_id, translation AS matched FROM TAG_TRANSLATIONS WHERE translation LIKE :pattern ESCAPE '\\'"
@@ -198,6 +200,47 @@ def search(query, language="ja", format_name=DEFAULT_FORMAT, limit=20, contains=
         }
         for item in results
     ]
+
+
+def _translation_rank(text):
+    # 校服、百褶裙 のような中国語が ja に混ざっているので、仮名を含む訳を優先する。
+    return bool(re.search(r"[A-Za-z(（]", text)), not re.search(r"[ぁ-ヿ]", text), len(text), text
+
+
+def translate(text, target, format_name=DEFAULT_FORMAT):
+    """タグ全体が完全一致したときだけ訳を返す。自然文は翻訳サービスに任せる。"""
+    language = target.split("-", 1)[0].casefold()
+    to_tag = language == "en"
+    if text.isascii() == to_tag:
+        return ""
+
+    counts = {}
+    paths = database_paths()
+    for path in paths:
+        connection = _connect(path)
+        try:
+            format_id = _format_id(connection, format_name)
+            if format_id is None:
+                continue
+            for name in tag_variants(text):
+                params = {"format_id": format_id, "limit": MAX_SEARCH_RESULTS, "name": name}
+                for tag, _type_name, count, _matched in _hits(
+                    connection, _TRANSLATION_EXACT if to_tag else _TAG_EXACT, params
+                ):
+                    # 訳からタグへ戻すときは、使われていないタグを選ばない。
+                    if count or not to_tag:
+                        counts[tag] = max(counts.get(tag, 0), count)
+        finally:
+            connection.close()
+    if not counts:
+        return ""
+
+    tag = max(counts, key=counts.get)
+    if to_tag:
+        return tag
+    translations = _translations(paths, [tag], language)[tag]
+    # 複数のDBに同じ訳があれば、片方にしかない訳より信頼できる。
+    return min(translations, key=lambda item: (-translations.count(item), *_translation_rank(item))) if translations else ""
 
 
 def _lookup_status(path, names, format_name):

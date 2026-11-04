@@ -101,6 +101,7 @@ When the [genai-image-tag-db](https://huggingface.co/datasets/NEXTAltair/genai-i
 - Search every tag from the `Add tags` search, including tags outside the catalogue
 - Autocomplete in the prompt text and the add-tag field (arrow keys to select, Tab / Enter to accept, Esc to close)
 - Detect alias tags and replace them with the preferred tag
+- Translate tags missing from the catalogue dictionary (natural-language text still uses the translation service)
 
 If both the CC4 and MIT databases are present, both are searched. To use databases elsewhere, set `PROMPT_WORKBENCH_TAGDB` to their paths, joined with the OS path separator. Python 3.11 or later is required.
 
