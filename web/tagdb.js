@@ -132,7 +132,7 @@ export function attachTagSuggestions(input, { api, language, onPick }) {
     timer = window.setTimeout(async () => {
       abort = new AbortController();
       const { signal } = abort;
-      const results = await searchTagDb(api, token.text.trim(), { language: language(), signal });
+      const results = await searchTagDb(api, token.text.trim(), { language: language(), contains: true, signal });
       if (signal.aborted) return;
       items = results;
       show();
