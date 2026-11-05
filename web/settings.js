@@ -80,6 +80,12 @@ export function sanitizeSettings(input = {}) {
   if ([0.05, 0.1, 0.25].includes(Number(input.weightStep))) {
     settings.weightStep = Number(input.weightStep);
   }
+  if (Number.isFinite(Number(input.weightMin))) {
+    settings.weightMin = Number(input.weightMin);
+  }
+  if (Number.isFinite(Number(input.weightMax))) {
+    settings.weightMax = Number(input.weightMax);
+  }
   if (["allow", "skip", "move"].includes(input.duplicatePolicy)) {
     settings.duplicatePolicy = input.duplicatePolicy;
   }
@@ -127,6 +133,9 @@ export function sanitizeSettings(input = {}) {
   }
   if (typeof input.tagSetFile === "string") {
     settings.tagSetFile = input.tagSetFile.trim().replace(/\.json$/iu, "").slice(0, 64);
+  }
+  if (typeof input.filter === "string") {
+    settings.filter = input.filter.trim().slice(0, 64);
   }
   if (Number.isFinite(Number(input.exampleListHeight))) {
     settings.exampleListHeight = Math.min(520, Math.max(96, Math.round(Number(input.exampleListHeight))));
