@@ -15,8 +15,11 @@ availability booleans and reasons only. `/prompt_workbench/translate` accepts a
 bounded list of text values and provider identifiers, but no URL or credential.
 
 Remote providers share a three-request concurrency gate. Requests time out after
-3-30 seconds, are limited per client to 30 calls per minute, and use a bounded
-512-entry process-memory cache. Restarting ComfyUI clears the cache.
+3-30 seconds and use a bounded 512-entry process-memory cache. Restarting
+ComfyUI clears the cache. Remote executions are rate limited per client to 300
+per minute; only executions that actually call a remote provider count, so
+cache hits and local dictionary results are never throttled, and an item that
+exceeds the budget fails per tag instead of rejecting the whole batch.
 
 The default `local` provider checks the bundled English/Japanese dictionary
 first. For an unknown tag it sends only that tag text to MyMemory's fixed HTTPS

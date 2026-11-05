@@ -20,7 +20,7 @@ MAX_TAG_SET_TAGS = 100
 MAX_TEXT_LENGTH = 8_000
 MAX_BATCH_SIZE = 100
 CACHE_LIMIT = 512
-RATE_LIMIT = 30
+REMOTE_RATE_LIMIT = 300
 RATE_WINDOW_SECONDS = 60
 
 _CACHE = OrderedDict()
@@ -1078,11 +1078,17 @@ def _cache_set(key, value):
 
 
 def _rate_limit(client_id):
+    """Count one remote translation execution against the client's budget.
+
+    Only executions that actually call a remote provider are counted;
+    cache hits and local dictionary results are free. The budget is
+    REMOTE_RATE_LIMIT executions per RATE_WINDOW_SECONDS per client.
+    """
     now = time.monotonic()
     bucket = _RATE_BUCKETS[client_id]
     while bucket and now - bucket[0] > RATE_WINDOW_SECONDS:
         bucket.popleft()
-    if len(bucket) >= RATE_LIMIT:
+    if len(bucket) >= REMOTE_RATE_LIMIT:
         raise TranslationError("Translation rate limit reached; retry shortly")
     bucket.append(now)
 
@@ -1158,7 +1164,7 @@ async def _translate_mymemory(session, text, source, target):
     return _parse_mymemory_result(data, query)
 
 
-async def translate_text(provider, text, source="auto", target="en", timeout=12, catalog_name=""):
+async def translate_text(provider, text, source="auto", target="en", timeout=12, catalog_name="", rate_client=None):
     if not isinstance(text, str) or not text.strip():
         raise TranslationError("Translation text is empty")
     if len(text) > MAX_TEXT_LENGTH:
@@ -1188,6 +1194,10 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
 
     timeout = max(3, min(int(timeout), 30))
     client_timeout = aiohttp.ClientTimeout(total=timeout)
+    if rate_client is not None:
+        # Everything past this point performs exactly one remote provider
+        # call, so this is where the per-client budget is spent.
+        _rate_limit(rate_client)
     async with _REMOTE_SEMAPHORE, aiohttp.ClientSession(timeout=client_timeout) as session:
         if provider == "local":
             result = await _translate_mymemory(session, text, source, target)
@@ -1432,7 +1442,6 @@ def register_routes():
                 raise TranslationError("texts must be a non-empty bounded array")
             if not all(isinstance(item, str) for item in texts):
                 raise TranslationError("Every translation item must be a string")
-            _rate_limit(request.remote or "local")
             source = str(body.get("source", "auto"))[:16]
             target = str(body.get("target", "en"))[:16]
             catalog_name = normalize_catalog_name(body.get("catalog", "")) if body.get("catalog") else ""
@@ -1440,7 +1449,8 @@ def register_routes():
             async def translate_item(item):
                 try:
                     translated, cached = await translate_text(
-                        provider, item, source, target, timeout, catalog_name
+                        provider, item, source, target, timeout, catalog_name,
+                        rate_client=request.remote or "local",
                     )
                     return {"source": item, "translated": translated, "cached": cached}
                 except (TranslationError, asyncio.TimeoutError, AttributeError, KeyError, IndexError, TypeError) as exc:
