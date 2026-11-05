@@ -348,8 +348,10 @@ export function parseImportedCatalogText(value) {
   }
   const library = buildTagLibrary(parsed);
   if (!library.categories.length) throw new Error(t("読み込めるカテゴリーがありません"));
-  const categoryIds = new Set(library.categories.map((category) => category.id));
-  if (library.tags.some((tag) => !tag.prompt || !categoryIds.has(tag.categoryId))) {
+  // buildTagLibrary silently prunes tags with an empty prompt or a missing
+  // category, so validate against its drop count: a file whose tags were
+  // dropped is structurally broken and must not import as a partial success.
+  if (library.droppedTagCount > 0) {
     throw new Error(t("タグファイルのカテゴリー構造が正しくありません"));
   }
   return libraryToBundledCatalog(library, parsed);
@@ -503,16 +505,25 @@ function parseSearchPattern(query) {
   const raw = String(query || "").trim();
   if (!raw) return { empty: true, test: () => true };
   const normalized = normalizeSearchText(raw);
-  const regexSource = raw.startsWith("re:")
-    ? raw.slice(3)
-    : raw.startsWith("/") && raw.lastIndexOf("/") > 0
-      ? raw.slice(1, raw.lastIndexOf("/"))
-      : "";
+  let regexSource = "";
+  let regexFlags = null;
+  if (raw.startsWith("re:")) {
+    regexSource = raw.slice(3);
+  } else if (raw.startsWith("/") && raw.lastIndexOf("/") > 0) {
+    regexSource = raw.slice(1, raw.lastIndexOf("/"));
+    regexFlags = raw.slice(raw.lastIndexOf("/") + 1);
+  }
   if (!regexSource) {
     return { empty: false, test: (text) => normalizeSearchText(text).includes(normalized) };
   }
   try {
-    const matcher = new RegExp(regexSource, "u");
+    // The test target is lowercased by normalizeSearchText, so without an
+    // explicit flag list the match stays case-insensitive (historic behavior,
+    // and patterns like /^Long/ keep working). Trailing flags in /.../flags
+    // are honored; "g" is never allowed because .test would become stateful.
+    const requested = regexFlags ? regexFlags.split("") : ["i"];
+    const flags = [...new Set([...requested, "u"])].filter((flag) => "imsu".includes(flag)).join("");
+    const matcher = new RegExp(regexSource, flags);
     return { empty: false, test: (text) => matcher.test(normalizeSearchText(text)) };
   } catch {
     const fallback = normalizeSearchText(regexSource);

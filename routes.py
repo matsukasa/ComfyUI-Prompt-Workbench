@@ -1100,9 +1100,12 @@ async def _post_json(session, url, payload, headers=None):
         if response.status >= 400:
             raise TranslationError(f"Translation service returned HTTP {response.status}")
         try:
-            return json.loads(body)
+            data = json.loads(body)
         except json.JSONDecodeError as exc:
             raise TranslationError("Translation service returned invalid JSON") from exc
+        if not isinstance(data, dict):
+            raise TranslationError("Translation service returned an unexpected response")
+        return data
 
 
 async def _get_json(session, url, params):
@@ -1111,9 +1114,12 @@ async def _get_json(session, url, params):
         if response.status >= 400:
             raise TranslationError(f"Translation service returned HTTP {response.status}")
         try:
-            return json.loads(body)
+            data = json.loads(body)
         except json.JSONDecodeError as exc:
             raise TranslationError("Translation service returned invalid JSON") from exc
+        if not isinstance(data, dict):
+            raise TranslationError("Translation service returned an unexpected response")
+        return data
 
 
 def _mymemory_query(text):
@@ -1128,7 +1134,8 @@ def _parse_mymemory_result(data, query):
     if not isinstance(status, int) or status >= 400:
         details = data.get("responseDetails") if isinstance(data, dict) else None
         raise TranslationError(str(details or "Free translation service rejected the request"))
-    result = data.get("responseData", {}).get("translatedText")
+    response_data = data.get("responseData")
+    result = response_data.get("translatedText") if isinstance(response_data, dict) else None
     if not isinstance(result, str) or not result.strip():
         raise TranslationError("Free translation service returned an empty result")
     result = html.unescape(result).strip()
@@ -1208,8 +1215,9 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
                 payload,
                 {"Authorization": f"DeepL-Auth-Key {api_key}"},
             )
-            translations = data.get("translations") or []
-            result = translations[0].get("text") if translations else None
+            translations = data.get("translations")
+            first_translation = translations[0] if isinstance(translations, list) and translations else None
+            result = first_translation.get("text") if isinstance(first_translation, dict) else None
         else:
             api_key = os.getenv("PROMPT_WORKBENCH_OPENAI_API_KEY")
             if not api_key:
@@ -1240,8 +1248,10 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
                 payload,
                 {"Authorization": f"Bearer {api_key}"},
             )
-            choices = data.get("choices") or []
-            result = choices[0].get("message", {}).get("content") if choices else None
+            choices = data.get("choices")
+            first_choice = choices[0] if isinstance(choices, list) and choices else None
+            message = first_choice.get("message") if isinstance(first_choice, dict) else None
+            result = message.get("content") if isinstance(message, dict) else None
 
     if not isinstance(result, str) or not result.strip():
         raise TranslationError("Translation service returned an empty result")
@@ -1433,7 +1443,9 @@ def register_routes():
                         provider, item, source, target, timeout, catalog_name
                     )
                     return {"source": item, "translated": translated, "cached": cached}
-                except (TranslationError, asyncio.TimeoutError) as exc:
+                except (TranslationError, asyncio.TimeoutError, AttributeError, KeyError, IndexError, TypeError) as exc:
+                    # Provider responses with unexpected shapes must fail per item,
+                    # as documented, not take down the whole batch endpoint.
                     message = "Translation timed out" if isinstance(exc, asyncio.TimeoutError) else str(exc)
                     return {"source": item, "translated": "", "cached": False, "error": message}
 

@@ -213,8 +213,12 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
       }
     }
   }
+  let droppedTagCount = 0;
   for (const tag of [...tags.values()]) {
-    if (!tag.prompt || !categories.has(tag.categoryId)) tags.delete(tag.id);
+    if (!tag.prompt || !categories.has(tag.categoryId)) {
+      tags.delete(tag.id);
+      droppedTagCount += 1;
+    }
   }
 
   const categoryList = [...categories.values()];
@@ -225,7 +229,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
     if (categoryDifference) return categoryDifference;
     return (Number.isInteger(left.order) ? left.order : MAX_EDITS) - (Number.isInteger(right.order) ? right.order : MAX_EDITS);
   });
-  return { categories: categoryList, tags: tagList };
+  return { categories: categoryList, tags: tagList, droppedTagCount };
 }
 
 function upsert(list, entry) {

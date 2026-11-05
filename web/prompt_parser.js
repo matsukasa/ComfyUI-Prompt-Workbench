@@ -345,11 +345,16 @@ export function setTagWeight(value, weight, min = 0.05, max = 2) {
 export function adjustTagWeight(value, delta, min = 0.05, max = 2) {
   const text = String(value || "").trim();
   if (!text) return text;
+  const numericDelta = Number(delta || 0);
+  if (!Number.isFinite(numericDelta)) return text;
   const adapter = parseAdapterStrength(text);
   if (!adapter && /^<(lora|lyco):/i.test(text)) return text;
   const parsed = parseExplicitWeight(text);
   const current = adapter?.weight ?? (parsed ? parsed.weight : 1);
-  const next = Math.min(max, Math.max(min, roundWeight(current + Number(delta || 0))));
+  const next = Math.min(max, Math.max(min, roundWeight(current + numericDelta)));
+  // Match setTagWeight: a resulting weight of exactly 1 is the plain tag,
+  // not an explicit "(tag:1.00)" wrapper.
+  if (next === 1 && !adapter) return parsed ? parsed.body.trim() : text;
   const formatted = next.toFixed(2);
   if (adapter) return `<${adapter.type}:${adapter.name}:${formatted}>`;
   if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;

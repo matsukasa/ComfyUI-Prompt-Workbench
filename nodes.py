@@ -4,6 +4,9 @@ import re
 def normalize_output_prompt(prompt):
     value = "" if prompt is None else str(prompt)
     value = re.sub(r"[ \t]*,?[ \t]*(?:\r\n|\r|\n)+[ \t]*", ", ", value).strip()
+    # Drop empty segments ("a, , b" / "a,,b"); an escaped comma (\,) is a
+    # literal character inside a tag and never starts a segment boundary.
+    value = re.sub(r"(?<!\\),\s*(?:,\s*)+", ", ", value)
     value = re.sub(r"^(?:,\s*)+", "", value)
     value = re.sub(r"(?:,\s*)+$", "", value).rstrip()
     return f"{value}," if value else ""

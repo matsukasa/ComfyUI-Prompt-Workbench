@@ -97,15 +97,22 @@ export async function fetchTagSetCatalog(api) {
 }
 
 export function buildTagSetLibrary(source = {}) {
+  let normalizeWarning = "";
   if (source.schema_version === 1) {
-    try { source = normalizeTagSetIds(source); } catch {}
+    try { source = normalizeTagSetIds(source); } catch (error) {
+      // Do not swallow validation failures silently: keep building leniently,
+      // but surface the failure and let the set-id dedupe below keep ids unique.
+      normalizeWarning = `Tag set catalog validation failed: ${error?.message || error}`;
+    }
   }
   const categories = [];
   const sets = [];
+  const usedSetIds = new Set();
   const warnings = Array.isArray(source?.warnings) ? source.warnings
     .map((item) => text(item, 500))
     .filter((item) => item && !item.startsWith("Duplicate tag set id migrated:")
       && !item.startsWith("Skipped empty tag set under ")) : [];
+  if (normalizeWarning) warnings.push(normalizeWarning);
   const majors = Array.isArray(source?.major_categories) ? source.major_categories : [];
 
   const addCategory = (id, level, parentId, labelJa, labelEn = "") => {
@@ -166,7 +173,15 @@ export function buildTagSetLibrary(source = {}) {
           if (!tags.length) {
             continue;
           }
-          const id = text(item.id, 160) || `${smallCategory.id}:set:${setIndex}`;
+          let id = text(item.id, 160) || `${smallCategory.id}:set:${setIndex}`;
+          if (usedSetIds.has(id)) {
+            let suffix = 2;
+            let replacement;
+            do { replacement = `${id.slice(0, 140)}:duplicate:${suffix++}`; } while (usedSetIds.has(replacement));
+            warnings.push(`Duplicate tag set id migrated: ${id} -> ${replacement}`);
+            id = replacement;
+          }
+          usedSetIds.add(id);
           sets.push({
             id,
             categoryId: smallCategory.id,
