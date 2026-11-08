@@ -3710,6 +3710,43 @@
                   ],
                   "name_en": "Baggy Pants Street",
                   "creator": "まつかさ"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:2:duplicate:3",
+                  "name": "秋服のパーカーコーデ",
+                  "name_ja": "秋服のパーカーコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2097580768449208744",
+                  "tags": [
+                    "outfit only",
+                    "strict color placement",
+                    "early-autumn casual outfit",
+                    "muted blue-gray hip-length zip-up parka made of lightweight matte cotton jersey",
+                    "thin unlined construction",
+                    "relaxed straight silhouette",
+                    "plain attached hood with matching blue-gray drawstrings",
+                    "full-length loose sleeves",
+                    "narrow rib-knit cuffs and hem",
+                    "centered silver zipper with a circular ring pull",
+                    "two discreet front side pockets",
+                    "pale gray crew-neck inner top",
+                    "delicate white floral lace trim around the neckline",
+                    "wide opaque white floral lace layer extending evenly below the parka hem",
+                    "medium-blue washed denim shorts",
+                    "relaxed straight-leg cut",
+                    "knee-above mid-thigh length",
+                    "modest loose leg openings",
+                    "subtle faded wash",
+                    "small pale-blue and white floral embroidery placed only near both outer hems",
+                    "solid black ankle socks",
+                    "chunky black leather slip-on shoes with thick lug soles",
+                    "exact muted blue-gray white medium-blue and black palette",
+                    "breathable lightweight autumn layering",
+                    "modest opaque coverage"
+                  ]
                 }
               ]
             },
@@ -6290,6 +6327,35 @@
                   ],
                   "name_en": "Winter Sailor Uniform",
                   "creator": "まつかさ"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:655",
+                  "name": "ベレー帽とセーラー服のコーデ",
+                  "name_ja": "ベレー帽とセーラー服のコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098154551996194816",
+                  "tags": [
+                    "navy and white marine girly outfit",
+                    "pure-white blouse with long voluminous bishop sleeves",
+                    "fitted navy cuffs decorated with two thin silver-gray stripes and small round silver buttons",
+                    "wide dark-navy sailor collar edged with double silver-gray stripes and narrow ruffled trim",
+                    "deep V-shaped neckline",
+                    "large navy sailor neckerchief tied at the center chest with a round antique-silver brooch",
+                    "small silver anchor embroidery on both ribbon tails",
+                    "high-waisted dark-navy flared mini skirt",
+                    "extra-wide structured waistband with two symmetrical rows of round antique-silver buttons",
+                    "softly gathered full silhouette",
+                    "double silver-gray stripes near the skirt hem",
+                    "narrow dark-navy lace ruffle visible beneath the hem",
+                    "matching dark-navy sailor beret with a silver nautical emblem",
+                    "dark-navy lace choker with a small silver pendant",
+                    "strict pure white",
+                    "dark navy and antique-silver color placement",
+                    "sweet feminine naval styling"
+                  ]
                 }
               ]
             },
@@ -6571,6 +6637,40 @@
                     "detailed fantasy uniform design"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:663",
+                  "name": "学生風のプレッピスタイル",
+                  "name_ja": "学生風のプレッピスタイル",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2099090721626034285",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "saturated scarlet-red oversized knit cardigan",
+                    "cardigan torso entirely scarlet red",
+                    "both cardigan sleeves entirely scarlet red",
+                    "cardigan cuffs and hem scarlet red",
+                    "deep V neckline",
+                    "dropped shoulders",
+                    "very loose long sleeves",
+                    "upper-thigh length",
+                    "dark-brown front buttons",
+                    "two red front patch pockets",
+                    "two thin ivory stripes restricted to the ribbed cuffs and bottom hem",
+                    "ivory-white color restricted exclusively to the collared shirt beneath the cardigan",
+                    "crisp ivory-white shirt with pointed collar",
+                    "gray plaid necktie with muted dark-green lines",
+                    "short beige knife-pleated mini skirt",
+                    "light-gray ribbed knee-high socks with dark-green and black stripes around the tops",
+                    "chunky ivory-white lace-up athletic sneakers with thick soles",
+                    "small ivory varsity letter U patch restricted to the left chest",
+                    "dominant outer-garment color fixed as saturated scarlet red"
+                  ]
                 }
               ]
             },
@@ -6892,6 +6992,44 @@
                     "black and white color palette strictly fixed"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:3:duplicate:3",
+                  "name": "深緑のギンガムチェックのメイド衣装",
+                  "name_ja": "深緑のギンガムチェックのメイド衣装",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2097641165092761794",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "classic sweet maid dress",
+                    "dark forest-green and white small gingham-check cotton fabric",
+                    "fitted dark-green gingham bodice",
+                    "high rounded white collar",
+                    "short rounded gingham puff sleeves",
+                    "narrow solid-white cuffs edged with delicate white eyelet lace",
+                    "full opaque white bib front",
+                    "small dark-green satin bow centered beneath the collar",
+                    "high fitted waist",
+                    "short full circular gingham skirt with evenly gathered volume",
+                    "opaque solid-white maid apron worn over the skirt",
+                    "wide rectangular apron bib",
+                    "narrow shoulder straps",
+                    "fitted white waistband tied into one medium bow at the back",
+                    "rounded apron skirt ending above the gingham hem",
+                    "white scalloped eyelet-lace trim along the apron edge",
+                    "two dark-green gingham heart appliqués placed symmetrically near the lower apron corners",
+                    "double white lace ruffle visible beneath the gingham skirt",
+                    "matching white ruffled maid headband with a narrow dark-green gingham center band",
+                    "dark-green gingham wrist cuffs edged with white lace",
+                    "exact dark forest-green white palette",
+                    "matte opaque cotton",
+                    "neat symmetrical tailoring"
+                  ]
                 }
               ]
             },
@@ -9568,6 +9706,69 @@
                     "lace exclusively white",
                     "hardware exclusively silver"
                   ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:656",
+                  "name": "クラシカルゴシックの魔女風衣装",
+                  "name_ja": "クラシカルゴシックの魔女風衣装",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098516938007736371",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "regal black-and-white checkerboard couture ensemble",
+                    "tall cylindrical top hat with an evenly spaced black-and-white square checkerboard crown",
+                    "solid-black satin band",
+                    "extremely wide flat solid-black brim and one tiny upright black cross ornament at the crown",
+                    "large white pleated Elizabethan ruff collar encircling the neck and framing the shoulders",
+                    "fitted long coat-dress with exaggerated round puff shoulders",
+                    "narrow full-length sleeves completely covered in uniform black-and-white square checks",
+                    "wide flared white pleated cuffs",
+                    "sharply tailored checkerboard corset bodice with a deep sweetheart opening",
+                    "narrow vertical silver-beaded center panel",
+                    "cinched waist",
+                    "dramatic open-front high-low skirt beginning at the hips",
+                    "two long checkerboard tail panels extending to the floor and forming a sweeping train",
+                    "left tail narrow and right tail broad",
+                    "white gathered ruffle trim running continuously along the inner edges of both tails",
+                    "plain warm-white inner back panel",
+                    "fitted high-waisted white brocade shorts visible through the open front",
+                    "black wrist gloves",
+                    "layered pearl choker necklaces",
+                    "structured rectangular checkerboard handbag with black borders and a short chain handle",
+                    "black-and-white pointed high heels with silver crystal details"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:665",
+                  "name": "モノトーンガーリーパンク",
+                  "name_ja": "モノトーンガーリーパンク",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2100138225255981525",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "black-and-white layered mini dress",
+                    "pure-white off-shoulder chiffon blouse underneath",
+                    "wide gathered ruffled neckline across the shoulders",
+                    "long loose balloon sleeves",
+                    "elasticated wrists with small white ruffled cuffs",
+                    "small black ribbon bows at both upper arms",
+                    "solid-black satin camisole bodice with thin straight shoulder straps and a soft V-neckline",
+                    "fitted black waist belt with a small rectangular silver buckle",
+                    "short high-waisted black flared skirt ending at the upper thighs",
+                    "narrow black lace trim along the hem",
+                    "black lace-up ankle boots with chunky platform soles and block heels",
+                    "fair porcelain skin with cool pale undertone"
+                  ]
                 }
               ]
             },
@@ -11175,6 +11376,160 @@
                     "ivory floral-lace ankle socks",
                     "dark chocolate-brown leather Mary Jane shoes with rounded square toes",
                     "low block heels and two narrow crossing buckle straps"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:5:duplicate:2",
+                  "name": "ブラウスとフレアスカートの組み合わせコーデ",
+                  "name_ja": "ブラウスとフレアスカートの組み合わせコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2097792160342917287",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "classic storybook-inspired blouse-and-skirt ensemble",
+                    "opaque pure-white cotton blouse",
+                    "crisp pointed white shirt collar",
+                    "slim solid-black necktie centered beneath the collar",
+                    "small horizontal antique-gold tie bar",
+                    "wide vertical white pintucked bib panel",
+                    "narrow white ruffles bordering both sides of the bib",
+                    "short upright white ruffles extending over both shoulders",
+                    "full-length white bishop sleeves with softly gathered volume",
+                    "fitted wide white cuffs",
+                    "three small antique-gold buttons arranged vertically on each cuff",
+                    "high-waisted deep crimson-red knee-length circular skirt",
+                    "narrow solid-black waist belt with a small rectangular antique-gold buckle centered at the front",
+                    "one medium solid-black bow fixed at the right-front waist",
+                    "two long narrow black ribbon tails hanging vertically over the red skirt",
+                    "full evenly gathered bell-shaped skirt",
+                    "continuous antique-gold embroidered rose vines and leaves placed only around the lower red skirt",
+                    "wide black gathered ruffle emerging evenly beneath the red hem",
+                    "second black floral-lace ruffle forming the lowest edge",
+                    "large deep crimson-red fabric headband bow centered on top of the head",
+                    "white ankle socks with narrow scalloped ruffle cuffs",
+                    "glossy black Mary Jane platform shoes",
+                    "rounded toes",
+                    "single instep straps",
+                    "small silver round fasteners",
+                    "chunky block heels and thick lug soles",
+                    "exact pure white deep crimson red solid black and antique gold palette",
+                    "white restricted to blouse and socks",
+                    "red restricted to skirt and head bow",
+                    "black restricted to necktie belt waist bow underskirt and shoes",
+                    "gold restricted to buttons buckle tie bar and skirt embroidery",
+                    "symmetrical opaque tailoring"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:657",
+                  "name": "深緑のレトロなロリータ",
+                  "name_ja": "深緑のレトロなロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098607540640579940",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "elegant deep emerald-green two-piece outfit",
+                    "matching cropped blouse and flared mini skirt made from smooth matte satin",
+                    "cropped off-the-shoulder blouse with two thin straight emerald shoulder straps",
+                    "fitted sweetheart bust",
+                    "elasticated ruffle trim following the entire neckline",
+                    "short rounded puff sleeves positioned below the shoulders",
+                    "gathered sleeve bands and double-layer flared ruffle cuffs",
+                    "narrow emerald drawstring tied into a small bow at the center bust",
+                    "one tiny polished-gold heart charm hanging from the bow",
+                    "deeply ruched fitted underbust and waist panel",
+                    "narrow gathered ruffle along the cropped hem",
+                    "visible midriff separating the two garments",
+                    "high-waisted knee-above circle skirt with a wide flat waistband and evenly spaced belt loops",
+                    "one large polished-gold open-heart buckle centered at the front waist",
+                    "smooth fitted upper hips and a strongly flared symmetrical skirt",
+                    "one small emerald fabric bow attached to each front hip",
+                    "one tiny gold heart charm hanging from each hip bow",
+                    "clean unpatterned fabric",
+                    "emerald green restricted to every fabric component",
+                    "metallic gold restricted only to the three heart ornaments"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:658",
+                  "name": "モノトーンのカジュアルロリータ",
+                  "name_ja": "モノトーンのカジュアルロリータ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098667934469984673",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "black-and-ivory Victorian gothic vest ensemble",
+                    "ivory-white high-neck blouse with a fitted torso",
+                    "short voluminous leg-of-mutton puff sleeves",
+                    "gathered elastic sleeve openings and tiny ivory ribbon ties",
+                    "extremely full layered ivory ruffle jabot covering the entire chest from the high collar to the waist",
+                    "fitted sleeveless matte-black waistcoat layered over the blouse",
+                    "broad straight shoulder straps",
+                    "very deep narrow V-shaped opening framing the white jabot",
+                    "sharply tailored waist",
+                    "pointed split front tails extending over the hips",
+                    "small welt pockets on both lower sides",
+                    "silver round buttons arranged down the lower front",
+                    "long ivory blouse tails visible beneath both sides of the waistcoat",
+                    "short black tiered mini skirt",
+                    "structured black upper layer",
+                    "multiple horizontal tiers of tightly gathered black fabric",
+                    "black floral lace bands placed across the middle and upper tiers",
+                    "sharply pleated black bottom tier",
+                    "monochrome black-and-ivory palette",
+                    "layered black beaded choker and draped black bead chains around the neck"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:664",
+                  "name": "アリス服の秋バージョン",
+                  "name_ja": "アリス服の秋バージョン",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2099604097724981341",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "Alice in Wonderland inspired autumn outfit",
+                    "pure-white Victorian blouse with a high rounded collar",
+                    "long bishop sleeves",
+                    "softly gathered shoulders",
+                    "voluminous opaque sleeves",
+                    "fitted buttoned cuffs and narrow white lace edging",
+                    "solid deep-blue sleeveless jumper mini dress layered over the blouse",
+                    "medium-weight wool-blend fabric",
+                    "fitted bodice",
+                    "square neckline",
+                    "sharply defined natural waist",
+                    "short full gathered bell-shaped skirt ending above the knees",
+                    "crisp pure-white apron layered over the blue jumper dress",
+                    "square apron bib",
+                    "wide ruffled shoulder straps crossing at the back",
+                    "rounded white apron skirt ending above the blue dress hem",
+                    "broad white waist sash tied into one large symmetrical back bow",
+                    "black velvet ribbon headband with one centered bow",
+                    "opaque white knee-high socks",
+                    "polished black Mary Jane shoes with rounded toes and low heels",
+                    "exact palette limited to deep blue",
+                    "pure white and black"
                   ]
                 }
               ]
@@ -13173,6 +13528,42 @@
                     "shoes dark burgundy brown",
                     "hardware antique brass"
                   ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:6:duplicate:2",
+                  "name": "クラシカルガーリな深緑のジャンパスカトと白いシフォンブラウスの重ね着コーデ",
+                  "name_ja": "クラシカルガーリな深緑のジャンパスカトと白いシフォンブラウスの重ね着コーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2097943159036854667",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "a single elegant layered autumn mini dress",
+                    "opaque deep forest-green fitted dress body",
+                    "straight horizontal upper edge positioned across the upper chest beneath a fully covered sheer yoke",
+                    "smoothly fitted torso with vertical princess seams",
+                    "defined natural waist",
+                    "clean softly flared A-line skirt ending just above the knees",
+                    "plain unpatterned matte fabric",
+                    "attached pale sage-green transparent organza blouse layer forming the entire neckline",
+                    "shoulders and sleeves",
+                    "fully covered shoulders",
+                    "high gathered ruffle collar encircling the neck",
+                    "narrow dark emerald ribbon tied neatly at the center throat with two straight hanging tails",
+                    "full-length translucent bishop sleeves beginning exactly at the shoulder seams",
+                    "moderate sleeve volume",
+                    "gathered wrists",
+                    "matching pale sage double-layer flared ruffle cuffs",
+                    "symmetrical construction",
+                    "minimal decoration",
+                    "deep forest green restricted to the opaque bodice and skirt",
+                    "pale sage green restricted to the sheer yoke collar sleeves and cuffs",
+                    "dark emerald restricted to the neck ribbon"
+                  ]
                 }
               ]
             },
@@ -13334,6 +13725,76 @@
                     "solid black only on the belt",
                     "antique silver only on the buckle"
                   ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:659",
+                  "name": "クラシカルカジュアルな街行きコーデ",
+                  "name_ja": "クラシカルカジュアルな街行きコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098728339863384236",
+                  "tags": [
+                    "girly ivory-white lace blouse and dark-wash denim shorts outfit",
+                    "loose straight pullover blouse made entirely from delicate ivory-white floral lace",
+                    "opaque ivory lining covering the torso",
+                    "wide shallow square neckline bordered with narrow gathered lace ruffles",
+                    "tiny ivory ribbon bow centered at the neckline",
+                    "long loose sleeves",
+                    "softly flared bell-shaped cuffs",
+                    "layered gathered lace ruffles around the wrists",
+                    "straight hip-length bodice",
+                    "scalloped floral-lace hem with a narrow ruffle border",
+                    "dark indigo-blue denim short pants",
+                    "fitted waist",
+                    "short loose bloomer-like silhouette",
+                    "two symmetrical leg openings",
+                    "each leg decorated with layered ivory-white and pale-gray floral lace ruffles",
+                    "large ivory floral lace appliques arranged across the front hems",
+                    "narrow dark-blue denim ruffle visible between the lace layers",
+                    "ivory knee-high socks covered with tiny scattered dusty-pink and muted-red floral sprigs",
+                    "white chunky lace-up platform sneakers with thick sculpted white soles",
+                    "strict ivory white",
+                    "dark indigo blue",
+                    "pale gray",
+                    "dusty pink and muted red color palette"
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:660",
+                  "name": "オフショルダブラウスとハイウエストキュロットのコーデ",
+                  "name_ja": "オフショルダブラウスとハイウエストキュロットのコーデ",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2098969935334478305",
+                  "tags": [
+                    "outfit only",
+                    "strict garment structure",
+                    "strict color placement",
+                    "ivory-white off-shoulder peasant blouse paired with warm chestnut-brown culotte trousers",
+                    "blouse made from soft lightweight matte cotton",
+                    "wide elasticized off-shoulder neckline edged with a narrow ivory ruffle",
+                    "two thin ivory shoulder straps",
+                    "small ivory ribbon bow centered at the neckline",
+                    "short vertical row of tiny ivory buttons below the bow",
+                    "fitted upper chest seam with softly gathered fabric beneath it",
+                    "loose blouse body tucked completely inside the trousers",
+                    "long voluminous bishop sleeves beginning below the shoulders",
+                    "sleeves gathered into flared ivory ruffle cuffs at the wrists",
+                    "high-waisted chestnut-brown culottes made from smooth matte fabric",
+                    "gathered paper-bag waistband",
+                    "matching narrow brown belt threaded through belt loops",
+                    "centered oval antique-brass ring buckle",
+                    "soft front pleats",
+                    "extremely wide straight legs ending at mid-calf",
+                    "dark chocolate-brown rectangular crossbody bag with a structured flap and thin gold chain strap",
+                    "black rounded-toe Mary Jane shoes with single ankle straps",
+                    "brown-tinted aviator sunglasses",
+                    "delicate gold pendant necklace"
+                  ]
                 }
               ]
             },
@@ -13429,6 +13890,40 @@
                     "lightweight fabric texture"
                   ],
                   "creator": "アリス服飾店　様"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset:major:2:medium:1:small:1:set:1:duplicate:3",
+                  "name": "カジュアルな地雷系ファッション",
+                  "name_ja": "カジュアルな地雷系ファッション",
+                  "creator": "アリス服飾店　様",
+                  "source_url": "https://x.com/AliceLavli/status/2097520378558169153",
+                  "tags": [
+                    "outfit only",
+                    "strict color placement",
+                    "oversized charcoal-black zip-up hoodie made of thick matte brushed fabric",
+                    "loose drop shoulders",
+                    "extra-long roomy sleeves",
+                    "solid black rib-knit cuffs and wide black rib-knit hem",
+                    "straight silver front zipper",
+                    "large black side pockets",
+                    "oversized hood trimmed with dense black faux fur",
+                    "two round black faux-fur bear ears fixed symmetrically on top of the hood",
+                    "small distressed white crest-style emblem printed only on the left chest",
+                    "a white pointed shirt collar with fine black line-art pattern visible at the neckline",
+                    "very short solid-black opaque skirt beneath the hoodie",
+                    "wide black floral lace trim extending below the skirt hem",
+                    "layered scalloped lace edge",
+                    "black opaque thigh-high stockings ending high on the thighs",
+                    "broad black floral-lace stocking tops",
+                    "clearly visible narrow band of bare upper thigh between the skirt lace and stocking tops",
+                    "clean and symmetrical zettai ryouiki",
+                    "modest secure coverage",
+                    "exact charcoal-black-white palette",
+                    "relaxed dark streetwear silhouette"
+                  ]
                 }
               ]
             }
@@ -15016,6 +15511,45 @@
                     "atmospheric fog"
                   ],
                   "creator": "default"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset_small:styles_workbench:363024ec65:ccc33c6323:set:663",
+                  "name": "画像洗練　隠し味プロンプト",
+                  "name_ja": "画像洗練　隠し味プロンプト",
+                  "source_url": "https://x.com/NanameNanameumh/status/2118818205313507711",
+                  "tags": [
+                    "theme-driven art direction",
+                    "concept-integrated decorative design",
+                    "intentional visual hierarchy",
+                    "controlled visual complexity",
+                    "restrained ornamentation.",
+                    "sophisticated graphic composition",
+                    "dynamic framing and spatial layering.",
+                    "smooth continuous contours."
+                  ]
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "id": "tagset_small:styles_workbench:363024ec65:ccc33c6323:set:664",
+                  "name": "豪華装飾アートプロンプト",
+                  "name_ja": "豪華装飾アートプロンプト",
+                  "source_url": "https://x.com/NanameNanameumh/status/2117732766771269926",
+                  "tags": [
+                    "monumental ornamental framing",
+                    "seamless ornamental integration",
+                    "oversized symbolic centerpiece",
+                    "extreme detail concentration",
+                    "bold negative space separation",
+                    "intentional visual hierarchy",
+                    "controlled visual complexity",
+                    "theme-driven art direction",
+                    "sophisticated graphic composition"
+                  ]
                 }
               ]
             }
@@ -15226,503 +15760,7 @@
               },
               "id": "tagset:major:2:medium:1:small:1",
               "label_ja": "未分類",
-              "sets": [
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:1:duplicate:3",
-                  "name": "カジュアルな地雷系ファッション",
-                  "name_ja": "カジュアルな地雷系ファッション",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2097520378558169153",
-                  "tags": [
-                    "outfit only",
-                    "strict color placement",
-                    "oversized charcoal-black zip-up hoodie made of thick matte brushed fabric",
-                    "loose drop shoulders",
-                    "extra-long roomy sleeves",
-                    "solid black rib-knit cuffs and wide black rib-knit hem",
-                    "straight silver front zipper",
-                    "large black side pockets",
-                    "oversized hood trimmed with dense black faux fur",
-                    "two round black faux-fur bear ears fixed symmetrically on top of the hood",
-                    "small distressed white crest-style emblem printed only on the left chest",
-                    "a white pointed shirt collar with fine black line-art pattern visible at the neckline",
-                    "very short solid-black opaque skirt beneath the hoodie",
-                    "wide black floral lace trim extending below the skirt hem",
-                    "layered scalloped lace edge",
-                    "black opaque thigh-high stockings ending high on the thighs",
-                    "broad black floral-lace stocking tops",
-                    "clearly visible narrow band of bare upper thigh between the skirt lace and stocking tops",
-                    "clean and symmetrical zettai ryouiki",
-                    "modest secure coverage",
-                    "exact charcoal-black-white palette",
-                    "relaxed dark streetwear silhouette"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:2:duplicate:3",
-                  "name": "秋服のパーカーコーデ",
-                  "name_ja": "秋服のパーカーコーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2097580768449208744",
-                  "tags": [
-                    "outfit only",
-                    "strict color placement",
-                    "early-autumn casual outfit",
-                    "muted blue-gray hip-length zip-up parka made of lightweight matte cotton jersey",
-                    "thin unlined construction",
-                    "relaxed straight silhouette",
-                    "plain attached hood with matching blue-gray drawstrings",
-                    "full-length loose sleeves",
-                    "narrow rib-knit cuffs and hem",
-                    "centered silver zipper with a circular ring pull",
-                    "two discreet front side pockets",
-                    "pale gray crew-neck inner top",
-                    "delicate white floral lace trim around the neckline",
-                    "wide opaque white floral lace layer extending evenly below the parka hem",
-                    "medium-blue washed denim shorts",
-                    "relaxed straight-leg cut",
-                    "knee-above mid-thigh length",
-                    "modest loose leg openings",
-                    "subtle faded wash",
-                    "small pale-blue and white floral embroidery placed only near both outer hems",
-                    "solid black ankle socks",
-                    "chunky black leather slip-on shoes with thick lug soles",
-                    "exact muted blue-gray white medium-blue and black palette",
-                    "breathable lightweight autumn layering",
-                    "modest opaque coverage"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:3:duplicate:3",
-                  "name": "深緑のギンガムチェックのメイド衣装",
-                  "name_ja": "深緑のギンガムチェックのメイド衣装",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2097641165092761794",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "classic sweet maid dress",
-                    "dark forest-green and white small gingham-check cotton fabric",
-                    "fitted dark-green gingham bodice",
-                    "high rounded white collar",
-                    "short rounded gingham puff sleeves",
-                    "narrow solid-white cuffs edged with delicate white eyelet lace",
-                    "full opaque white bib front",
-                    "small dark-green satin bow centered beneath the collar",
-                    "high fitted waist",
-                    "short full circular gingham skirt with evenly gathered volume",
-                    "opaque solid-white maid apron worn over the skirt",
-                    "wide rectangular apron bib",
-                    "narrow shoulder straps",
-                    "fitted white waistband tied into one medium bow at the back",
-                    "rounded apron skirt ending above the gingham hem",
-                    "white scalloped eyelet-lace trim along the apron edge",
-                    "two dark-green gingham heart appliqués placed symmetrically near the lower apron corners",
-                    "double white lace ruffle visible beneath the gingham skirt",
-                    "matching white ruffled maid headband with a narrow dark-green gingham center band",
-                    "dark-green gingham wrist cuffs edged with white lace",
-                    "exact dark forest-green white palette",
-                    "matte opaque cotton",
-                    "neat symmetrical tailoring"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:5:duplicate:2",
-                  "name": "ブラウスとフレアスカートの組み合わせコーデ",
-                  "name_ja": "ブラウスとフレアスカートの組み合わせコーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2097792160342917287",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "classic storybook-inspired blouse-and-skirt ensemble",
-                    "opaque pure-white cotton blouse",
-                    "crisp pointed white shirt collar",
-                    "slim solid-black necktie centered beneath the collar",
-                    "small horizontal antique-gold tie bar",
-                    "wide vertical white pintucked bib panel",
-                    "narrow white ruffles bordering both sides of the bib",
-                    "short upright white ruffles extending over both shoulders",
-                    "full-length white bishop sleeves with softly gathered volume",
-                    "fitted wide white cuffs",
-                    "three small antique-gold buttons arranged vertically on each cuff",
-                    "high-waisted deep crimson-red knee-length circular skirt",
-                    "narrow solid-black waist belt with a small rectangular antique-gold buckle centered at the front",
-                    "one medium solid-black bow fixed at the right-front waist",
-                    "two long narrow black ribbon tails hanging vertically over the red skirt",
-                    "full evenly gathered bell-shaped skirt",
-                    "continuous antique-gold embroidered rose vines and leaves placed only around the lower red skirt",
-                    "wide black gathered ruffle emerging evenly beneath the red hem",
-                    "second black floral-lace ruffle forming the lowest edge",
-                    "large deep crimson-red fabric headband bow centered on top of the head",
-                    "white ankle socks with narrow scalloped ruffle cuffs",
-                    "glossy black Mary Jane platform shoes",
-                    "rounded toes",
-                    "single instep straps",
-                    "small silver round fasteners",
-                    "chunky block heels and thick lug soles",
-                    "exact pure white deep crimson red solid black and antique gold palette",
-                    "white restricted to blouse and socks",
-                    "red restricted to skirt and head bow",
-                    "black restricted to necktie belt waist bow underskirt and shoes",
-                    "gold restricted to buttons buckle tie bar and skirt embroidery",
-                    "symmetrical opaque tailoring"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:6:duplicate:2",
-                  "name": "クラシカルガーリな深緑のジャンパスカトと白いシフォンブラウスの重ね着コーデ",
-                  "name_ja": "クラシカルガーリな深緑のジャンパスカトと白いシフォンブラウスの重ね着コーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2097943159036854667",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "a single elegant layered autumn mini dress",
-                    "opaque deep forest-green fitted dress body",
-                    "straight horizontal upper edge positioned across the upper chest beneath a fully covered sheer yoke",
-                    "smoothly fitted torso with vertical princess seams",
-                    "defined natural waist",
-                    "clean softly flared A-line skirt ending just above the knees",
-                    "plain unpatterned matte fabric",
-                    "attached pale sage-green transparent organza blouse layer forming the entire neckline",
-                    "shoulders and sleeves",
-                    "fully covered shoulders",
-                    "high gathered ruffle collar encircling the neck",
-                    "narrow dark emerald ribbon tied neatly at the center throat with two straight hanging tails",
-                    "full-length translucent bishop sleeves beginning exactly at the shoulder seams",
-                    "moderate sleeve volume",
-                    "gathered wrists",
-                    "matching pale sage double-layer flared ruffle cuffs",
-                    "symmetrical construction",
-                    "minimal decoration",
-                    "deep forest green restricted to the opaque bodice and skirt",
-                    "pale sage green restricted to the sheer yoke collar sleeves and cuffs",
-                    "dark emerald restricted to the neck ribbon"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:655",
-                  "name": "ベレー帽とセーラー服のコーデ",
-                  "name_ja": "ベレー帽とセーラー服のコーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098154551996194816",
-                  "tags": [
-                    "navy and white marine girly outfit",
-                    "pure-white blouse with long voluminous bishop sleeves",
-                    "fitted navy cuffs decorated with two thin silver-gray stripes and small round silver buttons",
-                    "wide dark-navy sailor collar edged with double silver-gray stripes and narrow ruffled trim",
-                    "deep V-shaped neckline",
-                    "large navy sailor neckerchief tied at the center chest with a round antique-silver brooch",
-                    "small silver anchor embroidery on both ribbon tails",
-                    "high-waisted dark-navy flared mini skirt",
-                    "extra-wide structured waistband with two symmetrical rows of round antique-silver buttons",
-                    "softly gathered full silhouette",
-                    "double silver-gray stripes near the skirt hem",
-                    "narrow dark-navy lace ruffle visible beneath the hem",
-                    "matching dark-navy sailor beret with a silver nautical emblem",
-                    "dark-navy lace choker with a small silver pendant",
-                    "strict pure white",
-                    "dark navy and antique-silver color placement",
-                    "sweet feminine naval styling"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:656",
-                  "name": "クラシカルゴシックの魔女風衣装",
-                  "name_ja": "クラシカルゴシックの魔女風衣装",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098516938007736371",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "regal black-and-white checkerboard couture ensemble",
-                    "tall cylindrical top hat with an evenly spaced black-and-white square checkerboard crown",
-                    "solid-black satin band",
-                    "extremely wide flat solid-black brim and one tiny upright black cross ornament at the crown",
-                    "large white pleated Elizabethan ruff collar encircling the neck and framing the shoulders",
-                    "fitted long coat-dress with exaggerated round puff shoulders",
-                    "narrow full-length sleeves completely covered in uniform black-and-white square checks",
-                    "wide flared white pleated cuffs",
-                    "sharply tailored checkerboard corset bodice with a deep sweetheart opening",
-                    "narrow vertical silver-beaded center panel",
-                    "cinched waist",
-                    "dramatic open-front high-low skirt beginning at the hips",
-                    "two long checkerboard tail panels extending to the floor and forming a sweeping train",
-                    "left tail narrow and right tail broad",
-                    "white gathered ruffle trim running continuously along the inner edges of both tails",
-                    "plain warm-white inner back panel",
-                    "fitted high-waisted white brocade shorts visible through the open front",
-                    "black wrist gloves",
-                    "layered pearl choker necklaces",
-                    "structured rectangular checkerboard handbag with black borders and a short chain handle",
-                    "black-and-white pointed high heels with silver crystal details"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:657",
-                  "name": "深緑のレトロなロリータ",
-                  "name_ja": "深緑のレトロなロリータ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098607540640579940",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "elegant deep emerald-green two-piece outfit",
-                    "matching cropped blouse and flared mini skirt made from smooth matte satin",
-                    "cropped off-the-shoulder blouse with two thin straight emerald shoulder straps",
-                    "fitted sweetheart bust",
-                    "elasticated ruffle trim following the entire neckline",
-                    "short rounded puff sleeves positioned below the shoulders",
-                    "gathered sleeve bands and double-layer flared ruffle cuffs",
-                    "narrow emerald drawstring tied into a small bow at the center bust",
-                    "one tiny polished-gold heart charm hanging from the bow",
-                    "deeply ruched fitted underbust and waist panel",
-                    "narrow gathered ruffle along the cropped hem",
-                    "visible midriff separating the two garments",
-                    "high-waisted knee-above circle skirt with a wide flat waistband and evenly spaced belt loops",
-                    "one large polished-gold open-heart buckle centered at the front waist",
-                    "smooth fitted upper hips and a strongly flared symmetrical skirt",
-                    "one small emerald fabric bow attached to each front hip",
-                    "one tiny gold heart charm hanging from each hip bow",
-                    "clean unpatterned fabric",
-                    "emerald green restricted to every fabric component",
-                    "metallic gold restricted only to the three heart ornaments"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:658",
-                  "name": "モノトーンのカジュアルロリータ",
-                  "name_ja": "モノトーンのカジュアルロリータ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098667934469984673",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "black-and-ivory Victorian gothic vest ensemble",
-                    "ivory-white high-neck blouse with a fitted torso",
-                    "short voluminous leg-of-mutton puff sleeves",
-                    "gathered elastic sleeve openings and tiny ivory ribbon ties",
-                    "extremely full layered ivory ruffle jabot covering the entire chest from the high collar to the waist",
-                    "fitted sleeveless matte-black waistcoat layered over the blouse",
-                    "broad straight shoulder straps",
-                    "very deep narrow V-shaped opening framing the white jabot",
-                    "sharply tailored waist",
-                    "pointed split front tails extending over the hips",
-                    "small welt pockets on both lower sides",
-                    "silver round buttons arranged down the lower front",
-                    "long ivory blouse tails visible beneath both sides of the waistcoat",
-                    "short black tiered mini skirt",
-                    "structured black upper layer",
-                    "multiple horizontal tiers of tightly gathered black fabric",
-                    "black floral lace bands placed across the middle and upper tiers",
-                    "sharply pleated black bottom tier",
-                    "monochrome black-and-ivory palette",
-                    "layered black beaded choker and draped black bead chains around the neck"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:659",
-                  "name": "クラシカルカジュアルな街行きコーデ",
-                  "name_ja": "クラシカルカジュアルな街行きコーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098728339863384236",
-                  "tags": [
-                    "girly ivory-white lace blouse and dark-wash denim shorts outfit",
-                    "loose straight pullover blouse made entirely from delicate ivory-white floral lace",
-                    "opaque ivory lining covering the torso",
-                    "wide shallow square neckline bordered with narrow gathered lace ruffles",
-                    "tiny ivory ribbon bow centered at the neckline",
-                    "long loose sleeves",
-                    "softly flared bell-shaped cuffs",
-                    "layered gathered lace ruffles around the wrists",
-                    "straight hip-length bodice",
-                    "scalloped floral-lace hem with a narrow ruffle border",
-                    "dark indigo-blue denim short pants",
-                    "fitted waist",
-                    "short loose bloomer-like silhouette",
-                    "two symmetrical leg openings",
-                    "each leg decorated with layered ivory-white and pale-gray floral lace ruffles",
-                    "large ivory floral lace appliques arranged across the front hems",
-                    "narrow dark-blue denim ruffle visible between the lace layers",
-                    "ivory knee-high socks covered with tiny scattered dusty-pink and muted-red floral sprigs",
-                    "white chunky lace-up platform sneakers with thick sculpted white soles",
-                    "strict ivory white",
-                    "dark indigo blue",
-                    "pale gray",
-                    "dusty pink and muted red color palette"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:660",
-                  "name": "オフショルダブラウスとハイウエストキュロットのコーデ",
-                  "name_ja": "オフショルダブラウスとハイウエストキュロットのコーデ",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2098969935334478305",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "ivory-white off-shoulder peasant blouse paired with warm chestnut-brown culotte trousers",
-                    "blouse made from soft lightweight matte cotton",
-                    "wide elasticized off-shoulder neckline edged with a narrow ivory ruffle",
-                    "two thin ivory shoulder straps",
-                    "small ivory ribbon bow centered at the neckline",
-                    "short vertical row of tiny ivory buttons below the bow",
-                    "fitted upper chest seam with softly gathered fabric beneath it",
-                    "loose blouse body tucked completely inside the trousers",
-                    "long voluminous bishop sleeves beginning below the shoulders",
-                    "sleeves gathered into flared ivory ruffle cuffs at the wrists",
-                    "high-waisted chestnut-brown culottes made from smooth matte fabric",
-                    "gathered paper-bag waistband",
-                    "matching narrow brown belt threaded through belt loops",
-                    "centered oval antique-brass ring buckle",
-                    "soft front pleats",
-                    "extremely wide straight legs ending at mid-calf",
-                    "dark chocolate-brown rectangular crossbody bag with a structured flap and thin gold chain strap",
-                    "black rounded-toe Mary Jane shoes with single ankle straps",
-                    "brown-tinted aviator sunglasses",
-                    "delicate gold pendant necklace"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:663",
-                  "name": "学生風のプレッピスタイル",
-                  "name_ja": "学生風のプレッピスタイル",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2099090721626034285",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "saturated scarlet-red oversized knit cardigan",
-                    "cardigan torso entirely scarlet red",
-                    "both cardigan sleeves entirely scarlet red",
-                    "cardigan cuffs and hem scarlet red",
-                    "deep V neckline",
-                    "dropped shoulders",
-                    "very loose long sleeves",
-                    "upper-thigh length",
-                    "dark-brown front buttons",
-                    "two red front patch pockets",
-                    "two thin ivory stripes restricted to the ribbed cuffs and bottom hem",
-                    "ivory-white color restricted exclusively to the collared shirt beneath the cardigan",
-                    "crisp ivory-white shirt with pointed collar",
-                    "gray plaid necktie with muted dark-green lines",
-                    "short beige knife-pleated mini skirt",
-                    "light-gray ribbed knee-high socks with dark-green and black stripes around the tops",
-                    "chunky ivory-white lace-up athletic sneakers with thick soles",
-                    "small ivory varsity letter U patch restricted to the left chest",
-                    "dominant outer-garment color fixed as saturated scarlet red"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:664",
-                  "name": "アリス服の秋バージョン",
-                  "name_ja": "アリス服の秋バージョン",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2099604097724981341",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "Alice in Wonderland inspired autumn outfit",
-                    "pure-white Victorian blouse with a high rounded collar",
-                    "long bishop sleeves",
-                    "softly gathered shoulders",
-                    "voluminous opaque sleeves",
-                    "fitted buttoned cuffs and narrow white lace edging",
-                    "solid deep-blue sleeveless jumper mini dress layered over the blouse",
-                    "medium-weight wool-blend fabric",
-                    "fitted bodice",
-                    "square neckline",
-                    "sharply defined natural waist",
-                    "short full gathered bell-shaped skirt ending above the knees",
-                    "crisp pure-white apron layered over the blue jumper dress",
-                    "square apron bib",
-                    "wide ruffled shoulder straps crossing at the back",
-                    "rounded white apron skirt ending above the blue dress hem",
-                    "broad white waist sash tied into one large symmetrical back bow",
-                    "black velvet ribbon headband with one centered bow",
-                    "opaque white knee-high socks",
-                    "polished black Mary Jane shoes with rounded toes and low heels",
-                    "exact palette limited to deep blue",
-                    "pure white and black"
-                  ]
-                },
-                {
-                  "prompt_workbench_meta": {
-                    "origin": "local"
-                  },
-                  "id": "tagset:major:2:medium:1:small:1:set:665",
-                  "name": "モノトーンガーリーパンク",
-                  "name_ja": "モノトーンガーリーパンク",
-                  "creator": "アリス服飾店　様",
-                  "source_url": "https://x.com/AliceLavli/status/2100138225255981525",
-                  "tags": [
-                    "outfit only",
-                    "strict garment structure",
-                    "strict color placement",
-                    "black-and-white layered mini dress",
-                    "pure-white off-shoulder chiffon blouse underneath",
-                    "wide gathered ruffled neckline across the shoulders",
-                    "long loose balloon sleeves",
-                    "elasticated wrists with small white ruffled cuffs",
-                    "small black ribbon bows at both upper arms",
-                    "solid-black satin camisole bodice with thin straight shoulder straps and a soft V-neckline",
-                    "fitted black waist belt with a small rectangular silver buckle",
-                    "short high-waisted black flared skirt ending at the upper thighs",
-                    "narrow black lace trim along the hem",
-                    "black lace-up ankle boots with chunky platform soles and block heels",
-                    "fair porcelain skin with cool pale undertone"
-                  ]
-                }
-              ]
+              "sets": []
             }
           ]
         }

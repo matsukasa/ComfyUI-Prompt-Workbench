@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 2975,
-    "tags": 3231,
+    "tags": 3232,
     "major_categories": 8,
     "medium_categories": 33,
     "small_categories": 150
@@ -12328,6 +12328,13 @@
                   "name": "a_extremely_detailed_closeup_of_extremely_detailed_white_frilled_side-tie_panties",
                   "translation_ja": "白の紐パン",
                   "id": "manual:20260813:repair:a_extremely_detailed_closeup_of_extremely_detailed_white_frilled_side-tie_panties"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "camisole",
+                  "translation_ja": "キャミソール"
                 },
                 {
                   "name": "white_floral_panties",
