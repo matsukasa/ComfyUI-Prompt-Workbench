@@ -3,6 +3,18 @@ const MAX_TAG_TEXT = 10000;
 const LEVELS = ["large", "medium", "small"];
 export const MAX_TAG_SETS = 2000;
 
+export function tagSetUsageKey(file, id) {
+  return JSON.stringify([String(file || ""), String(id || "")]);
+}
+
+export function sortTagSets(sets, order = "default", usage = {}, file = "") {
+  const result = [...sets];
+  if (order === "popular") {
+    result.sort((a, b) => (usage[tagSetUsageKey(file, b.id)] || 0) - (usage[tagSetUsageKey(file, a.id)] || 0));
+  }
+  return result;
+}
+
 export function validateTagSetCatalog(source) {
   if (!source || source.schema_version !== 1 || !Array.isArray(source.major_categories)) {
     throw new Error("Tag set file must contain schema_version: 1 and major_categories");

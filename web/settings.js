@@ -25,6 +25,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   favorites: [],
   favoriteTagSets: [],
   showFavoritesOnly: false,
+  exampleSortOrder: "default",
+  tagSetSortOrder: "default",
+  tagSetUsage: {},
   replaceUnderscoresForOutput: false,
   promptTextHeight: 140,
   tagListHeight: 260,
@@ -127,6 +130,16 @@ export function sanitizeSettings(input = {}) {
     settings.favoriteTagSets = sanitizeFavorites(input.favoriteTagSets, 2000);
   }
   settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
+  if (["default", "popular", "alphabetical"].includes(input.exampleSortOrder)) settings.exampleSortOrder = input.exampleSortOrder;
+  if (["default", "popular"].includes(input.tagSetSortOrder)) settings.tagSetSortOrder = input.tagSetSortOrder;
+  settings.tagSetUsage = {};
+  if (input.tagSetUsage && typeof input.tagSetUsage === "object" && !Array.isArray(input.tagSetUsage)) {
+    for (const [key, value] of Object.entries(input.tagSetUsage).slice(0, 10000)) {
+      if (key.length <= 1024 && Number.isSafeInteger(value) && value > 0) {
+        Object.defineProperty(settings.tagSetUsage, key, { value: Math.min(value, 1000000), enumerable: true, writable: true, configurable: true });
+      }
+    }
+  }
   settings.replaceUnderscoresForOutput = Boolean(input.replaceUnderscoresForOutput);
   if (typeof input.libraryFile === "string") {
     settings.libraryFile = input.libraryFile.trim().replace(/\.json$/iu, "").slice(0, 64);

@@ -46,6 +46,7 @@ import {
   saveCategoryEdit,
   saveTagEdit,
   sanitizeLibraryEdits,
+  sortExampleTags,
 } from "./tag_library.js";
 import {
   buildTagSetLibrary,
@@ -53,9 +54,12 @@ import {
   normalizeTagSetIds,
   resolveTagSetCategoryPath,
   tagSetFavoriteKey,
+  sortTagSets,
+  tagSetUsageKey,
 } from "./tag_sets.js";
 
 const STATE_KEY = "promptWorkbenchState";
+const SORT_STORAGE_KEY = "prompt-workbench/library-sort";
 let categoryColorErrorSerial = 0;
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
@@ -156,6 +160,44 @@ function button(label, action, title = label) {
   });
   control.addEventListener("click", action);
   return control;
+}
+
+function loadLibrarySortSettings(settings) {
+  try {
+    const stored = JSON.parse(globalThis.localStorage?.getItem(SORT_STORAGE_KEY) || "null");
+    if (!stored || typeof stored !== "object" || Array.isArray(stored)) return;
+    const safe = sanitizeSettings({ ...settings, ...stored });
+    for (const key of ["exampleSortOrder", "tagSetSortOrder", "tagSetUsage"]) settings[key] = safe[key];
+  } catch {}
+}
+
+function saveLibrarySortSettings(settings) {
+  try {
+    const { exampleSortOrder, tagSetSortOrder, tagSetUsage } = sanitizeSettings(settings);
+    globalThis.localStorage?.setItem(SORT_STORAGE_KEY, JSON.stringify({ exampleSortOrder, tagSetSortOrder, tagSetUsage }));
+  } catch {}
+}
+
+function librarySortButtons(settings, key, options, changed) {
+  const group = element("div", { className: "paio-segmented paio-library-sort", ariaLabel: t("並び替え") });
+  group.setAttribute("role", "group");
+  for (const [value, label] of options) {
+    const control = button(t(label), () => {
+      settings[key] = value;
+      for (const item of group.children) {
+        const active = item.dataset.sortOrder === value;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      }
+      changed();
+    });
+    control.dataset.sortOrder = value;
+    control.classList.add("paio-segmented-button");
+    control.classList.toggle("is-active", settings[key] === value);
+    control.setAttribute("aria-pressed", String(settings[key] === value));
+    group.append(control);
+  }
+  return group;
 }
 
 function download(name, content, type) {
@@ -982,6 +1024,7 @@ export class PromptEditor {
   }
 
   build() {
+    loadLibrarySortSettings(this.settings);
     const root = element("section", { className: "paio-editor" });
     root.setAttribute("aria-label", "Prompt Workbench editor");
     containNodeContextMenu(root);
@@ -2385,8 +2428,9 @@ export class PromptEditor {
         }));
       }
       const favorites = this.favoriteTagSetKeys();
-      const matches = filterTagSets(library, resolved.small?.id, search.value)
-        .filter((item) => !this.settings.showFavoritesOnly || favorites.has(tagSetFavoriteKey(item.id)));
+      const matches = sortTagSets(filterTagSets(library, resolved.small?.id, search.value)
+        .filter((item) => !this.settings.showFavoritesOnly || favorites.has(tagSetFavoriteKey(item.id))),
+      this.settings.tagSetSortOrder, this.settings.tagSetUsage, this.settings.tagSetFile);
       const visibleLimit = search.value.trim() ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
       for (const item of matches.slice(0, visibleLimit)) {
         const favorite = favorites.has(tagSetFavoriteKey(item.id));
@@ -2394,6 +2438,11 @@ export class PromptEditor {
           if (event.ctrlKey || event.metaKey) return;
           this.pushUndo();
           this.addValues(item.tags.map((value) => ({ value })), { trailingSeparator: true });
+          const usageKey = tagSetUsageKey(this.settings.tagSetFile, item.id);
+          this.settings.tagSetUsage = { ...this.settings.tagSetUsage, [usageKey]: Math.min(1000000, (this.settings.tagSetUsage[usageKey] || 0) + 1) };
+          saveLibrarySortSettings(this.settings);
+          this.persist();
+          if (this.settings.tagSetSortOrder === "popular") redraw();
           this.setStatus(t("{name} を追加しました", { name: item.nameJa || item.name }));
         }, item.tags.join(", "));
         row.classList.add("paio-tag-set-row");
@@ -2489,7 +2538,14 @@ export class PromptEditor {
       element("div", { className: "paio-example-path-row" }, [pathStatus, resetCategories]),
       categoryBands,
     ]);
-    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly]);
+    const sortButtons = librarySortButtons(this.settings, "tagSetSortOrder", [["default", "デフォルト"], ["popular", "よく使う順"]], () => {
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      saveLibrarySortSettings(this.settings);
+      this.persist();
+      list.scrollTop = 0;
+      redraw();
+    });
+    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly, sortButtons]);
     const footer = element("div", { className: "paio-example-footer" }, [
       element("span", { className: "paio-hint", text: t("右クリック: お気に入り") }),
     ]);
@@ -2681,8 +2737,8 @@ export class PromptEditor {
       renderCategoryBands(resolved);
       const query = search.value.trim().toLocaleLowerCase();
       const favoriteKeys = this.favoriteSet();
-      const matches = filterExampleLibraryTags(library, resolved.small?.id, query)
-        .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt)));
+      const matches = sortExampleTags(filterExampleLibraryTags(library, resolved.small?.id, query)
+        .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))), this.settings.exampleSortOrder);
       resultStatus.textContent = t("{count}件", { count: matches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
       for (const item of matches.slice(0, visibleLimit)) {
@@ -2785,7 +2841,14 @@ export class PromptEditor {
       element("div", { className: "paio-example-path-row" }, [pathStatus, resetCategories]),
       categoryBands,
     ]);
-    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly]);
+    const sortButtons = librarySortButtons(this.settings, "exampleSortOrder", [["default", "デフォルト"], ["popular", "よく使う順"], ["alphabetical", "アルファベット順"]], () => {
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      saveLibrarySortSettings(this.settings);
+      this.persist();
+      list.scrollTop = 0;
+      redraw();
+    });
+    const controls = element("div", { className: "paio-example-controls" }, [search, favoriteOnly, sortButtons]);
     const footer = element("div", { className: "paio-example-footer" }, [
       resultStatus,
       element("span", { className: "paio-hint", text: t("Ctrl+クリックで複数選択") }),

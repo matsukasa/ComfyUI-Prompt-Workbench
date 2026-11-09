@@ -5,6 +5,17 @@ const MAX_EDITS = 4000;
 
 export const EMPTY_LIBRARY_EDITS = Object.freeze({ categories: [], tags: [] });
 
+export function sortExampleTags(tags, order = "default") {
+  const result = [...tags];
+  if (order === "popular") {
+    result.sort((a, b) => (Number.isFinite(b.postCount) ? b.postCount : -1) - (Number.isFinite(a.postCount) ? a.postCount : -1));
+  } else if (order === "alphabetical") {
+    const collator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+    result.sort((a, b) => collator.compare(a.prompt, b.prompt));
+  }
+  return result;
+}
+
 function text(value, max = 200) {
   return String(value ?? "").trim().slice(0, max);
 }
@@ -116,7 +127,7 @@ export function buildTagLibrary(source = {}, rawEdits = EMPTY_LIBRARY_EDITS) {
               id, categoryId: smallId, prompt: text(item.name, 10000),
               ja: text(item.translation_ja ?? item.ja, 10000),
               order: Number.isInteger(item.rank) ? Math.max(0, item.rank - 1) : index,
-              postCount: Number.isInteger(item.post_count) ? Math.max(0, item.post_count) : 0,
+              postCount: Number.isInteger(item.post_count) ? Math.max(0, item.post_count) : undefined,
               aliases: Array.isArray(item.aliases) ? item.aliases.map((alias) => text(alias, 200)).filter(Boolean) : [],
               favorite: item.favorite === true,
               builtin: true,

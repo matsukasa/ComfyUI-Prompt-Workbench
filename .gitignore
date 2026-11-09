@@ -18,6 +18,7 @@ user_data/
 !/tests/widget_layout_harness.html
 !/tests/category_colors.test.js
 !/tests/category_colors_harness.html
+!/tests/library_sort.test.js
 /DESIGN.md
 /PRODUCT.md
 /SOURCE_AUDIT.md

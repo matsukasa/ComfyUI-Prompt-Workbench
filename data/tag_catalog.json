@@ -16,7 +16,7 @@
     "official_overrides": 582,
     "legacy_empty_skipped": 0,
     "translated_tags": 2975,
-    "tags": 3232,
+    "tags": 3256,
     "major_categories": 8,
     "medium_categories": 33,
     "small_categories": 150
@@ -25248,6 +25248,174 @@
                   "aliases": [],
                   "translation_ja": "ブルーム",
                   "rank": 9999
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "lenns_flare",
+                  "translation_ja": "レンズフレア"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "anamorphic_flare",
+                  "translation_ja": "アナモルフィックフレア"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "light_leak",
+                  "translation_ja": "光漏れ"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "god_rays",
+                  "translation_ja": "ゴッドレイ"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "prism_light",
+                  "translation_ja": "プリズム光"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "gobo_light",
+                  "translation_ja": "ゴボライト"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "dappled_light",
+                  "translation_ja": "木漏れ日"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "glitter",
+                  "translation_ja": "きらめき"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "neon_glow",
+                  "translation_ja": "ネオングロー"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "light_streaks",
+                  "translation_ja": "光の筋"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "light_trails",
+                  "translation_ja": "光跡"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "ambient_light",
+                  "translation_ja": "環境光"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "directional_light",
+                  "translation_ja": "平行光"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "point_light",
+                  "translation_ja": "点光源"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "spot_light",
+                  "translation_ja": "スポットライト"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "area_light",
+                  "translation_ja": "面光源"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "global_illumination",
+                  "translation_ja": "グローバルイルミネーション"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "indirect_lighting",
+                  "translation_ja": "間接照明"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "radiosity",
+                  "translation_ja": "ラジオシティ"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "path_tracing",
+                  "translation_ja": "パストレーシング"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "ray_tracing",
+                  "translation_ja": "レイトレーシング"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "light_bounce",
+                  "translation_ja": "光の反射"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "ambient_occlusion",
+                  "translation_ja": "環境遮蔽"
+                },
+                {
+                  "prompt_workbench_meta": {
+                    "origin": "local"
+                  },
+                  "name": "HDR_lighting",
+                  "translation_ja": "HDR照明"
                 }
               ]
             },

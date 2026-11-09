@@ -1,5 +1,9 @@
 {
   "messages": {
+    "並び替え": "Sort order",
+    "デフォルト": "Default",
+    "よく使う順": "Most used",
+    "アルファベット順": "Alphabetical",
     "ボタン色": "Button colours",
     "大分類の色": "Top-level category colours",
     "{label}のHEXカラー": "HEX colour for {label}",
