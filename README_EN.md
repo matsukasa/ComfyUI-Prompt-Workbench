@@ -6,6 +6,8 @@ A ComfyUI custom node for editing prompts as individual tags. It helps you reord
 
 The runtime source of truth remains the standard multiline `STRING` widget. Prompt Workbench adds a tag editing interface on top of it, so saved workflows can still output the stored `STRING` when the browser UI is unavailable.
 
+The shortest workflow is to reflect the `STRING` input in the tags, edit the tags, and connect the updated `prompt` to the next node.
+
 ## User Data And Backups
 
 Settings, favourites, and edited tag data are saved in the following files. In this table, `data/` is relative to this node's installation directory, and `prompt_workbench/` is inside the ComfyUI user directory.
@@ -17,6 +19,7 @@ Settings, favourites, and edited tag data are saved in the following files. In t
 | `prompt_workbench/tag_catalogs/*.json` | Copies of loaded catalogues and named catalogues saved inside Prompt Workbench. |
 | `prompt_workbench/tag_sets/*.json` | Copies of loaded tag sets. |
 | `prompt_workbench/favorites.json` | Shared tag and tag set favourites. Saved automatically when you add or remove a favourite. |
+| Sort preferences and usage counts | Browser storage, scoped to each catalogue or tag-set file. |
 | Saved workflow JSON files and `prompt_workbench_state.json` | Each node's prompt, settings, and editing state. Saved with the workflow or through `Export state JSON`. |
 
 After editing, and before updating, reinstalling, or moving to another environment, back up the files you use to a location outside the installation directory. If you use local images, include those images in the backup.
@@ -46,6 +49,7 @@ If GitHub does not display the video, open [`docs/assets/comfyui_prompt_workbenc
 - Search and add tags from a fully local hierarchical tag catalogue.
 - Search classified tag sets and add grouped tags at once.
 - Tag set favourites, search, image display, and adjustable tag set list height.
+- Sort tags and tag sets by their default order or by the number of times their buttons added them to the prompt. Tags can also be sorted alphabetically by their English names.
 - The main prompt pane and tag-add tab pane can be collapsed.
 - Translation through the local dictionary, MyMemory, LibreTranslate, DeepL, or an OpenAI-compatible API.
 - Original, Japanese, and bilingual display modes.
@@ -156,6 +160,23 @@ Disabling a tag immediately removes it from the main prompt text and `STRING` ou
 Editing the prompt text and choosing `Apply to tags` preserves disabled tags, including their weights and translations. Each disabled tag is placed before the first tag that followed it in the previous list and survives the text edit. If none survives, it remains at the end of the list. Typing the same text as a disabled tag creates a separate enabled tag. Disabled tags are saved in workflows and state JSON, and can be restored with Undo / Redo.
 
 During API or headless execution where the browser UI is unavailable, the saved `STRING` is output as-is.
+
+## Tag Sorting And Usage Counts
+
+The `Add tags` list supports the following orders:
+
+- `Default`: the order defined by the catalogue
+- `Most used`: the number of times a tag button added the tag to the prompt
+- `Alphabetical`: the English tag name
+
+The `Tag sets` list supports the following orders:
+
+- `Default`: the order defined by the tag-set file
+- `Most used`: the number of times a tag-set button added the set to the prompt
+
+`Most used` is not based on image-generation runs, external post counts, or `postCount`. It counts only additions made from a tag or tag-set button to the current prompt. Manually typing into the prompt, running a ComfyUI generation, and enabling or disabling an existing tag do not increase the count.
+
+Usage counts and sort preferences are saved. Counts are scoped to the catalogue file or tag-set file and use the file name together with the tag name or tag-set ID. Counts from different files are therefore kept separate. The item order in the source JSON is not rewritten.
 
 ## Tag Catalogue And Tag Sets
 
