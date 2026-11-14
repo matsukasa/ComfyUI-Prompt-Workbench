@@ -1,10 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sortExampleTags } from "../web/tag_library.js";
+import { sortExampleTags, tagUsageKey } from "../web/tag_library.js";
 import { sortTagSets, tagSetUsageKey } from "../web/tag_sets.js";
 import { sanitizeEditorState, sanitizeSettings } from "../web/settings.js";
 
-test("tag sort preserves the source and orders popularity and names stably", () => {
+test("tag sort uses button usage, preserves ties and does not mutate the source", () => {
   const tags = [
     { prompt: "zebra", postCount: 4 },
     { prompt: "Tag10", postCount: 7 },
@@ -13,8 +13,10 @@ test("tag sort preserves the source and orders popularity and names stably", () 
     { prompt: "zero", postCount: 0 },
   ];
   const names = (items) => items.map((item) => item.prompt);
+  const usage = { [tagUsageKey("catalog", "alpha")]: 4, [tagUsageKey("catalog", "Tag10")]: 2,
+    [tagUsageKey("catalog", "tag2")]: 2, [tagUsageKey("other", "zebra")]: 99 };
   assert.deepEqual(names(sortExampleTags(tags)), ["zebra", "Tag10", "tag2", "alpha", "zero"]);
-  assert.deepEqual(names(sortExampleTags(tags, "popular")), ["Tag10", "tag2", "zebra", "zero", "alpha"]);
+  assert.deepEqual(names(sortExampleTags(tags, "popular", usage, "catalog")), ["alpha", "Tag10", "tag2", "zebra", "zero"]);
   assert.deepEqual(names(sortExampleTags(tags, "alphabetical")), ["alpha", "tag2", "Tag10", "zebra", "zero"]);
   assert.equal(tags[0].prompt, "zebra");
 });
@@ -29,9 +31,11 @@ test("tag set usage sort is file-specific and preserves ties and source order", 
 });
 
 test("sort preferences and usage survive state restoration with invalid values handled", () => {
+  const tagUsageKeyValue = tagUsageKey("catalog", "alpha");
   const usageKey = tagSetUsageKey("file", "set");
   const settings = sanitizeSettings({ exampleSortOrder: "alphabetical", tagSetSortOrder: "popular",
-    tagSetUsage: { [usageKey]: 3, negative: -1, fractional: 1.5, huge: 999999999 } });
+    tagUsage: { [tagUsageKeyValue]: 4 }, tagSetUsage: { [usageKey]: 3, negative: -1, fractional: 1.5, huge: 999999999 } });
+  assert.deepEqual(sanitizeEditorState({ settings }).settings.tagUsage, { [tagUsageKeyValue]: 4 });
   assert.deepEqual(sanitizeEditorState({ settings }).settings.tagSetUsage, { [usageKey]: 3, huge: 1000000 });
   assert.equal(sanitizeEditorState({ settings }).settings.exampleSortOrder, "alphabetical");
   assert.equal(sanitizeEditorState({ settings }).settings.tagSetSortOrder, "popular");

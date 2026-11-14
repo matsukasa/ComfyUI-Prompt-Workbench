@@ -5,10 +5,14 @@ const MAX_EDITS = 4000;
 
 export const EMPTY_LIBRARY_EDITS = Object.freeze({ categories: [], tags: [] });
 
-export function sortExampleTags(tags, order = "default") {
+export function tagUsageKey(file, prompt) {
+  return JSON.stringify([String(file || ""), String(prompt || "")]);
+}
+
+export function sortExampleTags(tags, order = "default", usage = {}, file = "") {
   const result = [...tags];
   if (order === "popular") {
-    result.sort((a, b) => (Number.isFinite(b.postCount) ? b.postCount : -1) - (Number.isFinite(a.postCount) ? a.postCount : -1));
+    result.sort((a, b) => (usage[tagUsageKey(file, b.prompt)] || 0) - (usage[tagUsageKey(file, a.prompt)] || 0));
   } else if (order === "alphabetical") {
     const collator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
     result.sort((a, b) => collator.compare(a.prompt, b.prompt));

@@ -47,6 +47,7 @@ import {
   saveTagEdit,
   sanitizeLibraryEdits,
   sortExampleTags,
+  tagUsageKey,
 } from "./tag_library.js";
 import {
   buildTagSetLibrary,
@@ -167,14 +168,14 @@ function loadLibrarySortSettings(settings) {
     const stored = JSON.parse(globalThis.localStorage?.getItem(SORT_STORAGE_KEY) || "null");
     if (!stored || typeof stored !== "object" || Array.isArray(stored)) return;
     const safe = sanitizeSettings({ ...settings, ...stored });
-    for (const key of ["exampleSortOrder", "tagSetSortOrder", "tagSetUsage"]) settings[key] = safe[key];
+    for (const key of ["exampleSortOrder", "tagSetSortOrder", "tagUsage", "tagSetUsage"]) settings[key] = safe[key];
   } catch {}
 }
 
 function saveLibrarySortSettings(settings) {
   try {
-    const { exampleSortOrder, tagSetSortOrder, tagSetUsage } = sanitizeSettings(settings);
-    globalThis.localStorage?.setItem(SORT_STORAGE_KEY, JSON.stringify({ exampleSortOrder, tagSetSortOrder, tagSetUsage }));
+    const { exampleSortOrder, tagSetSortOrder, tagUsage, tagSetUsage } = sanitizeSettings(settings);
+    globalThis.localStorage?.setItem(SORT_STORAGE_KEY, JSON.stringify({ exampleSortOrder, tagSetSortOrder, tagUsage, tagSetUsage }));
   } catch {}
 }
 
@@ -2738,7 +2739,8 @@ export class PromptEditor {
       const query = search.value.trim().toLocaleLowerCase();
       const favoriteKeys = this.favoriteSet();
       const matches = sortExampleTags(filterExampleLibraryTags(library, resolved.small?.id, query)
-        .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))), this.settings.exampleSortOrder);
+        .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))),
+      this.settings.exampleSortOrder, this.settings.tagUsage, this.settings.libraryFile);
       resultStatus.textContent = t("{count}件", { count: matches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
       for (const item of matches.slice(0, visibleLimit)) {
@@ -2759,6 +2761,10 @@ export class PromptEditor {
             [{ value: item.prompt, translation: translation, translatedTo: translation ? this.settings.localLanguage : "" }],
             { trailingSeparator: true },
           );
+          const usageKey = tagUsageKey(this.settings.libraryFile, item.prompt);
+          this.settings.tagUsage = { ...this.settings.tagUsage, [usageKey]: Math.min(1000000, (this.settings.tagUsage[usageKey] || 0) + 1) };
+          saveLibrarySortSettings(this.settings);
+          this.persist();
           this.setStatus(t("{tag} を追加しました", { tag: item.prompt }));
         }, [
           translation ? `${item.prompt} — ${translation}` : item.prompt,
@@ -2825,6 +2831,14 @@ export class PromptEditor {
         }),
         { trailingSeparator: true },
       );
+      const tagUsage = { ...this.settings.tagUsage };
+      for (const prompt of selected) {
+        const usageKey = tagUsageKey(this.settings.libraryFile, prompt);
+        tagUsage[usageKey] = Math.min(1000000, (tagUsage[usageKey] || 0) + 1);
+      }
+      this.settings.tagUsage = tagUsage;
+      saveLibrarySortSettings(this.settings);
+      this.persist();
       selected.clear();
       redraw();
       this.setStatus(t("内蔵例を追加しました"));

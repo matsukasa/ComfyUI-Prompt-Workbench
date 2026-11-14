@@ -27,6 +27,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   showFavoritesOnly: false,
   exampleSortOrder: "default",
   tagSetSortOrder: "default",
+  tagUsage: {},
   tagSetUsage: {},
   replaceUnderscoresForOutput: false,
   promptTextHeight: 140,
@@ -132,6 +133,14 @@ export function sanitizeSettings(input = {}) {
   settings.showFavoritesOnly = Boolean(input.showFavoritesOnly);
   if (["default", "popular", "alphabetical"].includes(input.exampleSortOrder)) settings.exampleSortOrder = input.exampleSortOrder;
   if (["default", "popular"].includes(input.tagSetSortOrder)) settings.tagSetSortOrder = input.tagSetSortOrder;
+  settings.tagUsage = {};
+  if (input.tagUsage && typeof input.tagUsage === "object" && !Array.isArray(input.tagUsage)) {
+    for (const [key, value] of Object.entries(input.tagUsage).slice(0, 20000)) {
+      if (key.length <= 1024 && Number.isSafeInteger(value) && value > 0) {
+        Object.defineProperty(settings.tagUsage, key, { value: Math.min(value, 1000000), enumerable: true, writable: true, configurable: true });
+      }
+    }
+  }
   settings.tagSetUsage = {};
   if (input.tagSetUsage && typeof input.tagSetUsage === "object" && !Array.isArray(input.tagSetUsage)) {
     for (const [key, value] of Object.entries(input.tagSetUsage).slice(0, 10000)) {
