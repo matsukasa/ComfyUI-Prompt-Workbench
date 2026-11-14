@@ -107,6 +107,28 @@ export function clampPromptTextHeight(value) {
   return Math.min(MAX_PROMPT_TEXT_HEIGHT, Math.max(MIN_PROMPT_TEXT_HEIGHT, Math.round(Number(value) || DEFAULT_PROMPT_TEXT_HEIGHT)));
 }
 
+export function normalizeMarqueeRect(startX, startY, endX, endY) {
+  const left = Math.min(startX, endX);
+  const top = Math.min(startY, endY);
+  const right = Math.max(startX, endX);
+  const bottom = Math.max(startY, endY);
+  return { left, top, right, bottom, width: right - left, height: bottom - top };
+}
+
+export function rectsIntersect(a, b) {
+  return a.left <= b.right && a.right >= b.left && a.top <= b.bottom && a.bottom >= b.top;
+}
+
+export function applyMarqueeSelection(tags, hitIndices, initialSelectedIds = new Set(), additive = false) {
+  let lastIndex = null;
+  tags.forEach((tag, index) => {
+    const selected = hitIndices.has(index) || (additive && initialSelectedIds.has(tag.id));
+    tag.selected = selected;
+    if (selected) lastIndex = index;
+  });
+  return lastIndex;
+}
+
 function clampTagSetListHeight(value) {
   return Math.min(MAX_TAG_SET_LIST_HEIGHT, Math.max(MIN_TAG_SET_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_SET_LIST_HEIGHT)));
 }
@@ -1209,10 +1231,15 @@ export class PromptEditor {
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
-    this.tagSummary = element("div", { className: "paio-tag-summary" });
+    this.tagSummary = element("span");
+    const tagSummaryRow = element("div", { className: "paio-tag-summary" }, [
+      element("span", { className: "paio-hint", text: t("Shift+ドラッグ: 矩形選択 / Shift・Ctrl+クリック: 複数選択") }),
+      this.tagSummary,
+    ]);
     this.tagList = element("div", { className: "paio-tags" });
     this.tagList.setAttribute("role", "list");
     this.tagList.style.height = `${clampTagListHeight(this.settings.tagListHeight)}px`;
+    this.attachTagListMarquee();
     const tagListResizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-list-resize-handle" }, [
       element("span", { className: "paio-example-resize-mark", text: "⋯" }),
     ]);
@@ -1285,7 +1312,7 @@ export class PromptEditor {
     this.status.setAttribute("aria-live", "polite");
     const currentTagsPane = collapsiblePane(t("現在のタグ"), "paio-current-tags-pane", [
       this.bulkBar,
-      this.tagSummary,
+      tagSummaryRow,
       this.tagList,
       tagListResizeHandle,
       this.status,
@@ -3200,7 +3227,7 @@ export class PromptEditor {
     const preferred = tagDbState?.state === "alias" ? tagDbState.preferred : "";
     if (preferred) notices.push(t("別名です。推奨: {tag}", { tag: preferred }));
     const tagDbNote = tagDbState?.state === "unknown" ? t("タグDBに未登録") : "";
-    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作")].filter(Boolean).join("\n");
+    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択、Shift/Ctrl+クリック: 複数選択")].filter(Boolean).join("\n");
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
@@ -3220,8 +3247,9 @@ export class PromptEditor {
     appendPresentChildren(row, selectMark, stateMark, content, preferredButton, warning);
 
     row.addEventListener("click", (event) => {
-      if (this.didDrag) {
+      if (this.didDrag || this.didMarqueeDrag) {
         this.didDrag = false;
+        this.didMarqueeDrag = false;
         return;
       }
       if (event.shiftKey || event.ctrlKey || event.metaKey) {
@@ -3264,6 +3292,10 @@ export class PromptEditor {
       }
     });
     row.addEventListener("dragstart", (event) => {
+      if (event.shiftKey || this.didMarqueeDrag) {
+        event.preventDefault();
+        return;
+      }
       this.dragIndex = index;
       this.didDrag = true;
       row.classList.add("is-dragging");
@@ -3576,6 +3608,156 @@ export class PromptEditor {
     if (this.settings.autoTranslate) {
       this.translatePrompt();
     }
+  }
+
+  attachTagListMarquee() {
+    this.tagList.addEventListener("mousedown", (event) => {
+      if (event.button !== 0 || !event.shiftKey) return;
+      if (event.target?.closest?.("input, textarea, select, button")) return;
+      event.preventDefault();
+      event.stopPropagation();
+    });
+    this.tagList.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || !event.shiftKey) return;
+      if (event.target?.closest?.("input, textarea, select, button")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const targetRow = event.target?.closest?.(".paio-tag");
+      const wasDraggable = targetRow ? targetRow.draggable : false;
+      if (targetRow) targetRow.draggable = false;
+      const pointerId = event.pointerId;
+      const startClientX = event.clientX;
+      const startClientY = event.clientY;
+      const additive = event.ctrlKey || event.metaKey;
+      const initialSelectedIds = new Set(this.currentTags.filter((tag) => tag.selected).map((tag) => tag.id));
+      let dragging = false;
+      let finished = false;
+      let marqueeBox = null;
+      let listRect = null;
+      let scaleX = 1;
+      let scaleY = 1;
+      let cachedRows = [];
+      let lastScrollLeft = this.tagList.scrollLeft;
+      let lastScrollTop = this.tagList.scrollTop;
+
+      const cacheGeometry = () => {
+        listRect = this.tagList.getBoundingClientRect();
+        scaleX = this.tagList.offsetWidth > 0 ? listRect.width / this.tagList.offsetWidth : 1;
+        scaleY = this.tagList.offsetHeight > 0 ? listRect.height / this.tagList.offsetHeight : 1;
+        lastScrollLeft = this.tagList.scrollLeft;
+        lastScrollTop = this.tagList.scrollTop;
+        cachedRows = [...this.tagList.querySelectorAll(".paio-tag")].map((row) => {
+          const index = Number(row.dataset.tagIndex);
+          return {
+            row,
+            index,
+            rect: row.getBoundingClientRect(),
+            mark: row.querySelector(".paio-select-mark"),
+            selected: Boolean(this.currentTags[index]?.selected),
+            target: false,
+          };
+        });
+      };
+
+      const updateSelection = (clientX, clientY) => {
+        if (!listRect || this.tagList.scrollLeft !== lastScrollLeft || this.tagList.scrollTop !== lastScrollTop) {
+          cacheGeometry();
+        }
+        const selectionRect = normalizeMarqueeRect(startClientX, startClientY, clientX, clientY);
+        const toContentX = (x) => Math.max(0, Math.min(this.tagList.scrollWidth, (x - listRect.left) / scaleX + lastScrollLeft));
+        const toContentY = (y) => Math.max(0, Math.min(this.tagList.scrollHeight, (y - listRect.top) / scaleY + lastScrollTop));
+        const boxRect = normalizeMarqueeRect(
+          toContentX(startClientX),
+          toContentY(startClientY),
+          toContentX(clientX),
+          toContentY(clientY),
+        );
+        if (marqueeBox) {
+          marqueeBox.style.left = `${boxRect.left}px`;
+          marqueeBox.style.top = `${boxRect.top}px`;
+          marqueeBox.style.width = `${boxRect.width}px`;
+          marqueeBox.style.height = `${boxRect.height}px`;
+        }
+        const hitIndices = new Set();
+        for (const item of cachedRows) {
+          if (Number.isInteger(item.index) && rectsIntersect(selectionRect, item.rect)) {
+            hitIndices.add(item.index);
+          }
+        }
+        this.lastSelectedIndex = applyMarqueeSelection(this.currentTags, hitIndices, initialSelectedIds, additive);
+        for (const item of cachedRows) {
+          const nextSelected = Boolean(this.currentTags[item.index]?.selected);
+          const nextTarget = hitIndices.has(item.index);
+          if (item.selected !== nextSelected) {
+            item.selected = nextSelected;
+            item.row.classList.toggle("is-selected", nextSelected);
+            if (item.mark) item.mark.textContent = nextSelected ? "✓" : "";
+          }
+          if (item.target !== nextTarget) {
+            item.target = nextTarget;
+            item.row.classList.toggle("is-marquee-target", nextTarget);
+          }
+        }
+      };
+
+      const onMove = (moveEvent) => {
+        if (finished) return;
+        if (!moveEvent.shiftKey) {
+          finish(moveEvent);
+          return;
+        }
+        if (!dragging) {
+          if (Math.hypot(moveEvent.clientX - startClientX, moveEvent.clientY - startClientY) < 1) return;
+          dragging = true;
+          this.didMarqueeDrag = true;
+          this.tagList.classList.add("is-marquee-selecting");
+          this.tagList.setPointerCapture?.(pointerId);
+          cacheGeometry();
+          marqueeBox = element("div", { className: "paio-marquee-box" });
+          this.tagList.append(marqueeBox);
+        }
+        moveEvent.preventDefault();
+        moveEvent.stopPropagation();
+        updateSelection(moveEvent.clientX, moveEvent.clientY);
+      };
+
+      const onKeyUp = (keyEvent) => {
+        if (keyEvent.key === "Shift") finish(keyEvent);
+      };
+
+      const finish = (endEvent) => {
+        if (finished) return;
+        finished = true;
+        window.removeEventListener("pointermove", onMove, true);
+        window.removeEventListener("pointerup", finish, true);
+        window.removeEventListener("pointercancel", finish, true);
+        window.removeEventListener("keyup", onKeyUp, true);
+        if (targetRow) targetRow.draggable = wasDraggable;
+        if (!dragging) return;
+        this.tagList.releasePointerCapture?.(pointerId);
+        if (endEvent?.type === "pointerup" && Number.isFinite(endEvent.clientX) && Number.isFinite(endEvent.clientY)) {
+          updateSelection(endEvent.clientX, endEvent.clientY);
+        }
+        marqueeBox?.remove();
+        this.tagList.classList.remove("is-marquee-selecting");
+        this.persist();
+        this.render();
+        if (endEvent?.type === "pointerup" || endEvent?.type === "pointercancel") {
+          window.setTimeout(() => { this.didMarqueeDrag = false; }, 0);
+        } else {
+          const clearClickGuard = () => {
+            window.setTimeout(() => { this.didMarqueeDrag = false; }, 0);
+          };
+          window.addEventListener("pointerup", clearClickGuard, { capture: true, once: true });
+          window.addEventListener("pointercancel", clearClickGuard, { capture: true, once: true });
+        }
+      };
+
+      window.addEventListener("pointermove", onMove, true);
+      window.addEventListener("pointerup", finish, true);
+      window.addEventListener("pointercancel", finish, true);
+      window.addEventListener("keyup", onKeyUp, true);
+    });
   }
 
   selectIndex(index, range, additive) {
