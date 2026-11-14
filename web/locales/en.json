@@ -246,6 +246,8 @@
     "参照元を開く": "Open source",
     "お気に入りを読み込めませんでした: {error}": "Could not load favorites: {error}",
     "お気に入りを保存できませんでした: {error}": "Could not save favorites: {error}",
-    "翻訳中… {done}/{total}件": "Translating… {done}/{total}"
+    "翻訳中… {done}/{total}件": "Translating… {done}/{total}",
+    "Shift+ドラッグ: 矩形選択 / Shift・Ctrl+クリック: 複数選択": "Shift+drag: box select / Shift or Ctrl+click: multi-select",
+    "クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択、Shift/Ctrl+クリック: 複数選択": "Click: enable/disable, Double-click: edit, Right-click: more actions, Shift+drag: box select, Shift/Ctrl+click: multi-select"
   }
 }
