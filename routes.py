@@ -3,6 +3,7 @@ import html
 import json
 import os
 import re
+import sqlite3
 import tempfile
 import threading
 import time
@@ -10,6 +11,8 @@ import unicodedata
 from collections import OrderedDict, defaultdict, deque
 from pathlib import Path
 from urllib.parse import urlparse
+
+from . import tagdb
 
 MAX_REQUEST_BYTES = 64 * 1024
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
@@ -1425,6 +1428,47 @@ def register_routes():
             return web.json_response({"error": "The selected catalog no longer exists"}, status=404)
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.get("/prompt_workbench/tagdb/status")
+    async def get_tagdb_status(_request):
+        try:
+            return web.json_response(await asyncio.to_thread(tagdb.status))
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+
+    @routes.get("/prompt_workbench/tagdb/search")
+    async def get_tagdb_search(request):
+        query = request.rel_url.query
+        try:
+            results = await asyncio.to_thread(
+                tagdb.search,
+                query.get("q", "")[:256],
+                language=query.get("language", "ja")[:16],
+                limit=int(query.get("limit", 20)),
+                contains=query.get("contains") == "1",
+            )
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+        return web.json_response({"results": results})
+
+    @routes.post("/prompt_workbench/tagdb/validate")
+    async def post_tagdb_validate(request):
+        if request.content_length and request.content_length > MAX_REQUEST_BYTES:
+            return web.json_response({"error": "Request is too large"}, status=413)
+        try:
+            body = await request.json()
+            tags = body.get("tags") if isinstance(body, dict) else None
+            if not isinstance(tags, list) or not all(isinstance(item, str) for item in tags):
+                raise ValueError("tags must be an array of strings")
+            available = await asyncio.to_thread(tagdb.database_paths)
+            results = await asyncio.to_thread(tagdb.validate, tags)
+        except (ValueError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+        return web.json_response({"available": bool(available), "results": results})
 
     @routes.get("/prompt_workbench/providers")
     async def get_providers(_request):
