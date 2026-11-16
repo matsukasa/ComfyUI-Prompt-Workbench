@@ -7,7 +7,147 @@ const CLOSE_TO_OPEN = Object.fromEntries(
   Object.entries(OPEN_TO_CLOSE).map(([open, close]) => [close, open]),
 );
 
+const PRESERVED_SEPARATORS = new Set(["；", "，", "、", "。", "．"]);
 let nextTagId = 1;
+let nextSectionId = 1;
+
+export const SECTION_HEADING_GROUPS = Object.freeze([
+  {
+    id: "ja",
+    label: "日本語",
+    items: [
+      "【タスクとスタイル】",
+      "【構図とアングル】",
+      "【背景と小道具】",
+      "【人物・衣装・ポーズ】",
+      "【色彩とライティング】",
+      "【質感と仕上げ】",
+      "【プロンプト】",
+      "【ネガティブ（任意）】",
+    ],
+  },
+  {
+    id: "zh",
+    label: "中文",
+    items: [
+      "【任务与范式】",
+      "【构图与机位】",
+      "【场景空间与道具】",
+      "【主体造型与互动】",
+      "【色彩光影】",
+      "【质感风格】",
+      "【可选负面提示词】",
+    ],
+  },
+  {
+    id: "en",
+    label: "English",
+    items: [
+      "【Task & Style】",
+      "【Composition & Camera】",
+      "【Scene & Props】",
+      "【Subject & Pose】",
+      "【Color & Lighting】",
+      "【Texture & Quality】",
+      "【Optional Negative】",
+    ],
+  },
+  {
+    id: "md",
+    label: "Markdown / Tag",
+    items: [
+      "## Subject",
+      "## Composition",
+      "## Environment",
+      "## Lighting & Color",
+      "## Style & Quality",
+      "## Negative",
+      "品質・画風",
+      "キャラクター",
+      "服装・装飾",
+      "ポーズ・表情",
+      "背景・ライティング",
+      "ネガティブ",
+    ],
+  },
+]);
+
+export const SECTION_TEMPLATES = Object.freeze([
+  {
+    id: "structured-ja",
+    label: "構造化（日本語）",
+    outputFormat: "structured",
+    wrapBraces: true,
+    includeNegativeInPrompt: true,
+    titles: [
+      "【タスクとスタイル】",
+      "【構図とアングル】",
+      "【背景と小道具】",
+      "【人物・衣装・ポーズ】",
+      "【色彩とライティング】",
+      "【質感と仕上げ】",
+      "【ネガティブ（任意）】",
+    ],
+  },
+  {
+    id: "structured-zh",
+    label: "構造化（中国語）",
+    outputFormat: "structured",
+    wrapBraces: true,
+    includeNegativeInPrompt: true,
+    titles: [
+      "【任务与范式】",
+      "【构图与机位】",
+      "【场景空间与道具】",
+      "【主体造型与互动】",
+      "【色彩光影】",
+      "【质感风格】",
+      "【可选负面提示词】",
+    ],
+  },
+  {
+    id: "structured-en",
+    label: "構造化（英語）",
+    outputFormat: "structured",
+    wrapBraces: true,
+    includeNegativeInPrompt: true,
+    titles: [
+      "【Task & Style】",
+      "【Composition & Camera】",
+      "【Scene & Props】",
+      "【Subject & Pose】",
+      "【Color & Lighting】",
+      "【Texture & Quality】",
+      "【Optional Negative】",
+    ],
+  },
+  {
+    id: "pos-neg",
+    label: "Pos / Neg（2欄）",
+    outputFormat: "structured",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    titles: [
+      "【プロンプト】",
+      "【ネガティブ】",
+    ],
+  },
+  {
+    id: "tags-grouped",
+    label: "タグ分類（タグ結合）",
+    outputFormat: "tags",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    titles: [
+      "品質・画風",
+      "キャラクター",
+      "服装・装飾",
+      "ポーズ・表情",
+      "背景・ライティング",
+      "ネガティブ",
+    ],
+  },
+]);
 
 function isTagWordCharacter(character) {
   return /[\p{L}\p{N}_-]/u.test(character || "");
@@ -52,6 +192,9 @@ export function createTag(raw, overrides = {}) {
     translationErrorTarget: String(overrides.translationErrorTarget || ""),
     type: overrides.type || classifyTag(value),
     lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(overrides.lineBreakAfter) || 0))),
+    separatorAfter: PRESERVED_SEPARATORS.has(String(overrides.separatorAfter || ""))
+      ? String(overrides.separatorAfter)
+      : "",
     missingModel: Boolean(overrides.missingModel),
     blacklistMatch: Boolean(overrides.blacklistMatch),
   };
@@ -160,7 +303,12 @@ export function parsePrompt(text, previousTags = []) {
   }
   const tags = parsed.values.map((value, index) => {
     const old = reusable.get(value)?.shift();
-    return createTag(value, { ...(old || {}), lineBreakAfter: lineBreaksAfter[index] });
+    const separator = PRESERVED_SEPARATORS.has(parsed.separators[index]) ? parsed.separators[index] : "";
+    return createTag(value, {
+      ...(old || {}),
+      lineBreakAfter: lineBreaksAfter[index],
+      separatorAfter: separator,
+    });
   });
   return { tags, errors: parsed.errors, trailingSeparator: parsed.trailingSeparator };
 }
@@ -216,6 +364,329 @@ export function outputPrompt(tags, outputLanguage = "en", options = {}) {
     options,
   );
   return options.replaceUnderscores ? value.replace(/_/gu, " ") : value;
+}
+
+export function createSection(overrides = {}) {
+  const restoredId = /^sec-(\d+)$/u.exec(String(overrides.id || ""));
+  if (restoredId && Number.isSafeInteger(Number(restoredId[1]) + 1)) {
+    nextSectionId = Math.max(nextSectionId, Number(restoredId[1]) + 1);
+  }
+  const tags = Array.isArray(overrides.tags)
+    ? overrides.tags.map((tag) => createTag(tag?.value ?? "", tag))
+    : [];
+  return {
+    id: String(overrides.id || `sec-${nextSectionId++}`),
+    title: String(overrides.title || "").trim(),
+    role: overrides.role === "negative" ? "negative" : "positive",
+    enabled: overrides.enabled !== false,
+    collapsed: Boolean(overrides.collapsed),
+    trailingSeparator: Boolean(overrides.trailingSeparator),
+    tags,
+  };
+}
+
+export function inferSectionRole(title) {
+  const text = String(title || "").trim();
+  if (!text) return "positive";
+  return /负面|負面|ネガティブ|negative|\bneg\b|反向|逆向|排除/iu.test(text) ? "negative" : "positive";
+}
+
+function unwrapOuterBraces(text) {
+  const trimmed = String(text ?? "").trim();
+  if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+    return { inner: trimmed, wrapBraces: false };
+  }
+  const afterOpen = trimmed.slice(1).trimStart();
+  const hasMultilineOrHeader = /\n/.test(trimmed) || /^【[^】\n]+】/u.test(afterOpen);
+  if (!hasMultilineOrHeader) {
+    return { inner: trimmed, wrapBraces: false };
+  }
+  let depth = 0;
+  for (let index = 0; index < trimmed.length; index += 1) {
+    const ch = trimmed[index];
+    if (ch === "{") depth += 1;
+    else if (ch === "}") {
+      depth -= 1;
+      if (depth === 0 && index !== trimmed.length - 1) {
+        return { inner: trimmed, wrapBraces: false };
+      }
+    }
+  }
+  if (depth !== 0) return { inner: trimmed, wrapBraces: false };
+  const inner = trimmed.slice(1, -1).replace(/^\s*\r?\n/, "").replace(/\r?\n\s*$/, "");
+  return { inner, wrapBraces: true };
+}
+
+function matchSectionHeaderLine(line, allowBareSquareBracket = false) {
+  const trimmed = String(line || "").trim();
+  if (!trimmed) return null;
+  const cornerMatch = trimmed.match(/^(【[^】\n]{1,120}】)(?:[:：]\s*(.*)|\s+(.*))?$/u);
+  if (cornerMatch) {
+    const inlineBody = (cornerMatch[2] ?? cornerMatch[3] ?? "").trim();
+    if (!/^[,，、]/u.test(inlineBody)) {
+      return { title: cornerMatch[1], inlineBody };
+    }
+  }
+  const markdownMatch = trimmed.match(/^(#{2,6}\s+\S.*)$/u);
+  if (markdownMatch) {
+    return { title: markdownMatch[1].trim(), inlineBody: "" };
+  }
+  const squareMatch = trimmed.match(/^(\[[^\]\n]{1,120}\])([:：])?\s*(.*)$/u);
+  if (squareMatch) {
+    const header = squareMatch[1];
+    const hasColon = Boolean(squareMatch[2]);
+    const rest = (squareMatch[3] || "").trim();
+    const looksLikeWeightOrList = /:\s*-?\d+(?:\.\d+)?\]$/u.test(header) || rest.startsWith(",");
+    if (!looksLikeWeightOrList && (hasColon || (!rest && allowBareSquareBracket))) {
+      return { title: header, inlineBody: rest };
+    }
+  }
+  return null;
+}
+
+function splitInlineCornerSections(text) {
+  const input = String(text ?? "");
+  if (!input.includes("【")) return null;
+  const headers = [];
+  const stack = [];
+  let quote = null;
+  let escaped = false;
+
+  for (let index = 0; index < input.length; index += 1) {
+    const ch = input[index];
+    if (escaped) { escaped = false; continue; }
+    if (ch === "\\") { escaped = true; continue; }
+    if (quote) {
+      if (ch === quote && (quote !== "'" || isSingleQuoteDelimiter(input, index))) quote = null;
+      continue;
+    }
+    if (ch === '"' || (ch === "'" && isSingleQuoteDelimiter(input, index))) {
+      quote = ch;
+      continue;
+    }
+    if (Object.hasOwn(OPEN_TO_CLOSE, ch)) {
+      stack.push(ch);
+      continue;
+    }
+    if (Object.hasOwn(CLOSE_TO_OPEN, ch)) {
+      if (stack.at(-1) === CLOSE_TO_OPEN[ch]) stack.pop();
+      continue;
+    }
+    if (ch === "【" && stack.length === 0) {
+      const prevOk = index === 0 || /[\s,，、；。．]/u.test(input[index - 1]);
+      if (!prevOk) continue;
+      const closeIndex = input.indexOf("】", index + 1);
+      if (closeIndex < 0 || closeIndex - index > 122) continue;
+      const title = input.slice(index, closeIndex + 1);
+      if (/[\n\r【]/u.test(title.slice(1))) continue;
+      const nextChar = input[closeIndex + 1] ?? "";
+      const nextOk = !nextChar || /[\s,，、；:：]/u.test(nextChar);
+      if (!nextOk) continue;
+      headers.push({ start: index, end: closeIndex + 1, title });
+      index = closeIndex;
+    }
+  }
+
+  if (headers.length < 2) return null;
+  const sections = [];
+  const preamble = input.slice(0, headers[0].start).replace(/[\s,，、]+$/u, "").trim();
+  if (preamble) sections.push({ title: "", body: preamble });
+  for (let i = 0; i < headers.length; i += 1) {
+    const nextStart = headers[i + 1]?.start ?? input.length;
+    const body = input
+      .slice(headers[i].end, nextStart)
+      .replace(/^[\s:：,，、]+/u, "")
+      .replace(/[\s,，、]+$/u, "")
+      .trim();
+    sections.push({ title: headers[i].title, body });
+  }
+  return sections;
+}
+
+export function parseStructuredPrompt(text, previousSections = []) {
+  const { inner, wrapBraces } = unwrapOuterBraces(text);
+  const lines = String(inner ?? "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const candidateHeaders = lines.filter((line) => matchSectionHeaderLine(line, true)).length;
+  const allowBareSquareBracket = lines.length > 1 && candidateHeaders >= 2;
+
+  let rawSections = [];
+  let current = null;
+  const flushCurrent = () => {
+    if (!current) return;
+    const body = current.lines.join("\n").trim();
+    rawSections.push({ title: current.title, body });
+    current = null;
+  };
+
+  for (const line of lines) {
+    const header = matchSectionHeaderLine(line, allowBareSquareBracket);
+    if (header) {
+      flushCurrent();
+      current = { title: header.title, lines: header.inlineBody ? [header.inlineBody] : [] };
+      continue;
+    }
+    if (!current) {
+      if (!line.trim()) continue;
+      current = { title: "", lines: [line] };
+    } else {
+      current.lines.push(line);
+    }
+  }
+  flushCurrent();
+
+  const lineHeaderCount = rawSections.filter((section) => Boolean(section.title)).length;
+  if (lineHeaderCount < 2) {
+    const inlineSections = splitInlineCornerSections(inner);
+    if (inlineSections) rawSections = inlineSections;
+  }
+
+  if (!rawSections.length) {
+    const fallback = createSection({ title: "", role: "positive" });
+    return { wrapBraces, sections: [fallback], errors: [] };
+  }
+
+  const reusableByTitle = new Map();
+  for (const oldSection of previousSections || []) {
+    const key = String(oldSection?.title || "");
+    if (!reusableByTitle.has(key)) reusableByTitle.set(key, []);
+    reusableByTitle.get(key).push(oldSection);
+  }
+
+  const errors = [];
+  const sections = rawSections.map((raw) => {
+    const reused = reusableByTitle.get(raw.title)?.shift();
+    const parsed = parsePrompt(
+      raw.body,
+      (reused?.tags || []).filter((tag) => tag.enabled !== false),
+    );
+    errors.push(...parsed.errors);
+    const nextTags = parsed.tags.filter((tag) => String(tag?.value || "").trim());
+    return createSection({
+      ...(reused || {}),
+      title: raw.title,
+      role: reused?.role || inferSectionRole(raw.title),
+      trailingSeparator: parsed.trailingSeparator,
+      tags: nextTags,
+    });
+  });
+
+  return { wrapBraces, sections, errors };
+}
+
+export function looksLikeStructuredPrompt(text) {
+  const input = String(text ?? "").trim();
+  if (!input) return false;
+  const { wrapBraces, sections } = parseStructuredPrompt(input);
+  const headedCount = sections.filter((section) => Boolean(section.title)).length;
+  const headedWithBody = sections.filter((section) => Boolean(section.title) && section.tags.length > 0).length;
+  return (wrapBraces && headedCount >= 1)
+    || headedCount >= 2
+    || (sections.length === 1 && headedWithBody === 1 && /\n/.test(input));
+}
+
+export function serializeStructuredSectionBody(tags, outputLanguage = null, options = {}) {
+  const includeDisabled = Boolean(options.includeDisabled);
+  const entries = (tags || [])
+    .filter((tag) => includeDisabled || tag.enabled !== false)
+    .map((tag) => {
+      const raw = String(tag.value ?? "").trim();
+      const translated = outputLanguage
+        && normalizeTranslationText(tag.translation)
+        && tag.translatedTo === outputLanguage
+        ? replacePromptBody(raw, promptBody(normalizeTranslationText(tag.translation)))
+        : raw;
+      const value = options.replaceUnderscores ? translated.replace(/_/gu, " ") : translated;
+      return {
+        value,
+        lineBreakAfter: Math.max(0, Math.floor(Number(tag.lineBreakAfter) || 0)),
+        separatorAfter: String(tag.separatorAfter || ""),
+      };
+    })
+    .filter((entry) => entry.value.length > 0);
+  let result = "";
+  for (const [index, entry] of entries.entries()) {
+    const isLast = index === entries.length - 1;
+    result += entry.value;
+    const sep = entry.separatorAfter;
+    if (entry.lineBreakAfter > 0) {
+      if (sep) result += sep;
+      else if (!isLast || options.trailingSeparator) result += ",";
+      result += "\n".repeat(entry.lineBreakAfter);
+    } else if (!isLast) {
+      result += sep || ", ";
+    } else if (sep && ["。", "．"].includes(sep)) {
+      result += sep;
+    } else if (options.trailingSeparator) {
+      result += sep || ",";
+    }
+  }
+  return result;
+}
+
+export function serializeSectionEditorText(section, outputFormat = "tags") {
+  if (!section) return "";
+  if (outputFormat === "structured") {
+    return serializeStructuredSectionBody(section.tags, null, {
+      trailingSeparator: section.trailingSeparator,
+    });
+  }
+  return serializeEditorPrompt(section.tags, {
+    trailingSeparator: section.trailingSeparator,
+  });
+}
+
+export function buildStructuredOutputs(sections, options = {}) {
+  const outputFormat = options.outputFormat === "structured" ? "structured" : "tags";
+  const outputLanguage = options.outputLanguage || "en";
+  const replaceUnderscores = Boolean(options.replaceUnderscores);
+  const wrapBraces = Boolean(options.wrapBraces);
+  const includeNegativeInPrompt = Boolean(options.includeNegativeInPrompt);
+  const enabledSections = (sections || []).filter((section) => section && section.enabled !== false);
+
+  if (outputFormat !== "structured") {
+    const positiveTags = enabledSections
+      .filter((section) => section.role !== "negative" || includeNegativeInPrompt)
+      .flatMap((section) => section.tags || []);
+    const negativeTags = enabledSections
+      .filter((section) => section.role === "negative")
+      .flatMap((section) => section.tags || []);
+    return {
+      prompt: outputPrompt(positiveTags, outputLanguage, {
+        trailingSeparator: true,
+        stripLineBreaks: true,
+        replaceUnderscores,
+      }),
+      negative: outputPrompt(negativeTags, outputLanguage, {
+        trailingSeparator: true,
+        stripLineBreaks: true,
+        replaceUnderscores,
+      }),
+    };
+  }
+
+  const formatBlock = (section, includeTitle = true) => {
+    const body = serializeStructuredSectionBody(section.tags, outputLanguage, {
+      replaceUnderscores,
+      trailingSeparator: section.trailingSeparator,
+    });
+    if (!body) return "";
+    return includeTitle && section.title ? `${section.title}\n${body}` : body;
+  };
+
+  const promptBlocks = enabledSections
+    .filter((section) => section.role !== "negative" || includeNegativeInPrompt)
+    .map((section) => formatBlock(section, true))
+    .filter(Boolean);
+  const promptBodyText = promptBlocks.join("\n\n");
+  const prompt = wrapBraces && promptBodyText ? `{\n${promptBodyText}\n}` : promptBodyText;
+
+  const negativeBlocks = enabledSections
+    .filter((section) => section.role === "negative")
+    .map((section) => formatBlock(section, false))
+    .filter(Boolean);
+  const negative = negativeBlocks.join("\n\n");
+
+  return { prompt, negative };
 }
 
 // Translation is text; weight/attention syntax belongs to the current tag.

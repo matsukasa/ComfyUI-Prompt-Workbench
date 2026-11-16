@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20261109-library-sort";
+import { PromptEditor } from "./prompt_editor.js?v=20261116-multi-section3";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -11,7 +11,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20260909-layout-fix", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261116-multi-section3", import.meta.url).href;
   document.head.append(link);
 }
 
@@ -27,8 +27,10 @@ app.registerExtension({
     nodeType.prototype.onNodeCreated = function onNodeCreated() {
       const result = previousCreated?.apply(this, arguments);
       const prompt = this.widgets?.find((widget) => widget.name === "prompt");
+      const negative = this.widgets?.find((widget) => widget.name === "negative");
+      const outputFormat = this.widgets?.find((widget) => widget.name === "output_format");
       if (prompt && typeof this.addDOMWidget === "function") {
-        this.promptWorkbenchEditor = new PromptEditor(this, { prompt }, api);
+        this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat }, api);
       }
       return result;
     };

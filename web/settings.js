@@ -184,6 +184,7 @@ function sanitizeTag(tag) {
   const legacyDisabled = /^.+\S\s+(?:null|undefined)$/iu.test(rawValue);
   const value = legacyDisabled ? rawValue.replace(/\s+(?:null|undefined)$/iu, "").trim() : rawValue;
   const translation = sanitizeTranslation(tag?.translation);
+  const rawSeparator = String(tag?.separatorAfter || "");
   return {
     id: String(tag?.id || "").slice(0, 80),
     value,
@@ -192,16 +193,51 @@ function sanitizeTag(tag) {
     translatedTo: String(tag?.translatedTo || "").slice(0, 16),
     type: String(tag?.type || "normal").slice(0, 32),
     lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(tag?.lineBreakAfter) || 0))),
+    separatorAfter: ["；", "，", "、", "。", "．"].includes(rawSeparator) ? rawSeparator : "",
+  };
+}
+
+function sanitizeSection(section, index = 0) {
+  const tags = Array.isArray(section?.tags) ? section.tags : [];
+  return {
+    id: String(section?.id || `sec-${index + 1}`).slice(0, 80),
+    title: String(section?.title || "").slice(0, 200).trim(),
+    role: section?.role === "negative" ? "negative" : "positive",
+    enabled: section?.enabled !== false,
+    collapsed: Boolean(section?.collapsed),
+    trailingSeparator: Boolean(section?.trailingSeparator),
+    tags: tags.slice(0, 2000).map(sanitizeTag),
   };
 }
 
 export function sanitizeEditorState(input = {}) {
   const state = input && typeof input === "object" ? input : {};
-  const tags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
+  const rawTags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
+  const tags = rawTags.slice(0, 2000).map(sanitizeTag);
+  const trailingSeparator = Boolean(state.trailingSeparator);
+  const rawSections = Array.isArray(state.sections) && state.sections.length
+    ? state.sections.slice(0, 64).map((section, index) => sanitizeSection(section, index))
+    : [{
+        id: "sec-1",
+        title: "",
+        role: "positive",
+        enabled: true,
+        collapsed: false,
+        trailingSeparator,
+        tags,
+      }];
+  const activeSectionId = rawSections.some((sec) => sec.id === state.activeSectionId)
+    ? String(state.activeSectionId)
+    : rawSections[0].id;
   return {
     version: 1,
-    trailingSeparator: Boolean(state.trailingSeparator),
-    tags: tags.slice(0, 2000).map(sanitizeTag),
+    trailingSeparator,
+    tags,
+    sections: rawSections,
+    activeSectionId,
+    outputFormat: state.outputFormat === "structured" ? "structured" : "tags",
+    wrapBraces: Boolean(state.wrapBraces),
+    includeNegativeInPrompt: Boolean(state.includeNegativeInPrompt),
     settings: sanitizeSettings(state.settings),
   };
 }
