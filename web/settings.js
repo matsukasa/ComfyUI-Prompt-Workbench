@@ -34,6 +34,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   tagListHeight: 260,
   exampleListHeight: 118,
   tagSetListHeight: 160,
+  leftPaneWidthPercent: 46,
+  showSectionTranslationsInList: true,
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
@@ -171,6 +173,12 @@ export function sanitizeSettings(input = {}) {
   if (Number.isFinite(Number(input.tagListHeight))) {
     settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));
   }
+  if (Number.isFinite(Number(input.leftPaneWidthPercent))) {
+    settings.leftPaneWidthPercent = Math.min(70, Math.max(30, Number(input.leftPaneWidthPercent)));
+  }
+  if (Object.hasOwn(input, "showSectionTranslationsInList")) {
+    settings.showSectionTranslationsInList = Boolean(input.showSectionTranslationsInList);
+  }
   return settings;
 }
 
@@ -203,6 +211,10 @@ function sanitizeSection(section, index = 0) {
     id: String(section?.id || `sec-${index + 1}`).slice(0, 80),
     title: String(section?.title || "").slice(0, 200).trim(),
     role: section?.role === "negative" ? "negative" : "positive",
+    mode: section?.mode === "prose" ? "prose" : "tags",
+    proseText: String(section?.proseText || "").slice(0, 40000),
+    translation: String(section?.translation || "").slice(0, 40000),
+    translatedTo: String(section?.translatedTo || "").slice(0, 16),
     enabled: section?.enabled !== false,
     collapsed: Boolean(section?.collapsed),
     trailingSeparator: Boolean(section?.trailingSeparator),
@@ -235,7 +247,7 @@ export function sanitizeEditorState(input = {}) {
     tags,
     sections: rawSections,
     activeSectionId,
-    outputFormat: state.outputFormat === "structured" ? "structured" : "tags",
+    outputFormat: ["structured", "json"].includes(state.outputFormat) ? state.outputFormat : "tags",
     wrapBraces: Boolean(state.wrapBraces),
     includeNegativeInPrompt: Boolean(state.includeNegativeInPrompt),
     settings: sanitizeSettings(state.settings),

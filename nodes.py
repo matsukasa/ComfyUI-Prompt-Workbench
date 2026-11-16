@@ -38,7 +38,7 @@ class PromptWorkbench:
                     {"default": "", "multiline": True, "dynamicPrompts": True},
                 ),
                 "output_format": (
-                    ["tags", "structured"],
+                    ["tags", "structured", "json"],
                     {"default": "tags"},
                 ),
             },
@@ -51,7 +51,7 @@ class PromptWorkbench:
     DESCRIPTION = "Edit structured tags or multi-section prompts and pass STRING outputs."
 
     def emit_prompt(self, prompt="", negative="", output_format="tags"):
-        if output_format == "structured":
+        if output_format in ("structured", "json"):
             return (
                 normalize_structured_prompt(prompt),
                 normalize_structured_prompt(negative),

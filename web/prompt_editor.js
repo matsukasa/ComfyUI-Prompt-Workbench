@@ -22,6 +22,7 @@ import {
   serializeEditorPrompt,
   serializePrompt,
   serializeSectionEditorText,
+  serializeStructuredSectionBody,
   setTagWeight,
 } from "./prompt_parser.js";
 import {
@@ -88,6 +89,15 @@ const CATALOG_FILE_PICKER_TYPES = [{
 }];
 const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
 const TAG_SET_FILE_PICKER_ID = "prompt-workbench-tag-set-save";
+const PROSE_PHRASES = [
+  { group: "構図・レンズ", prompt: "Medium close-up portrait, 50mm lens, shallow depth of field, eye-level", ja: "ミディアムクローズアップ、50mmレンズ、浅い被写界深度、アイレベル" },
+  { group: "構図・レンズ", prompt: "50mm标准焦段，平视全身近景，浅景深虚化背景", ja: "50mm標準レンズ、アイレベル全身寄り、浅い被写界深度で背景ボケ" },
+  { group: "構図・レンズ", prompt: "Pure 90-degree side profile silhouette, camera facing left", ja: "真横90度のプロフィールシルエット、画面左向き" },
+  { group: "光影・雰囲気", prompt: "Soft key light from upper left, subtle rim lighting, natural skin texture", ja: "左上からの柔らかいキーライト、繊細なリムライト、自然な肌質感" },
+  { group: "光影・雰囲気", prompt: "左上方柔和主光斜向倾洒，后方透出环境轮廓光", ja: "左上から柔らかいキーライトが斜めに差し込み、背後から環境リム光" },
+  { group: "光影・雰囲気", prompt: "Golden hour window light casting warm soft shadows across the room.", ja: "ゴールデンアワーの窓光が部屋に温かい柔らかい影を落とす。" },
+  { group: "質感・カメラ", prompt: "Shot on 35mm medium format film with fine grain and realistic color grading.", ja: "35mm中判フィルム撮影、繊細な粒子とリアルな色調" },
+];
 const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
 const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
@@ -1020,7 +1030,7 @@ export class PromptEditor {
     if (Array.isArray(this.sections) && Array.isArray(snapshot.sections)) {
       this.sections = snapshot.sections.map((section) => createSection(section));
       this.activeSectionId = snapshot.activeSectionId || this.sections[0]?.id || "sec-1";
-      this.outputFormat = snapshot.outputFormat === "structured" ? "structured" : "tags";
+      this.outputFormat = ["structured", "json"].includes(snapshot.outputFormat) ? snapshot.outputFormat : "tags";
       this.wrapBraces = Boolean(snapshot.wrapBraces);
       this.includeNegativeInPrompt = Boolean(snapshot.includeNegativeInPrompt);
       this.dirtySectionIds?.clear();
@@ -1093,7 +1103,8 @@ export class PromptEditor {
       }
       this.sections = nextSections;
       this.activeSectionId = this.sections[0].id;
-      this.outputFormat = this.widgets.outputFormat?.value === "structured" ? "structured" : "tags";
+      const rawFmt = this.widgets.outputFormat?.value;
+      this.outputFormat = ["structured", "json"].includes(rawFmt) ? rawFmt : "tags";
       this.wrapBraces = false;
       this.includeNegativeInPrompt = false;
     } else {
@@ -1340,13 +1351,16 @@ export class PromptEditor {
     this.outputFormatButtons = new Map();
     const formatGroup = element("div", { className: "paio-segmented", ariaLabel: t("出力形式") });
     formatGroup.setAttribute("role", "group");
-    for (const [value, label] of [["tags", "タグ結合"], ["structured", "構造化"]]) {
+    for (const [value, label] of [["tags", "タグ結合"], ["structured", "構造化"], ["json", "JSON"]]) {
       const control = button(t(label), () => {
         this.commitPromptBeforeAction();
-        if (value === "structured" && this.sections?.length === 1 && !this.sections[0].title) {
+        if ((value === "structured" || value === "json") && this.sections?.length === 1 && !this.sections[0].title) {
           const currentText = this.promptEditorValue(this.sections[0]);
           if (looksLikeStructuredPrompt(currentText)) {
             this.applyBulkSplitText(currentText);
+            this.outputFormat = value;
+            this.syncToWidgets();
+            this.render();
             return;
           }
         }
@@ -1377,7 +1391,7 @@ export class PromptEditor {
     }, t("ネガティブセクションもprompt出力に含める"));
     this.includeNegativeToggle.classList.add("paio-toggle-pill");
     const addSectionBtn = button(t("＋ セクション"), () => this.addSection(), t("新しいプロンプト入力欄を追加"));
-    const bulkSplitBtn = button(t("一括分割"), () => this.openBulkSplitDialog(), t("【見出し】や { } 付きテキストを一括読込・分割"));
+    const bulkSplitBtn = button(t("一括分割"), () => this.openBulkSplitDialog(), t("【見出し】や { } / JSON 付きテキストを一括読込・分割"));
     const templateSelect = element("select", { className: "paio-select paio-section-template-select" });
     templateSelect.setAttribute("aria-label", t("セクションテンプレートを選択"));
     templateSelect.title = t("よく使うセクション構成を一括追加・適用");
@@ -1404,6 +1418,24 @@ export class PromptEditor {
         headingDatalist.append(option);
       }
     }
+    const showBlockJaCheck = element("input", { type: "checkbox" });
+    showBlockJaCheck.checked = this.settings.showSectionTranslationsInList !== false;
+    showBlockJaCheck.addEventListener("change", () => {
+      this.settings.showSectionTranslationsInList = showBlockJaCheck.checked;
+      this.persist();
+      this.rebuildSectionViews();
+      this.render();
+    });
+    const showBlockJaLabel = element("label", { className: "paio-inline-check" }, [
+      showBlockJaCheck,
+      element("span", { text: t("一覧に訳を表示") }),
+    ]);
+
+    this.settingsDialog = this.buildSettingsDialog();
+    this.blacklistDialog = this.buildBlacklistDialog();
+    this.ioDialog = this.buildIoDialog();
+    this.bulkSplitDialog = this.buildBulkSplitDialog();
+
     this.sectionControls = element("div", { className: "paio-section-controls" }, [
       element("span", { className: "paio-translation-label", text: t("出力") }),
       formatGroup,
@@ -1412,6 +1444,11 @@ export class PromptEditor {
       addSectionBtn,
       templateSelect,
       bulkSplitBtn,
+      showBlockJaLabel,
+      button(t("コピー/IO"), () => openDialog(this.ioDialog), t("コピー・エクスポート・インポート")),
+      button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
+      button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
+      this.syncBadge,
       headingDatalist,
     ]);
 
@@ -1420,17 +1457,73 @@ export class PromptEditor {
       promptResizeHandle,
       promptActions,
     ]);
+    this.promptSingleContainer.hidden = true;
     this.sectionsContainer = element("div", { className: "paio-sections-list" });
-    this.bulkSplitDialog = this.buildBulkSplitDialog();
+    this.sectionCountLabel = element("span", { className: "paio-section-count-label" });
+    const leftPaneHeader = element("div", { className: "paio-pane-head" }, [
+      element("div", { className: "paio-pane-title-group" }, [
+        element("strong", { text: t("セクションブロック") }),
+        this.sectionCountLabel,
+      ]),
+      element("div", { className: "paio-pane-actions" }, [
+        button(t("全ON"), () => this.setAllSectionsEnabled(true), t("すべてのセクションを有効にする")),
+        button(t("全OFF"), () => this.setAllSectionsEnabled(false), t("すべてのセクションを無効にする")),
+      ]),
+    ]);
+    const leftPane = element("div", { className: "paio-pane paio-pane-left" }, [
+      leftPaneHeader,
+      this.sectionsContainer,
+    ]);
+
+    const splitter = element("div", { className: "paio-splitter", title: t("ドラッグして左右ペインの比率を調整") });
+    splitter.tabIndex = 0;
+    splitter.setAttribute("role", "separator");
+    splitter.setAttribute("aria-orientation", "vertical");
 
     this.translationBar = this.buildTranslationBar();
-    const promptPane = collapsiblePane(t("プロンプト本文"), "paio-prompt-pane", [
-      this.sectionControls,
-      this.promptSingleContainer,
-      this.sectionsContainer,
-      this.translationBar,
+
+    this.activeSectionTitleLabel = element("strong", { className: "paio-active-section-title", text: t("編集中セクション") });
+    this.sectionModeButtons = new Map();
+    const modeSwitch = element("div", { className: "paio-segmented", ariaLabel: t("セクション編集モード") });
+    for (const [modeVal, modeLabel] of [["prose", "散文モード"], ["tags", "タグモード"]]) {
+      const btn = button(t(modeLabel), () => this.setActiveSectionMode(modeVal));
+      btn.classList.add("paio-segmented-button");
+      this.sectionModeButtons.set(modeVal, btn);
+      modeSwitch.append(btn);
+    }
+    const activeWorkspaceHead = element("div", { className: "paio-pane-head" }, [
+      this.activeSectionTitleLabel,
+      modeSwitch,
     ]);
-    promptPane.summary.append(element("span", { className: "paio-section-header-meta" }, [this.syncBadge]));
+
+    this.proseOrigTextarea = element("textarea", { className: "paio-prompt-textarea paio-prose-textarea" });
+    this.proseOrigTextarea.rows = 3;
+    this.proseOrigTextarea.placeholder = t("出力されるプロンプト（英語・中国語など自然文）を入力...");
+    this.proseOrigTextarea.addEventListener("input", () => this.handleProseOrigInput());
+
+    this.proseJaTextarea = element("textarea", { className: "paio-prompt-textarea paio-prose-textarea" });
+    this.proseJaTextarea.rows = 3;
+    this.proseJaTextarea.placeholder = t("日本語訳（上の「① 選択を日本語訳」で自動取得、または日本語で下書き入力）");
+    this.proseJaTextarea.addEventListener("input", () => this.handleProseJaInput());
+
+    const applyJaQuickBtn = button(t("日本語の編集内容を原文へ反映 →"), () => this.translateSectionJaToOriginal(this.activeSectionId));
+    applyJaQuickBtn.classList.add("paio-subtle-action");
+    this.proseWorkspace = element("div", { className: "paio-prose-workspace" }, [
+      element("div", { className: "paio-bilingual-box" }, [
+        element("div", { className: "paio-bilingual-head" }, [
+          element("strong", { text: t("出力プロンプト（原文）") }),
+          element("span", { className: "paio-hint", text: t("散文モード：TagDB警告・末尾カンマなし") }),
+        ]),
+        this.proseOrigTextarea,
+      ]),
+      element("div", { className: "paio-bilingual-box is-ja" }, [
+        element("div", { className: "paio-bilingual-head" }, [
+          element("strong", { text: t("日本語訳（確認・日本語で編集用）") }),
+          applyJaQuickBtn,
+        ]),
+        this.proseJaTextarea,
+      ]),
+    ]);
 
     this.addInput = element("textarea", { className: "paio-add-input" });
     this.addInput.rows = 1;
@@ -1504,14 +1597,12 @@ export class PromptEditor {
       button("↷", () => this.redo(), t("やり直す")),
       button(t("整形"), () => this.normalize(false)),
       button(t("重複削除"), () => this.normalize(true)),
-      button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
-      button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
     this.tagSummary = element("span");
     const tagSummaryRow = element("div", { className: "paio-tag-summary" }, [
-      element("span", { className: "paio-hint", text: t("Shift+ドラッグ: 矩形選択 / Shift・Ctrl+クリック: 複数選択") }),
+      element("span", { className: "paio-hint", text: t("左チェック: 有効/無効 / ダブルクリック: 編集 / Shift+ドラッグ: 矩形選択") }),
       this.tagSummary,
     ]);
     this.tagList = element("div", { className: "paio-tags" });
@@ -1593,28 +1684,94 @@ export class PromptEditor {
       tagSummaryRow,
       this.tagList,
       tagListResizeHandle,
-      this.status,
     ]);
     this.currentTagsSummaryTitle = currentTagsPane.summary.querySelector("strong");
 
-    this.settingsDialog = this.buildSettingsDialog();
+    this.tagsWorkspace = element("div", { className: "paio-tags-workspace" }, [
+      addRow,
+      tools,
+      currentTagsPane.pane,
+    ]);
+    const activeSectionWorkspace = element("div", { className: "paio-active-section-pane" }, [
+      activeWorkspaceHead,
+      this.proseWorkspace,
+      this.tagsWorkspace,
+    ]);
+
     this.examplesPanel = this.buildExamplesPanel();
     this.tagSetsPanel = this.buildTagSetsPanel();
+    this.prosePhrasesPanel = this.buildProsePhrasesPanel();
     this.libraryTabs = this.buildLibraryTabs();
-    const libraryTabsPane = collapsiblePane(t("タグ追加タブ"), "paio-library-tabs-pane", [this.libraryTabs]);
-    this.blacklistDialog = this.buildBlacklistDialog();
-    this.ioDialog = this.buildIoDialog();
+    const libraryBox = element("div", { className: "paio-library-pane" }, [
+      this.libraryTabs,
+      this.examplesPanel,
+      this.tagSetsPanel,
+      this.prosePhrasesPanel,
+    ]);
+
+    const rightPane = element("div", { className: "paio-pane paio-pane-right" }, [
+      this.translationBar,
+      activeSectionWorkspace,
+      libraryBox,
+    ]);
+
+    const splitLayout = element("div", { className: "paio-split-layout" }, [
+      leftPane,
+      splitter,
+      rightPane,
+    ]);
+    const initialLeftPct = Math.min(70, Math.max(30, Number(this.settings.leftPaneWidthPercent) || 46));
+    splitLayout.style.setProperty("--paio-left-pane-width", `${initialLeftPct}%`);
+
+    splitter.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      splitter.classList.add("is-dragging");
+      splitter.setPointerCapture?.(pointerId);
+      const applyX = (clientX) => {
+        const rect = splitLayout.getBoundingClientRect();
+        if (!rect.width) return;
+        const pct = Math.min(70, Math.max(30, ((clientX - rect.left) / rect.width) * 100));
+        this.settings.leftPaneWidthPercent = Number(pct.toFixed(1));
+        splitLayout.style.setProperty("--paio-left-pane-width", `${this.settings.leftPaneWidthPercent}%`);
+      };
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        applyX(moveEvent.clientX);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        splitter.removeEventListener("pointermove", move);
+        splitter.removeEventListener("pointerup", finish);
+        splitter.removeEventListener("pointercancel", finish);
+        splitter.releasePointerCapture?.(pointerId);
+        splitter.classList.remove("is-dragging");
+        this.persist();
+      };
+      splitter.addEventListener("pointermove", move);
+      splitter.addEventListener("pointerup", finish);
+      splitter.addEventListener("pointercancel", finish);
+    });
+    splitter.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const cur = Number(this.settings.leftPaneWidthPercent) || 46;
+      const next = event.key === "Home" ? 46 : Math.min(70, Math.max(30, cur + (event.key === "ArrowRight" ? 4 : -4)));
+      this.settings.leftPaneWidthPercent = next;
+      splitLayout.style.setProperty("--paio-left-pane-width", `${next}%`);
+      this.persist();
+    });
+
     this.setLibraryTab(this.activeLibraryTab);
     this.rebuildSectionViews();
 
     root.append(
-      promptPane.pane,
-      addRow,
-      tools,
-      currentTagsPane.pane,
-      libraryTabsPane.pane,
-      this.examplesPanel,
-      this.tagSetsPanel,
+      this.sectionControls,
+      this.promptSingleContainer,
+      splitLayout,
+      this.status,
       this.settingsDialog,
       this.blacklistDialog,
       this.ioDialog,
@@ -1723,7 +1880,24 @@ export class PromptEditor {
   }
 
   buildTranslationBar() {
-    const bar = element("div", { className: "paio-translation-bar" });
+    const bar = element("div", { className: "paio-translation-flow" });
+
+    const providerSelect = element("select", { className: "paio-select paio-translation-provider-select" });
+    providerSelect.setAttribute("aria-label", t("翻訳手段"));
+    for (const [value, text] of [
+      ["local", "無料翻訳（辞書→MyMemory）"],
+      ["offline", "ローカル辞書のみ"],
+      ["libretranslate", "LibreTranslate"],
+      ["deepl", "DeepL"],
+      ["openai", "OpenAI互換"],
+      ["clipboard", "外部AI（ChatGPT等）往復"],
+    ]) {
+      const opt = element("option", { text: t(text) });
+      opt.value = value;
+      providerSelect.append(opt);
+    }
+    providerSelect.value = this.translationWorkflowProvider || this.settings.translationProvider || "local";
+
     const label = element("span", { className: "paio-translation-label", text: t("表示") });
     const modes = element("div", { className: "paio-segmented" });
     this.translationDisplayButtons = new Map();
@@ -1740,9 +1914,54 @@ export class PromptEditor {
       modes.append(control);
     }
 
-    this.translateButton = button(t("翻訳"), () => this.translatePrompt(), t("日本語タグを英語へ置換し、英語タグへ日本語訳を追加"));
+    const headRow = element("div", { className: "paio-pane-head" }, [
+      element("strong", { text: t("翻訳ワークフロー（読む・日本語で直して戻す）") }),
+      element("div", { className: "paio-trans-meta" }, [
+        label,
+        modes,
+        providerSelect,
+      ]),
+    ]);
+
+    this.translateSectionBtn = button(t("① 選択を日本語訳"), () => this.translateSectionToLocal(this.activeSectionId), t("選択中ブロックを日本語へ翻訳"));
+    this.translateSectionBtn.classList.add("paio-is-info");
+    this.translateAllSectionsBtn = button(t("全ブロック日本語訳"), () => this.translateAllSectionsToLocal(), t("すべてのブロックを日本語へ翻訳"));
+    this.translateButton = button(t("② 日本語→原文へ反映"), () => this.translateSectionJaToOriginal(this.activeSectionId), t("日本語訳（または日本語タグ）を出力用言語へ変換して原文へ反映"));
     this.translateButton.classList.add("paio-translate-button");
-    bar.append(label, modes, this.translateButton);
+
+    const stepRow = element("div", { className: "paio-trans-steps" }, [
+      this.translateSectionBtn,
+      this.translateAllSectionsBtn,
+      element("span", { className: "paio-hint", text: "→" }),
+      this.translateButton,
+    ]);
+
+    this.llmPasteTextarea = element("textarea", { className: "paio-prompt-textarea paio-llm-paste-area" });
+    this.llmPasteTextarea.rows = 3;
+    this.llmPasteTextarea.placeholder = t("外部AIが返した【見出し】付き日本語訳をここに貼り付けて「Step 2」を押してください...");
+    const copyLlmBtn = button(t("Step 1: 翻訳用プロンプトをコピー"), () => this.copyLlmTranslationPrompt());
+    copyLlmBtn.classList.add("paio-is-info");
+    const applyLlmBtn = button(t("Step 2: 貼付結果を「日本語訳」へ反映"), () => this.applyLlmPastedTranslations(this.llmPasteTextarea.value));
+    applyLlmBtn.classList.add("paio-translate-button");
+
+    this.llmBridgeDrawer = element("div", { className: "paio-llm-bridge" }, [
+      element("p", { className: "paio-hint", text: t("見出し構造を保ったまま外部AIへコピーし、返答を貼付すると各ブロックの日本語訳へ自動で戻ります。") }),
+      element("div", { className: "paio-trans-steps" }, [copyLlmBtn, applyLlmBtn]),
+      this.llmPasteTextarea,
+    ]);
+    this.llmBridgeDrawer.hidden = providerSelect.value !== "clipboard";
+
+    providerSelect.addEventListener("change", () => {
+      this.translationWorkflowProvider = providerSelect.value;
+      const isClipboard = providerSelect.value === "clipboard";
+      this.llmBridgeDrawer.hidden = !isClipboard;
+      if (!isClipboard) {
+        this.settings.translationProvider = providerSelect.value;
+        this.persist();
+      }
+    });
+
+    bar.append(headRow, stepRow, this.llmBridgeDrawer);
     return bar;
   }
 
@@ -2576,17 +2795,62 @@ export class PromptEditor {
   }
 
   buildLibraryTabs() {
-    const tags = button(t("タグ"), () => this.setLibraryTab("tags"));
+    const tags = button(t("タグ追加"), () => this.setLibraryTab("tags"));
     const tagSets = button(t("タグセット"), () => this.setLibraryTab("tagSets"));
+    const prose = button(t("散文フレーズ"), () => this.setLibraryTab("prose"));
     tags.dataset.tab = "tags";
     tagSets.dataset.tab = "tagSets";
-    return element("div", { className: "paio-library-tabs paio-tabs" }, [tags, tagSets]);
+    prose.dataset.tab = "prose";
+    return element("div", { className: "paio-library-tabs paio-tabs" }, [tags, tagSets, prose]);
+  }
+
+  buildProsePhrasesPanel() {
+    const panel = element("details", { className: "paio-examples paio-prose-phrases" });
+    panel.open = true;
+    const summary = element("summary", { className: "paio-examples-summary" }, [
+      element("span", { className: "paio-examples-disclosure", text: "▶" }),
+      element("strong", { text: t("散文フレーズ（構図・光影・質感）") }),
+    ]);
+    const search = element("input", { className: "paio-search", type: "search" });
+    search.placeholder = t("英語・中国語・日本語でフレーズ検索");
+    const list = element("div", { className: "paio-example-list paio-prose-phrase-list" });
+    const redraw = () => {
+      const q = search.value.trim().toLocaleLowerCase();
+      list.replaceChildren();
+      const matched = PROSE_PHRASES.filter((item) => !q
+        || item.prompt.toLocaleLowerCase().includes(q)
+        || item.ja.toLocaleLowerCase().includes(q)
+        || item.group.toLocaleLowerCase().includes(q));
+      if (!matched.length) {
+        list.append(element("p", { className: "paio-empty", text: t("一致するフレーズはありません") }));
+        return;
+      }
+      for (const item of matched) {
+        const chip = button("", () => {
+          this.pushUndo();
+          this.addValues([{ value: item.prompt, translation: item.ja, translatedTo: this.settings.localLanguage }], { trailingSeparator: true });
+          this.setStatus(t("フレーズを追加しました"));
+        }, `${item.prompt}\n${item.ja}`);
+        chip.classList.add("paio-example-chip", "paio-prose-phrase-chip");
+        chip.replaceChildren(
+          element("span", { className: "paio-prose-phrase-group", text: `[${item.group}]` }),
+          element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
+          element("span", { className: "paio-example-chip-translation", text: item.ja }),
+        );
+        list.append(chip);
+      }
+    };
+    search.addEventListener("input", redraw);
+    panel.append(summary, element("div", { className: "paio-example-controls" }, [search]), list);
+    redraw();
+    return panel;
   }
 
   setLibraryTab(tab) {
-    this.activeLibraryTab = tab === "tagSets" ? "tagSets" : "tags";
-    this.examplesPanel.hidden = this.activeLibraryTab !== "tags";
-    this.tagSetsPanel.hidden = this.activeLibraryTab !== "tagSets";
+    this.activeLibraryTab = ["tagSets", "prose"].includes(tab) ? tab : "tags";
+    if (this.examplesPanel) this.examplesPanel.hidden = this.activeLibraryTab !== "tags";
+    if (this.tagSetsPanel) this.tagSetsPanel.hidden = this.activeLibraryTab !== "tagSets";
+    if (this.prosePhrasesPanel) this.prosePhrasesPanel.hidden = this.activeLibraryTab !== "prose";
     this.libraryTabs?.querySelectorAll?.(".paio-button").forEach((control) => {
       const active = control.dataset.tab === this.activeLibraryTab;
       control.classList.toggle("is-active", active);
@@ -3307,7 +3571,9 @@ export class PromptEditor {
     this.sections = parsed.sections;
     this.activeSectionId = this.sections[0]?.id || "sec-1";
     this.dirtySectionIds?.clear();
-    if (parsed.wrapBraces || parsed.sections.length > 1 || parsed.sections.some((section) => section.title)) {
+    if (parsed.isJson) {
+      this.outputFormat = "json";
+    } else if (parsed.wrapBraces || parsed.sections.length > 1 || parsed.sections.some((section) => section.title)) {
       this.outputFormat = "structured";
     }
     this.wrapBraces = parsed.wrapBraces;
@@ -3332,8 +3598,9 @@ export class PromptEditor {
       this.applyPromptText(prevId);
     }
     this.activeSectionId = sectionId;
-    this.promptTextarea = this.sectionTextareas?.get(sectionId) || this.singlePromptTextarea;
     this.renderLimit = MAX_RENDERED_TAGS;
+    this.rebuildSectionViews?.();
+    this.promptTextarea = this.sectionTextareas?.get(sectionId) || this.singlePromptTextarea;
     this.persist();
     this.render();
   }
@@ -3440,48 +3707,264 @@ export class PromptEditor {
     this.render();
   }
 
-  rebuildSectionViews() {
-    if (!this.promptSingleContainer || !this.sectionsContainer) return;
-    const multi = this.isMultiSectionView();
-    this.promptSingleContainer.hidden = multi;
-    this.sectionsContainer.hidden = !multi;
-    this.sectionTextareas ||= new Map();
-    this.sectionTextareas.clear();
-    if (!multi) {
-      this.promptTextarea = this.singlePromptTextarea;
-      this.sectionsContainer.replaceChildren();
+  sectionTranslationPreview(section) {
+    if (!section) return "";
+    if (section.mode === "prose") {
+      return cleanTranslation(section.translation);
+    }
+    const direct = cleanTranslation(section.translation);
+    if (direct) return direct;
+    return (section.tags || [])
+      .filter((tag) => tag.enabled !== false)
+      .map((tag) => cleanTranslation(tag.translation))
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  setAllSectionsEnabled(enabled) {
+    if (!Array.isArray(this.sections)) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    for (const section of this.sections) section.enabled = Boolean(enabled);
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  setActiveSectionMode(mode) {
+    const active = this.activeSection();
+    if (!active) return;
+    const nextMode = mode === "prose" ? "prose" : "tags";
+    if (active.mode === nextMode) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    if (nextMode === "prose") {
+      active.proseText = serializeStructuredSectionBody(active.tags, null, {
+        trailingSeparator: active.trailingSeparator,
+      });
+      const joinedJa = this.sectionTranslationPreview(active);
+      if (joinedJa) {
+        active.translation = joinedJa;
+        active.translatedTo = this.settings.localLanguage;
+      }
+      active.mode = "prose";
+    } else {
+      const parsed = parsePrompt(active.proseText || "", (active.tags || []).filter((tag) => tag.enabled !== false));
+      active.tags = tagsWithoutTrailingPlaceholder(parsed);
+      active.trailingSeparator = parsed.trailingSeparator;
+      active.mode = "tags";
+    }
+    this.dirtySectionIds?.delete(active.id);
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  handleProseOrigInput() {
+    const active = this.activeSection();
+    if (!active || active.mode !== "prose" || !this.proseOrigTextarea) return;
+    const text = this.proseOrigTextarea.value;
+    active.proseText = text;
+    active.tags = text.trim()
+      ? [createTag(text.trim(), { translation: active.translation, translatedTo: active.translatedTo })]
+      : [];
+    const card = this.sectionsContainer?.querySelector(`[data-section-id="${active.id}"]`);
+    const origEl = card?.querySelector(".paio-section-orig-line");
+    if (origEl) origEl.textContent = text.trim() || t("（空 — 右ペインで入力）");
+    this.syncToWidgets();
+  }
+
+  handleProseJaInput() {
+    const active = this.activeSection();
+    if (!active || !this.proseJaTextarea) return;
+    active.translation = this.proseJaTextarea.value;
+    active.translatedTo = active.translation.trim() ? this.settings.localLanguage : "";
+    const card = this.sectionsContainer?.querySelector(`[data-section-id="${active.id}"]`);
+    const jaEl = card?.querySelector(".paio-section-ja-line");
+    if (jaEl) {
+      const ja = cleanTranslation(active.translation);
+      jaEl.textContent = ja ? t("訳: {text}", { text: ja }) : "";
+      jaEl.hidden = !ja || this.settings.showSectionTranslationsInList === false;
+    }
+    this.persist();
+  }
+
+  async translateSectionToLocal(sectionId) {
+    const section = this.sections?.find((s) => s.id === sectionId) || this.activeSection();
+    if (!section) return;
+    if (section.mode === "prose") {
+      await this.translateProseSections([section], this.settings.localLanguage, false);
       return;
     }
+    if (this.activeSectionId !== section.id) this.selectSection(section.id);
+    const indexes = section.tags.map((_t, i) => i);
+    await this.translateIndexes(indexes, this.settings.localLanguage);
+  }
+
+  async translateAllSectionsToLocal() {
+    if (!Array.isArray(this.sections) || !this.sections.length) return;
+    this.commitPromptBeforeAction();
+    const proseSecs = this.sections.filter((s) => s.mode === "prose" && (s.proseText || "").trim());
+    if (proseSecs.length) {
+      await this.translateProseSections(proseSecs, this.settings.localLanguage, false);
+    }
+    const tagSecs = this.sections.filter((s) => s.mode !== "prose" && s.tags?.length);
+    if (tagSecs.length) {
+      const generation = this.translationGeneration;
+      const items = tagSecs.flatMap((sec) => sec.tags.map((tag) => ({ sec, tag, text: translatableTagText(tag.value) })))
+        .filter((item) => item.text && !containsJapaneseText(item.text));
+      if (items.length) {
+        this.setStatus(t("{count}件のタグを日本語訳中…", { count: items.length }));
+        const results = await translateTags(this.api, items.map((i) => i.text), {
+          provider: this.settings.translationProvider,
+          source: "auto",
+          target: this.settings.localLanguage,
+          catalog: this.settings.libraryFile,
+          timeoutMs: translationBatchTimeoutMs(items.length),
+          isCancelled: () => this.disposed || generation !== this.translationGeneration,
+        });
+        items.forEach((item, idx) => {
+          const tr = cleanTranslation(results[idx]?.translated);
+          if (tr) {
+            item.tag.translation = tr;
+            item.tag.translatedTo = this.settings.localLanguage;
+          }
+        });
+      }
+      this.syncToWidgets();
+      this.render();
+    }
+    this.setStatus(t("全ブロックの日本語訳を更新しました"));
+  }
+
+  async translateSectionJaToOriginal(sectionId) {
+    const section = this.sections?.find((s) => s.id === sectionId) || this.activeSection();
+    if (!section) return;
+    if (section.mode === "prose") {
+      if (!cleanTranslation(section.translation)) {
+        this.setStatus(t("日本語訳欄に入力してから実行してください"), true);
+        return;
+      }
+      await this.translateProseSections([section], "en", true);
+      return;
+    }
+    if (this.activeSectionId !== section.id) this.selectSection(section.id);
+    await this.translatePrompt();
+  }
+
+  async translateProseSections(targetSections, targetLang, fromTranslationField) {
+    const pairs = targetSections
+      .map((sec) => ({
+        sec,
+        sourceText: fromTranslationField ? String(sec.translation || "").trim() : String(sec.proseText || "").trim(),
+      }))
+      .filter((pair) => pair.sourceText);
+    if (!pairs.length) {
+      this.setStatus(t("翻訳対象のテキストがありません"));
+      return;
+    }
+    const provider = this.settings.translationProvider === "offline" ? "local" : (this.settings.translationProvider || "local");
+    this.setStatus(t("{count}ブロックを翻訳中…", { count: pairs.length }));
+    try {
+      const results = await translateTags(this.api, pairs.map((p) => p.sourceText), {
+        provider,
+        source: "auto",
+        target: targetLang,
+        catalog: this.settings.libraryFile,
+        timeoutMs: translationBatchTimeoutMs(pairs.length * 4),
+      });
+      this.pushUndo();
+      let updated = 0;
+      pairs.forEach(({ sec }, idx) => {
+        const translated = cleanTranslation(results[idx]?.translated);
+        if (!translated) return;
+        updated += 1;
+        if (fromTranslationField) {
+          sec.proseText = translated;
+          sec.tags = [createTag(translated, { translation: sec.translation, translatedTo: this.settings.localLanguage })];
+        } else {
+          sec.translation = translated;
+          sec.translatedTo = targetLang;
+        }
+      });
+      this.syncToWidgets();
+      this.render();
+      this.setStatus(updated
+        ? t("{count}ブロックを翻訳しました", { count: updated })
+        : t("翻訳結果を取得できませんでした（プロバイダー設定を確認してください）"), updated === 0);
+    } catch (error) {
+      this.setStatus(t("翻訳に失敗しました: {error}", { error: error.message }), true);
+    }
+  }
+
+  async copyLlmTranslationPrompt() {
+    this.commitPromptBeforeAction();
+    const body = (this.sections || []).map((section, idx) => {
+      const heading = section.title || `【セクション${idx + 1}】`;
+      const text = section.mode === "prose"
+        ? (section.proseText || "")
+        : serializeStructuredSectionBody(section.tags, null, { trailingSeparator: section.trailingSeparator });
+      return `${heading}\n${text}`;
+    }).join("\n\n");
+    const promptTxt = `以下の各見出し（【】や[]）をそのまま保持して、自然で正確な日本語へ翻訳して返してください:\n\n${body}`;
+    await copyText(promptTxt);
+    this.setStatus(t("外部AI用の見出し保持翻訳プロンプトをコピーしました"));
+  }
+
+  applyLlmPastedTranslations(rawText) {
+    const raw = String(rawText || "").trim();
+    if (!raw) return;
+    const parsed = parseStructuredPrompt(raw, []);
+    let matchedCount = 0;
+    this.pushUndo();
+    for (const parsedSec of parsed.sections) {
+      const title = String(parsedSec.title || "").trim();
+      const body = serializeStructuredSectionBody(parsedSec.tags, null, { trailingSeparator: false }).trim();
+      if (!title || !body) continue;
+      const target = this.sections.find((sec) => sec.title === title);
+      if (!target) continue;
+      target.translation = body;
+      target.translatedTo = this.settings.localLanguage;
+      matchedCount += 1;
+    }
+    this.persist();
+    this.rebuildSectionViews();
+    this.render();
+    this.setStatus(matchedCount
+      ? t("{count}ブロックの日本語訳へ反映しました", { count: matchedCount })
+      : t("一致する【見出し】が見つかりませんでした"), matchedCount === 0);
+  }
+
+  rebuildSectionViews() {
+    if (!this.promptSingleContainer || !this.sectionsContainer) return;
+    this.promptSingleContainer.hidden = true;
+    this.sectionsContainer.hidden = false;
+    this.sectionTextareas ||= new Map();
+    this.sectionTextareas.clear();
     const cards = this.sections.map((section, index) => {
+      const isActive = section.id === this.activeSectionId;
       const card = element("section", { className: "paio-section-card" });
       card.dataset.sectionId = section.id;
+      card.addEventListener("click", () => this.selectSection(section.id));
 
-      const enabledCheck = element("input", { type: "checkbox" });
-      enabledCheck.checked = section.enabled !== false;
-      enabledCheck.title = t("出力に含める");
-      enabledCheck.setAttribute("aria-label", t("セクションを出力に含める"));
-      enabledCheck.addEventListener("click", (event) => event.stopPropagation());
-      enabledCheck.addEventListener("change", () => {
+      const switchBtn = button("", (event) => {
+        event.stopPropagation();
         this.commitPromptBeforeAction();
         this.pushUndo();
-        section.enabled = enabledCheck.checked;
+        section.enabled = section.enabled === false;
         this.syncToWidgets();
         this.render();
-      });
-
-      const collapseBtn = button(section.collapsed ? "▸" : "▾", (event) => {
-        event.stopPropagation();
-        section.collapsed = !section.collapsed;
-        this.persist();
-        this.rebuildSectionViews();
-        this.render();
-      }, t("セクションを折りたたむ / 展開"));
-      collapseBtn.classList.add("paio-section-collapse");
+      }, t("クリックで出力 ON/OFF を切替"));
+      switchBtn.className = `paio-switch-btn ${section.enabled !== false ? "is-on" : ""}`;
+      switchBtn.replaceChildren(
+        element("span", { className: "paio-switch-dot" }),
+        element("span", { text: section.enabled !== false ? "ON" : "OFF" }),
+      );
 
       const titleInput = element("input", { className: "paio-section-title-input" });
       titleInput.type = "text";
       titleInput.value = section.title || "";
-      titleInput.placeholder = t("見出し（選択または手入力）");
+      titleInput.placeholder = t("見出し（任意）");
       titleInput.setAttribute("aria-label", t("セクション見出し"));
       if (this.sectionTitleDatalistId) titleInput.setAttribute("list", this.sectionTitleDatalistId);
       titleInput.addEventListener("focus", () => this.selectSection(section.id));
@@ -3523,6 +4006,11 @@ export class PromptEditor {
         this.render();
       });
 
+      const modeBadge = element("span", {
+        className: `paio-section-mode-badge ${section.mode === "prose" ? "is-prose" : "is-tags"}`,
+        text: section.mode === "prose" ? t("散文") : t("タグ"),
+      });
+
       const roleBtn = button(section.role === "negative" ? "Neg" : "Pos", (event) => {
         event.stopPropagation();
         this.commitPromptBeforeAction();
@@ -3533,7 +4021,6 @@ export class PromptEditor {
       }, t("クリックで Positive / Negative を切替"));
       roleBtn.classList.add("paio-section-role");
 
-      const meta = element("span", { className: "paio-section-meta" });
       const upBtn = button("↑", (event) => { event.stopPropagation(); this.moveSection(section.id, -1); }, t("上へ移動"));
       const downBtn = button("↓", (event) => { event.stopPropagation(); this.moveSection(section.id, 1); }, t("下へ移動"));
       const delBtn = button("×", (event) => { event.stopPropagation(); this.removeSection(section.id); }, t("セクションを削除"));
@@ -3542,45 +4029,71 @@ export class PromptEditor {
       delBtn.disabled = this.sections.length <= 1;
 
       const header = element("div", { className: "paio-section-card-header" }, [
-        enabledCheck,
-        collapseBtn,
+        switchBtn,
         titleInput,
         titlePicker,
+        modeBadge,
         roleBtn,
-        meta,
         upBtn,
         downBtn,
         delBtn,
       ]);
-      header.addEventListener("click", () => this.selectSection(section.id));
       card.append(header);
 
-      const textarea = element("textarea", { className: "paio-prompt-textarea paio-section-textarea" });
-      textarea.rows = 3;
-      textarea.value = this.promptEditorValue(section);
-      textarea.placeholder = t("このセクションのプロンプトを入力");
-      textarea.addEventListener("focus", () => this.selectSection(section.id));
-      textarea.addEventListener("input", () => {
-        this.dirtySectionIds.add(section.id);
-        this.renderSyncState();
-      });
-      textarea.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-          event.preventDefault();
-          this.applyPromptText(section.id);
-        }
-      });
-      attachTagSuggestions(textarea, { api: this.api, language: () => this.settings.localLanguage });
-      this.sectionTextareas.set(section.id, textarea);
+      const jaPreviewText = this.sectionTranslationPreview(section);
+      const showJa = this.settings.showSectionTranslationsInList !== false;
 
-      const applyBtn = button(t("タグへ反映"), () => this.applyPromptText(section.id), t("本文を解析してタグへ反映（Ctrl+Enter）"));
-      applyBtn.classList.add("paio-section-apply");
-      const body = element("div", { className: "paio-section-card-body" }, [
-        textarea,
-        element("div", { className: "paio-prompt-actions" }, [applyBtn]),
-      ]);
-      body.hidden = Boolean(section.collapsed);
-      card.append(body);
+      if (isActive && section.mode !== "prose" && !section.collapsed) {
+        const textarea = element("textarea", { className: "paio-prompt-textarea paio-section-textarea" });
+        textarea.rows = 3;
+        textarea.value = this.promptEditorValue(section);
+        textarea.placeholder = t("このセクションのタグを入力（例: 1girl, solo）");
+        textarea.addEventListener("focus", () => this.selectSection(section.id));
+        textarea.addEventListener("click", (event) => event.stopPropagation());
+        textarea.addEventListener("input", () => {
+          this.dirtySectionIds.add(section.id);
+          this.renderSyncState();
+        });
+        textarea.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+            this.applyPromptText(section.id);
+          }
+        });
+        attachTagSuggestions(textarea, { api: this.api, language: () => this.settings.localLanguage });
+        this.sectionTextareas.set(section.id, textarea);
+
+        const applyBtn = button(t("タグへ反映"), (event) => {
+          event.stopPropagation();
+          this.applyPromptText(section.id);
+        }, t("本文を解析してタグへ反映（Ctrl+Enter）"));
+        applyBtn.classList.add("paio-section-apply");
+        const jaLine = element("div", {
+          className: "paio-section-ja-line",
+          text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
+        });
+        jaLine.hidden = !showJa || !jaPreviewText;
+        const body = element("div", { className: "paio-section-card-body" }, [
+          textarea,
+          element("div", { className: "paio-prompt-actions" }, [applyBtn]),
+          jaLine,
+        ]);
+        card.append(body);
+      } else {
+        const origText = section.mode === "prose"
+          ? String(section.proseText || "").trim()
+          : this.promptEditorValue(section).trim();
+        const origLine = element("div", {
+          className: "paio-section-orig-line",
+          text: origText || t("（空 — クリックして編集）"),
+        });
+        const jaLine = element("div", {
+          className: "paio-section-ja-line",
+          text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
+        });
+        jaLine.hidden = !showJa || !jaPreviewText;
+        card.append(element("div", { className: "paio-section-summary" }, [origLine, jaLine]));
+      }
       return card;
     });
     this.sectionsContainer.replaceChildren(...cards);
@@ -3694,7 +4207,15 @@ export class PromptEditor {
 
   render() {
     this.applyCustomColors();
-    if (Array.isArray(this.sections) && this.sectionsContainer && this.isMultiSectionView()) {
+    if (Array.isArray(this.sections) && this.sectionsContainer) {
+      const enabledSections = this.sections.filter((section) => section.enabled !== false).length;
+      if (this.sectionCountLabel) {
+        this.sectionCountLabel.textContent = t("{enabled}/{total} 有効", {
+          enabled: enabledSections,
+          total: this.sections.length,
+        });
+      }
+      const showJa = this.settings.showSectionTranslationsInList !== false;
       for (const section of this.sections) {
         const textarea = this.sectionTextareas?.get(section.id);
         if (textarea && !this.dirtySectionIds?.has(section.id)) {
@@ -3705,17 +4226,36 @@ export class PromptEditor {
           card.classList.toggle("is-active", section.id === this.activeSectionId);
           card.classList.toggle("is-disabled", section.enabled === false);
           card.classList.toggle("is-negative", section.role === "negative");
+          const switchBtn = card.querySelector(".paio-switch-btn");
+          if (switchBtn) {
+            const on = section.enabled !== false;
+            switchBtn.classList.toggle("is-on", on);
+            const labelEl = switchBtn.querySelector("span:last-child");
+            if (labelEl) labelEl.textContent = on ? "ON" : "OFF";
+          }
+          const modeBadge = card.querySelector(".paio-section-mode-badge");
+          if (modeBadge) {
+            modeBadge.classList.toggle("is-prose", section.mode === "prose");
+            modeBadge.classList.toggle("is-tags", section.mode !== "prose");
+            modeBadge.textContent = section.mode === "prose" ? t("散文") : t("タグ");
+          }
           const roleBtn = card.querySelector(".paio-section-role");
           if (roleBtn) {
             roleBtn.textContent = section.role === "negative" ? "Neg" : "Pos";
             roleBtn.classList.toggle("is-negative", section.role === "negative");
           }
-          const meta = card.querySelector(".paio-section-meta");
-          if (meta) {
-            const enabledTags = section.tags.filter((tag) => tag.enabled !== false).length;
-            meta.textContent = enabledTags === section.tags.length
-              ? t("{total}タグ", { total: section.tags.length })
-              : t("{enabled}/{total}タグ", { enabled: enabledTags, total: section.tags.length });
+          const origLine = card.querySelector(".paio-section-orig-line");
+          if (origLine) {
+            const origText = section.mode === "prose"
+              ? String(section.proseText || "").trim()
+              : this.promptEditorValue(section).trim();
+            origLine.textContent = origText || t("（空 — クリックして編集）");
+          }
+          const jaLine = card.querySelector(".paio-section-ja-line");
+          if (jaLine) {
+            const jaText = this.sectionTranslationPreview(section);
+            jaLine.textContent = jaText ? t("訳: {text}", { text: jaText }) : "";
+            jaLine.hidden = !showJa || !jaText;
           }
         }
       }
@@ -3723,6 +4263,31 @@ export class PromptEditor {
     } else if (!this.promptDirty && this.promptTextarea) {
       this.promptTextarea.value = this.promptEditorValue();
     }
+
+    const active = this.activeSection();
+    if (this.activeSectionTitleLabel && active) {
+      const idx = Math.max(0, (this.sections || []).indexOf(active));
+      const label = active.title || t("セクション {index}", { index: idx + 1 });
+      const roleTag = active.role === "negative" ? "Negative" : "Positive";
+      this.activeSectionTitleLabel.textContent = t("編集中: {section}（{role}）", { section: label, role: roleTag });
+    }
+    const activeMode = active?.mode === "prose" ? "prose" : "tags";
+    for (const [modeVal, btn] of this.sectionModeButtons || []) {
+      const isSelected = modeVal === activeMode;
+      btn.classList.toggle("is-active", isSelected);
+      btn.setAttribute("aria-pressed", String(isSelected));
+    }
+    if (this.proseWorkspace) this.proseWorkspace.hidden = activeMode !== "prose";
+    if (this.tagsWorkspace) this.tagsWorkspace.hidden = activeMode === "prose";
+    if (activeMode === "prose" && active) {
+      if (this.proseOrigTextarea && document.activeElement !== this.proseOrigTextarea) {
+        this.proseOrigTextarea.value = active.proseText || "";
+      }
+      if (this.proseJaTextarea && document.activeElement !== this.proseJaTextarea) {
+        this.proseJaTextarea.value = active.translation || "";
+      }
+    }
+
     this.renderSectionToolbar();
     this.renderSectionHeaderSummary();
     this.renderSyncState();
@@ -3925,7 +4490,9 @@ export class PromptEditor {
         this.renderTags();
       }));
     }
-    this.scheduleTagDbCheck();
+    if (this.activeSection()?.mode !== "prose") {
+      this.scheduleTagDbCheck();
+    }
   }
 
   scheduleTagDbCheck() {
@@ -3995,7 +4562,13 @@ export class PromptEditor {
     const preferred = tagDbState?.state === "alias" ? tagDbState.preferred : "";
     if (preferred) notices.push(t("別名です。推奨: {tag}", { tag: preferred }));
     const tagDbNote = tagDbState?.state === "unknown" ? t("タグDBに未登録") : "";
-    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択、Shift/Ctrl+クリック: 複数選択")].filter(Boolean).join("\n");
+    const enableCheck = element("input", { type: "checkbox", className: "paio-tag-enable-cb" });
+    enableCheck.checked = tag.enabled !== false;
+    enableCheck.title = t("チェックで有効/無効を切替");
+    enableCheck.setAttribute("aria-label", t("{tag} を有効にする", { tag: primaryText }));
+    enableCheck.addEventListener("pointerdown", (event) => event.stopPropagation());
+    enableCheck.addEventListener("click", (event) => event.stopPropagation());
+    enableCheck.addEventListener("change", () => this.toggleOne(index));
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
@@ -4012,7 +4585,9 @@ export class PromptEditor {
       this.replaceWithPreferredTag(index, preferred);
     }, t("{tag} に置き換える", { tag: preferred })) : null;
     preferredButton?.classList.add("paio-tag-preferred");
-    appendPresentChildren(row, selectMark, stateMark, content, preferredButton, warning);
+    appendPresentChildren(row, enableCheck, selectMark, stateMark, content, preferredButton, warning);
+
+    row.title = [translation, ...notices, tagDbNote, t("左チェック: 有効/無効、クリック: 選択、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択")].filter(Boolean).join("\n");
 
     row.addEventListener("click", (event) => {
       if (this.didDrag || this.didMarqueeDrag) {
@@ -4020,13 +4595,8 @@ export class PromptEditor {
         this.didMarqueeDrag = false;
         return;
       }
-      if (event.shiftKey || event.ctrlKey || event.metaKey) {
-        clearTimeout(this.clickTimer);
-        this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
-        return;
-      }
       clearTimeout(this.clickTimer);
-      this.clickTimer = window.setTimeout(() => this.toggleOne(index), TAG_SINGLE_CLICK_DELAY_MS);
+      this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
     });
     row.addEventListener("dblclick", (event) => {
       event.preventDefault();
@@ -4343,6 +4913,38 @@ export class PromptEditor {
 
   addValues(values, options = {}) {
     this.commitPromptBeforeAction();
+    const active = this.activeSection?.();
+    if (active && active.mode === "prose") {
+      const additions = [];
+      const jaAdditions = [];
+      for (const raw of values) {
+        const descriptor = raw && typeof raw === "object" ? raw : { value: raw };
+        const value = String(descriptor.value || "").trim();
+        if (!value) continue;
+        additions.push(value);
+        const ja = cleanTranslation(descriptor.translation);
+        if (ja) jaAdditions.push(ja);
+      }
+      if (additions.length) {
+        const cur = String(active.proseText || "").trim();
+        const joined = additions.join(", ");
+        active.proseText = !cur
+          ? joined
+          : (/[。；.!?\n]$/u.test(cur) ? `${cur} ${joined}` : `${cur}；${joined}`);
+        if (jaAdditions.length) {
+          const curJa = cleanTranslation(active.translation);
+          active.translation = curJa ? `${curJa} / ${jaAdditions.join(" / ")}` : jaAdditions.join(" / ");
+          active.translatedTo = this.settings.localLanguage;
+        }
+        active.tags = [createTag(active.proseText, {
+          translation: active.translation,
+          translatedTo: active.translatedTo,
+        })];
+        this.syncToWidgets();
+        this.render();
+      }
+      return;
+    }
     const target = this.tags;
     for (const raw of values) {
       const descriptor = raw && typeof raw === "object" ? raw : { value: raw };

@@ -385,6 +385,10 @@ export function createSection(overrides = {}) {
     id: String(overrides.id || `sec-${nextSectionId++}`),
     title: String(overrides.title || "").trim(),
     role: overrides.role === "negative" ? "negative" : "positive",
+    mode: overrides.mode === "prose" ? "prose" : "tags",
+    proseText: String(overrides.proseText || ""),
+    translation: String(overrides.translation || ""),
+    translatedTo: String(overrides.translatedTo || ""),
     enabled: overrides.enabled !== false,
     collapsed: Boolean(overrides.collapsed),
     trailingSeparator: Boolean(overrides.trailingSeparator),
@@ -531,7 +535,57 @@ function splitInlineBracketSections(text) {
   return sections;
 }
 
+function parseJsonPromptObject(text) {
+  const trimmed = String(text ?? "").trim();
+  if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) return null;
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+    const entries = Object.entries(parsed);
+    if (!entries.length) return null;
+    return entries;
+  } catch {
+    return null;
+  }
+}
+
+function inferProseMode(body) {
+  const text = String(body || "").trim();
+  if (!text) return false;
+  const commaCount = (text.match(/[,，、]/gu) || []).length;
+  return /[。；.!?]\s*/u.test(text) && commaCount <= 2;
+}
+
 export function parseStructuredPrompt(text, previousSections = []) {
+  const jsonEntries = parseJsonPromptObject(text);
+  if (jsonEntries) {
+    const reusableByTitle = new Map();
+    for (const oldSection of previousSections || []) {
+      const key = String(oldSection?.title || "");
+      if (!reusableByTitle.has(key)) reusableByTitle.set(key, []);
+      reusableByTitle.get(key).push(oldSection);
+    }
+    const errors = [];
+    const sections = jsonEntries.map(([rawKey, rawVal]) => {
+      const title = String(rawKey || "").trim();
+      const body = typeof rawVal === "string" ? rawVal.trim() : JSON.stringify(rawVal, null, 2);
+      const reused = reusableByTitle.get(title)?.shift();
+      const parsed = parsePrompt(body, (reused?.tags || []).filter((tag) => tag.enabled !== false));
+      errors.push(...parsed.errors);
+      const mode = reused?.mode || (inferProseMode(body) ? "prose" : "tags");
+      return createSection({
+        ...(reused || {}),
+        title,
+        role: reused?.role || inferSectionRole(title),
+        mode,
+        proseText: mode === "prose" ? body : String(reused?.proseText || ""),
+        trailingSeparator: parsed.trailingSeparator,
+        tags: parsed.tags.filter((tag) => String(tag?.value || "").trim()),
+      });
+    });
+    return { wrapBraces: false, sections, errors, isJson: true };
+  }
+
   const { inner, wrapBraces } = unwrapOuterBraces(text);
   const lines = String(inner ?? "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   const candidateHeaders = lines.filter((line) => matchSectionHeaderLine(line, true)).length;
@@ -604,12 +658,21 @@ export function parseStructuredPrompt(text, previousSections = []) {
 export function looksLikeStructuredPrompt(text) {
   const input = String(text ?? "").trim();
   if (!input) return false;
+  if (parseJsonPromptObject(input)) return true;
   const { wrapBraces, sections } = parseStructuredPrompt(input);
   const headedCount = sections.filter((section) => Boolean(section.title)).length;
   const headedWithBody = sections.filter((section) => Boolean(section.title) && section.tags.length > 0).length;
   return (wrapBraces && headedCount >= 1)
     || headedCount >= 2
     || (sections.length === 1 && headedWithBody === 1 && /\n/.test(input));
+}
+
+export function serializeSectionProseBody(section, outputLanguage = null, options = {}) {
+  const raw = String(section?.proseText ?? "").trim();
+  if (outputLanguage && section?.translatedTo === outputLanguage && String(section?.translation || "").trim()) {
+    return String(section.translation).trim();
+  }
+  return options.replaceUnderscores ? raw.replace(/_/gu, " ") : raw;
 }
 
 export function serializeStructuredSectionBody(tags, outputLanguage = null, options = {}) {
@@ -653,7 +716,13 @@ export function serializeStructuredSectionBody(tags, outputLanguage = null, opti
 
 export function serializeSectionEditorText(section, outputFormat = "tags") {
   if (!section) return "";
-  if (outputFormat === "structured") {
+  if (section.mode === "prose") {
+    return String(section.proseText || "")
+      || serializeStructuredSectionBody(section.tags, null, {
+        trailingSeparator: section.trailingSeparator,
+      });
+  }
+  if (outputFormat === "structured" || outputFormat === "json") {
     return serializeStructuredSectionBody(section.tags, null, {
       trailingSeparator: section.trailingSeparator,
     });
@@ -663,40 +732,84 @@ export function serializeSectionEditorText(section, outputFormat = "tags") {
   });
 }
 
+function stripSectionBrackets(title, fallback = "section") {
+  const cleaned = String(title || "")
+    .replace(/^(?:[【［\[]+|#{2,6}\s+)/u, "")
+    .replace(/[】］\]:：]+$/u, "")
+    .trim();
+  return cleaned || fallback;
+}
+
 export function buildStructuredOutputs(sections, options = {}) {
-  const outputFormat = options.outputFormat === "structured" ? "structured" : "tags";
+  const outputFormat = ["structured", "json"].includes(options.outputFormat) ? options.outputFormat : "tags";
   const outputLanguage = options.outputLanguage || "en";
   const replaceUnderscores = Boolean(options.replaceUnderscores);
   const wrapBraces = Boolean(options.wrapBraces);
   const includeNegativeInPrompt = Boolean(options.includeNegativeInPrompt);
   const enabledSections = (sections || []).filter((section) => section && section.enabled !== false);
 
-  if (outputFormat !== "structured") {
-    const positiveTags = enabledSections
-      .filter((section) => section.role !== "negative" || includeNegativeInPrompt)
-      .flatMap((section) => section.tags || []);
-    const negativeTags = enabledSections
-      .filter((section) => section.role === "negative")
-      .flatMap((section) => section.tags || []);
+  const sectionBody = (section, structuredBody = true) => {
+    if (section.mode === "prose") {
+      return serializeSectionProseBody(section, outputLanguage, { replaceUnderscores });
+    }
+    if (structuredBody) {
+      return serializeStructuredSectionBody(section.tags, outputLanguage, {
+        replaceUnderscores,
+        trailingSeparator: section.trailingSeparator,
+      });
+    }
+    return outputPrompt(section.tags, outputLanguage, {
+      trailingSeparator: false,
+      stripLineBreaks: true,
+      replaceUnderscores,
+    });
+  };
+
+  if (outputFormat === "tags") {
+    const posSections = enabledSections.filter((section) => section.role !== "negative" || includeNegativeInPrompt);
+    const negSections = enabledSections.filter((section) => section.role === "negative");
+    const joinSide = (list) => {
+      const hasProse = list.some((s) => s.mode === "prose");
+      if (!hasProse) {
+        return outputPrompt(
+          list.flatMap((s) => s.tags || []),
+          outputLanguage,
+          { trailingSeparator: true, stripLineBreaks: true, replaceUnderscores },
+        );
+      }
+      const chunks = list.map((s) => sectionBody(s, false)).filter(Boolean);
+      return chunks.join(", ");
+    };
     return {
-      prompt: outputPrompt(positiveTags, outputLanguage, {
-        trailingSeparator: true,
-        stripLineBreaks: true,
-        replaceUnderscores,
-      }),
-      negative: outputPrompt(negativeTags, outputLanguage, {
-        trailingSeparator: true,
-        stripLineBreaks: true,
-        replaceUnderscores,
-      }),
+      prompt: joinSide(posSections),
+      negative: joinSide(negSections),
+    };
+  }
+
+  if (outputFormat === "json") {
+    const toJsonText = (list) => {
+      const obj = {};
+      list.forEach((section, idx) => {
+        const body = sectionBody(section, true);
+        if (!body) return;
+        let key = stripSectionBrackets(section.title, `section_${idx + 1}`);
+        if (Object.hasOwn(obj, key)) key = `${key}_${idx + 1}`;
+        obj[key] = body;
+      });
+      return Object.keys(obj).length ? JSON.stringify(obj, null, 2) : "";
+    };
+    const posList = enabledSections.filter((s) => s.role !== "negative" || includeNegativeInPrompt);
+    const negList = enabledSections.filter((s) => s.role === "negative");
+    return {
+      prompt: toJsonText(posList),
+      negative: negList.length === 1 && !negList[0].title
+        ? sectionBody(negList[0], true)
+        : (negList.map((s) => sectionBody(s, true)).filter(Boolean).join("\n\n")),
     };
   }
 
   const formatBlock = (section, includeTitle = true) => {
-    const body = serializeStructuredSectionBody(section.tags, outputLanguage, {
-      replaceUnderscores,
-      trailingSeparator: section.trailingSeparator,
-    });
+    const body = sectionBody(section, true);
     if (!body) return "";
     return includeTitle && section.title ? `${section.title}\n${body}` : body;
   };

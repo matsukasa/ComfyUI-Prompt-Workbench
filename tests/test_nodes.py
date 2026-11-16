@@ -26,6 +26,17 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertEqual(prompt, raw_prompt)
         self.assertEqual(negative, raw_neg)
 
+    def test_json_mode_preserves_json_formatting(self):
+        node = PromptWorkbench()
+        raw_json = '{\n  "shot": "50mm close-up"\n}'
+        prompt, negative = node.emit_prompt(
+            prompt=raw_json,
+            negative="lowres",
+            output_format="json",
+        )
+        self.assertEqual(prompt, raw_json)
+        self.assertEqual(negative, "lowres")
+
     def test_normalize_helpers_handle_empty_and_crlf(self):
         self.assertEqual(normalize_output_prompt(None), "")
         self.assertEqual(normalize_structured_prompt("a  \r\n\r\nb \r\n"), "a\n\nb")

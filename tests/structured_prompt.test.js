@@ -256,3 +256,67 @@ test("PromptEditor multi-section state supports active-section tag additions, au
   assert.ok(fresh.sections.some((section) => section.tags.some((tag) => tag.value === "keep_me")));
   assert.ok(fresh.sections.some((section) => section.title === "【プロンプト】"));
 });
+
+test("Pattern G prose mode, JSON output/parsing, and LLM clipboard translation round-trip", () => {
+  const jsonInput = JSON.stringify({
+    shot: "Medium close-up, 50mm lens.",
+    subject: "1girl, silver_hair, white_dress",
+    negative: "worst quality, extra fingers",
+  }, null, 2);
+  assert.equal(looksLikeStructuredPrompt(jsonInput), true);
+
+  const parsedJson = parseStructuredPrompt(jsonInput);
+  assert.equal(parsedJson.isJson, true);
+  assert.equal(parsedJson.sections.length, 3);
+  assert.equal(parsedJson.sections[0].mode, "prose");
+  assert.equal(parsedJson.sections[0].proseText, "Medium close-up, 50mm lens.");
+  assert.equal(parsedJson.sections[1].mode, "tags");
+  assert.equal(parsedJson.sections[2].role, "negative");
+
+  const jsonOut = buildStructuredOutputs(parsedJson.sections, { outputFormat: "json" });
+  const roundTripped = JSON.parse(jsonOut.prompt);
+  assert.deepEqual(roundTripped, {
+    shot: "Medium close-up, 50mm lens.",
+    subject: "1girl, silver_hair, white_dress",
+  });
+  assert.equal(jsonOut.negative, "worst quality, extra fingers");
+
+  const noop = () => {};
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [
+      createSection({ id: "sec-1", title: "【构图】", mode: "prose", proseText: "Eye-level 50mm portrait." }),
+      createSection({ id: "sec-2", title: "【主体】", mode: "tags", tags: [createTag("1girl"), createTag("white_dress")] }),
+    ],
+    activeSectionId: "sec-2",
+    outputFormat: "structured",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    dirtySectionIds: new Set(),
+    sectionTextareas: new Map(),
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { properties: {}, widgets: [], graph: { setDirtyCanvas: noop } },
+    widgets: { prompt: { value: "" }, negative: { value: "" }, outputFormat: { value: "structured" } },
+    undoStack: [],
+    redoStack: [],
+    translationGeneration: 0,
+    applyCustomColors: noop,
+    renderTranslationControls: noop,
+    renderBulk: noop,
+    renderTags: noop,
+    rebuildControls: noop,
+    rebuildSectionViews: noop,
+    setStatus: noop,
+  });
+
+  // Switch active tag section to prose and append a prose phrase without trailing comma mangling.
+  editor.setActiveSectionMode("prose");
+  assert.equal(editor.sections[1].mode, "prose");
+  assert.equal(editor.sections[1].proseText, "1girl, white_dress");
+  editor.addValues([{ value: "soft key light", translation: "柔らかいキーライト" }]);
+  assert.equal(editor.sections[1].proseText, "1girl, white_dress；soft key light");
+
+  // Apply pasted LLM header-preserved translations into sections.
+  editor.applyLlmPastedTranslations("【构图】\nアイレベル50mmポートレート\n\n【主体】\n女の子・白いドレス");
+  assert.equal(editor.sections[0].translation, "アイレベル50mmポートレート");
+  assert.equal(editor.sections[1].translation, "女の子・白いドレス");
+});
