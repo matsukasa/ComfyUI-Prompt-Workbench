@@ -43,6 +43,13 @@ export const SECTION_HEADING_GROUPS = Object.freeze([
     id: "en",
     label: "English",
     items: [
+      "[Task & Style]",
+      "[Composition & Camera]",
+      "[Scene & Props]",
+      "[Subject & Pose]",
+      "[Color & Lighting]",
+      "[Texture & Quality]",
+      "[Optional Negative]",
       "【Task & Style】",
       "【Composition & Camera】",
       "【Scene & Props】",
@@ -391,13 +398,21 @@ export function inferSectionRole(title) {
   return /负面|負面|ネガティブ|negative|\bneg\b|反向|逆向|排除/iu.test(text) ? "negative" : "positive";
 }
 
+function isSquareSectionLabel(innerText) {
+  const inner = String(innerText || "").trim();
+  if (!inner || inner.length > 120) return false;
+  if (/\|/.test(inner) || /:\s*-?\d+(?:\.\d+)?$/.test(inner)) return false;
+  // Require spaces, &, /, -, non-ASCII, or leading capital so lowercase SD tags like [cat], [dog] don't trigger.
+  return /[\s&/]|[^\x00-\x7f]|^[A-Z]/.test(inner);
+}
+
 function unwrapOuterBraces(text) {
   const trimmed = String(text ?? "").trim();
   if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
     return { inner: trimmed, wrapBraces: false };
   }
   const afterOpen = trimmed.slice(1).trimStart();
-  const hasMultilineOrHeader = /\n/.test(trimmed) || /^【[^】\n]+】/u.test(afterOpen);
+  const hasMultilineOrHeader = /\n/.test(trimmed) || /^(?:【[^】\n]+】|［[^］\n]+］|\[[^\]\n]+\])/u.test(afterOpen);
   if (!hasMultilineOrHeader) {
     return { inner: trimmed, wrapBraces: false };
   }
@@ -420,7 +435,7 @@ function unwrapOuterBraces(text) {
 function matchSectionHeaderLine(line, allowBareSquareBracket = false) {
   const trimmed = String(line || "").trim();
   if (!trimmed) return null;
-  const cornerMatch = trimmed.match(/^(【[^】\n]{1,120}】)(?:[:：]\s*(.*)|\s+(.*))?$/u);
+  const cornerMatch = trimmed.match(/^([【［][^】］\n]{1,120}[】］])(?:[:：]\s*(.*)|\s+(.*))?$/u);
   if (cornerMatch) {
     const inlineBody = (cornerMatch[2] ?? cornerMatch[3] ?? "").trim();
     if (!/^[,，、]/u.test(inlineBody)) {
@@ -431,26 +446,29 @@ function matchSectionHeaderLine(line, allowBareSquareBracket = false) {
   if (markdownMatch) {
     return { title: markdownMatch[1].trim(), inlineBody: "" };
   }
-  const squareMatch = trimmed.match(/^(\[[^\]\n]{1,120}\])([:：])?\s*(.*)$/u);
+  const squareMatch = trimmed.match(/^(\[([^\]\n]{1,120})\])(?:([:：])\s*(.*)|\s+(.*))?$/u);
   if (squareMatch) {
     const header = squareMatch[1];
-    const hasColon = Boolean(squareMatch[2]);
-    const rest = (squareMatch[3] || "").trim();
-    const looksLikeWeightOrList = /:\s*-?\d+(?:\.\d+)?\]$/u.test(header) || rest.startsWith(",");
-    if (!looksLikeWeightOrList && (hasColon || (!rest && allowBareSquareBracket))) {
+    const inner = squareMatch[2];
+    const hasColon = Boolean(squareMatch[3]);
+    const rest = (squareMatch[4] ?? squareMatch[5] ?? "").trim();
+    const looksLikeWeightOrList = /:\s*-?\d+(?:\.\d+)?\]$/u.test(header) || /\|/.test(inner) || /^[,，、]/u.test(rest);
+    const bareAllowed = allowBareSquareBracket && (!rest || isSquareSectionLabel(inner));
+    if (!looksLikeWeightOrList && (hasColon || bareAllowed)) {
       return { title: header, inlineBody: rest };
     }
   }
   return null;
 }
 
-function splitInlineCornerSections(text) {
+function splitInlineBracketSections(text) {
   const input = String(text ?? "");
-  if (!input.includes("【")) return null;
+  if (!input.includes("【") && !input.includes("［") && !input.includes("[")) return null;
   const headers = [];
   const stack = [];
   let quote = null;
   let escaped = false;
+  const closeByOpen = { "【": "】", "［": "］", "[": "]" };
 
   for (let index = 0; index < input.length; index += 1) {
     const ch = input[index];
@@ -464,6 +482,26 @@ function splitInlineCornerSections(text) {
       quote = ch;
       continue;
     }
+    if (Object.hasOwn(closeByOpen, ch) && stack.length === 0) {
+      const prevOk = index === 0 || /[\s,，、；。．]/u.test(input[index - 1]);
+      if (prevOk) {
+        const closeChar = closeByOpen[ch];
+        const closeIndex = input.indexOf(closeChar, index + 1);
+        if (closeIndex > index + 1 && closeIndex - index <= 122) {
+          const title = input.slice(index, closeIndex + 1);
+          const inner = title.slice(1, -1);
+          const validChars = !/[\n\r]/u.test(inner) && !inner.includes(ch);
+          const nextChar = input[closeIndex + 1] ?? "";
+          const nextOk = !nextChar || /[\s,，、；:：]/u.test(nextChar);
+          const headerOk = ch !== "[" || isSquareSectionLabel(inner) || nextChar === ":" || nextChar === "：";
+          if (validChars && nextOk && headerOk) {
+            headers.push({ start: index, end: closeIndex + 1, title, kind: ch });
+            index = closeIndex;
+            continue;
+          }
+        }
+      }
+    }
     if (Object.hasOwn(OPEN_TO_CLOSE, ch)) {
       stack.push(ch);
       continue;
@@ -471,19 +509,6 @@ function splitInlineCornerSections(text) {
     if (Object.hasOwn(CLOSE_TO_OPEN, ch)) {
       if (stack.at(-1) === CLOSE_TO_OPEN[ch]) stack.pop();
       continue;
-    }
-    if (ch === "【" && stack.length === 0) {
-      const prevOk = index === 0 || /[\s,，、；。．]/u.test(input[index - 1]);
-      if (!prevOk) continue;
-      const closeIndex = input.indexOf("】", index + 1);
-      if (closeIndex < 0 || closeIndex - index > 122) continue;
-      const title = input.slice(index, closeIndex + 1);
-      if (/[\n\r【]/u.test(title.slice(1))) continue;
-      const nextChar = input[closeIndex + 1] ?? "";
-      const nextOk = !nextChar || /[\s,，、；:：]/u.test(nextChar);
-      if (!nextOk) continue;
-      headers.push({ start: index, end: closeIndex + 1, title });
-      index = closeIndex;
     }
   }
 
@@ -500,6 +525,9 @@ function splitInlineCornerSections(text) {
       .trim();
     sections.push({ title: headers[i].title, body });
   }
+  // For ASCII [...] inline headers without 【/［, require at least one non-empty section body so "[A], [B]" alone won't misfire.
+  const onlyAsciiSquare = headers.every((item) => item.kind === "[");
+  if (onlyAsciiSquare && !sections.some((section) => section.title && section.body)) return null;
   return sections;
 }
 
@@ -536,7 +564,7 @@ export function parseStructuredPrompt(text, previousSections = []) {
 
   const lineHeaderCount = rawSections.filter((section) => Boolean(section.title)).length;
   if (lineHeaderCount < 2) {
-    const inlineSections = splitInlineCornerSections(inner);
+    const inlineSections = splitInlineBracketSections(inner);
     if (inlineSections) rawSections = inlineSections;
   }
 

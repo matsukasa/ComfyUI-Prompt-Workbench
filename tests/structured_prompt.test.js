@@ -33,7 +33,9 @@ test("looksLikeStructuredPrompt detects braced and headed prompts without false 
   assert.equal(looksLikeStructuredPrompt("【重要】 cat, dog"), false);
   assert.equal(looksLikeStructuredPrompt("看板に\n【営業中】"), false);
   assert.equal(looksLikeStructuredPrompt("# comment line\n1girl, solo"), false);
+  assert.equal(looksLikeStructuredPrompt("1girl, [cat], [dog], [cat:0.8], [red|blue]"), false);
   assert.equal(looksLikeStructuredPrompt("【任务与范式】, 4:3横向画幅, 【构图与机位】, 平视全身近景"), true);
+  assert.equal(looksLikeStructuredPrompt("[Task & Paradigm], 4:3 horizontal frame, [Composition & Camera], eye-level shot"), true);
 });
 
 test("parseStructuredPrompt splits flattened single-line comma-separated 【】 headers", () => {
@@ -47,6 +49,42 @@ test("parseStructuredPrompt splits flattened single-line comma-separated 【】 
       ["【任务与范式】", "positive", ["4:3横向画幅", "真实光学"]],
       ["【构图与机位】", "positive", ["平视全身近景"]],
       ["【可选负面提示词】", "negative", ["ANIME假发质感"]],
+    ],
+  );
+});
+
+test("parseStructuredPrompt supports English-translated [] and fullwidth ［］ section headers", () => {
+  const translatedMultiline = `{
+[Task & Paradigm]
+4:3 horizontal frame, medium format portrait.
+
+[Composition & Camera]
+Eye-level full shot, 50mm lens.
+
+[Optional Negative Prompts]
+anime wig texture, extra fingers.
+}`;
+  const multi = parseStructuredPrompt(translatedMultiline);
+  assert.equal(multi.wrapBraces, true);
+  assert.equal(multi.sections.length, 3);
+  assert.deepEqual(
+    multi.sections.map((section) => [section.title, section.role]),
+    [
+      ["[Task & Paradigm]", "positive"],
+      ["[Composition & Camera]", "positive"],
+      ["[Optional Negative Prompts]", "negative"],
+    ],
+  );
+
+  const translatedInline = "[Task & Paradigm], 4:3 horizontal frame, ［Composition & Camera］ eye-level shot, [Optional Negative], extra fingers";
+  const inlineParsed = parseStructuredPrompt(translatedInline);
+  assert.equal(inlineParsed.sections.length, 3);
+  assert.deepEqual(
+    inlineParsed.sections.map((section) => [section.title, section.role, section.tags.map((t) => t.value)]),
+    [
+      ["[Task & Paradigm]", "positive", ["4:3 horizontal frame"]],
+      ["［Composition & Camera］", "positive", ["eye-level shot"]],
+      ["[Optional Negative]", "negative", ["extra fingers"]],
     ],
   );
 });
