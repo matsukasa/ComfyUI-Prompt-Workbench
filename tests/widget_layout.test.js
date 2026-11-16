@@ -121,3 +121,82 @@ test("content resize observation updates bounds and disconnects when removed", (
     else globalThis.ResizeObserver = previousObserver;
   }
 });
+
+test("split layout height tracks outer node grow and shrink without snapping back", () => {
+  const editor = attachEditor(800);
+  const vars = new Map([["--paio-split-height", "560px"]]);
+  const classes = new Set();
+  editor.splitLayout = {
+    clientWidth: 760,
+    get offsetHeight() {
+      return parseInt(vars.get("--paio-split-height") || "560", 10);
+    },
+    style: {
+      setProperty(name, value) { vars.set(name, value); },
+      getPropertyValue(name) { return vars.get(name) || ""; },
+    },
+    classList: {
+      toggle(name, on) { if (on) classes.add(name); else classes.delete(name); },
+      contains(name) { return classes.has(name); },
+    },
+  };
+  Object.defineProperty(editor.root, "offsetHeight", {
+    configurable: true,
+    get() { return 80 + editor.splitLayout.offsetHeight; },
+  });
+
+  editor.node.setSize([800, 1000]);
+  // targetRootHeight = 1000 - 70 - 20 = 910; split = 910 - 80 = 830
+  assert.equal(vars.get("--paio-split-height"), "830px");
+  assert.equal(editor.node.size[1], 1000);
+
+  editor.node.setSize([800, 560]);
+  // targetRootHeight = 560 - 70 - 20 = 470; split = 470 - 80 = 390
+  assert.equal(vars.get("--paio-split-height"), "390px");
+  assert.equal(editor.node.size[1], 560);
+
+  editor.node.setSize([800, 300]);
+  assert.equal(vars.get("--paio-split-height"), "280px");
+  assert.equal(editor.node.size[1], 450); // 80 + 280 + 20 + 70
+});
+
+test("split layout clamps left pane ratio on narrow nodes and stacks below 440px", () => {
+  const editor = attachEditor(540);
+  const vars = new Map();
+  const classes = new Set();
+  editor.settings.leftPaneWidthPercent = 70;
+  editor.splitLayout = {
+    clientWidth: 500,
+    offsetHeight: 560,
+    style: {
+      setProperty(name, value) { vars.set(name, value); },
+      getPropertyValue(name) { return vars.get(name) || ""; },
+    },
+    classList: {
+      toggle(name, on) { if (on) classes.add(name); else classes.delete(name); },
+      contains(name) { return classes.has(name); },
+    },
+  };
+  editor.syncSplitBounds();
+  assert.equal(classes.has("is-stacked"), false);
+  const effectivePct = parseFloat(vars.get("--paio-left-pane-width"));
+  // (500 - 6 - 220) / 500 * 100 = 54.8%
+  assert.ok(effectivePct <= 54.81 && effectivePct >= 32, `unexpected effectivePct: ${effectivePct}`);
+
+  editor.splitLayout.clientWidth = 400;
+  editor.syncSplitBounds();
+  assert.equal(classes.has("is-stacked"), true);
+});
+
+test("sanitizeSettings defaults catalogOpen to false and clamps catalogPanePercent", () => {
+  const defaults = sanitizeSettings({});
+  assert.equal(defaults.catalogOpen, false);
+  assert.equal(defaults.catalogPanePercent, 46);
+
+  const clampedLow = sanitizeSettings({ catalogOpen: true, catalogPanePercent: 10 });
+  assert.equal(clampedLow.catalogOpen, true);
+  assert.equal(clampedLow.catalogPanePercent, 25);
+
+  const clampedHigh = sanitizeSettings({ catalogPanePercent: 95 });
+  assert.equal(clampedHigh.catalogPanePercent, 72);
+});

@@ -35,6 +35,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   exampleListHeight: 118,
   tagSetListHeight: 160,
   leftPaneWidthPercent: 46,
+  catalogOpen: false,
+  catalogPanePercent: 46,
   showSectionTranslationsInList: true,
 });
 
@@ -174,7 +176,13 @@ export function sanitizeSettings(input = {}) {
     settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));
   }
   if (Number.isFinite(Number(input.leftPaneWidthPercent))) {
-    settings.leftPaneWidthPercent = Math.min(70, Math.max(30, Number(input.leftPaneWidthPercent)));
+    settings.leftPaneWidthPercent = Math.min(70, Math.max(25, Number(input.leftPaneWidthPercent)));
+  }
+  if (Object.hasOwn(input, "catalogOpen")) {
+    settings.catalogOpen = Boolean(input.catalogOpen);
+  }
+  if (Number.isFinite(Number(input.catalogPanePercent))) {
+    settings.catalogPanePercent = Math.min(72, Math.max(25, Number(input.catalogPanePercent)));
   }
   if (Object.hasOwn(input, "showSectionTranslationsInList")) {
     settings.showSectionTranslationsInList = Boolean(input.showSectionTranslationsInList);

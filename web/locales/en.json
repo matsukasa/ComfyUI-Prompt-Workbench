@@ -302,6 +302,11 @@
     "中文": "Chinese",
     "クリア": "Clear",
     "{total}タグ": "{total} tags",
-    "{enabled}/{total}タグ": "{enabled}/{total} tags"
+    "{enabled}/{total}タグ": "{enabled}/{total} tags",
+    "セクションの本文を一括編集": "Edit section prompt text",
+    "テキスト直接編集（一括貼付・反映）": "Direct text edit (bulk paste & apply)",
+    "カタログ": "Catalog",
+    "タグ追加・タグセット・散文フレーズのカタログを表示／折りたたみ": "Show or collapse tag, tag set, and prose phrase catalog",
+    "ドラッグして編集エリアとカタログの比率を調整": "Drag to resize editor and catalog split"
   }
 }

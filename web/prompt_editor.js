@@ -110,6 +110,8 @@ const MAX_PROMPT_TEXT_HEIGHT = 420;
 const DEFAULT_TAG_LIST_HEIGHT = 260;
 const MIN_TAG_LIST_HEIGHT = 96;
 const MAX_TAG_LIST_HEIGHT = 720;
+const MIN_SPLIT_HEIGHT = 280;
+const DEFAULT_SPLIT_HEIGHT = 560;
 const BASE_DOM_WIDGET_HEIGHT = 690;
 const BASE_NODE_HEIGHT = 760;
 const COLOR_DEFAULTS = {
@@ -1607,90 +1609,71 @@ export class PromptEditor {
     ]);
     this.tagList = element("div", { className: "paio-tags" });
     this.tagList.setAttribute("role", "list");
-    this.tagList.style.height = `${clampTagListHeight(this.settings.tagListHeight)}px`;
     this.attachTagListMarquee();
-    const tagListResizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-list-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-    ]);
-    tagListResizeHandle.tabIndex = 0;
-    tagListResizeHandle.setAttribute("role", "separator");
-    tagListResizeHandle.setAttribute("aria-orientation", "horizontal");
-    tagListResizeHandle.setAttribute("aria-label", t("現在のタグ一覧の高さを変更"));
-    const applyTagListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampTagListHeight(height);
-      this.settings.tagListHeight = nextHeight;
-      this.tagList.style.height = `${nextHeight}px`;
-      tagListResizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_LIST_HEIGHT));
-      tagListResizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_LIST_HEIGHT));
-      tagListResizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), nodeHeight]);
-      }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
-      if (persist) this.persist();
-      return nextHeight;
-    };
-    applyTagListHeight(this.settings.tagListHeight);
-    tagListResizeHandle.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.tagListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      tagListResizeHandle.classList.add("is-dragging");
-      tagListResizeHandle.setPointerCapture?.(pointerId);
-      const move = (moveEvent) => {
-        if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampTagListHeight(startHeight + moveEvent.clientY - startY);
-        applyTagListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
-      };
-      const finish = (finishEvent) => {
-        if (finishEvent.pointerId !== pointerId) return;
-        tagListResizeHandle.removeEventListener("pointermove", move);
-        tagListResizeHandle.removeEventListener("pointerup", finish);
-        tagListResizeHandle.removeEventListener("pointercancel", finish);
-        tagListResizeHandle.releasePointerCapture?.(pointerId);
-        tagListResizeHandle.classList.remove("is-dragging");
-        applyTagListHeight(this.settings.tagListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
-      };
-      tagListResizeHandle.addEventListener("pointermove", move);
-      tagListResizeHandle.addEventListener("pointerup", finish);
-      tagListResizeHandle.addEventListener("pointercancel", finish);
-    });
-    tagListResizeHandle.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currentHeight = this.settings.tagListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyTagListHeight(DEFAULT_TAG_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_LIST_HEIGHT - currentHeight, true);
-    });
-    tagListResizeHandle.addEventListener("keydown", (event) => {
-      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.tagListHeight;
-      const nextHeight = event.key === "Home"
-        ? DEFAULT_TAG_LIST_HEIGHT
-        : currentHeight + (event.key === "ArrowDown" ? 20 : -20);
-      const applied = clampTagListHeight(nextHeight);
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyTagListHeight(applied, currentNodeHeight + applied - currentHeight, true);
-    });
     this.status = element("p", { className: "paio-status", text: t("準備完了") });
     this.status.setAttribute("aria-live", "polite");
-    const currentTagsPane = collapsiblePane(t("現在のタグ"), "paio-current-tags-pane", [
+
+    const currentTagsDisclosure = element("span", { className: "paio-disclosure", text: "▾" });
+    const currentTagsToggle = element("button", { className: "paio-collapsible-toggle", type: "button" }, [
+      currentTagsDisclosure,
+      element("strong", { text: t("現在のタグ") }),
+    ]);
+    currentTagsToggle.setAttribute("aria-expanded", "true");
+    const currentTagsBody = element("div", { className: "paio-current-tags-body" }, [
       this.bulkBar,
       tagSummaryRow,
       this.tagList,
-      tagListResizeHandle,
     ]);
-    this.currentTagsSummaryTitle = currentTagsPane.summary.querySelector("strong");
+    const currentTagsPane = element("div", { className: "paio-current-tags-pane" }, [
+      currentTagsToggle,
+      currentTagsBody,
+    ]);
+    currentTagsToggle.addEventListener("click", () => {
+      const collapsed = !currentTagsPane.classList.contains("is-collapsed");
+      currentTagsPane.classList.toggle("is-collapsed", collapsed);
+      currentTagsBody.hidden = collapsed;
+      currentTagsToggle.setAttribute("aria-expanded", String(!collapsed));
+      currentTagsDisclosure.textContent = collapsed ? "▶" : "▾";
+    });
+    this.currentTagsSummaryTitle = currentTagsToggle.querySelector("strong");
+
+    this.activeTagPromptTextarea = element("textarea", { className: "paio-prompt-textarea paio-section-text-input" });
+    this.activeTagPromptTextarea.rows = 3;
+    this.activeTagPromptTextarea.placeholder = t("このセクションのタグを入力（例: 1girl, solo）");
+    this.activeTagPromptTextarea.setAttribute("aria-label", t("セクションの本文を一括編集"));
+    this.activeTagPromptTextarea.addEventListener("input", () => {
+      this.dirtySectionIds.add(this.activeSectionId);
+      this.renderSyncState();
+    });
+    this.activeTagPromptTextarea.addEventListener("paste", (event) => {
+      if (this.activeTagPromptTextarea.value.trim()) return;
+      const pasted = event.clipboardData?.getData("text/plain") || "";
+      if (looksLikeStructuredPrompt(pasted)) {
+        event.preventDefault();
+        this.applyBulkSplitText(pasted);
+      }
+    });
+    this.activeTagPromptTextarea.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        this.applyPromptText(this.activeSectionId);
+      }
+    });
+    attachTagSuggestions(this.activeTagPromptTextarea, { api: this.api, language: () => this.settings.localLanguage });
+    this.promptTextarea = this.activeTagPromptTextarea;
+    this.activeSectionApplyButton = button(t("タグへ反映"), () => this.applyPromptText(this.activeSectionId), t("本文を解析してタグへ反映（Ctrl+Enter）"));
+    this.activeSectionApplyButton.classList.add("paio-section-apply");
+    const sectionTextPane = collapsiblePane(t("テキスト直接編集（一括貼付・反映）"), "paio-section-text-pane", [
+      this.activeTagPromptTextarea,
+      element("div", { className: "paio-prompt-actions" }, [this.activeSectionApplyButton]),
+    ]);
+    sectionTextPane.pane.open = false;
 
     this.tagsWorkspace = element("div", { className: "paio-tags-workspace" }, [
       addRow,
       tools,
-      currentTagsPane.pane,
+      currentTagsPane,
+      sectionTextPane.pane,
     ]);
     const activeSectionWorkspace = element("div", { className: "paio-active-section-pane" }, [
       activeWorkspaceHead,
@@ -1702,17 +1685,113 @@ export class PromptEditor {
     this.tagSetsPanel = this.buildTagSetsPanel();
     this.prosePhrasesPanel = this.buildProsePhrasesPanel();
     this.libraryTabs = this.buildLibraryTabs();
-    const libraryBox = element("div", { className: "paio-library-pane" }, [
+    this.catalogOpen = Boolean(this.settings.catalogOpen);
+    const catalogDisclosure = element("span", { className: "paio-disclosure", text: this.catalogOpen ? "▾" : "▶" });
+    const catalogToggleBtn = element("button", { className: "paio-button paio-library-toggle", type: "button" }, [
+      catalogDisclosure,
+      element("span", { text: t("カタログ") }),
+    ]);
+    catalogToggleBtn.setAttribute("aria-expanded", String(this.catalogOpen));
+    catalogToggleBtn.title = t("タグ追加・タグセット・散文フレーズのカタログを表示／折りたたみ");
+    this.libraryHeader = element("div", { className: "paio-library-header" }, [
+      catalogToggleBtn,
       this.libraryTabs,
+    ]);
+    this.libraryBody = element("div", { className: "paio-library-body-wrap" }, [
       this.examplesPanel,
       this.tagSetsPanel,
       this.prosePhrasesPanel,
     ]);
+    this.libraryBox = element("div", { className: "paio-library-pane" }, [
+      this.libraryHeader,
+      this.libraryBody,
+    ]);
+
+    const hSplitter = element("div", { className: "paio-h-splitter", title: t("ドラッグして編集エリアとカタログの比率を調整") });
+    hSplitter.tabIndex = 0;
+    hSplitter.setAttribute("role", "separator");
+    hSplitter.setAttribute("aria-orientation", "horizontal");
+    this.hSplitter = hSplitter;
+
+    const rightSplit = element("div", { className: "paio-right-split" }, [
+      activeSectionWorkspace,
+      hSplitter,
+      this.libraryBox,
+    ]);
+    this.rightSplit = rightSplit;
+
+    const applyCatalogRatio = (pct, persist = false) => {
+      const clamped = Math.min(72, Math.max(25, Number(pct) || 46));
+      this.settings.catalogPanePercent = Number(clamped.toFixed(1));
+      rightSplit.style.setProperty("--paio-catalog-height", `${this.settings.catalogPanePercent}%`);
+      hSplitter.setAttribute("aria-valuemin", "25");
+      hSplitter.setAttribute("aria-valuemax", "72");
+      hSplitter.setAttribute("aria-valuenow", String(Math.round(this.settings.catalogPanePercent)));
+      if (persist) this.persist();
+    };
+    applyCatalogRatio(this.settings.catalogPanePercent);
+
+    this.setCatalogOpen = (open, persist = true) => {
+      this.catalogOpen = Boolean(open);
+      this.settings.catalogOpen = this.catalogOpen;
+      this.libraryBox.classList.toggle("is-collapsed", !this.catalogOpen);
+      this.libraryBody.hidden = !this.catalogOpen;
+      hSplitter.hidden = !this.catalogOpen;
+      rightSplit.classList.toggle("is-catalog-open", this.catalogOpen);
+      catalogToggleBtn.setAttribute("aria-expanded", String(this.catalogOpen));
+      catalogDisclosure.textContent = this.catalogOpen ? "▾" : "▶";
+      if (this.catalogOpen && this.activeLibraryTab === "tagSets") this.refreshTagSetsPanel?.();
+      if (persist) this.persist();
+    };
+    catalogToggleBtn.addEventListener("click", () => this.setCatalogOpen(!this.catalogOpen));
+
+    hSplitter.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || !this.catalogOpen) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      hSplitter.classList.add("is-dragging");
+      hSplitter.setPointerCapture?.(pointerId);
+      const applyY = (clientY) => {
+        const rect = rightSplit.getBoundingClientRect();
+        if (!rect.height) return;
+        const pct = ((rect.bottom - clientY) / rect.height) * 100;
+        applyCatalogRatio(pct);
+      };
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        applyY(moveEvent.clientY);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        hSplitter.removeEventListener("pointermove", move);
+        hSplitter.removeEventListener("pointerup", finish);
+        hSplitter.removeEventListener("pointercancel", finish);
+        hSplitter.releasePointerCapture?.(pointerId);
+        hSplitter.classList.remove("is-dragging");
+        applyCatalogRatio(this.settings.catalogPanePercent, true);
+      };
+      hSplitter.addEventListener("pointermove", move);
+      hSplitter.addEventListener("pointerup", finish);
+      hSplitter.addEventListener("pointercancel", finish);
+    });
+    hSplitter.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const cur = Number(this.settings.catalogPanePercent) || 46;
+      const next = event.key === "Home" ? 46 : cur + (event.key === "ArrowUp" ? 4 : -4);
+      applyCatalogRatio(next, true);
+    });
+    hSplitter.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      applyCatalogRatio(46, true);
+    });
+    this.setCatalogOpen(this.catalogOpen, false);
 
     const rightPane = element("div", { className: "paio-pane paio-pane-right" }, [
       this.translationBar,
-      activeSectionWorkspace,
-      libraryBox,
+      rightSplit,
     ]);
 
     const splitLayout = element("div", { className: "paio-split-layout" }, [
@@ -1720,7 +1799,8 @@ export class PromptEditor {
       splitter,
       rightPane,
     ]);
-    const initialLeftPct = Math.min(70, Math.max(30, Number(this.settings.leftPaneWidthPercent) || 46));
+    this.splitLayout = splitLayout;
+    const initialLeftPct = Math.min(70, Math.max(25, Number(this.settings.leftPaneWidthPercent) || 46));
     splitLayout.style.setProperty("--paio-left-pane-width", `${initialLeftPct}%`);
 
     splitter.addEventListener("pointerdown", (event) => {
@@ -1733,7 +1813,10 @@ export class PromptEditor {
       const applyX = (clientX) => {
         const rect = splitLayout.getBoundingClientRect();
         if (!rect.width) return;
-        const pct = Math.min(70, Math.max(30, ((clientX - rect.left) / rect.width) * 100));
+        const splitterW = 6;
+        const minPct = Math.min(70, (160 / rect.width) * 100);
+        const maxPct = Math.max(minPct, Math.min(70, ((rect.width - splitterW - 220) / rect.width) * 100));
+        const pct = Math.min(maxPct, Math.max(minPct, ((clientX - rect.left) / rect.width) * 100));
         this.settings.leftPaneWidthPercent = Number(pct.toFixed(1));
         splitLayout.style.setProperty("--paio-left-pane-width", `${this.settings.leftPaneWidthPercent}%`);
       };
@@ -1758,9 +1841,16 @@ export class PromptEditor {
       if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
       event.preventDefault();
       const cur = Number(this.settings.leftPaneWidthPercent) || 46;
-      const next = event.key === "Home" ? 46 : Math.min(70, Math.max(30, cur + (event.key === "ArrowRight" ? 4 : -4)));
+      const next = event.key === "Home" ? 46 : Math.min(70, Math.max(25, cur + (event.key === "ArrowRight" ? 4 : -4)));
       this.settings.leftPaneWidthPercent = next;
       splitLayout.style.setProperty("--paio-left-pane-width", `${next}%`);
+      this.persist();
+    });
+    splitter.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.settings.leftPaneWidthPercent = 46;
+      splitLayout.style.setProperty("--paio-left-pane-width", "46%");
       this.persist();
     });
 
@@ -1804,12 +1894,7 @@ export class PromptEditor {
     this.stabilizeLayout();
     this.node.setSize([
       Math.max(this.node.size?.[0] || 0, 540),
-      Math.max(this.node.size?.[1] || 0,
-        BASE_NODE_HEIGHT
-        + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
-        + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-        + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
-        + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT),
+      Math.max(this.node.size?.[1] || 0, BASE_NODE_HEIGHT),
     ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
@@ -1834,26 +1919,60 @@ export class PromptEditor {
   widgetHeight() {
     const measuredHeight = this.root.offsetHeight;
     if (measuredHeight > 0) return measuredHeight + (this.domWidget?.margin ?? 10) * 2;
-    return BASE_DOM_WIDGET_HEIGHT
-      + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
-      + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
-      + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT;
+    return BASE_DOM_WIDGET_HEIGHT;
+  }
+
+  syncSplitBounds() {
+    if (!this.splitLayout) return;
+    const splitWidth = this.splitLayout.clientWidth || Math.max(0, (this.node?.size?.[0] || 540) - 38);
+    const stacked = splitWidth > 0 && splitWidth < 440;
+    this.splitLayout.classList.toggle("is-stacked", stacked);
+    if (!stacked && splitWidth > 0) {
+      const splitterW = 6;
+      const minPct = Math.min(70, (160 / splitWidth) * 100);
+      const maxPct = Math.max(minPct, Math.min(70, ((splitWidth - splitterW - 220) / splitWidth) * 100));
+      const desired = Number(this.settings.leftPaneWidthPercent) || 46;
+      const effectivePct = Math.min(maxPct, Math.max(minPct, desired));
+      this.splitLayout.style.setProperty("--paio-left-pane-width", `${effectivePct.toFixed(2)}%`);
+    }
+
+    if (this.root?.offsetHeight > 0) {
+      const nodeHeight = Number(this.node?.size?.[1]) || BASE_NODE_HEIGHT;
+      const margin = Number(this.domWidget?.margin ?? 10);
+      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+      const targetRootHeight = nodeHeight - nodeOverhead - margin * 2;
+      const currentSplitHeight = this.splitLayout.offsetHeight || 0;
+      const innerChrome = currentSplitHeight > 0
+        ? Math.max(0, this.root.offsetHeight - currentSplitHeight)
+        : ((this.sectionControls?.offsetHeight || 0) + (this.status?.offsetHeight || 0) + 32);
+      const minSplit = stacked ? 460 : MIN_SPLIT_HEIGHT;
+      const nextSplitHeight = Math.max(minSplit, Math.floor(targetRootHeight - innerChrome));
+      const nextValue = `${nextSplitHeight}px`;
+      if (this.splitLayout.style.getPropertyValue("--paio-split-height") !== nextValue) {
+        this.splitLayout.style.setProperty("--paio-split-height", nextValue);
+      }
+    }
   }
 
   syncWidgetLayout(widget = this.domWidget) {
-    if (!widget) return;
-    this.syncWidgetWidth(widget);
-    const height = this.widgetHeight();
-    // LiteGraph adds a four-pixel gap to computeSize() heights.
-    const computedHeight = height + 4;
-    const changed = widget.computedHeight !== computedHeight;
-    widget.computedHeight = computedHeight;
-    const minimumNodeHeight = height + BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
-    if (this.node.size?.[1] < minimumNodeHeight) {
-      this.node.setSize([this.node.size[0], minimumNodeHeight]);
-    } else if (changed) {
-      this.node.graph?.setDirtyCanvas?.(true, true);
+    if (!widget || this._syncingLayout) return;
+    this._syncingLayout = true;
+    try {
+      this.syncWidgetWidth(widget);
+      this.syncSplitBounds();
+      const height = this.widgetHeight();
+      // LiteGraph adds a four-pixel gap to computeSize() heights.
+      const computedHeight = height + 4;
+      const changed = widget.computedHeight !== computedHeight;
+      widget.computedHeight = computedHeight;
+      const minimumNodeHeight = height + BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+      if (this.node.size?.[1] < minimumNodeHeight) {
+        this.node.setSize([this.node.size[0], minimumNodeHeight]);
+      } else if (changed) {
+        this.node.graph?.setDirtyCanvas?.(true, true);
+      }
+    } finally {
+      this._syncingLayout = false;
     }
   }
 
@@ -2795,9 +2914,13 @@ export class PromptEditor {
   }
 
   buildLibraryTabs() {
-    const tags = button(t("タグ追加"), () => this.setLibraryTab("tags"));
-    const tagSets = button(t("タグセット"), () => this.setLibraryTab("tagSets"));
-    const prose = button(t("散文フレーズ"), () => this.setLibraryTab("prose"));
+    const pick = (tab) => {
+      this.setLibraryTab(tab);
+      if (!this.catalogOpen) this.setCatalogOpen?.(true);
+    };
+    const tags = button(t("タグ追加"), () => pick("tags"));
+    const tagSets = button(t("タグセット"), () => pick("tagSets"));
+    const prose = button(t("散文フレーズ"), () => pick("prose"));
     tags.dataset.tab = "tags";
     tagSets.dataset.tab = "tagSets";
     prose.dataset.tab = "prose";
@@ -2805,12 +2928,7 @@ export class PromptEditor {
   }
 
   buildProsePhrasesPanel() {
-    const panel = element("details", { className: "paio-examples paio-prose-phrases" });
-    panel.open = true;
-    const summary = element("summary", { className: "paio-examples-summary" }, [
-      element("span", { className: "paio-examples-disclosure", text: "▶" }),
-      element("strong", { text: t("散文フレーズ（構図・光影・質感）") }),
-    ]);
+    const panel = element("div", { className: "paio-examples paio-prose-phrases" });
     const search = element("input", { className: "paio-search", type: "search" });
     search.placeholder = t("英語・中国語・日本語でフレーズ検索");
     const list = element("div", { className: "paio-example-list paio-prose-phrase-list" });
@@ -2841,7 +2959,7 @@ export class PromptEditor {
       }
     };
     search.addEventListener("input", redraw);
-    panel.append(summary, element("div", { className: "paio-example-controls" }, [search]), list);
+    panel.append(element("div", { className: "paio-example-controls" }, [search]), list);
     redraw();
     return panel;
   }
@@ -2860,12 +2978,7 @@ export class PromptEditor {
   }
 
   buildTagSetsPanel() {
-    const panel = element("details", { className: "paio-examples paio-tag-sets" });
-    panel.open = true;
-    const summary = element("summary", { className: "paio-examples-summary" });
-    const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
-    disclosure.setAttribute("aria-hidden", "true");
-    summary.append(disclosure, element("strong", { text: t("タグセット") }));
+    const panel = element("div", { className: "paio-examples paio-tag-sets" });
     const categoryBands = element("div", { className: "paio-example-category-bands" });
     const pathStatus = element("span", { className: "paio-example-path", text: t("タグセットを読み込み中…") });
     const search = element("input", { className: "paio-search" });
@@ -2888,82 +3001,6 @@ export class PromptEditor {
     favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
     const list = element("div", { className: "paio-example-list paio-tag-set-list" });
     list.setAttribute("aria-live", "polite");
-    list.style.height = `${clampTagSetListHeight(this.settings.tagSetListHeight)}px`;
-    const resizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-set-list-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-    ]);
-    resizeHandle.tabIndex = 0;
-    resizeHandle.setAttribute("role", "separator");
-    resizeHandle.setAttribute("aria-orientation", "horizontal");
-    resizeHandle.setAttribute("aria-label", t("タグセット一覧の高さを変更"));
-    const applyListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampTagSetListHeight(height);
-      this.settings.tagSetListHeight = nextHeight;
-      list.style.height = `${nextHeight}px`;
-      resizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_SET_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_SET_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([
-          Math.max(this.node.size?.[0] || 0, 540),
-          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_TAG_SET_LIST_HEIGHT, nodeHeight),
-        ]);
-      }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
-      if (persist) this.persist();
-      return nextHeight;
-    };
-    applyListHeight(this.settings.tagSetListHeight);
-    resizeHandle.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.tagSetListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      resizeHandle.classList.add("is-dragging");
-      resizeHandle.setPointerCapture?.(pointerId);
-      const move = (moveEvent) => {
-        if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampTagSetListHeight(startHeight + moveEvent.clientY - startY);
-        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
-      };
-      const finish = (finishEvent) => {
-        if (finishEvent.pointerId !== pointerId) return;
-        resizeHandle.removeEventListener("pointermove", move);
-        resizeHandle.removeEventListener("pointerup", finish);
-        resizeHandle.removeEventListener("pointercancel", finish);
-        resizeHandle.releasePointerCapture?.(pointerId);
-        resizeHandle.classList.remove("is-dragging");
-        applyListHeight(this.settings.tagSetListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
-      };
-      resizeHandle.addEventListener("pointermove", move);
-      resizeHandle.addEventListener("pointerup", finish);
-      resizeHandle.addEventListener("pointercancel", finish);
-    });
-    resizeHandle.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currentHeight = this.settings.tagSetListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyListHeight(DEFAULT_TAG_SET_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_SET_LIST_HEIGHT - currentHeight, true);
-    });
-    resizeHandle.addEventListener("keydown", (event) => {
-      if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.tagSetListHeight;
-      const step = event.shiftKey ? 48 : 16;
-      const nextHeight = event.key === "Home"
-        ? DEFAULT_TAG_SET_LIST_HEIGHT
-        : event.key === "End"
-          ? MAX_TAG_SET_LIST_HEIGHT
-          : event.key === "ArrowUp"
-            ? currentHeight - step
-            : currentHeight + step;
-      const applied = applyListHeight(nextHeight, (this.node.size?.[1] || BASE_NODE_HEIGHT) + nextHeight - currentHeight, true);
-      this.setStatus(t("タグセット一覧の高さ: {height}px", { height: applied }));
-    });
     let library = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
     let renderLimit = INITIAL_EXAMPLE_LIMIT;
@@ -3145,18 +3182,13 @@ export class PromptEditor {
     const footer = element("div", { className: "paio-example-footer" }, [
       element("span", { className: "paio-hint", text: t("右クリック: お気に入り") }),
     ]);
-    panel.append(summary, navigation, controls, list, resizeHandle, footer);
+    panel.append(navigation, controls, list, footer);
     redraw();
     return panel;
   }
 
   buildExamplesPanel() {
-    const panel = element("details", { className: "paio-examples" });
-    panel.open = true;
-    const summary = element("summary", { className: "paio-examples-summary" });
-    const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
-    disclosure.setAttribute("aria-hidden", "true");
-    summary.append(disclosure, element("strong", { text: t("タグを追加") }));
+    const panel = element("div", { className: "paio-examples" });
     const search = element("input", { className: "paio-search" });
     search.type = "search";
     search.placeholder = t("英語・日本語でタグを検索");
@@ -3179,7 +3211,6 @@ export class PromptEditor {
     const pathStatus = element("span", { className: "paio-example-path", text: t("分類を読み込み中…") });
     const list = element("div", { className: "paio-example-list" });
     list.setAttribute("aria-live", "polite");
-    list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
     const openExampleFavoriteMenu = (event) => {
       const chip = event.target?.closest?.(".paio-example-chip");
       const prompt = chip?.dataset?.prompt;
@@ -3193,77 +3224,6 @@ export class PromptEditor {
       if (event.button === 2) openExampleFavoriteMenu(event);
     }, true);
     list.addEventListener("contextmenu", openExampleFavoriteMenu, true);
-    const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-    ]);
-    resizeHandle.tabIndex = 0;
-    resizeHandle.setAttribute("role", "separator");
-    resizeHandle.setAttribute("aria-orientation", "horizontal");
-    resizeHandle.setAttribute("aria-label", t("タグ一覧の高さを変更"));
-    const applyListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampExampleListHeight(height);
-      this.settings.exampleListHeight = nextHeight;
-      list.style.height = `${nextHeight}px`;
-      resizeHandle.setAttribute("aria-valuemin", String(MIN_EXAMPLE_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuemax", String(MAX_EXAMPLE_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([
-          Math.max(this.node.size?.[0] || 0, 540),
-          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_EXAMPLE_LIST_HEIGHT, nodeHeight),
-        ]);
-      }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
-      if (persist) this.persist();
-      return nextHeight;
-    };
-    applyListHeight(this.settings.exampleListHeight);
-    resizeHandle.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.exampleListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      resizeHandle.classList.add("is-dragging");
-      resizeHandle.setPointerCapture?.(pointerId);
-      const move = (moveEvent) => {
-        if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampExampleListHeight(startHeight + moveEvent.clientY - startY);
-        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
-      };
-      const finish = (finishEvent) => {
-        if (finishEvent.pointerId !== pointerId) return;
-        resizeHandle.removeEventListener("pointermove", move);
-        resizeHandle.removeEventListener("pointerup", finish);
-        resizeHandle.removeEventListener("pointercancel", finish);
-        resizeHandle.releasePointerCapture?.(pointerId);
-        resizeHandle.classList.remove("is-dragging");
-        applyListHeight(this.settings.exampleListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
-      };
-      resizeHandle.addEventListener("pointermove", move);
-      resizeHandle.addEventListener("pointerup", finish);
-      resizeHandle.addEventListener("pointercancel", finish);
-    });
-    resizeHandle.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currentHeight = this.settings.exampleListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyListHeight(DEFAULT_EXAMPLE_LIST_HEIGHT, currentNodeHeight + DEFAULT_EXAMPLE_LIST_HEIGHT - currentHeight, true);
-    });
-    resizeHandle.addEventListener("keydown", (event) => {
-      if (!['ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.exampleListHeight;
-      const nextHeight = event.key === 'Home'
-        ? DEFAULT_EXAMPLE_LIST_HEIGHT
-        : currentHeight + (event.key === 'ArrowDown' ? 20 : -20);
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      const applied = clampExampleListHeight(nextHeight);
-      applyListHeight(applied, currentNodeHeight + applied - currentHeight, true);
-    });
     const resultStatus = element("span", { className: "paio-example-count", text: t("読み込み中…") });
     const selected = new Set();
     let library = null;
@@ -3493,7 +3453,7 @@ export class PromptEditor {
       element("span", { className: "paio-hint", text: t("Ctrl+クリックで複数選択") }),
       this.exampleBulkButton,
     ]);
-    panel.append(summary, navigation, controls, list, resizeHandle, footer);
+    panel.append(navigation, controls, list, footer);
     redraw();
     return panel;
   }
@@ -3600,7 +3560,7 @@ export class PromptEditor {
     this.activeSectionId = sectionId;
     this.renderLimit = MAX_RENDERED_TAGS;
     this.rebuildSectionViews?.();
-    this.promptTextarea = this.sectionTextareas?.get(sectionId) || this.singlePromptTextarea;
+    this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
     this.persist();
     this.render();
   }
@@ -3615,7 +3575,8 @@ export class PromptEditor {
     this.rebuildSectionViews();
     this.syncToWidgets();
     this.render();
-    this.sectionTextareas?.get(created.id)?.focus?.();
+    this.sectionsContainer?.querySelector(`[data-section-id="${created.id}"]`)?.scrollIntoView?.({ block: "nearest" });
+    this.addInput?.focus?.();
     this.setStatus(t("セクションを追加しました"));
   }
 
@@ -4042,62 +4003,23 @@ export class PromptEditor {
 
       const jaPreviewText = this.sectionTranslationPreview(section);
       const showJa = this.settings.showSectionTranslationsInList !== false;
-
-      if (isActive && section.mode !== "prose" && !section.collapsed) {
-        const textarea = element("textarea", { className: "paio-prompt-textarea paio-section-textarea" });
-        textarea.rows = 3;
-        textarea.value = this.promptEditorValue(section);
-        textarea.placeholder = t("このセクションのタグを入力（例: 1girl, solo）");
-        textarea.addEventListener("focus", () => this.selectSection(section.id));
-        textarea.addEventListener("click", (event) => event.stopPropagation());
-        textarea.addEventListener("input", () => {
-          this.dirtySectionIds.add(section.id);
-          this.renderSyncState();
-        });
-        textarea.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault();
-            this.applyPromptText(section.id);
-          }
-        });
-        attachTagSuggestions(textarea, { api: this.api, language: () => this.settings.localLanguage });
-        this.sectionTextareas.set(section.id, textarea);
-
-        const applyBtn = button(t("タグへ反映"), (event) => {
-          event.stopPropagation();
-          this.applyPromptText(section.id);
-        }, t("本文を解析してタグへ反映（Ctrl+Enter）"));
-        applyBtn.classList.add("paio-section-apply");
-        const jaLine = element("div", {
-          className: "paio-section-ja-line",
-          text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
-        });
-        jaLine.hidden = !showJa || !jaPreviewText;
-        const body = element("div", { className: "paio-section-card-body" }, [
-          textarea,
-          element("div", { className: "paio-prompt-actions" }, [applyBtn]),
-          jaLine,
-        ]);
-        card.append(body);
-      } else {
-        const origText = section.mode === "prose"
-          ? String(section.proseText || "").trim()
-          : this.promptEditorValue(section).trim();
-        const origLine = element("div", {
-          className: "paio-section-orig-line",
-          text: origText || t("（空 — クリックして編集）"),
-        });
-        const jaLine = element("div", {
-          className: "paio-section-ja-line",
-          text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
-        });
-        jaLine.hidden = !showJa || !jaPreviewText;
-        card.append(element("div", { className: "paio-section-summary" }, [origLine, jaLine]));
-      }
+      const origText = section.mode === "prose"
+        ? String(section.proseText || "").trim()
+        : this.promptEditorValue(section).trim();
+      const origLine = element("div", {
+        className: "paio-section-orig-line",
+        text: origText || t("（空 — クリックして編集）"),
+      });
+      const jaLine = element("div", {
+        className: "paio-section-ja-line",
+        text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
+      });
+      jaLine.hidden = !showJa || !jaPreviewText;
+      card.append(element("div", { className: "paio-section-summary" }, [origLine, jaLine]));
       return card;
     });
     this.sectionsContainer.replaceChildren(...cards);
-    this.promptTextarea = this.sectionTextareas.get(this.activeSectionId) || this.singlePromptTextarea;
+    this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
   }
 
   renderSectionHeaderSummary() {
@@ -4217,10 +4139,6 @@ export class PromptEditor {
       }
       const showJa = this.settings.showSectionTranslationsInList !== false;
       for (const section of this.sections) {
-        const textarea = this.sectionTextareas?.get(section.id);
-        if (textarea && !this.dirtySectionIds?.has(section.id)) {
-          textarea.value = this.promptEditorValue(section);
-        }
         const card = this.sectionsContainer.querySelector(`[data-section-id="${section.id}"]`);
         if (card) {
           card.classList.toggle("is-active", section.id === this.activeSectionId);
@@ -4259,7 +4177,11 @@ export class PromptEditor {
           }
         }
       }
-      this.promptTextarea = this.sectionTextareas?.get(this.activeSectionId) || this.singlePromptTextarea;
+      const activeForText = this.activeSection();
+      if (this.activeTagPromptTextarea && activeForText && !this.dirtySectionIds?.has(activeForText.id)) {
+        this.activeTagPromptTextarea.value = this.promptEditorValue(activeForText);
+      }
+      this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
     } else if (!this.promptDirty && this.promptTextarea) {
       this.promptTextarea.value = this.promptEditorValue();
     }
@@ -4325,12 +4247,13 @@ export class PromptEditor {
     if (this.applyPromptButton) {
       this.applyPromptButton.disabled = !this.promptDirty;
     }
+    if (this.activeSectionApplyButton) {
+      this.activeSectionApplyButton.disabled = !this.dirtySectionIds?.has(this.activeSectionId);
+    }
     if (this.sectionsContainer && Array.isArray(this.sections)) {
       for (const section of this.sections) {
         const card = this.sectionsContainer.querySelector(`[data-section-id="${section.id}"]`);
-        const applyBtn = card?.querySelector(".paio-section-apply");
         const isDirty = Boolean(this.dirtySectionIds?.has(section.id));
-        if (applyBtn) applyBtn.disabled = !isDirty;
         card?.classList.toggle("is-dirty", isDirty);
       }
     }
@@ -4370,9 +4293,7 @@ export class PromptEditor {
 
     const sectionId = targetSectionId || this.activeSectionId;
     const section = this.sections.find((item) => item.id === sectionId);
-    const textarea = this.isMultiSectionView()
-      ? (this.sectionTextareas?.get(sectionId) || this.promptTextarea)
-      : this.promptTextarea;
+    const textarea = this.activeTagPromptTextarea || this.promptTextarea;
     if (!section || !textarea || !this.dirtySectionIds?.has(sectionId)) return;
 
     const rawText = textarea.value;
