@@ -10,6 +10,7 @@ import {
   createTag,
   findDuplicateKeys,
   getTagWeight,
+  inferSectionCategory,
   inferSectionRole,
   looksLikeStructuredPrompt,
   matchesBlacklist,
@@ -37,7 +38,7 @@ import {
 import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
 export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
-import { attachTagSuggestions, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
+import { attachTagSuggestions, searchPhraseCatalog, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
 import { applyCategoryColor, categoryColorId, categoryBaseColor, majorCategory,
   sanitizeCategoryColors, validCategoryColor, tagCategoryIndex, categoryPromptKey } from "./category_colors.js";
 import {
@@ -470,8 +471,20 @@ export function parseImportedTagSetText(value) {
   return normalized;
 }
 
+export function detectTextLanguage(value) {
+  const text = String(value || "");
+  if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return "ja";
+  if (/[\p{Script=Hangul}]/u.test(text)) return "ko";
+  if (/[\p{Script=Han}]/u.test(text)) return "zh";
+  return "en";
+}
+
 export function containsJapaneseText(value) {
   return /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(String(value || ""));
+}
+
+export function containsNonAsciiScript(value) {
+  return /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(String(value || ""));
 }
 
 export function translatableTagText(value) {
@@ -485,11 +498,14 @@ export function replaceTagTextPreservingSyntax(value, replacement) {
 export function applySmartTranslationResult(tag, translatedValue, target, localLanguage = "ja") {
   const translated = cleanTranslation(translatedValue);
   if (!tag || !translated) return false;
-  if (target === "en" && containsJapaneseText(translated)) return false;
-  if (target.toLocaleLowerCase().startsWith("ja") && !containsJapaneseText(translated)) return false;
+  const targetBase = String(target || "en").toLocaleLowerCase().split("-", 1)[0];
+  if (targetBase === "en" && containsNonAsciiScript(translated)) return false;
+  if (targetBase === "ja" && !containsJapaneseText(translated)) return false;
+  if (targetBase === "zh" && !/[\p{Script=Han}]/u.test(translated)) return false;
+  if (targetBase === "ko" && !/[\p{Script=Hangul}]/u.test(translated)) return false;
 
   const sourceText = translatableTagText(tag.value);
-  if (target === "en" && containsJapaneseText(sourceText)) {
+  if (targetBase === "en" && containsNonAsciiScript(sourceText)) {
     tag.value = replaceTagTextPreservingSyntax(tag.value, translated);
     tag.translation = sourceText;
     tag.translatedTo = localLanguage;
@@ -2620,12 +2636,31 @@ export class PromptEditor {
     }
     provider.value = this.settings.translationProvider;
     const output = element("select", { className: "paio-select" });
-    for (const [value, label] of [["en", "英語"], ["ja", "日本語"]]) {
+    for (const [value, label] of [
+      ["en", "英語 (en)"],
+      ["ja", "日本語 (ja)"],
+      ["zh", "中国語・簡体 (zh)"],
+      ["zh-TW", "中国語・繁体 (zh-TW)"],
+      ["ko", "韓国語 (ko)"],
+    ]) {
       const option = element("option", { text: t(label) });
       option.value = value;
       output.append(option);
     }
     output.value = this.settings.outputLanguage;
+    const localLang = element("select", { className: "paio-select" });
+    for (const [value, label] of [
+      ["ja", "日本語 (ja)"],
+      ["en", "英語 (en)"],
+      ["zh", "中国語・簡体 (zh)"],
+      ["zh-TW", "中国語・繁体 (zh-TW)"],
+      ["ko", "韓国語 (ko)"],
+    ]) {
+      const option = element("option", { text: t(label) });
+      option.value = value;
+      localLang.append(option);
+    }
+    localLang.value = this.settings.localLanguage || "ja";
     const auto = element("input", { type: "checkbox" });
     auto.checked = this.settings.autoTranslate;
     const replaceUnderscores = element("input", { type: "checkbox" });
@@ -2682,8 +2717,9 @@ export class PromptEditor {
     translationPanel.append(
       element("h4", { text: t("翻訳") }),
       this.labeled(t("翻訳プロバイダー"), provider),
+      this.labeled(t("対訳（表示）言語"), localLang),
       this.labeled(t("入力時に自動翻訳"), auto),
-      element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。") }),
+      element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、非英語タグを出力言語へ置換し、対訳言語の訳を追加します。") }),
     );
     const filePanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "files" } }, libraryManager.fileRoot);
     const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.editorRoot);
@@ -2715,6 +2751,7 @@ export class PromptEditor {
       this.settings.weightStep = Number(step.value);
       this.settings.duplicatePolicy = duplicate.value;
       this.settings.translationProvider = provider.value;
+      this.settings.localLanguage = localLang.value;
       this.settings.outputLanguage = output.value;
       this.settings.autoTranslate = auto.checked;
       this.settings.replaceUnderscoresForOutput = replaceUnderscores.checked;
@@ -3430,33 +3467,58 @@ export class PromptEditor {
     const search = element("input", { className: "paio-search", type: "search" });
     search.placeholder = t("英語・中国語・日本語でフレーズ検索");
     const list = element("div", { className: "paio-example-list paio-prose-phrase-list" });
-    const redraw = () => {
-      const q = search.value.trim().toLocaleLowerCase();
+    let fetchGeneration = 0;
+
+    const renderItems = (items) => {
       list.replaceChildren();
-      const matched = PROSE_PHRASES.filter((item) => !q
-        || item.prompt.toLocaleLowerCase().includes(q)
-        || item.ja.toLocaleLowerCase().includes(q)
-        || item.group.toLocaleLowerCase().includes(q));
-      if (!matched.length) {
+      if (!items.length) {
         list.append(element("p", { className: "paio-empty", text: t("一致するフレーズはありません") }));
         return;
       }
-      for (const item of matched) {
+      const outBase = String(this.settings?.outputLanguage || "en").toLocaleLowerCase().split("-", 1)[0];
+      const localLang = this.settings?.localLanguage || "ja";
+      for (const item of items) {
+        const textMap = item.text || {};
+        const promptText = textMap[outBase] || item.prompt || textMap.en || "";
+        const translationText = item.translation || item.ja || textMap[localLang] || textMap.ja || "";
+        const badge = item.matched_role ? `★ [${item.group}]` : `[${item.group}]`;
         const chip = button("", () => {
           this.pushUndo();
-          this.addValues([{ value: item.prompt, translation: item.ja, translatedTo: this.settings.localLanguage }], { trailingSeparator: true });
+          this.addValues([{ value: promptText, translation: translationText, translatedTo: localLang }], { trailingSeparator: true });
           this.setStatus(t("フレーズを追加しました"));
-        }, `${item.prompt}\n${item.ja}`);
+        }, `${promptText}\n${translationText}`);
         chip.classList.add("paio-example-chip", "paio-prose-phrase-chip");
         chip.replaceChildren(
-          element("span", { className: "paio-prose-phrase-group", text: `[${item.group}]` }),
-          element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
-          element("span", { className: "paio-example-chip-translation", text: item.ja }),
+          element("span", { className: "paio-prose-phrase-group", text: badge }),
+          element("span", { className: "paio-example-chip-prompt", text: promptText }),
+          element("span", { className: "paio-example-chip-translation", text: translationText }),
         );
         list.append(chip);
       }
     };
-    search.addEventListener("input", redraw);
+
+    const redraw = async () => {
+      const gen = ++fetchGeneration;
+      const q = search.value.trim();
+      const active = this.activeSection?.();
+      const role = inferSectionCategory(active?.title || "");
+      const localLang = this.settings?.localLanguage || "ja";
+      const remote = await searchPhraseCatalog(this.api, q, { role, language: localLang, limit: 40 });
+      if (gen !== fetchGeneration) return;
+      if (remote.length) {
+        renderItems(remote);
+        return;
+      }
+      const lower = q.toLocaleLowerCase();
+      const fallback = PROSE_PHRASES.filter((item) => !lower
+        || item.prompt.toLocaleLowerCase().includes(lower)
+        || item.ja.toLocaleLowerCase().includes(lower)
+        || item.group.toLocaleLowerCase().includes(lower));
+      renderItems(fallback);
+    };
+
+    this.refreshProsePhrasesPanel = () => { redraw(); };
+    search.addEventListener("input", () => { redraw(); });
     panel.append(element("div", { className: "paio-example-controls" }, [search]), list);
     redraw();
     return panel;
@@ -3473,6 +3535,7 @@ export class PromptEditor {
       control.setAttribute("aria-pressed", String(active));
     });
     if (this.activeLibraryTab === "tagSets") this.refreshTagSetsPanel?.();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   buildTagSetsPanel() {
@@ -4063,6 +4126,7 @@ export class PromptEditor {
     this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
     this.persist();
     this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   addSection() {
@@ -4277,10 +4341,11 @@ export class PromptEditor {
     const tagSecs = this.sections.filter((s) => s.mode !== "prose" && s.tags?.length);
     if (tagSecs.length) {
       const generation = this.translationGeneration;
+      const localBase = String(this.settings.localLanguage || "ja").toLocaleLowerCase().split("-", 1)[0];
       const items = tagSecs.flatMap((sec) => sec.tags.map((tag) => ({ sec, tag, text: translatableTagText(tag.value) })))
-        .filter((item) => item.text && !containsJapaneseText(item.text));
+        .filter((item) => item.text && detectTextLanguage(item.text) !== localBase);
       if (items.length) {
-        this.setStatus(t("{count}件のタグを日本語訳中…", { count: items.length }));
+        this.setStatus(t("{count}件のタグを翻訳中…", { count: items.length }));
         const results = await translateTags(this.api, items.map((i) => i.text), {
           provider: this.settings.translationProvider,
           source: "auto",
@@ -4300,7 +4365,7 @@ export class PromptEditor {
       this.syncToWidgets();
       this.render();
     }
-    this.setStatus(t("全ブロックの日本語訳を更新しました"));
+    this.setStatus(t("全ブロックの対訳を更新しました"));
   }
 
   async translateSectionJaToOriginal(sectionId) {
@@ -4308,10 +4373,10 @@ export class PromptEditor {
     if (!section) return;
     if (section.mode === "prose") {
       if (!cleanTranslation(section.translation)) {
-        this.setStatus(t("日本語訳欄に入力してから実行してください"), true);
+        this.setStatus(t("対訳欄に入力してから実行してください"), true);
         return;
       }
-      await this.translateProseSections([section], "en", true);
+      await this.translateProseSections([section], this.settings.outputLanguage || "en", true);
       return;
     }
     if (this.activeSectionId !== section.id) this.selectSection(section.id);
@@ -5100,8 +5165,9 @@ export class PromptEditor {
 
   async checkTagDb() {
     if (!this.tagDbStates) return;
+    if (this.activeSection?.()?.mode === "prose") return;
     const pending = [...new Set(this.currentTags.filter((tag) => tag.type === "normal").map((tag) => promptBody(tag.value)))]
-      .filter((value) => value && !containsJapaneseText(value) && !this.tagDbStates.has(value));
+      .filter((value) => value && !containsNonAsciiScript(value) && !this.tagDbStates.has(value));
     if (!pending.length) return;
     const results = await validateTagDb(this.api, pending.slice(0, TAG_DB_CHECK_BATCH));
     if (!results) {
@@ -5748,12 +5814,14 @@ export class PromptEditor {
     }
     this.persist();
     this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   clearSelection() {
     this.clearSelectionState();
     this.persist();
     this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   clearSelectionState() {
@@ -5982,7 +6050,7 @@ export class PromptEditor {
       const sourceText = translatableTagText(tag.value);
       const task = { id: tag.id, originalValue: tag.value, text: sourceText };
       tag.translationRequestId = requestId;
-      if (containsJapaneseText(sourceText)) japaneseTasks.push(task);
+      if (containsNonAsciiScript(sourceText)) japaneseTasks.push(task);
       else if (!cleanTranslation(tag.translation) || tag.translatedTo !== this.settings.localLanguage) localTasks.push(task);
     }
 

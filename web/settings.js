@@ -3,6 +3,8 @@ import { sanitizeCategoryColors } from "./category_colors.js";
 
 export const DEFAULT_CATALOG_NAME = "tag_catalog";
 export const FAVORITES_SCHEMA = "prompt-workbench/favorites";
+export const SUPPORTED_OUTPUT_LANGUAGES = Object.freeze(["en", "ja", "zh", "zh-CN", "zh-TW", "ko"]);
+export const SUPPORTED_LOCAL_LANGUAGES = Object.freeze(["ja", "en", "zh", "zh-CN", "zh-TW", "ko"]);
 
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
@@ -100,7 +102,7 @@ export function sanitizeSettings(input = {}) {
   if (["local", "offline", "libretranslate", "deepl", "openai"].includes(input.translationProvider)) {
     settings.translationProvider = input.translationProvider;
   }
-  if (["en", "ja"].includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
+  if (SUPPORTED_OUTPUT_LANGUAGES.includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
   if (["original", "local", "both"].includes(input.translationDisplay)) {
     settings.translationDisplay = input.translationDisplay;
   }

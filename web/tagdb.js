@@ -13,6 +13,21 @@ export async function searchTagDb(api, query, { language = "ja", contains = fals
   }
 }
 
+export async function searchPhraseCatalog(api, query = "", { role = "", language = "ja", mode = "", limit = 30, signal } = {}) {
+  if (!api?.fetchApi) return [];
+  const params = new URLSearchParams({ q: String(query || ""), language: String(language || "ja"), limit: String(limit) });
+  if (role) params.set("role", String(role));
+  if (mode) params.set("mode", String(mode));
+  try {
+    const response = await api.fetchApi(`/prompt_workbench/phrases/search?${params}`, { signal });
+    if (!response.ok) return [];
+    const body = await response.json();
+    return Array.isArray(body?.results) ? body.results : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function validateTagDb(api, tags) {
   try {
     const response = await api.fetchApi("/prompt_workbench/tagdb/validate", {

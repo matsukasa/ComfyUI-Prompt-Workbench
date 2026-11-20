@@ -275,6 +275,93 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertEqual(normalize_output_prompt(None), "")
         self.assertEqual(normalize_structured_prompt("a  \r\n\r\nb \r\n"), "a\n\nb")
 
+    def test_fork_node_builds_nested_json_from_dotted_section_titles(self):
+        node = PromptWorkbenchFork()
+        payload = json.dumps(
+            {
+                "nest_roles": False,
+                "sections": [
+                    {"id": "s1", "title": "task", "role": "positive", "mode": "prose", "enabled": True, "text": "editorial portrait", "socket_output": True},
+                    {"id": "s2", "title": "shot.composition", "role": "positive", "mode": "prose", "enabled": True, "text": "rule of thirds"},
+                    {"id": "s3", "title": "shot.angle", "role": "positive", "mode": "prose", "enabled": True, "text": "eye-level"},
+                    {"id": "s4", "title": "subject.core", "role": "positive", "mode": "prose", "enabled": True, "text": "young woman"},
+                    {"id": "s5", "title": "negatives", "role": "negative", "mode": "tags", "enabled": True, "text": "blurry, lowres"},
+                ],
+            }
+        )
+        out_prompt, out_negative, out_task = node.emit_prompt(
+            output_format="json",
+            sections_payload=payload,
+        )
+        parsed = json.loads(out_prompt)
+        self.assertEqual(parsed["task"], "editorial portrait")
+        self.assertEqual(parsed["shot"], {"composition": "rule of thirds", "angle": "eye-level"})
+        self.assertEqual(parsed["subject"], {"core": "young woman"})
+        self.assertEqual(out_negative, "blurry, lowres")
+        self.assertEqual(out_task, "editorial portrait")
+
+        nested_role_payload = json.dumps(
+            {
+                "nest_roles": True,
+                "sections": [
+                    {"id": "s1", "title": "shot.framing", "role": "positive", "mode": "prose", "enabled": True, "text": "medium close-up", "socket_output": True},
+                    {"id": "s2", "title": "negatives", "role": "negative", "mode": "tags", "enabled": True, "text": "watermark"},
+                ],
+            }
+        )
+        nested_prompt, _, _ = node.emit_prompt(output_format="json", sections_payload=nested_role_payload)
+        nested_parsed = json.loads(nested_prompt)
+        self.assertEqual(nested_parsed["positive"], {"shot": {"framing": "medium close-up"}})
+        self.assertEqual(nested_parsed["negative"], {"negatives": "watermark"})
+
+    def test_routes_multilingual_detection_chunking_and_phrase_catalog(self):
+        import importlib.util
+        import sys
+        import types
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[1]
+        pkg_name = "_pw_test_pkg"
+        if pkg_name not in sys.modules:
+            pkg = types.ModuleType(pkg_name)
+            pkg.__path__ = [str(root)]
+            sys.modules[pkg_name] = pkg
+        spec = importlib.util.spec_from_file_location(f"{pkg_name}.routes", root / "routes.py")
+        routes = importlib.util.module_from_spec(spec)
+        routes.__package__ = pkg_name
+        spec.loader.exec_module(routes)
+
+        # Issue #3: language detection & long-text chunking
+        self.assertEqual(routes._detect_source_language("柔らかな自然光が差し込む", "en"), "ja")
+        self.assertEqual(routes._detect_source_language("50mm标准焦段，平视全身近景", "ja"), "zh-CN")
+        self.assertEqual(routes._detect_source_language("부드러운 자연광 포트레이트", "en"), "ko")
+        self.assertEqual(routes._detect_source_language("soft key light from upper left", "ja"), "en")
+        self.assertEqual(routes._normalize_deepl_lang("zh-CN"), "ZH")
+        self.assertEqual(routes._normalize_deepl_lang("zh-TW"), "ZH")
+
+        long_prose = " ".join(
+            [f"Sentence number {i} describes cinematic lighting and shallow depth of field." for i in range(15)]
+        )
+        self.assertGreater(len(long_prose.encode("utf-8")), 500)
+        chunks = routes._split_text_chunks(long_prose, max_bytes=450)
+        self.assertGreater(len(chunks), 1)
+        for chunk_text, _ in chunks:
+            self.assertLessEqual(len(chunk_text.encode("utf-8")), 450)
+
+        # Issue #6: phrase catalog loading & role-prioritized multilingual search
+        catalog = routes.load_phrase_catalog()
+        self.assertGreaterEqual(len(catalog), 10)
+        lighting_hits = routes.search_phrases(role="lighting", language="ja", limit=10)
+        self.assertTrue(lighting_hits)
+        self.assertEqual(lighting_hits[0]["role"], "lighting")
+        self.assertTrue(lighting_hits[0]["matched_role"])
+        self.assertIn("en", lighting_hits[0]["text"])
+        self.assertIn("ja", lighting_hits[0]["text"])
+        self.assertIn("zh", lighting_hits[0]["text"])
+
+        zh_hits = routes.search_phrases(query="胶片", language="zh", limit=5)
+        self.assertTrue(any(hit["role"] == "camera" for hit in zh_hits))
+
 
 if __name__ == "__main__":
     unittest.main()

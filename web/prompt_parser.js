@@ -77,6 +77,32 @@ export const SECTION_HEADING_GROUPS = Object.freeze([
       "ネガティブ",
     ],
   },
+  {
+    id: "json-schema",
+    label: "JSON Schema (Nested)",
+    items: [
+      "task",
+      "shot.composition",
+      "shot.angle",
+      "shot.aspect_ratio",
+      "shot.framing",
+      "subject.core",
+      "subject.appearance",
+      "subject.clothing",
+      "subject.pose_or_action",
+      "environment.setting",
+      "environment.background_elements",
+      "lighting.source",
+      "lighting.direction",
+      "lighting.color_temperature",
+      "camera.equipment",
+      "camera.depth_of_field",
+      "color_grade.palette",
+      "color_grade.contrast",
+      "style.art_style",
+      "negatives",
+    ],
+  },
 ]);
 
 export const SECTION_TEMPLATES = Object.freeze([
@@ -154,7 +180,45 @@ export const SECTION_TEMPLATES = Object.freeze([
       "ネガティブ",
     ],
   },
+  {
+    id: "json-editorial",
+    label: "JSON構造化（作例スキーマ）",
+    outputFormat: "json",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    titles: [
+      "task",
+      "shot.composition",
+      "shot.angle",
+      "shot.framing",
+      "subject.core",
+      "subject.clothing",
+      "subject.pose_or_action",
+      "environment.setting",
+      "lighting.source",
+      "camera.equipment",
+      "color_grade.palette",
+      "style.art_style",
+      "negatives",
+    ],
+  },
 ]);
+
+export function inferSectionCategory(title) {
+  const normalized = String(title || "").trim().toLowerCase();
+  if (!normalized) return "";
+  if (/(negative|negatives|ネガティブ|负面|除外|avoid)/u.test(normalized)) return "negative";
+  if (/(camera|lens|equipment|depth_of_field|カメラ|レンズ|机位|镜头)/u.test(normalized)) return "camera";
+  if (/(composition|shot|angle|framing|構図|アングル|构图)/u.test(normalized)) return "composition";
+  if (/(clothing|outfit|wardrobe|costume|服装|衣装|装飾|服饰)/u.test(normalized)) return "clothing";
+  if (/(environment|scene|background|setting|props|背景|空間|小道具|场景|道具)/u.test(normalized)) return "environment";
+  if (/(lighting|light|shadow|光影|ライティング|照明)/u.test(normalized)) return "lighting";
+  if (/(color_grade|color|palette|contrast|色彩|カラー|配色|色调)/u.test(normalized)) return "color";
+  if (/(subject|character|pose|action|appearance|人物|キャラクター|ポーズ|表情|主体|造型)/u.test(normalized)) return "subject";
+  if (/(quality|texture|finish|品質|質感|仕上げ|质感|质量)/u.test(normalized)) return "quality";
+  if (/(style|task|art_style|画風|スタイル|タスク|范式|风格)/u.test(normalized)) return "style";
+  return "";
+}
 
 function isTagWordCharacter(character) {
   return /[\p{L}\p{N}_-]/u.test(character || "");
@@ -537,6 +601,38 @@ function splitInlineBracketSections(text) {
   return sections;
 }
 
+function flattenJsonPromptValue(prefix, value, out, roleOverride = null) {
+  if (value === null || value === undefined) return;
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    out.push({ title: prefix, body: String(value).trim(), role: roleOverride, modeHint: null });
+    return;
+  }
+  if (Array.isArray(value)) {
+    const allPrimitives = value.every((item) => item === null || ["string", "number", "boolean"].includes(typeof item));
+    if (allPrimitives) {
+      const joined = value.map((item) => String(item ?? "").trim()).filter(Boolean).join(", ");
+      out.push({ title: prefix, body: joined, role: roleOverride, modeHint: "tags" });
+    } else {
+      out.push({ title: prefix, body: JSON.stringify(value, null, 2), role: roleOverride, modeHint: "prose" });
+    }
+    return;
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value);
+    if (!entries.length) return;
+    for (const [childKey, childVal] of entries) {
+      const cleanChild = String(childKey || "").trim();
+      if (!cleanChild) continue;
+      if (cleanChild === "_value" && typeof childVal !== "object") {
+        out.push({ title: prefix, body: String(childVal ?? "").trim(), role: roleOverride, modeHint: null });
+        continue;
+      }
+      const nextKey = prefix ? `${prefix}.${cleanChild}` : cleanChild;
+      flattenJsonPromptValue(nextKey, childVal, out, roleOverride);
+    }
+  }
+}
+
 function parseJsonPromptObject(text) {
   const trimmed = String(text ?? "").trim();
   if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) return null;
@@ -545,10 +641,75 @@ function parseJsonPromptObject(text) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
     const entries = Object.entries(parsed);
     if (!entries.length) return null;
-    return entries;
+
+    const lowerKeys = new Set(entries.map(([k]) => String(k || "").trim().toLowerCase()));
+    const isRoleNested = (
+      lowerKeys.has("positive")
+      && entries.every(([k]) => ["positive", "negative", "negatives"].includes(String(k || "").trim().toLowerCase()))
+    );
+
+    const flattened = [];
+    if (isRoleNested) {
+      for (const [rawKey, rawVal] of entries) {
+        const lower = String(rawKey || "").trim().toLowerCase();
+        const role = lower === "positive" ? "positive" : "negative";
+        if (rawVal && typeof rawVal === "object" && !Array.isArray(rawVal)) {
+          flattenJsonPromptValue("", rawVal, flattened, role);
+        } else {
+          flattenJsonPromptValue(role === "negative" ? rawKey : "prompt", rawVal, flattened, role);
+        }
+      }
+    } else {
+      for (const [rawKey, rawVal] of entries) {
+        const key = String(rawKey || "").trim();
+        if (!key) continue;
+        flattenJsonPromptValue(key, rawVal, flattened, null);
+      }
+    }
+    return flattened.length ? flattened : null;
   } catch {
     return null;
   }
+}
+
+function setNestedJsonValue(root, rawKey, value, fallbackSuffix = 1) {
+  const parts = String(rawKey || "")
+    .split(".")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length <= 1) {
+    const baseKey = parts[0] || `section_${fallbackSuffix}`;
+    let key = baseKey;
+    let suffix = fallbackSuffix;
+    while (Object.hasOwn(root, key)) {
+      key = `${baseKey}_${suffix}`;
+      suffix += 1;
+    }
+    root[key] = value;
+    return;
+  }
+  let cursor = root;
+  for (let i = 0; i < parts.length - 1; i += 1) {
+    const segment = parts[i];
+    const existing = cursor[segment];
+    if (existing === undefined || existing === null) {
+      cursor[segment] = {};
+      cursor = cursor[segment];
+    } else if (typeof existing === "object" && !Array.isArray(existing)) {
+      cursor = existing;
+    } else {
+      cursor[segment] = { _value: existing };
+      cursor = cursor[segment];
+    }
+  }
+  const leaf = parts[parts.length - 1];
+  let key = leaf;
+  let suffix = fallbackSuffix;
+  while (Object.hasOwn(cursor, key)) {
+    key = `${leaf}_${suffix}`;
+    suffix += 1;
+  }
+  cursor[key] = value;
 }
 
 function inferProseMode(body) {
@@ -568,17 +729,17 @@ export function parseStructuredPrompt(text, previousSections = []) {
       reusableByTitle.get(key).push(oldSection);
     }
     const errors = [];
-    const sections = jsonEntries.map(([rawKey, rawVal]) => {
-      const title = String(rawKey || "").trim();
-      const body = typeof rawVal === "string" ? rawVal.trim() : JSON.stringify(rawVal, null, 2);
+    const sections = jsonEntries.map((entry) => {
+      const title = String(entry.title || "").trim();
+      const body = String(entry.body || "").trim();
       const reused = reusableByTitle.get(title)?.shift();
       const parsed = parsePrompt(body, (reused?.tags || []).filter((tag) => tag.enabled !== false));
       errors.push(...parsed.errors);
-      const mode = reused?.mode || (inferProseMode(body) ? "prose" : "tags");
+      const mode = reused?.mode || entry.modeHint || (inferProseMode(body) ? "prose" : "tags");
       return createSection({
         ...(reused || {}),
         title,
-        role: reused?.role || inferSectionRole(title),
+        role: entry.role || reused?.role || inferSectionRole(title),
         mode,
         proseText: mode === "prose" ? body : String(reused?.proseText || ""),
         trailingSeparator: parsed.trailingSeparator,
@@ -748,6 +909,7 @@ export function buildStructuredOutputs(sections, options = {}) {
   const replaceUnderscores = Boolean(options.replaceUnderscores);
   const wrapBraces = Boolean(options.wrapBraces);
   const includeNegativeInPrompt = Boolean(options.includeNegativeInPrompt);
+  const nestRoles = Boolean(options.nestRoles);
   const enabledSections = (sections || []).filter((section) => section && section.enabled !== false);
 
   const sectionBody = (section, structuredBody = true) => {
@@ -757,7 +919,7 @@ export function buildStructuredOutputs(sections, options = {}) {
     if (structuredBody) {
       return serializeStructuredSectionBody(section.tags, outputLanguage, {
         replaceUnderscores,
-        trailingSeparator: section.trailingSeparator,
+        trailingSeparator: false,
       });
     }
     return outputPrompt(section.tags, outputLanguage, {
@@ -789,21 +951,38 @@ export function buildStructuredOutputs(sections, options = {}) {
   }
 
   if (outputFormat === "json") {
-    const toJsonText = (list) => {
+    const buildJsonObj = (list, fallbackPrefix = "section") => {
       const obj = {};
       list.forEach((section, idx) => {
         const body = sectionBody(section, true);
         if (!body) return;
-        let key = stripSectionBrackets(section.title, `section_${idx + 1}`);
-        if (Object.hasOwn(obj, key)) key = `${key}_${idx + 1}`;
-        obj[key] = body;
+        const key = stripSectionBrackets(section.title, `${fallbackPrefix}_${idx + 1}`);
+        setNestedJsonValue(obj, key, body, idx + 1);
       });
-      return Object.keys(obj).length ? JSON.stringify(obj, null, 2) : "";
+      return obj;
     };
-    const posList = enabledSections.filter((s) => s.role !== "negative" || includeNegativeInPrompt);
+    const posList = enabledSections.filter((s) => s.role !== "negative" || (includeNegativeInPrompt && !nestRoles));
     const negList = enabledSections.filter((s) => s.role === "negative");
+    const posObj = buildJsonObj(posList, "section");
+    let promptJson = "";
+    if (nestRoles) {
+      const wrapped = {};
+      if (Object.keys(posObj).length) wrapped.positive = posObj;
+      if (negList.length) {
+        if (negList.length === 1 && !negList[0].title) {
+          const negText = sectionBody(negList[0], true);
+          if (negText) wrapped.negative = negText;
+        } else {
+          const negObj = buildJsonObj(negList, "negative");
+          if (Object.keys(negObj).length) wrapped.negative = negObj;
+        }
+      }
+      promptJson = Object.keys(wrapped).length ? JSON.stringify(wrapped, null, 2) : "";
+    } else {
+      promptJson = Object.keys(posObj).length ? JSON.stringify(posObj, null, 2) : "";
+    }
     return {
-      prompt: toJsonText(posList),
+      prompt: promptJson,
       negative: negList.length === 1 && !negList[0].title
         ? sectionBody(negList[0], true)
         : (negList.map((s) => sectionBody(s, true)).filter(Boolean).join("\n\n")),

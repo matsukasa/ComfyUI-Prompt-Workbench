@@ -631,3 +631,106 @@ test("syncDynamicSectionSockets adds, renames, and removes section-named input a
   assert.equal(links[21].origin_slot, 2);
   assert.equal(links[20].origin_slot, 3);
 });
+
+test("Issue #4: nested JSON schema parsing, array flattening, dotted reconstruction, and role nesting", async () => {
+  const { SECTION_TEMPLATES, SECTION_HEADING_GROUPS } = await import("../web/prompt_parser.js");
+  assert.ok(SECTION_TEMPLATES.some((tpl) => tpl.id === "json-editorial" && tpl.outputFormat === "json"));
+  assert.ok(SECTION_HEADING_GROUPS.some((grp) => grp.id === "json-schema" && grp.items.includes("shot.composition")));
+
+  const sampleJson = JSON.stringify({
+    task: "editorial portrait",
+    shot: {
+      composition: "rule of thirds",
+      angle: "eye-level",
+    },
+    environment: {
+      setting: "rainy neon street",
+      background_elements: ["wet asphalt", "warm shopfront glow"],
+    },
+    negatives: "lowres, blurry",
+  }, null, 2);
+
+  const parsed = parseStructuredPrompt(sampleJson);
+  assert.equal(parsed.isJson, true);
+  assert.deepEqual(
+    parsed.sections.map((s) => s.title),
+    ["task", "shot.composition", "shot.angle", "environment.setting", "environment.background_elements", "negatives"],
+  );
+  const bgSec = parsed.sections.find((s) => s.title === "environment.background_elements");
+  assert.equal(bgSec.mode, "tags");
+  assert.deepEqual(bgSec.tags.map((t) => t.value), ["wet asphalt", "warm shopfront glow"]);
+  const negSec = parsed.sections.find((s) => s.title === "negatives");
+  assert.equal(negSec.role, "negative");
+
+  // Reconstruct nested JSON without trailing commas.
+  const out = buildStructuredOutputs(parsed.sections, { outputFormat: "json" });
+  const rebuilt = JSON.parse(out.prompt);
+  assert.equal(rebuilt.task, "editorial portrait");
+  assert.deepEqual(rebuilt.shot, { composition: "rule of thirds", angle: "eye-level" });
+  assert.equal(rebuilt.environment.background_elements, "wet asphalt, warm shopfront glow");
+  assert.equal(out.negative, "lowres, blurry");
+
+  // Role-nested JSON output & round-trip parsing.
+  const roleOut = buildStructuredOutputs(parsed.sections, { outputFormat: "json", nestRoles: true });
+  const roleRebuilt = JSON.parse(roleOut.prompt);
+  assert.deepEqual(roleRebuilt.positive.shot, { composition: "rule of thirds", angle: "eye-level" });
+  assert.deepEqual(roleRebuilt.negative, { negatives: "lowres, blurry" });
+
+  const reparsed = parseStructuredPrompt(roleOut.prompt);
+  assert.equal(reparsed.sections.find((s) => s.title === "shot.composition")?.role, "positive");
+  assert.equal(reparsed.sections.find((s) => s.title === "negatives")?.role, "negative");
+});
+
+test("Issue #3 & #6: multilingual settings, language detection, section category inference, and phrase search", async () => {
+  const { inferSectionCategory } = await import("../web/prompt_parser.js");
+  const { detectTextLanguage, applySmartTranslationResult } = await import("../web/prompt_editor.js");
+  const { searchPhraseCatalog } = await import("../web/tagdb.js");
+
+  // Issue #3: multilingual outputLanguage & localLanguage
+  const zhSettings = sanitizeSettings({ outputLanguage: "zh", localLanguage: "ja" });
+  assert.equal(zhSettings.outputLanguage, "zh");
+  assert.equal(zhSettings.localLanguage, "ja");
+  const koSettings = sanitizeSettings({ outputLanguage: "ko", localLanguage: "zh-TW" });
+  assert.equal(koSettings.outputLanguage, "ko");
+  assert.equal(koSettings.localLanguage, "zh-TW");
+
+  assert.equal(detectTextLanguage("柔らかい光"), "ja");
+  assert.equal(detectTextLanguage("柔和主光"), "zh");
+  assert.equal(detectTextLanguage("부드러운 빛"), "ko");
+  assert.equal(detectTextLanguage("soft light"), "en");
+
+  const zhTag = createTag("soft light");
+  assert.equal(applySmartTranslationResult(zhTag, "柔和主光", "zh", "ja"), true);
+  assert.equal(zhTag.translation, "柔和主光");
+  assert.equal(zhTag.translatedTo, "zh");
+
+  const cnToEnTag = createTag("柔和主光");
+  assert.equal(applySmartTranslationResult(cnToEnTag, "soft key light", "en", "zh"), true);
+  assert.equal(cnToEnTag.value, "soft key light");
+  assert.equal(cnToEnTag.translation, "柔和主光");
+
+  // Issue #6: section category inference & phrase search API client
+  assert.equal(inferSectionCategory("【构图与机位】"), "camera");
+  assert.equal(inferSectionCategory("shot.composition"), "composition");
+  assert.equal(inferSectionCategory("【色彩光影】"), "lighting");
+  assert.equal(inferSectionCategory("subject.clothing"), "clothing");
+  assert.equal(inferSectionCategory("【ネガティブ（任意）】"), "negative");
+
+  let requestedUrl = "";
+  const mockApi = {
+    async fetchApi(url) {
+      requestedUrl = url;
+      return {
+        ok: true,
+        async json() {
+          return { results: [{ id: "light-1", role: "lighting", matched_role: true }] };
+        },
+      };
+    },
+  };
+  const phrases = await searchPhraseCatalog(mockApi, "rim", { role: "lighting", language: "ja", limit: 10 });
+  assert.equal(phrases.length, 1);
+  assert.match(requestedUrl, /\/prompt_workbench\/phrases\/search\?/);
+  assert.match(requestedUrl, /role=lighting/);
+  assert.match(requestedUrl, /q=rim/);
+});

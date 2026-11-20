@@ -186,7 +186,41 @@ def _strip_section_brackets(title, fallback):
         if text.startswith(open_b) and text.endswith(close_b) and len(text) >= 2:
             text = text[1:-1].strip()
             break
+    text = re.sub(r"[:：]+$", "", text).strip()
     return text or fallback
+
+
+def _set_nested_json_value(root, raw_key, value, fallback_suffix=1):
+    parts = [part.strip() for part in str(raw_key or "").split(".") if part.strip()]
+    if len(parts) <= 1:
+        base_key = parts[0] if parts else f"section_{fallback_suffix}"
+        key = base_key
+        suffix = fallback_suffix
+        while key in root:
+            key = f"{base_key}_{suffix}"
+            suffix += 1
+        root[key] = value
+        return
+
+    cursor = root
+    for segment in parts[:-1]:
+        existing = cursor.get(segment)
+        if existing is None:
+            cursor[segment] = {}
+            cursor = cursor[segment]
+        elif isinstance(existing, dict):
+            cursor = existing
+        else:
+            cursor[segment] = {"_value": existing}
+            cursor = cursor[segment]
+
+    leaf = parts[-1]
+    key = leaf
+    suffix = fallback_suffix
+    while key in cursor:
+        key = f"{leaf}_{suffix}"
+        suffix += 1
+    cursor[key] = value
 
 
 def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format="tags"):
@@ -199,6 +233,7 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
 
     wrap_braces = bool(payload.get("wrap_braces"))
     include_neg = bool(payload.get("include_negative_in_prompt"))
+    nest_roles = bool(payload.get("nest_roles"))
     pos_blocks = []
     neg_blocks = []
     extra_outputs_by_id = {}
@@ -264,12 +299,19 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
             obj = {}
             for idx, (fallback_key, title, text) in enumerate(blocks):
                 base_key = _strip_section_brackets(title, fallback_key or f"section_{idx + 1}")
-                key = base_key
-                suffix = idx + 1
-                while key in obj:
-                    key = f"{base_key}_{suffix}"
-                    suffix += 1
-                obj[key] = text
+                _set_nested_json_value(obj, base_key, text, fallback_suffix=idx + 1)
+            if nest_roles:
+                wrapped = {"positive": obj}
+                if neg_blocks:
+                    if len(neg_blocks) == 1 and not neg_blocks[0][1]:
+                        wrapped["negative"] = neg_blocks[0][2]
+                    else:
+                        neg_obj = {}
+                        for idx, (fallback_key, title, text) in enumerate(neg_blocks):
+                            base_key = _strip_section_brackets(title, fallback_key or f"negative_{idx + 1}")
+                            _set_nested_json_value(neg_obj, base_key, text, fallback_suffix=idx + 1)
+                        wrapped["negative"] = neg_obj
+                return json.dumps(wrapped, ensure_ascii=False, indent=2)
             return json.dumps(obj, ensure_ascii=False, indent=2)
         if output_format == "structured":
             rendered = [
