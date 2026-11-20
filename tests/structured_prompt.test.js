@@ -600,4 +600,34 @@ test("syncDynamicSectionSockets adds, renames, and removes section-named input a
   editor.syncDynamicSectionSockets();
   assert.deepEqual(node.inputs, []);
   assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative"]);
+
+  // Reordering sections reorders both input and output sockets and updates graph link slots.
+  const links = {
+    10: { id: 10, target_slot: 0 },
+    11: { id: 11, target_slot: 1 },
+    20: { id: 20, origin_slot: 2 },
+    21: { id: 21, origin_slot: 3 },
+  };
+  node.graph.links = links;
+  sec1.socketInput = true;
+  sec1.socketOutput = true;
+  sec2.socketInput = true;
+  sec2.socketOutput = true;
+  editor.syncDynamicSectionSockets();
+  node.inputs[0].link = 10;
+  node.inputs[1].link = 11;
+  node.outputs[2].links = [20];
+  node.outputs[3].links = [21];
+  assert.deepEqual(node.inputs.map((i) => i.name), ["【主体】", "LoRA Trigger"]);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative", "【主体】", "LoRA Trigger"]);
+
+  // Swap section order: sec2 before sec1.
+  editor.sections = [sec2, sec1];
+  editor.syncDynamicSectionSockets();
+  assert.deepEqual(node.inputs.map((i) => i.name), ["LoRA Trigger", "【主体】"]);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative", "LoRA Trigger", "【主体】"]);
+  assert.equal(links[11].target_slot, 0);
+  assert.equal(links[10].target_slot, 1);
+  assert.equal(links[21].origin_slot, 2);
+  assert.equal(links[20].origin_slot, 3);
 });

@@ -1445,6 +1445,38 @@ export class PromptEditor {
       }
     }
 
+    const resolveGraphLink = (linkId) => {
+      if (linkId === null || linkId === undefined) return null;
+      const links = this.node?.graph?.links;
+      if (!links) return null;
+      if (typeof links.get === "function") return links.get(linkId) || null;
+      return links[linkId] || null;
+    };
+
+    // Reorder dynamic input sockets to match section block order while preserving links.
+    if (Array.isArray(this.node.inputs) && desired.length > 1) {
+      const staticInputs = this.node.inputs.filter((input) => !input?._paioSectionId);
+      const dynamicById = new Map(
+        this.node.inputs.filter((input) => input?._paioSectionId).map((input) => [input._paioSectionId, input]),
+      );
+      const orderedDynamic = desired.map((entry) => dynamicById.get(entry.sectionId)).filter(Boolean);
+      const nextInputs = [...staticInputs, ...orderedDynamic];
+      if (nextInputs.length === this.node.inputs.length && nextInputs.some((item, idx) => item !== this.node.inputs[idx])) {
+        this.node.inputs.splice(0, this.node.inputs.length, ...nextInputs);
+        this.node.inputs.forEach((input, slotIdx) => {
+          const link = resolveGraphLink(input?.link);
+          if (link) link.target_slot = slotIdx;
+          if (Array.isArray(input?.links)) {
+            for (const linkId of input.links) {
+              const linked = resolveGraphLink(linkId);
+              if (linked) linked.target_slot = slotIdx;
+            }
+          }
+        });
+        socketsChanged = true;
+      }
+    }
+
     // Sync on-demand dynamic output sockets (after fixed index 0: prompt, 1: negative).
     const desiredOutputs = this.sections
       .filter((section) => Boolean(section.socketOutput))
@@ -1481,6 +1513,29 @@ export class PromptEditor {
         const added = this.node.addOutput(entry.name, "STRING");
         const target = added || this.node.outputs?.[this.node.outputs.length - 1];
         if (target) target._paioSectionOutId = entry.sectionId;
+        socketsChanged = true;
+      }
+    }
+
+    // Reorder dynamic output sockets (index >= 2) to match section block order while preserving links.
+    if (Array.isArray(this.node.outputs) && this.node.outputs.length > 3 && desiredOutputs.length > 1) {
+      const fixedOutputs = this.node.outputs.slice(0, 2);
+      const dynamicOutById = new Map(
+        this.node.outputs.slice(2).filter((output) => output?._paioSectionOutId).map((output) => [output._paioSectionOutId, output]),
+      );
+      const orderedDynamicOut = desiredOutputs.map((entry) => dynamicOutById.get(entry.sectionId)).filter(Boolean);
+      const nextOutputs = [...fixedOutputs, ...orderedDynamicOut];
+      if (nextOutputs.length === this.node.outputs.length && nextOutputs.some((item, idx) => item !== this.node.outputs[idx])) {
+        this.node.outputs.splice(0, this.node.outputs.length, ...nextOutputs);
+        for (let slotIdx = 2; slotIdx < this.node.outputs.length; slotIdx += 1) {
+          const output = this.node.outputs[slotIdx];
+          if (Array.isArray(output?.links)) {
+            for (const linkId of output.links) {
+              const linked = resolveGraphLink(linkId);
+              if (linked) linked.origin_slot = slotIdx;
+            }
+          }
+        }
         socketsChanged = true;
       }
     }
@@ -1853,17 +1908,23 @@ export class PromptEditor {
     this.ioDialog = this.buildIoDialog();
     this.bulkSplitDialog = this.buildBulkSplitDialog();
 
+    // House secondary section toggles and management dialogs inside Settings
+    // to keep the primary toolbar focused on frequent actions.
+    this.settingsDialog.body?.prepend(
+      element("div", { className: "paio-toolbar" }, [
+        this.includeNegativeToggle,
+        showBlockJaLabel,
+        button(t("コピー/IO"), () => { closeDialog(this.settingsDialog); openDialog(this.ioDialog); }, t("コピー・エクスポート・インポート")),
+        button(t("禁止"), () => { closeDialog(this.settingsDialog); openDialog(this.blacklistDialog); }, t("ブラックリスト")),
+      ]),
+    );
+
     this.sectionControls = element("div", { className: "paio-section-controls" }, [
       element("span", { className: "paio-translation-label", text: t("出力") }),
       formatGroup,
       this.wrapBracesToggle,
-      this.includeNegativeToggle,
       addSectionBtn,
-      templateSelect,
       bulkSplitBtn,
-      showBlockJaLabel,
-      button(t("コピー/IO"), () => openDialog(this.ioDialog), t("コピー・エクスポート・インポート")),
-      button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
       button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
       this.syncBadge,
       headingDatalist,
@@ -4636,15 +4697,7 @@ export class PromptEditor {
 
   renderSectionHeaderSummary() {
     if (!this.currentTagsSummaryTitle) return;
-    if (!this.isMultiSectionView()) {
-      this.currentTagsSummaryTitle.textContent = t("現在のタグ");
-      return;
-    }
-    const active = this.activeSection();
-    const index = Math.max(0, this.sections.indexOf(active));
-    const label = active?.title || t("セクション {index}", { index: index + 1 });
-    const roleTag = active?.role === "negative" ? "Neg" : "Pos";
-    this.currentTagsSummaryTitle.textContent = t("現在のタグ — {section} [{role}]", { section: label, role: roleTag });
+    this.currentTagsSummaryTitle.textContent = t("現在のタグ");
   }
 
   buildIoDialog() {
