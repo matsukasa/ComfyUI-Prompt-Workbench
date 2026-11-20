@@ -378,10 +378,99 @@ test("moveTagsToSection moves single or multi-selected tags across sections with
   assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["1girl", "silver_hair", "white_dress"]);
   assert.deepEqual(editor.sections[1].tags.map((tag) => tag.value), ["ribbon"]);
 
-  // Moving a tag into a prose section appends it cleanly to proseText.
-  assert.equal(editor.moveTagsToSection([t1.id], "sec-3", "sec-1"), 1);
+  // Moving a tag into a prose section appends enabled tags to proseText
+  // while keeping disabled tags out of proseText (stored disabled in target.tags).
+  const disabledTag = createTag("hidden_tag", { enabled: false });
+  editor.sections[0].tags.push(disabledTag);
+  assert.equal(editor.moveTagsToSection([t1.id, disabledTag.id], "sec-3", "sec-1"), 2);
   assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["silver_hair", "white_dress"]);
   assert.equal(editor.sections[2].proseText, "Eye-level 50mm. 1girl");
+  assert.deepEqual(editor.sections[2].tags.map((tag) => [tag.value, tag.enabled]), [["hidden_tag", false]]);
+
+  // Switching the prose section back to tags mode preserves the disabled tag.
+  editor.activeSectionId = "sec-3";
+  editor.setActiveSectionMode("tags");
+  assert.ok(editor.sections[2].tags.some((tag) => tag.value === "hidden_tag" && tag.enabled === false));
+});
+
+test("scheduleTagToggle flushes previous tag on rapid clicks and binds to original section", () => {
+  const noop = () => {};
+  const sec1 = createSection({ id: "sec-1", title: "A", tags: [createTag("alpha"), createTag("beta")] });
+  const sec2 = createSection({ id: "sec-2", title: "B", tags: [createTag("gamma")] });
+  const [a, b] = sec1.tags;
+  const [c] = sec2.tags;
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [sec1, sec2],
+    activeSectionId: "sec-1",
+    outputFormat: "tags",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    dirtySectionIds: new Set(),
+    sectionTextareas: new Map(),
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { properties: {}, widgets: [], graph: { setDirtyCanvas: noop } },
+    widgets: { prompt: { value: "" }, negative: { value: "" }, outputFormat: { value: "tags" } },
+    undoStack: [],
+    redoStack: [],
+    translationGeneration: 0,
+    applyCustomColors: noop,
+    renderTranslationControls: noop,
+    renderBulk: noop,
+    renderTags: noop,
+    rebuildControls: noop,
+    rebuildSectionViews: noop,
+    setStatus: noop,
+  });
+
+  // Rapidly clicking tag a then tag b immediately flushes tag a's toggle instead of losing it.
+  editor.scheduleTagToggle("sec-1", a.id);
+  editor.scheduleTagToggle("sec-1", b.id);
+  assert.equal(a.enabled, false);
+  assert.equal(b.enabled, true);
+
+  // Switching to sec-2 flushes tag b on sec-1 rather than toggling tag c on sec-2.
+  editor.selectSection("sec-2");
+  assert.equal(b.enabled, false);
+  assert.equal(c.enabled, true);
+  editor.cancelPendingTagToggle();
+});
+
+test("reorderSection moves sections before or after a target with undo support", () => {
+  const noop = () => {};
+  const sec1 = createSection({ id: "sec-1", title: "First", tags: [createTag("a")] });
+  const sec2 = createSection({ id: "sec-2", title: "Second", tags: [createTag("b")] });
+  const sec3 = createSection({ id: "sec-3", title: "Third", tags: [createTag("c")] });
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [sec1, sec2, sec3],
+    activeSectionId: "sec-1",
+    outputFormat: "tags",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    dirtySectionIds: new Set(),
+    sectionTextareas: new Map(),
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { properties: {}, widgets: [], graph: { setDirtyCanvas: noop } },
+    widgets: { prompt: { value: "" }, negative: { value: "" }, outputFormat: { value: "tags" } },
+    undoStack: [],
+    redoStack: [],
+    translationGeneration: 0,
+    applyCustomColors: noop,
+    renderTranslationControls: noop,
+    renderBulk: noop,
+    renderTags: noop,
+    rebuildControls: noop,
+    rebuildSectionViews: noop,
+    setStatus: noop,
+  });
+
+  assert.equal(editor.reorderSection("sec-3", "sec-1", "before"), true);
+  assert.deepEqual(editor.sections.map((s) => s.id), ["sec-3", "sec-1", "sec-2"]);
+
+  assert.equal(editor.reorderSection("sec-3", "sec-2", "after"), true);
+  assert.deepEqual(editor.sections.map((s) => s.id), ["sec-1", "sec-2", "sec-3"]);
+
+  editor.undo();
+  assert.deepEqual(editor.sections.map((s) => s.id), ["sec-3", "sec-1", "sec-2"]);
 });
 
 test("MCP section widgets sync bidirectionally and applyExecutionFeedback updates merged_preview", () => {

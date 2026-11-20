@@ -1493,28 +1493,54 @@ export class PromptEditor {
   buildSectionsPayload() {
     if (!Array.isArray(this.sections)) return "";
     const socketNames = this.sectionSocketNames();
+    const outputLanguage = this.settings?.outputLanguage || "en";
+    const replaceUnderscores = Boolean(this.settings?.replaceUnderscores);
+    const structuredMode = this.outputFormat === "structured" || this.outputFormat === "json";
+    const outputOrder = Array.isArray(this.node?.outputs)
+      ? this.node.outputs.slice(2).map((output) => output?._paioSectionOutId).filter(Boolean)
+      : [];
     return JSON.stringify({
       version: 1,
       wrap_braces: Boolean(this.wrapBraces),
       include_negative_in_prompt: Boolean(this.includeNegativeInPrompt),
-      sections: this.sections.map((section) => ({
-        id: section.id,
-        title: section.title || "",
-        socket_name: socketNames.get(section.id) || section.title || section.id,
-        socket_input: Boolean(section.socketInput),
-        socket_output: Boolean(section.socketOutput),
-        role: section.role === "negative" ? "negative" : "positive",
-        mode: section.mode === "prose" ? "prose" : "tags",
-        enabled: section.enabled !== false,
-        text: section.mode === "prose"
-          ? String(section.proseText || "").trim()
-          : this.promptEditorValue(section),
-      })),
+      output_order: outputOrder,
+      sections: this.sections.map((section) => {
+        let text = "";
+        if (section.mode === "prose") {
+          const translated = section.translation && section.translatedTo === outputLanguage
+            ? section.translation
+            : section.proseText;
+          text = String(translated || "").trim();
+        } else if (structuredMode) {
+          text = serializeStructuredSectionBody(section.tags || [], outputLanguage, {
+            replaceUnderscores,
+            trailingSeparator: section.trailingSeparator,
+          });
+        } else {
+          text = outputPrompt(section.tags || [], outputLanguage, {
+            trailingSeparator: false,
+            stripLineBreaks: true,
+            replaceUnderscores,
+          });
+        }
+        return {
+          id: section.id,
+          title: section.title || "",
+          socket_name: socketNames.get(section.id) || section.title || section.id,
+          socket_input: Boolean(section.socketInput),
+          socket_output: Boolean(section.socketOutput),
+          role: section.role === "negative" ? "negative" : "positive",
+          mode: section.mode === "prose" ? "prose" : "tags",
+          enabled: section.enabled !== false,
+          text,
+        };
+      }),
     });
   }
 
   syncToWidgets() {
     this.syncing = true;
+    this.syncDynamicSectionSockets();
     const outputs = this.currentOutputs();
     const promptWidget = this.widgets.prompt;
     if (promptWidget && promptWidget.value !== outputs.prompt) {
@@ -1540,7 +1566,6 @@ export class PromptEditor {
         payloadWidget.callback?.(nextPayload, this.node, payloadWidget);
       }
     }
-    this.syncDynamicSectionSockets();
     if (Array.isArray(this.sections)) {
       for (const section of this.sections) {
         if (section.id?.startsWith("mcp-pos-")) {
@@ -3966,6 +3991,7 @@ export class PromptEditor {
 
   selectSection(sectionId) {
     if (!Array.isArray(this.sections) || this.activeSectionId === sectionId) return;
+    this.flushPendingTagToggle?.();
     const prevId = this.activeSectionId;
     if (this.dirtySectionIds?.has(prevId)) {
       this.applyPromptText(prevId);
@@ -4123,8 +4149,9 @@ export class PromptEditor {
       }
       active.mode = "prose";
     } else {
+      const disabledTags = (active.tags || []).filter((tag) => tag.enabled === false);
       const parsed = parsePrompt(active.proseText || "", (active.tags || []).filter((tag) => tag.enabled !== false));
-      active.tags = tagsWithoutTrailingPlaceholder(parsed);
+      active.tags = [...tagsWithoutTrailingPlaceholder(parsed), ...disabledTags];
       active.trailingSeparator = parsed.trailingSeparator;
       active.mode = "tags";
     }
@@ -4138,10 +4165,14 @@ export class PromptEditor {
     const active = this.activeSection();
     if (!active || active.mode !== "prose" || !this.proseOrigTextarea) return;
     const text = this.proseOrigTextarea.value;
+    const disabledTags = (active.tags || []).filter((tag) => tag.enabled === false);
     active.proseText = text;
-    active.tags = text.trim()
-      ? [createTag(text.trim(), { translation: active.translation, translatedTo: active.translatedTo })]
-      : [];
+    active.tags = [
+      ...(text.trim()
+        ? [createTag(text.trim(), { translation: active.translation, translatedTo: active.translatedTo })]
+        : []),
+      ...disabledTags,
+    ];
     const card = this.sectionsContainer?.querySelector(`[data-section-id="${active.id}"]`);
     const origEl = card?.querySelector(".paio-section-orig-line");
     if (origEl) origEl.textContent = text.trim() || t("（空 — 右ペインで入力）");
@@ -4310,8 +4341,27 @@ export class PromptEditor {
   }
 
   clearSectionDropTargets() {
-    this.sectionsContainer?.querySelectorAll(".paio-section-card.is-drop-target")
-      .forEach((item) => item.classList.remove("is-drop-target"));
+    this.sectionsContainer?.querySelectorAll(".paio-section-card")
+      .forEach((item) => item.classList.remove("is-drop-target", "is-section-drop-before", "is-section-drop-after"));
+  }
+
+  reorderSection(sourceSectionId, targetSectionId, position = "before") {
+    if (!Array.isArray(this.sections) || !sourceSectionId || !targetSectionId || sourceSectionId === targetSectionId) {
+      return false;
+    }
+    this.commitPromptBeforeAction();
+    const sourceIndex = this.sections.findIndex((section) => section.id === sourceSectionId);
+    const targetIndex = this.sections.findIndex((section) => section.id === targetSectionId);
+    if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return false;
+    this.pushUndo();
+    const [moved] = this.sections.splice(sourceIndex, 1);
+    const remainingTargetIndex = this.sections.findIndex((section) => section.id === targetSectionId);
+    const insertionIndex = remainingTargetIndex + (position === "after" ? 1 : 0);
+    this.sections.splice(insertionIndex, 0, moved);
+    this.syncToWidgets();
+    this.rebuildSectionViews();
+    this.render();
+    return true;
   }
 
   canDropTagsOnSection(sectionId) {
@@ -4336,12 +4386,21 @@ export class PromptEditor {
     this.pushUndo();
     sourceSection.tags = (sourceSection.tags || []).filter((tag) => !idSet.has(tag.id));
     if (targetSection.mode === "prose") {
-      const addition = movedTags.map((tag) => tag.value).filter(Boolean).join(", ");
+      const enabledTags = movedTags.filter((tag) => tag.enabled !== false);
+      const disabledTags = movedTags.filter((tag) => tag.enabled === false);
+      const addition = enabledTags.map((tag) => tag.value).filter(Boolean).join(", ");
       const existing = String(targetSection.proseText || "").trim();
       if (addition) {
         if (!existing) targetSection.proseText = addition;
         else if (/[,，。.;；]$/.test(existing)) targetSection.proseText = `${existing} ${addition}`;
         else targetSection.proseText = `${existing}, ${addition}`;
+      }
+      if (disabledTags.length) {
+        targetSection.tags ||= [];
+        for (const moved of disabledTags) {
+          moved.selected = false;
+          targetSection.tags.push(moved);
+        }
       }
     } else {
       targetSection.tags ||= [];
@@ -4374,6 +4433,15 @@ export class PromptEditor {
       card.dataset.sectionId = section.id;
       card.addEventListener("click", () => this.selectSection(section.id));
       card.addEventListener("dragover", (event) => {
+        if (this.dragSectionId && this.dragSectionId !== section.id) {
+          event.preventDefault();
+          this.clearSectionDropTargets();
+          const bounds = card.getBoundingClientRect();
+          const position = event.clientY >= bounds.top + bounds.height / 2 ? "after" : "before";
+          card.classList.add(position === "after" ? "is-section-drop-after" : "is-section-drop-before");
+          if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+          return;
+        }
         if (!this.canDropTagsOnSection(section.id)) return;
         event.preventDefault();
         this.clearSectionDropTargets();
@@ -4382,9 +4450,19 @@ export class PromptEditor {
       });
       card.addEventListener("dragleave", (event) => {
         if (event.relatedTarget && card.contains(event.relatedTarget)) return;
-        card.classList.remove("is-drop-target");
+        card.classList.remove("is-drop-target", "is-section-drop-before", "is-section-drop-after");
       });
       card.addEventListener("drop", (event) => {
+        if (this.dragSectionId && this.dragSectionId !== section.id) {
+          event.preventDefault();
+          event.stopPropagation();
+          const position = card.classList.contains("is-section-drop-after") ? "after" : "before";
+          const sourceSectionId = this.dragSectionId;
+          this.dragSectionId = null;
+          this.clearSectionDropTargets();
+          this.reorderSection(sourceSectionId, section.id, position);
+          return;
+        }
         if (!this.canDropTagsOnSection(section.id)) return;
         event.preventDefault();
         event.stopPropagation();
@@ -4395,6 +4473,30 @@ export class PromptEditor {
         this.dragTagIds = null;
         this.dragSourceSectionId = null;
         this.moveTagsToSection(tagIds, section.id, sourceId);
+      });
+
+      const dragHandle = element("span", {
+        className: "paio-section-drag-handle",
+        text: "⋮⋮",
+        title: t("ドラッグしてセクションの順序を入れ替え"),
+      });
+      dragHandle.draggable = this.sections.length > 1;
+      dragHandle.setAttribute("aria-label", t("セクションを並び替え"));
+      dragHandle.addEventListener("click", (event) => event.stopPropagation());
+      dragHandle.addEventListener("dragstart", (event) => {
+        event.stopPropagation();
+        this.dragSectionId = section.id;
+        this.dragIndex = null;
+        this.dragTagIds = null;
+        this.dragSourceSectionId = null;
+        card.classList.add("is-dragging");
+        event.dataTransfer?.setData("text/plain", section.title || section.id);
+        if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+      });
+      dragHandle.addEventListener("dragend", () => {
+        card.classList.remove("is-dragging");
+        this.clearSectionDropTargets();
+        this.dragSectionId = null;
       });
 
       const switchBtn = button("", (event) => {
@@ -4495,14 +4597,11 @@ export class PromptEditor {
       outSocketBtn.classList.toggle("is-active", Boolean(section.socketOutput));
       outSocketBtn.setAttribute("aria-pressed", String(Boolean(section.socketOutput)));
 
-      const upBtn = button("↑", (event) => { event.stopPropagation(); this.moveSection(section.id, -1); }, t("上へ移動"));
-      const downBtn = button("↓", (event) => { event.stopPropagation(); this.moveSection(section.id, 1); }, t("下へ移動"));
       const delBtn = button("×", (event) => { event.stopPropagation(); this.removeSection(section.id); }, t("セクションを削除"));
-      upBtn.disabled = index === 0;
-      downBtn.disabled = index === this.sections.length - 1;
       delBtn.disabled = this.sections.length <= 1;
 
       const header = element("div", { className: "paio-section-card-header" }, [
+        dragHandle,
         switchBtn,
         titleInput,
         titlePicker,
@@ -4510,8 +4609,6 @@ export class PromptEditor {
         roleBtn,
         socketBtn,
         outSocketBtn,
-        upBtn,
-        downBtn,
         delBtn,
       ]);
       card.append(header);
@@ -5036,29 +5133,28 @@ export class PromptEditor {
         return;
       }
       if (event.shiftKey || event.ctrlKey || event.metaKey) {
-        clearTimeout(this.clickTimer);
+        this.cancelPendingTagToggle();
         this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
         return;
       }
-      clearTimeout(this.clickTimer);
-      this.clickTimer = window.setTimeout(() => this.toggleOne(index), TAG_SINGLE_CLICK_DELAY_MS);
+      this.scheduleTagToggle(this.activeSectionId || null, tag.id);
     });
     row.addEventListener("dblclick", (event) => {
       event.preventDefault();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.beginInlineEdit(row, tag, index);
     });
     row.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.showContextMenu(event, tag, index);
     });
     row.addEventListener("pointerdown", (event) => {
       if (event.button !== 2) return;
       event.preventDefault();
       event.stopPropagation();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.showContextMenu(event, tag, index);
     });
     row.addEventListener("keydown", (event) => {
@@ -5661,6 +5757,47 @@ export class PromptEditor {
       tag.value = adjustTagWeight(tag.value, this.settings.weightStep * direction, this.settings.weightMin, this.settings.weightMax);
       tag.type = classifyTag(tag.value);
     });
+  }
+
+  cancelPendingTagToggle() {
+    clearTimeout(this.clickTimer);
+    this.clickTimer = null;
+    this.pendingTagToggle = null;
+  }
+
+  flushPendingTagToggle() {
+    const pending = this.pendingTagToggle;
+    if (!pending) return;
+    this.cancelPendingTagToggle();
+    this.toggleTagInSection(pending.sectionId, pending.tagId);
+  }
+
+  scheduleTagToggle(sectionId, tagId) {
+    if (this.pendingTagToggle && (this.pendingTagToggle.sectionId !== sectionId || this.pendingTagToggle.tagId !== tagId)) {
+      this.flushPendingTagToggle();
+    } else {
+      clearTimeout(this.clickTimer);
+    }
+    this.pendingTagToggle = { sectionId, tagId };
+    this.clickTimer = globalThis.setTimeout(() => this.flushPendingTagToggle(), TAG_SINGLE_CLICK_DELAY_MS);
+  }
+
+  toggleTagInSection(sectionId, tagId) {
+    if (!tagId) return;
+    if (Array.isArray(this.sections) && sectionId) {
+      const targetSection = this.sections.find((section) => section.id === sectionId);
+      if (!targetSection) return;
+      if (this.activeSectionId === sectionId) this.commitPromptBeforeAction();
+      const targetTag = (targetSection.tags || []).find((tag) => tag.id === tagId);
+      if (!targetTag) return;
+      this.pushUndo();
+      targetTag.enabled = !targetTag.enabled;
+      this.syncToWidgets();
+      this.render();
+      return;
+    }
+    const index = this.currentTags.findIndex((tag) => tag.id === tagId);
+    if (index >= 0) this.toggleOne(index);
   }
 
   toggleOne(index) {

@@ -310,6 +310,8 @@
     "ドラッグして編集エリアとカタログの比率を調整": "Drag to resize editor and catalog split",
     "{count}件のタグを「{section}」へ移動しました": "Moved {count} tag(s) to “{section}”",
     "このセクション名で入力ソケットを表示/非表示": "Show or hide input socket using this section name",
-    "このセクション名で出力ソケットを表示/非表示": "Show or hide output socket using this section name"
+    "このセクション名で出力ソケットを表示/非表示": "Show or hide output socket using this section name",
+    "ドラッグしてセクションの順序を入れ替え": "Drag to reorder sections",
+    "セクションを並び替え": "Reorder section"
   }
 }

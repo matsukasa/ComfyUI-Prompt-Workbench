@@ -177,6 +177,18 @@ class DynamicOptionalInputs(dict):
         return ("STRING", {"forceInput": True})
 
 
+def _strip_section_brackets(title, fallback):
+    text = str(title or "").strip()
+    if not text:
+        return fallback
+    text = re.sub(r"^#+\s*", "", text).strip()
+    for open_b, close_b in (("【", "】"), ("[", "]"), ("［", "］")):
+        if text.startswith(open_b) and text.endswith(close_b) and len(text) >= 2:
+            text = text[1:-1].strip()
+            break
+    return text or fallback
+
+
 def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format="tags"):
     try:
         payload = json.loads(sections_payload) if sections_payload else None
@@ -189,11 +201,13 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
     include_neg = bool(payload.get("include_negative_in_prompt"))
     pos_blocks = []
     neg_blocks = []
-    extra_outputs = []
+    extra_outputs_by_id = {}
+    fallback_output_ids = []
 
     for index, raw_section in enumerate(payload["sections"]):
         if not isinstance(raw_section, dict):
             continue
+        sec_id = str(raw_section.get("id") or f"sec-{index + 1}")
         enabled = _coerce_enabled(raw_section.get("enabled"), default=True)
         wants_output = bool(raw_section.get("socket_output"))
         role = "negative" if raw_section.get("role") == "negative" else "positive"
@@ -218,7 +232,8 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
             merged_text = base_text
 
         if wants_output:
-            extra_outputs.append(merged_text if enabled else "")
+            extra_outputs_by_id[sec_id] = merged_text if enabled else ""
+            fallback_output_ids.append(sec_id)
 
         if not enabled or not merged_text:
             continue
@@ -230,27 +245,44 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
         else:
             pos_blocks.append(entry)
 
-    def render_blocks(blocks, apply_braces=False):
+    raw_output_order = payload.get("output_order")
+    if isinstance(raw_output_order, list) and raw_output_order:
+        ordered_ids = [str(item) for item in raw_output_order if str(item) in extra_outputs_by_id]
+        for sec_id in fallback_output_ids:
+            if sec_id not in ordered_ids:
+                ordered_ids.append(sec_id)
+    else:
+        ordered_ids = fallback_output_ids
+    extra_outputs = [extra_outputs_by_id[sec_id] for sec_id in ordered_ids]
+
+    def render_blocks(blocks, apply_braces=False, is_negative=False):
         if not blocks:
             return ""
         if output_format == "json":
+            if is_negative:
+                return normalize_structured_prompt("\n\n".join(text for _, _, text in blocks))
             obj = {}
-            for fallback_key, title, text in blocks:
-                key = title or fallback_key
-                if key in obj:
-                    obj[key] = f"{obj[key]}\n{text}"
-                else:
-                    obj[key] = text
+            for idx, (fallback_key, title, text) in enumerate(blocks):
+                base_key = _strip_section_brackets(title, fallback_key or f"section_{idx + 1}")
+                key = base_key
+                suffix = idx + 1
+                while key in obj:
+                    key = f"{base_key}_{suffix}"
+                    suffix += 1
+                obj[key] = text
             return json.dumps(obj, ensure_ascii=False, indent=2)
         if output_format == "structured":
-            rendered = [f"{title}\n{text}" if title else text for _, title, text in blocks]
+            rendered = [
+                (f"{title}\n{text}" if (title and not is_negative) else text)
+                for _, title, text in blocks
+            ]
             body = normalize_structured_prompt("\n\n".join(rendered))
             return f"{{\n{body}\n}}" if apply_braces and body else body
         return normalize_output_prompt(", ".join(text for _, _, text in blocks))
 
     return (
-        render_blocks(pos_blocks, apply_braces=wrap_braces),
-        render_blocks(neg_blocks, apply_braces=False),
+        render_blocks(pos_blocks, apply_braces=wrap_braces, is_negative=False),
+        render_blocks(neg_blocks, apply_braces=False, is_negative=True),
         *extra_outputs,
     )
 

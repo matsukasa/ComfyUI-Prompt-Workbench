@@ -77,6 +77,51 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertEqual(trigger_out2, "base_word")
         self.assertEqual(disabled_out2, "")
 
+        # output_order keeps socket order aligned even when OUT was enabled out of section order,
+        # and JSON mode strips section brackets and emits plain text for negative.
+        ordered_payload = json.dumps({
+            "version": 1,
+            "wrap_braces": False,
+            "include_negative_in_prompt": False,
+            "output_order": ["sec-2", "sec-1"],
+            "sections": [
+                {"id": "sec-1", "title": "【Subject】", "socket_name": "【Subject】", "socket_output": True, "role": "positive", "mode": "tags", "enabled": True, "text": "1girl"},
+                {"id": "sec-2", "title": "【Trigger】", "socket_name": "【Trigger】", "socket_output": True, "role": "positive", "mode": "tags", "enabled": True, "text": "base_word"},
+                {"id": "sec-3", "title": "【Negative】", "socket_name": "【Negative】", "socket_output": False, "role": "negative", "mode": "tags", "enabled": True, "text": "lowres"},
+            ],
+        }, separators=(",", ":"))
+        json_prompt, json_neg, out_first, out_second = node.emit_prompt(
+            prompt="",
+            negative="",
+            output_format="json",
+            sections_payload=ordered_payload,
+            **{"【Trigger】": "lora_word"},
+        )
+        self.assertEqual(json.loads(json_prompt), {"Subject": "1girl", "Trigger": "base_word, lora_word"})
+        self.assertEqual(json_neg, "lowres")
+        self.assertEqual(out_first, "base_word, lora_word")
+        self.assertEqual(out_second, "1girl")
+
+        # Duplicate JSON key suffixes must never collide with an explicit suffixed title like A_3.
+        collision_payload = json.dumps({
+            "version": 1,
+            "sections": [
+                {"id": "s1", "title": "【A】", "socket_name": "【A】", "role": "positive", "mode": "tags", "enabled": True, "text": "first"},
+                {"id": "s2", "title": "【A_3】", "socket_name": "【A_3】", "role": "positive", "mode": "tags", "enabled": True, "text": "second"},
+                {"id": "s3", "title": "【A】", "socket_name": "【A】", "role": "positive", "mode": "tags", "enabled": True, "text": "third"},
+            ],
+        }, separators=(",", ":"))
+        col_prompt, _ = node.emit_prompt(
+            prompt="",
+            negative="",
+            output_format="json",
+            sections_payload=collision_payload,
+            **{"【A】": "extra"},
+        )
+        col_obj = json.loads(col_prompt)
+        self.assertEqual(len(col_obj), 3)
+        self.assertEqual(col_obj["A_3"], "second")
+
     def test_mcp_node_declares_stable_widgets_and_compact_default_outputs(self):
         opt = PromptWorkbenchMCP.INPUT_TYPES()["optional"]
         expected_widgets = [
