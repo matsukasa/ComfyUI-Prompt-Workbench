@@ -31,6 +31,30 @@ class PromptWorkbench:
                     "STRING",
                     {"default": "", "multiline": True, "dynamicPrompts": True},
                 ),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("prompt",)
+    FUNCTION = "emit_prompt"
+    CATEGORY = "prompt/Prompt Workbench"
+    DESCRIPTION = "Edit structured tags and pass a flat, comma-terminated prompt as STRING."
+
+    def emit_prompt(self, prompt=""):
+        return (normalize_output_prompt(prompt),)
+
+
+class PromptWorkbenchFork:
+    """Normalize structured or multi-section prompts with optional negative output."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
             },
             "optional": {
                 "negative": (
@@ -62,5 +86,11 @@ class PromptWorkbench:
         )
 
 
-NODE_CLASS_MAPPINGS = {"PromptWorkbench": PromptWorkbench}
-NODE_DISPLAY_NAME_MAPPINGS = {"PromptWorkbench": "Prompt Workbench"}
+NODE_CLASS_MAPPINGS = {
+    "PromptWorkbench": PromptWorkbench,
+    "PromptWorkbenchFork": PromptWorkbenchFork,
+}
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "PromptWorkbench": "Prompt Workbench",
+    "PromptWorkbenchFork": "Prompt Workbench (Fork)",
+}

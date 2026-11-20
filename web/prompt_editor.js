@@ -746,6 +746,8 @@ export class PromptEditor {
     this.redoStack = [];
     this.lastSelectedIndex = null;
     this.dragIndex = null;
+    this.dragTagIds = null;
+    this.dragSourceSectionId = null;
     this.didDrag = false;
     this.clickTimer = null;
     this.renderLimit = MAX_RENDERED_TAGS;
@@ -1249,7 +1251,7 @@ export class PromptEditor {
 
   build() {
     loadLibrarySortSettings(this.settings);
-    const root = element("section", { className: "paio-editor" });
+    const root = element("section", { className: "paio-editor paio-editor--fork" });
     root.setAttribute("aria-label", "Prompt Workbench editor");
     containNodeContextMenu(root);
 
@@ -3896,6 +3898,59 @@ export class PromptEditor {
       : t("一致する【見出し】が見つかりませんでした"), matchedCount === 0);
   }
 
+  clearSectionDropTargets() {
+    this.sectionsContainer?.querySelectorAll(".paio-section-card.is-drop-target")
+      .forEach((item) => item.classList.remove("is-drop-target"));
+  }
+
+  canDropTagsOnSection(sectionId) {
+    return Boolean(
+      Array.isArray(this.dragTagIds)
+      && this.dragTagIds.length > 0
+      && this.dragSourceSectionId
+      && sectionId
+      && this.dragSourceSectionId !== sectionId
+    );
+  }
+
+  moveTagsToSection(tagIds, targetSectionId, sourceSectionId = this.dragSourceSectionId || this.activeSectionId) {
+    if (!Array.isArray(this.sections) || !Array.isArray(tagIds) || !tagIds.length) return 0;
+    this.commitPromptBeforeAction();
+    const sourceSection = this.sections.find((section) => section.id === sourceSectionId) || this.activeSection();
+    const targetSection = this.sections.find((section) => section.id === targetSectionId);
+    if (!sourceSection || !targetSection || sourceSection.id === targetSection.id) return 0;
+    const idSet = new Set(tagIds);
+    const movedTags = (sourceSection.tags || []).filter((tag) => idSet.has(tag.id));
+    if (!movedTags.length) return 0;
+    this.pushUndo();
+    sourceSection.tags = (sourceSection.tags || []).filter((tag) => !idSet.has(tag.id));
+    if (targetSection.mode === "prose") {
+      const addition = movedTags.map((tag) => tag.value).filter(Boolean).join(", ");
+      const existing = String(targetSection.proseText || "").trim();
+      if (addition) {
+        if (!existing) targetSection.proseText = addition;
+        else if (/[,，。.;；]$/.test(existing)) targetSection.proseText = `${existing} ${addition}`;
+        else targetSection.proseText = `${existing}, ${addition}`;
+      }
+    } else {
+      targetSection.tags ||= [];
+      for (const moved of movedTags) {
+        moved.selected = false;
+        targetSection.tags.push(moved);
+      }
+    }
+    this.lastSelectedIndex = null;
+    this.syncToWidgets();
+    this.render();
+    const targetIndex = Math.max(0, this.sections.indexOf(targetSection));
+    const targetLabel = targetSection.title || t("セクション {index}", { index: targetIndex + 1 });
+    this.setStatus(t("{count}件のタグを「{section}」へ移動しました", {
+      count: movedTags.length,
+      section: targetLabel,
+    }));
+    return movedTags.length;
+  }
+
   rebuildSectionViews() {
     if (!this.promptSingleContainer || !this.sectionsContainer) return;
     this.promptSingleContainer.hidden = true;
@@ -3907,6 +3962,29 @@ export class PromptEditor {
       const card = element("section", { className: "paio-section-card" });
       card.dataset.sectionId = section.id;
       card.addEventListener("click", () => this.selectSection(section.id));
+      card.addEventListener("dragover", (event) => {
+        if (!this.canDropTagsOnSection(section.id)) return;
+        event.preventDefault();
+        this.clearSectionDropTargets();
+        card.classList.add("is-drop-target");
+        if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+      });
+      card.addEventListener("dragleave", (event) => {
+        if (event.relatedTarget && card.contains(event.relatedTarget)) return;
+        card.classList.remove("is-drop-target");
+      });
+      card.addEventListener("drop", (event) => {
+        if (!this.canDropTagsOnSection(section.id)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const tagIds = [...this.dragTagIds];
+        const sourceId = this.dragSourceSectionId;
+        this.clearSectionDropTargets();
+        this.dragIndex = null;
+        this.dragTagIds = null;
+        this.dragSourceSectionId = null;
+        this.moveTagsToSection(tagIds, section.id, sourceId);
+      });
 
       const switchBtn = button("", (event) => {
         event.stopPropagation();
@@ -4556,15 +4634,24 @@ export class PromptEditor {
         return;
       }
       this.dragIndex = index;
+      const selectedTags = tag.selected ? this.currentTags.filter((item) => item.selected) : [];
+      this.dragTagIds = selectedTags.length > 0 ? selectedTags.map((item) => item.id) : [tag.id];
+      this.dragSourceSectionId = this.activeSectionId || null;
       this.didDrag = true;
       row.classList.add("is-dragging");
-      event.dataTransfer?.setData("text/plain", tag.value);
+      const transferText = selectedTags.length > 0
+        ? selectedTags.map((item) => item.value).join(", ")
+        : tag.value;
+      event.dataTransfer?.setData("text/plain", transferText);
       if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
     });
     row.addEventListener("dragend", () => {
       row.classList.remove("is-dragging");
       this.tagList.querySelectorAll(".paio-tag").forEach((item) => item.classList.remove("is-drop-before", "is-drop-after"));
+      this.clearSectionDropTargets();
       this.dragIndex = null;
+      this.dragTagIds = null;
+      this.dragSourceSectionId = null;
       window.setTimeout(() => { this.didDrag = false; }, 0);
     });
     row.addEventListener("dragover", (event) => {
@@ -4591,7 +4678,10 @@ export class PromptEditor {
       const remainingTargetIndex = this.currentTags.findIndex((item) => item.id === targetId);
       const insertionIndex = remainingTargetIndex + (position === "after" ? 1 : 0);
       this.currentTags.splice(insertionIndex, 0, moved);
+      this.clearSectionDropTargets();
       this.dragIndex = null;
+      this.dragTagIds = null;
+      this.dragSourceSectionId = null;
       this.syncToWidgets();
       this.render();
     });

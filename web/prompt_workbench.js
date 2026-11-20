@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20261117-layout-fix";
+import { PromptEditor } from "./prompt_editor.js?v=20261120-dual-dnd";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-dual-dnd";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -11,7 +12,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261117-layout-fix", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-dual-dnd", import.meta.url).href;
   document.head.append(link);
 }
 
@@ -22,15 +23,20 @@ app.registerExtension({
     await initializeUiLanguage();
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== "PromptWorkbench") return;
+    if (nodeData.name !== "PromptWorkbench" && nodeData.name !== "PromptWorkbenchFork") return;
+    const isFork = nodeData.name === "PromptWorkbenchFork";
     const previousCreated = nodeType.prototype.onNodeCreated;
     nodeType.prototype.onNodeCreated = function onNodeCreated() {
       const result = previousCreated?.apply(this, arguments);
       const prompt = this.widgets?.find((widget) => widget.name === "prompt");
-      const negative = this.widgets?.find((widget) => widget.name === "negative");
-      const outputFormat = this.widgets?.find((widget) => widget.name === "output_format");
       if (prompt && typeof this.addDOMWidget === "function") {
-        this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat }, api);
+        if (isFork) {
+          const negative = this.widgets?.find((widget) => widget.name === "negative");
+          const outputFormat = this.widgets?.find((widget) => widget.name === "output_format");
+          this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat }, api);
+        } else {
+          this.promptWorkbenchEditor = new UpstreamPromptEditor(this, { prompt }, api);
+        }
       }
       return result;
     };

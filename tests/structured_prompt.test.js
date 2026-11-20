@@ -320,3 +320,66 @@ test("Pattern G prose mode, JSON output/parsing, and LLM clipboard translation r
   assert.equal(editor.sections[0].translation, "アイレベル50mmポートレート");
   assert.equal(editor.sections[1].translation, "女の子・白いドレス");
 });
+
+test("moveTagsToSection moves single or multi-selected tags across sections with undo and prose support", () => {
+  const noop = () => {};
+  const t1 = createTag("1girl");
+  const t2 = createTag("silver_hair");
+  const t3 = createTag("white_dress");
+  t2.selected = true;
+  t3.selected = true;
+  const statusMessages = [];
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [
+      createSection({ id: "sec-1", title: "【人物】", mode: "tags", tags: [t1, t2, t3] }),
+      createSection({ id: "sec-2", title: "【衣装】", mode: "tags", tags: [createTag("ribbon")] }),
+      createSection({ id: "sec-3", title: "【構図】", mode: "prose", proseText: "Eye-level 50mm." }),
+    ],
+    activeSectionId: "sec-1",
+    outputFormat: "structured",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    dirtySectionIds: new Set(),
+    sectionTextareas: new Map(),
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { properties: {}, widgets: [], graph: { setDirtyCanvas: noop } },
+    widgets: { prompt: { value: "" }, negative: { value: "" }, outputFormat: { value: "structured" } },
+    undoStack: [],
+    redoStack: [],
+    translationGeneration: 0,
+    dragIndex: null,
+    dragTagIds: [t2.id, t3.id],
+    dragSourceSectionId: "sec-1",
+    applyCustomColors: noop,
+    renderTranslationControls: noop,
+    renderBulk: noop,
+    renderTags: noop,
+    rebuildControls: noop,
+    rebuildSectionViews: noop,
+    setStatus: (msg) => statusMessages.push(msg),
+  });
+
+  // Dropping on the same section is disallowed and does nothing.
+  assert.equal(editor.canDropTagsOnSection("sec-1"), false);
+  assert.equal(editor.canDropTagsOnSection("sec-2"), true);
+  assert.equal(editor.moveTagsToSection([t2.id, t3.id], "sec-1", "sec-1"), 0);
+
+  // Move multiple tags from sec-1 to sec-2.
+  const movedCount = editor.moveTagsToSection([t2.id, t3.id], "sec-2", "sec-1");
+  assert.equal(movedCount, 2);
+  assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["1girl"]);
+  assert.deepEqual(editor.sections[1].tags.map((tag) => tag.value), ["ribbon", "silver_hair", "white_dress"]);
+  assert.equal(editor.sections[1].tags.every((tag) => tag.selected === false), true);
+  assert.equal(editor.activeSectionId, "sec-1");
+  assert.ok(statusMessages.length > 0);
+
+  // Undo restores moved tags back to sec-1.
+  editor.undo();
+  assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["1girl", "silver_hair", "white_dress"]);
+  assert.deepEqual(editor.sections[1].tags.map((tag) => tag.value), ["ribbon"]);
+
+  // Moving a tag into a prose section appends it cleanly to proseText.
+  assert.equal(editor.moveTagsToSection([t1.id], "sec-3", "sec-1"), 1);
+  assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["silver_hair", "white_dress"]);
+  assert.equal(editor.sections[2].proseText, "Eye-level 50mm. 1girl");
+});
