@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-dynamic-sockets";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-dynamic-sockets";
+import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-on-demand-outputs";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-on-demand-outputs";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -26,6 +26,7 @@ const MCP_NON_SOCKET_WIDGETS = [
   "tag_suggestions_composition",
   "tag_suggestions_style",
   "tag_suggestions_trigger",
+  "output_sections",
   "merged_preview",
   "sections_schema",
 ];
@@ -39,6 +40,17 @@ const MCP_SECTION_SOCKET_CANDIDATES = [
   "neg_anatomy",
   "neg_style",
 ];
+const MCP_ALLOWED_EXTRA_OUTPUTS = new Set([
+  "sec_quality",
+  "sec_subject",
+  "sec_composition",
+  "sec_style",
+  "sec_trigger",
+  "neg_quality",
+  "neg_anatomy",
+  "neg_style",
+  "sections_schema",
+]);
 
 function ensureStyles() {
   const id = "prompt-workbench-styles";
@@ -46,8 +58,29 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-dynamic-sockets", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-on-demand-outputs", import.meta.url).href;
   document.head.append(link);
+}
+
+function syncMcpDynamicOutputs(node) {
+  if (!node || !Array.isArray(node.outputs)) return;
+  const raw = String(node.widgets?.find((item) => item.name === "output_sections")?.value || "");
+  const desired = raw
+    .split(/[\s,]+/)
+    .map((token) => token.trim().toLowerCase())
+    .filter((token) => MCP_ALLOWED_EXTRA_OUTPUTS.has(token));
+  while (node.outputs.length > 2 + desired.length) {
+    if (typeof node.removeOutput === "function") node.removeOutput(node.outputs.length - 1);
+    else node.outputs.pop();
+  }
+  desired.forEach((name, idx) => {
+    const slotIndex = 2 + idx;
+    if (node.outputs[slotIndex]) {
+      if (node.outputs[slotIndex].name !== name) node.outputs[slotIndex].name = name;
+    } else if (typeof node.addOutput === "function") {
+      node.addOutput(name, "STRING");
+    }
+  });
 }
 
 function pruneUnusedMcpInputs(node) {
@@ -61,6 +94,7 @@ function pruneUnusedMcpInputs(node) {
       removeUnlinkedWidgetInput(node, name);
     }
   }
+  syncMcpDynamicOutputs(node);
 }
 
 function applyMcpExecutionFeedback(node, message) {

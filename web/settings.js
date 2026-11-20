@@ -226,6 +226,7 @@ function sanitizeSection(section, index = 0) {
     enabled: section?.enabled !== false,
     collapsed: Boolean(section?.collapsed),
     socketInput: Boolean(section?.socketInput),
+    socketOutput: Boolean(section?.socketOutput),
     trailingSeparator: Boolean(section?.trailingSeparator),
     tags: tags.slice(0, 2000).map(sanitizeTag),
   };

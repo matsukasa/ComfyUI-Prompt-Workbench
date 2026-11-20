@@ -439,10 +439,14 @@ test("MCP section widgets sync bidirectionally and applyExecutionFeedback update
   assert.equal(widgets.sections_schema.value, '{"version":1,"merged_prompt":"masterpiece, best quality, 1girl,"}');
 });
 
-test("syncDynamicSectionSockets adds, renames, and removes section-named input sockets on demand", () => {
+test("syncDynamicSectionSockets adds, renames, and removes section-named input and output sockets on demand", () => {
   const noop = () => {};
   const node = {
     inputs: [],
+    outputs: [
+      { name: "prompt", type: "STRING", links: [] },
+      { name: "negative", type: "STRING", links: [] },
+    ],
     properties: {},
     widgets: [],
     graph: { setDirtyCanvas: noop },
@@ -454,9 +458,17 @@ test("syncDynamicSectionSockets adds, renames, and removes section-named input s
     removeInput(index) {
       this.inputs.splice(index, 1);
     },
+    addOutput(name, type) {
+      const slot = { name, type, links: [] };
+      this.outputs.push(slot);
+      return slot;
+    },
+    removeOutput(index) {
+      this.outputs.splice(index, 1);
+    },
   };
-  const sec1 = createSection({ id: "sec-1", title: "【主体】", socketInput: false, tags: [createTag("1girl")] });
-  const sec2 = createSection({ id: "sec-2", title: "Trigger", socketInput: true, tags: [] });
+  const sec1 = createSection({ id: "sec-1", title: "【主体】", socketInput: false, socketOutput: false, tags: [createTag("1girl")] });
+  const sec2 = createSection({ id: "sec-2", title: "Trigger", socketInput: true, socketOutput: true, tags: [] });
   const editor = Object.assign(Object.create(PromptEditor.prototype), {
     sections: [sec1, sec2],
     activeSectionId: "sec-1",
@@ -468,19 +480,25 @@ test("syncDynamicSectionSockets adds, renames, and removes section-named input s
     widgets: {},
   });
 
-  // Only sections with socketInput=true get an input socket.
+  // Only sections with socketInput/socketOutput=true get sockets.
   editor.syncDynamicSectionSockets();
   assert.deepEqual(node.inputs.map((i) => i.name), ["Trigger"]);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative", "Trigger"]);
 
-  // Renaming the section updates the socket name in place without dropping link.
+  // Renaming the section updates both sockets in place without dropping links.
   node.inputs[0].link = 42;
+  node.outputs[2].links = [99];
   sec2.title = "LoRA Trigger";
   editor.syncDynamicSectionSockets();
   assert.deepEqual(node.inputs.map((i) => i.name), ["LoRA Trigger"]);
   assert.equal(node.inputs[0].link, 42);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative", "LoRA Trigger"]);
+  assert.deepEqual(node.outputs[2].links, [99]);
 
-  // Turning socketInput off removes the socket.
+  // Turning socketInput/socketOutput off removes the sockets, leaving only prompt & negative.
   sec2.socketInput = false;
+  sec2.socketOutput = false;
   editor.syncDynamicSectionSockets();
   assert.deepEqual(node.inputs, []);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative"]);
 });

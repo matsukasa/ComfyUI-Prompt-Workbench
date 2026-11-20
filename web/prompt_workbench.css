@@ -1251,6 +1251,11 @@
   background: var(--paio-info);
   border-color: color-mix(in srgb, var(--paio-info) 75%, white);
 }
+.paio-section-out-btn.is-active {
+  color: #fff;
+  background: var(--paio-primary);
+  border-color: color-mix(in srgb, var(--paio-primary) 75%, white);
+}
 .paio-section-meta {
   color: var(--paio-muted);
   font-size: 11px;

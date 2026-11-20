@@ -189,12 +189,13 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
     include_neg = bool(payload.get("include_negative_in_prompt"))
     pos_blocks = []
     neg_blocks = []
+    extra_outputs = []
 
     for index, raw_section in enumerate(payload["sections"]):
         if not isinstance(raw_section, dict):
             continue
-        if not _coerce_enabled(raw_section.get("enabled"), default=True):
-            continue
+        enabled = _coerce_enabled(raw_section.get("enabled"), default=True)
+        wants_output = bool(raw_section.get("socket_output"))
         role = "negative" if raw_section.get("role") == "negative" else "positive"
         mode = "prose" if raw_section.get("mode") == "prose" else "tags"
         title = str(raw_section.get("title") or "").strip()
@@ -216,7 +217,10 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
         else:
             merged_text = base_text
 
-        if not merged_text:
+        if wants_output:
+            extra_outputs.append(merged_text if enabled else "")
+
+        if not enabled or not merged_text:
             continue
         entry = (title or f"section_{index + 1}", title, merged_text)
         if role == "negative":
@@ -247,6 +251,7 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
     return (
         render_blocks(pos_blocks, apply_braces=wrap_braces),
         render_blocks(neg_blocks, apply_braces=False),
+        *extra_outputs,
     )
 
 
@@ -292,12 +297,14 @@ class PromptWorkbenchFork:
             for key, val in kwargs.items()
             if val is not None and str(val).strip() != ""
         }
-        if dynamic_inputs:
+        has_section_outputs = bool(sections_payload and '"socket_output": true' in str(sections_payload))
+        if dynamic_inputs or has_section_outputs:
             merged = _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format=output_format)
             if merged is not None:
                 return merged
-            extra = ", ".join(dynamic_inputs.values())
-            prompt = f"{prompt}\n{extra}" if str(prompt or "").strip() else extra
+            if dynamic_inputs:
+                extra = ", ".join(dynamic_inputs.values())
+                prompt = f"{prompt}\n{extra}" if str(prompt or "").strip() else extra
 
         if output_format in ("structured", "json"):
             return (
@@ -396,37 +403,14 @@ class PromptWorkbenchMCP:
                 "tag_suggestions_composition": ("STRING", {"default": "", "multiline": True}),
                 "tag_suggestions_style": ("STRING", {"default": "", "multiline": True}),
                 "tag_suggestions_trigger": ("STRING", {"default": "", "multiline": True}),
+                "output_sections": ("STRING", {"default": "", "multiline": False}),
                 "merged_preview": ("STRING", {"default": "", "multiline": True}),
                 "sections_schema": ("STRING", {"default": "", "multiline": True}),
             },
         }
 
-    RETURN_TYPES = (
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-        "STRING",
-    )
-    RETURN_NAMES = (
-        "prompt",
-        "negative",
-        "sec_quality",
-        "sec_subject",
-        "sec_composition",
-        "sec_style",
-        "sec_trigger",
-        "neg_quality",
-        "neg_anatomy",
-        "neg_style",
-        "sections_schema",
-    )
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("prompt", "negative")
     FUNCTION = "emit_prompt"
     CATEGORY = "prompt/Prompt Workbench"
     DESCRIPTION = "Edit structured tags or multi-section prompts and pass STRING outputs."
@@ -462,6 +446,7 @@ class PromptWorkbenchMCP:
         tag_suggestions_composition="",
         tag_suggestions_style="",
         tag_suggestions_trigger="",
+        output_sections="",
         merged_preview="",
         sections_schema="",
     ):
@@ -602,6 +587,23 @@ class PromptWorkbenchMCP:
         }
         schema_json = json.dumps(schema_payload, ensure_ascii=False, indent=2)
 
+        output_lookup = {
+            "sec_quality": pos_outputs["quality"],
+            "sec_subject": pos_outputs["subject"],
+            "sec_composition": pos_outputs["composition"],
+            "sec_style": pos_outputs["style"],
+            "sec_trigger": pos_outputs["trigger"],
+            "neg_quality": neg_outputs["quality"],
+            "neg_anatomy": neg_outputs["anatomy"],
+            "neg_style": neg_outputs["style"],
+            "sections_schema": schema_json,
+        }
+        requested_outputs = []
+        for token in re.split(r"[\s,]+", str(output_sections or "").strip()):
+            key = token.strip().lower()
+            if key in output_lookup:
+                requested_outputs.append(output_lookup[key])
+
         return {
             "ui": {
                 "merged_preview": [preview_text],
@@ -610,15 +612,7 @@ class PromptWorkbenchMCP:
             "result": (
                 final_prompt,
                 final_negative,
-                pos_outputs["quality"],
-                pos_outputs["subject"],
-                pos_outputs["composition"],
-                pos_outputs["style"],
-                pos_outputs["trigger"],
-                neg_outputs["quality"],
-                neg_outputs["anatomy"],
-                neg_outputs["style"],
-                schema_json,
+                *requested_outputs,
             ),
         }
 

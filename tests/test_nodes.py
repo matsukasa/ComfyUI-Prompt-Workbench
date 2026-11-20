@@ -44,14 +44,14 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             "wrap_braces": False,
             "include_negative_in_prompt": False,
             "sections": [
-                {"id": "sec-1", "title": "【Subject】", "socket_name": "【Subject】", "role": "positive", "mode": "tags", "enabled": True, "text": "1girl"},
-                {"id": "sec-2", "title": "【Trigger】", "socket_name": "【Trigger】", "role": "positive", "mode": "tags", "enabled": True, "text": "base_word"},
-                {"id": "sec-3", "title": "【Disabled】", "socket_name": "【Disabled】", "role": "positive", "mode": "tags", "enabled": False, "text": "skip_me"},
-                {"id": "sec-4", "title": "【Negative】", "socket_name": "【Negative】", "role": "negative", "mode": "tags", "enabled": True, "text": "lowres"},
+                {"id": "sec-1", "title": "【Subject】", "socket_name": "【Subject】", "socket_output": False, "role": "positive", "mode": "tags", "enabled": True, "text": "1girl"},
+                {"id": "sec-2", "title": "【Trigger】", "socket_name": "【Trigger】", "socket_output": True, "role": "positive", "mode": "tags", "enabled": True, "text": "base_word"},
+                {"id": "sec-3", "title": "【Disabled】", "socket_name": "【Disabled】", "socket_output": True, "role": "positive", "mode": "tags", "enabled": False, "text": "skip_me"},
+                {"id": "sec-4", "title": "【Negative】", "socket_name": "【Negative】", "socket_output": False, "role": "negative", "mode": "tags", "enabled": True, "text": "lowres"},
             ],
         })
         node = PromptWorkbenchFork()
-        prompt, negative = node.emit_prompt(
+        prompt, negative, trigger_out, disabled_out = node.emit_prompt(
             prompt="1girl, base_word,",
             negative="lowres,",
             output_format="tags",
@@ -60,8 +60,10 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         )
         self.assertEqual(prompt, "1girl, base_word, lora_trigger,")
         self.assertEqual(negative, "lowres,")
+        self.assertEqual(trigger_out, "base_word, lora_trigger")
+        self.assertEqual(disabled_out, "")
 
-    def test_mcp_node_declares_stable_widgets_and_output_slots(self):
+    def test_mcp_node_declares_stable_widgets_and_compact_default_outputs(self):
         opt = PromptWorkbenchMCP.INPUT_TYPES()["optional"]
         expected_widgets = [
             "negative",
@@ -92,28 +94,14 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             "tag_suggestions_composition",
             "tag_suggestions_style",
             "tag_suggestions_trigger",
+            "output_sections",
             "merged_preview",
             "sections_schema",
         ]
         for name in expected_widgets:
             self.assertIn(name, opt)
-        self.assertEqual(
-            PromptWorkbenchMCP.RETURN_NAMES,
-            (
-                "prompt",
-                "negative",
-                "sec_quality",
-                "sec_subject",
-                "sec_composition",
-                "sec_style",
-                "sec_trigger",
-                "neg_quality",
-                "neg_anatomy",
-                "neg_style",
-                "sections_schema",
-            ),
-        )
-        self.assertEqual(len(PromptWorkbenchMCP.RETURN_TYPES), len(PromptWorkbenchMCP.RETURN_NAMES))
+        self.assertEqual(PromptWorkbenchMCP.RETURN_TYPES, ("STRING", "STRING"))
+        self.assertEqual(PromptWorkbenchMCP.RETURN_NAMES, ("prompt", "negative"))
 
     def test_tags_mode_flattens_newlines_and_normalizes_commas(self):
         node = PromptWorkbenchFork()
@@ -163,19 +151,21 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             neg_style="3d",
             merge_order="subject,quality,composition,style,trigger",
             tag_suggestions_subject="1girl, solo, long_hair",
+            output_sections="sec_quality,sec_subject,sec_trigger,neg_anatomy,sections_schema",
         )
         res = out["result"]
         prompt, negative = res[0], res[1]
         self.assertEqual(prompt, "1girl, (silver_hair:1.15), masterpiece, (best quality:1.2), cowboy shot, anime style,")
         self.assertEqual(negative, "worst quality, lowres, 3d,")
-        # Individual section output slots reflect enable/disable state.
+        # Only requested output_sections appear after prompt & negative.
+        self.assertEqual(len(res), 7)
         self.assertEqual(res[2], "masterpiece, (best quality:1.2)")
         self.assertEqual(res[3], "1girl, (silver_hair:1.15)")
-        self.assertEqual(res[6], "")  # sec_trigger bypassed
-        self.assertEqual(res[8], "")  # neg_anatomy bypassed
+        self.assertEqual(res[4], "")  # sec_trigger bypassed
+        self.assertEqual(res[5], "")  # neg_anatomy bypassed
 
         # UI merged_preview and sections_schema stay consistent with emitted outputs.
-        schema = json.loads(res[10])
+        schema = json.loads(res[6])
         self.assertEqual(schema["merged_prompt"], prompt)
         self.assertEqual(schema["merged_negative"], negative)
         self.assertEqual(schema["merge_order"], ["subject", "quality", "composition", "style", "trigger"])
@@ -184,7 +174,7 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertEqual(trigger_entry["text"], "my_lora_trigger")
         subject_entry = next(item for item in schema["positive"] if item["key"] == "subject")
         self.assertEqual(subject_entry["suggestions"], "1girl, solo, long_hair")
-        self.assertEqual(out["ui"]["sections_schema"][0], res[10])
+        self.assertEqual(out["ui"]["sections_schema"][0], res[6])
         self.assertIn(prompt, out["ui"]["merged_preview"][0])
         self.assertIn(negative, out["ui"]["merged_preview"][0])
 
@@ -197,9 +187,10 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             xy_trigger_input="lora_a_trigger, base_trigger",
             merge_separator=" | ",
             normalize_tags=False,
+            output_sections="sec_trigger",
         )
         self.assertEqual(append_out["result"][0], "1girl | base_trigger, lora_a_trigger")
-        self.assertEqual(append_out["result"][6], "base_trigger, lora_a_trigger")
+        self.assertEqual(append_out["result"][2], "base_trigger, lora_a_trigger")
 
         replace_out = node.emit_prompt(
             sec_subject="1girl",
@@ -207,6 +198,7 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             xy_trigger_sync="replace",
             xy_trigger_input="lora_b_trigger",
         )
+        self.assertEqual(len(replace_out["result"]), 2)
         self.assertEqual(replace_out["result"][0], "1girl, lora_b_trigger,")
 
         bypass_out = node.emit_prompt(
@@ -215,9 +207,10 @@ class TestPromptWorkbenchNode(unittest.TestCase):
             sec_trigger_enabled=False,
             xy_trigger_sync="replace",
             xy_trigger_input="lora_b_trigger",
+            output_sections="sec_trigger",
         )
         self.assertEqual(bypass_out["result"][0], "1girl,")
-        self.assertEqual(bypass_out["result"][6], "")
+        self.assertEqual(bypass_out["result"][2], "")
 
     def test_normalize_helpers_handle_empty_and_crlf(self):
         self.assertEqual(normalize_output_prompt(None), "")

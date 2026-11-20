@@ -392,6 +392,7 @@ export function createSection(overrides = {}) {
     enabled: overrides.enabled !== false,
     collapsed: Boolean(overrides.collapsed),
     socketInput: Boolean(overrides.socketInput),
+    socketOutput: Boolean(overrides.socketOutput),
     trailingSeparator: Boolean(overrides.trailingSeparator),
     tags,
   };

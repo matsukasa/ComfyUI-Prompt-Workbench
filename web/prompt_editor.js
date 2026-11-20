@@ -1416,7 +1416,7 @@ export class PromptEditor {
       }
     }
 
-    // Add missing sockets or rename existing ones without breaking links.
+    // Add missing input sockets or rename existing ones without breaking links.
     for (const entry of desired) {
       const currentInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
       const existing = currentInputs.find((input) => input?._paioSectionId === entry.sectionId);
@@ -1428,6 +1428,42 @@ export class PromptEditor {
         if (target) target._paioSectionId = entry.sectionId;
       }
     }
+
+    // Sync on-demand dynamic output sockets (after fixed index 0: prompt, 1: negative).
+    const desiredOutputs = this.sections
+      .filter((section) => Boolean(section.socketOutput))
+      .map((section) => ({
+        sectionId: section.id,
+        name: socketNames.get(section.id) || section.title || section.id,
+      }));
+    const desiredOutById = new Map(desiredOutputs.map((entry) => [entry.sectionId, entry.name]));
+    const existingOutputs = Array.isArray(this.node.outputs) ? this.node.outputs : [];
+    for (let index = 2; index < existingOutputs.length; index += 1) {
+      const output = existingOutputs[index];
+      if (!output || output._paioSectionOutId) continue;
+      const matched = desiredOutputs.find((entry) => entry.name === output.name);
+      if (matched) output._paioSectionOutId = matched.sectionId;
+    }
+    for (let index = existingOutputs.length - 1; index >= 2; index -= 1) {
+      const output = existingOutputs[index];
+      if (!output) continue;
+      if (!output._paioSectionOutId || !desiredOutById.has(output._paioSectionOutId)) {
+        if (typeof this.node.removeOutput === "function") this.node.removeOutput(index);
+        else existingOutputs.splice(index, 1);
+      }
+    }
+    for (const entry of desiredOutputs) {
+      const currentOutputs = Array.isArray(this.node.outputs) ? this.node.outputs : [];
+      const existing = currentOutputs.find((output, idx) => idx >= 2 && output?._paioSectionOutId === entry.sectionId);
+      if (existing) {
+        if (existing.name !== entry.name) existing.name = entry.name;
+      } else if (typeof this.node.addOutput === "function") {
+        const added = this.node.addOutput(entry.name, "STRING");
+        const target = added || this.node.outputs?.[this.node.outputs.length - 1];
+        if (target) target._paioSectionOutId = entry.sectionId;
+      }
+    }
+
     this.node.graph?.setDirtyCanvas?.(true, true);
   }
 
@@ -1443,6 +1479,7 @@ export class PromptEditor {
         title: section.title || "",
         socket_name: socketNames.get(section.id) || section.title || section.id,
         socket_input: Boolean(section.socketInput),
+        socket_output: Boolean(section.socketOutput),
         role: section.role === "negative" ? "negative" : "positive",
         mode: section.mode === "prose" ? "prose" : "tags",
         enabled: section.enabled !== false,
@@ -4406,6 +4443,18 @@ export class PromptEditor {
       socketBtn.classList.toggle("is-active", Boolean(section.socketInput));
       socketBtn.setAttribute("aria-pressed", String(Boolean(section.socketInput)));
 
+      const outSocketBtn = button("OUT", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.socketOutput = !section.socketOutput;
+        this.syncToWidgets();
+        this.render();
+      }, t("このセクション名で出力ソケットを表示/非表示"));
+      outSocketBtn.classList.add("paio-section-out-btn");
+      outSocketBtn.classList.toggle("is-active", Boolean(section.socketOutput));
+      outSocketBtn.setAttribute("aria-pressed", String(Boolean(section.socketOutput)));
+
       const upBtn = button("↑", (event) => { event.stopPropagation(); this.moveSection(section.id, -1); }, t("上へ移動"));
       const downBtn = button("↓", (event) => { event.stopPropagation(); this.moveSection(section.id, 1); }, t("下へ移動"));
       const delBtn = button("×", (event) => { event.stopPropagation(); this.removeSection(section.id); }, t("セクションを削除"));
@@ -4420,6 +4469,7 @@ export class PromptEditor {
         modeBadge,
         roleBtn,
         socketBtn,
+        outSocketBtn,
         upBtn,
         downBtn,
         delBtn,
@@ -4592,6 +4642,12 @@ export class PromptEditor {
             const hasSocket = Boolean(section.socketInput);
             socketBtn.classList.toggle("is-active", hasSocket);
             socketBtn.setAttribute("aria-pressed", String(hasSocket));
+          }
+          const outSocketBtn = card.querySelector(".paio-section-out-btn");
+          if (outSocketBtn) {
+            const hasOutSocket = Boolean(section.socketOutput);
+            outSocketBtn.classList.toggle("is-active", hasOutSocket);
+            outSocketBtn.setAttribute("aria-pressed", String(hasOutSocket));
           }
           const origLine = card.querySelector(".paio-section-orig-line");
           if (origLine) {
