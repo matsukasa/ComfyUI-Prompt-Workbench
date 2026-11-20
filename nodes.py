@@ -297,7 +297,17 @@ class PromptWorkbenchFork:
             for key, val in kwargs.items()
             if val is not None and str(val).strip() != ""
         }
-        has_section_outputs = bool(sections_payload and '"socket_output": true' in str(sections_payload))
+        has_section_outputs = False
+        if sections_payload:
+            try:
+                parsed_payload = json.loads(sections_payload)
+                if isinstance(parsed_payload, dict) and isinstance(parsed_payload.get("sections"), list):
+                    has_section_outputs = any(
+                        isinstance(sec, dict) and bool(sec.get("socket_output"))
+                        for sec in parsed_payload["sections"]
+                    )
+            except (TypeError, ValueError, json.JSONDecodeError):
+                has_section_outputs = False
         if dynamic_inputs or has_section_outputs:
             merged = _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format=output_format)
             if merged is not None:

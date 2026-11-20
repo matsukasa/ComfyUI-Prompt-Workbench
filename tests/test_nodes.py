@@ -63,6 +63,20 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertEqual(trigger_out, "base_word, lora_trigger")
         self.assertEqual(disabled_out, "")
 
+        # Compact JSON.stringify format (no spaces after colons) with no dynamic inputs
+        # must still return extra outputs so ComfyUI does not raise IndexError.
+        compact_payload = json.dumps(json.loads(payload), separators=(",", ":"))
+        prompt2, negative2, trigger_out2, disabled_out2 = node.emit_prompt(
+            prompt="1girl, base_word,",
+            negative="lowres,",
+            output_format="tags",
+            sections_payload=compact_payload,
+        )
+        self.assertEqual(prompt2, "1girl, base_word,")
+        self.assertEqual(negative2, "lowres,")
+        self.assertEqual(trigger_out2, "base_word")
+        self.assertEqual(disabled_out2, "")
+
     def test_mcp_node_declares_stable_widgets_and_compact_default_outputs(self):
         opt = PromptWorkbenchMCP.INPUT_TYPES()["optional"]
         expected_widgets = [

@@ -149,7 +149,22 @@ test("split layout height tracks outer node grow and shrink without snapping bac
   // targetRootHeight = 1000 - 70 - 20 = 910; split = 910 - 80 = 830
   assert.equal(vars.get("--paio-split-height"), "830px");
   assert.equal(editor.node.size[1], 1000);
+  // computeSize reports the minimum floor (not current 930px) so LiteGraph allows shrinking back down.
+  assert.equal(editor.domWidget.computeSize()[1], 380); // 280 + 80 + 20
 
+  // Even if the browser measures root.offsetHeight slightly larger than targetRootHeight,
+  // repeated syncWidgetLayout calls must never runaway-grow the outer node.
+  Object.defineProperty(editor.root, "offsetHeight", {
+    configurable: true,
+    get() { return 95 + editor.splitLayout.offsetHeight; },
+  });
+  for (let frame = 0; frame < 5; frame++) editor.syncWidgetLayout();
+  assert.equal(editor.node.size[1], 1000);
+
+  Object.defineProperty(editor.root, "offsetHeight", {
+    configurable: true,
+    get() { return 80 + editor.splitLayout.offsetHeight; },
+  });
   editor.node.setSize([800, 560]);
   // targetRootHeight = 560 - 70 - 20 = 470; split = 470 - 80 = 390
   assert.equal(vars.get("--paio-split-height"), "390px");

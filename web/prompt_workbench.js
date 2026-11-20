@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-socket-sync-fix";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-socket-sync-fix";
+import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-resize-fix";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-resize-fix";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -58,7 +58,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-socket-sync-fix", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-resize-fix", import.meta.url).href;
   document.head.append(link);
 }
 

@@ -1994,7 +1994,7 @@ export class PromptEditor {
     this.bulkBar = element("div", { className: "paio-bulk" });
     this.tagSummary = element("span");
     const tagSummaryRow = element("div", { className: "paio-tag-summary" }, [
-      element("span", { className: "paio-hint", text: t("左チェック: 有効/無効 / ダブルクリック: 編集 / Shift+ドラッグ: 矩形選択") }),
+      element("span", { className: "paio-hint", text: t("クリック: 有効/無効 / ダブルクリック: 編集 / Shift+ドラッグ: 矩形選択 / Shift・Ctrl+クリック: 複数選択") }),
       this.tagSummary,
     ]);
     this.tagList = element("div", { className: "paio-tags" });
@@ -2279,7 +2279,10 @@ export class PromptEditor {
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
-    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [width, this.widgetHeight()];
+    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [
+      width,
+      this.splitLayout ? this.minSplitWidgetHeight() : this.widgetHeight(),
+    ];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
     this.node.setSize([
@@ -2312,6 +2315,22 @@ export class PromptEditor {
     return BASE_DOM_WIDGET_HEIGHT;
   }
 
+  splitInnerChromeHeight() {
+    if (!this.splitLayout) return 0;
+    const currentSplitHeight = this.splitLayout.offsetHeight || 0;
+    if (this.root?.offsetHeight > 0 && currentSplitHeight > 0) {
+      return Math.max(0, this.root.offsetHeight - currentSplitHeight);
+    }
+    return (this.sectionControls?.offsetHeight || 0) + (this.status?.offsetHeight || 0) + 32;
+  }
+
+  minSplitWidgetHeight() {
+    const stacked = Boolean(this.splitLayout?.classList?.contains("is-stacked"));
+    const minSplit = stacked ? 460 : MIN_SPLIT_HEIGHT;
+    const margin = Number(this.domWidget?.margin ?? 10);
+    return minSplit + this.splitInnerChromeHeight() + margin * 2;
+  }
+
   syncSplitBounds() {
     if (!this.splitLayout) return;
     const splitWidth = this.splitLayout.clientWidth || Math.max(0, (this.node?.size?.[0] || 540) - 38);
@@ -2331,10 +2350,7 @@ export class PromptEditor {
       const margin = Number(this.domWidget?.margin ?? 10);
       const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
       const targetRootHeight = nodeHeight - nodeOverhead - margin * 2;
-      const currentSplitHeight = this.splitLayout.offsetHeight || 0;
-      const innerChrome = currentSplitHeight > 0
-        ? Math.max(0, this.root.offsetHeight - currentSplitHeight)
-        : ((this.sectionControls?.offsetHeight || 0) + (this.status?.offsetHeight || 0) + 32);
+      const innerChrome = this.splitInnerChromeHeight();
       const minSplit = stacked ? 460 : MIN_SPLIT_HEIGHT;
       const nextSplitHeight = Math.max(minSplit, Math.floor(targetRootHeight - innerChrome));
       const nextValue = `${nextSplitHeight}px`;
@@ -2350,12 +2366,31 @@ export class PromptEditor {
     try {
       this.syncWidgetWidth(widget);
       this.syncSplitBounds();
+      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+      if (this.splitLayout) {
+        // Two-pane mode is strictly outer-node-driven: never feed current
+        // offsetHeight back into node.setSize() (which causes runaway growth
+        // and blocks shrinking). Clamp only against the fixed minimum floor.
+        const minWidgetH = this.minSplitWidgetHeight();
+        const minimumNodeHeight = minWidgetH + nodeOverhead;
+        const currentNodeHeight = Number(this.node.size?.[1]) || BASE_NODE_HEIGHT;
+        const targetWidgetHeight = Math.max(minWidgetH, currentNodeHeight - nodeOverhead);
+        const computedHeight = targetWidgetHeight + 4;
+        const changed = widget.computedHeight !== computedHeight;
+        widget.computedHeight = computedHeight;
+        if (currentNodeHeight < minimumNodeHeight) {
+          this.node.setSize([this.node.size[0], minimumNodeHeight]);
+        } else if (changed) {
+          this.node.graph?.setDirtyCanvas?.(true, true);
+        }
+        return;
+      }
       const height = this.widgetHeight();
       // LiteGraph adds a four-pixel gap to computeSize() heights.
       const computedHeight = height + 4;
       const changed = widget.computedHeight !== computedHeight;
       widget.computedHeight = computedHeight;
-      const minimumNodeHeight = height + BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+      const minimumNodeHeight = height + nodeOverhead;
       if (this.node.size?.[1] < minimumNodeHeight) {
         this.node.setSize([this.node.size[0], minimumNodeHeight]);
       } else if (changed) {
