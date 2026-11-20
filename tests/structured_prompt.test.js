@@ -501,4 +501,14 @@ test("syncDynamicSectionSockets adds, renames, and removes section-named input a
   editor.syncDynamicSectionSockets();
   assert.deepEqual(node.inputs, []);
   assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative"]);
+
+  // Orphaned unlinked legacy sockets from older workflow JSON are pruned automatically.
+  node.inputs.push(
+    { name: "merge_order", type: "STRING", link: null },
+    { name: "sec_quality", type: "STRING", link: null },
+  );
+  node.outputs.push({ name: "sec_quality", type: "STRING", links: [] });
+  editor.syncDynamicSectionSockets();
+  assert.deepEqual(node.inputs, []);
+  assert.deepEqual(node.outputs.map((o) => o.name), ["prompt", "negative"]);
 });

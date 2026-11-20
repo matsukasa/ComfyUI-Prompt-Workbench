@@ -1405,14 +1405,26 @@ export class PromptEditor {
       if (matched) input._paioSectionId = matched.sectionId;
     }
 
-    // Remove dynamic sockets whose section was removed or turned OFF.
+    // Remove dynamic or orphaned unlinked sockets not in desired sections.
+    let socketsChanged = false;
     for (let index = existingInputs.length - 1; index >= 0; index -= 1) {
       const input = existingInputs[index];
-      if (!input || reservedWidgetNames.has(input.name)) continue;
-      if (!input._paioSectionId) continue;
-      if (!desiredById.has(input._paioSectionId)) {
+      if (!input) continue;
+      const isLinked = (input.link !== null && input.link !== undefined)
+        || (Array.isArray(input.links) && input.links.length > 0);
+      if (reservedWidgetNames.has(input.name)) {
+        if (!isLinked) {
+          if (typeof this.node.removeInput === "function") this.node.removeInput(index);
+          else existingInputs.splice(index, 1);
+          socketsChanged = true;
+        }
+        continue;
+      }
+      const keep = Boolean(input._paioSectionId && desiredById.has(input._paioSectionId));
+      if (!keep && (!isLinked || Boolean(input._paioSectionId))) {
         if (typeof this.node.removeInput === "function") this.node.removeInput(index);
         else existingInputs.splice(index, 1);
+        socketsChanged = true;
       }
     }
 
@@ -1421,11 +1433,15 @@ export class PromptEditor {
       const currentInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
       const existing = currentInputs.find((input) => input?._paioSectionId === entry.sectionId);
       if (existing) {
-        if (existing.name !== entry.name) existing.name = entry.name;
+        if (existing.name !== entry.name) {
+          existing.name = entry.name;
+          socketsChanged = true;
+        }
       } else if (typeof this.node.addInput === "function") {
         const added = this.node.addInput(entry.name, "STRING");
         const target = added || this.node.inputs?.[this.node.inputs.length - 1];
         if (target) target._paioSectionId = entry.sectionId;
+        socketsChanged = true;
       }
     }
 
@@ -1450,21 +1466,28 @@ export class PromptEditor {
       if (!output._paioSectionOutId || !desiredOutById.has(output._paioSectionOutId)) {
         if (typeof this.node.removeOutput === "function") this.node.removeOutput(index);
         else existingOutputs.splice(index, 1);
+        socketsChanged = true;
       }
     }
     for (const entry of desiredOutputs) {
       const currentOutputs = Array.isArray(this.node.outputs) ? this.node.outputs : [];
       const existing = currentOutputs.find((output, idx) => idx >= 2 && output?._paioSectionOutId === entry.sectionId);
       if (existing) {
-        if (existing.name !== entry.name) existing.name = entry.name;
+        if (existing.name !== entry.name) {
+          existing.name = entry.name;
+          socketsChanged = true;
+        }
       } else if (typeof this.node.addOutput === "function") {
         const added = this.node.addOutput(entry.name, "STRING");
         const target = added || this.node.outputs?.[this.node.outputs.length - 1];
         if (target) target._paioSectionOutId = entry.sectionId;
+        socketsChanged = true;
       }
     }
 
+    this.node.setDirtyCanvas?.(true, true);
     this.node.graph?.setDirtyCanvas?.(true, true);
+    if (socketsChanged) this.node.graph?.change?.();
   }
 
   buildSectionsPayload() {

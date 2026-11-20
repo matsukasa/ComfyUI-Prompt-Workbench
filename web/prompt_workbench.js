@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-on-demand-outputs";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-on-demand-outputs";
+import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-socket-sync-fix";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-socket-sync-fix";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -58,7 +58,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-on-demand-outputs", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-socket-sync-fix", import.meta.url).href;
   document.head.append(link);
 }
 
@@ -81,6 +81,21 @@ function syncMcpDynamicOutputs(node) {
       node.addOutput(name, "STRING");
     }
   });
+  node.setDirtyCanvas?.(true, true);
+  node.graph?.setDirtyCanvas?.(true, true);
+  node.graph?.change?.();
+}
+
+function hookMcpOutputSectionsWidget(node) {
+  const widget = node?.widgets?.find((item) => item.name === "output_sections");
+  if (!widget || widget._paioOutputHooked) return;
+  widget._paioOutputHooked = true;
+  const previousCallback = widget.callback;
+  widget.callback = function onOutputSectionsChanged() {
+    const result = previousCallback?.apply(this, arguments);
+    syncMcpDynamicOutputs(node);
+    return result;
+  };
 }
 
 function pruneUnusedMcpInputs(node) {
@@ -125,15 +140,23 @@ app.registerExtension({
       const previousCreated = nodeType.prototype.onNodeCreated;
       nodeType.prototype.onNodeCreated = function onNodeCreated() {
         const result = previousCreated?.apply(this, arguments);
+        hookMcpOutputSectionsWidget(this);
         pruneUnusedMcpInputs(this);
-        queueMicrotask(() => pruneUnusedMcpInputs(this));
+        queueMicrotask(() => {
+          hookMcpOutputSectionsWidget(this);
+          pruneUnusedMcpInputs(this);
+        });
         return result;
       };
       const previousConfigured = nodeType.prototype.onConfigure;
       nodeType.prototype.onConfigure = function onConfigure() {
         const result = previousConfigured?.apply(this, arguments);
+        hookMcpOutputSectionsWidget(this);
         pruneUnusedMcpInputs(this);
-        queueMicrotask(() => pruneUnusedMcpInputs(this));
+        queueMicrotask(() => {
+          hookMcpOutputSectionsWidget(this);
+          pruneUnusedMcpInputs(this);
+        });
         return result;
       };
       const previousExecuted = nodeType.prototype.onExecuted;
