@@ -383,3 +383,58 @@ test("moveTagsToSection moves single or multi-selected tags across sections with
   assert.deepEqual(editor.sections[0].tags.map((tag) => tag.value), ["silver_hair", "white_dress"]);
   assert.equal(editor.sections[2].proseText, "Eye-level 50mm. 1girl");
 });
+
+test("MCP section widgets sync bidirectionally and applyExecutionFeedback updates merged_preview", () => {
+  const noop = () => {};
+  const widgets = {
+    prompt: { name: "prompt", value: "" },
+    negative: { name: "negative", value: "" },
+    outputFormat: { name: "output_format", value: "tags" },
+    sec_quality: { name: "sec_quality", value: "masterpiece, best quality" },
+    sec_quality_enabled: { name: "sec_quality_enabled", value: true },
+    sec_subject: { name: "sec_subject", value: "1girl" },
+    sec_subject_enabled: { name: "sec_subject_enabled", value: true },
+    sec_trigger: { name: "sec_trigger", value: "lora_word" },
+    sec_trigger_enabled: { name: "sec_trigger_enabled", value: false },
+    neg_quality: { name: "neg_quality", value: "lowres" },
+    neg_quality_enabled: { name: "neg_quality_enabled", value: true },
+    tag_suggestions_subject: { name: "tag_suggestions_subject", value: "" },
+    merged_preview: { name: "merged_preview", value: "" },
+    sections_schema: { name: "sections_schema", value: "" },
+  };
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [],
+    activeSectionId: "",
+    outputFormat: "tags",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    dirtySectionIds: new Set(),
+    sectionTextareas: new Map(),
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { properties: {}, widgets: Object.values(widgets), graph: { setDirtyCanvas: noop } },
+    widgets,
+    undoStack: [],
+    redoStack: [],
+    translationGeneration: 0,
+  });
+
+  assert.equal(editor.hasActiveMcpSectionWidgets(), true);
+  editor.applyMcpSectionWidgets();
+  const triggerSec = editor.sections.find((s) => s.id === "mcp-pos-trigger");
+  assert.ok(triggerSec);
+  assert.equal(triggerSec.enabled, false);
+  assert.deepEqual(triggerSec.tags.map((t) => t.value), ["lora_word"]);
+
+  // Mirror TagDB suggestions into active section widget.
+  editor.activeSectionId = "mcp-pos-subject";
+  editor.syncActiveSectionSuggestions(["1girl", "solo", "long_hair"]);
+  assert.equal(widgets.tag_suggestions_subject.value, "1girl, solo, long_hair");
+
+  // Execution feedback writes merged_preview and sections_schema back to widgets.
+  editor.applyExecutionFeedback({
+    merged_preview: ["[POSITIVE]\nmasterpiece, best quality, 1girl,\n\n[NEGATIVE]\nlowres,"],
+    sections_schema: ['{"version":1,"merged_prompt":"masterpiece, best quality, 1girl,"}'],
+  });
+  assert.equal(widgets.merged_preview.value, "[POSITIVE]\nmasterpiece, best quality, 1girl,\n\n[NEGATIVE]\nlowres,");
+  assert.equal(widgets.sections_schema.value, '{"version":1,"merged_prompt":"masterpiece, best quality, 1girl,"}');
+});

@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from nodes import (
@@ -26,38 +27,170 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         node = PromptWorkbench()
         self.assertEqual(node.emit_prompt(prompt="1girl,\nsolo, , blue_eyes"), ("1girl, solo, blue_eyes,",))
 
+    def test_fork_declares_stable_mcp_widgets_and_output_slots(self):
+        opt = PromptWorkbenchFork.INPUT_TYPES()["optional"]
+        expected_widgets = [
+            "negative",
+            "output_format",
+            "merge_order",
+            "merge_separator",
+            "normalize_tags",
+            "sec_quality",
+            "sec_quality_enabled",
+            "sec_subject",
+            "sec_subject_enabled",
+            "sec_composition",
+            "sec_composition_enabled",
+            "sec_style",
+            "sec_style_enabled",
+            "sec_trigger",
+            "sec_trigger_enabled",
+            "neg_quality",
+            "neg_quality_enabled",
+            "neg_anatomy",
+            "neg_anatomy_enabled",
+            "neg_style",
+            "neg_style_enabled",
+            "xy_trigger_sync",
+            "xy_trigger_input",
+            "tag_suggestions_quality",
+            "tag_suggestions_subject",
+            "tag_suggestions_composition",
+            "tag_suggestions_style",
+            "tag_suggestions_trigger",
+            "merged_preview",
+            "sections_schema",
+        ]
+        for name in expected_widgets:
+            self.assertIn(name, opt)
+        self.assertEqual(
+            PromptWorkbenchFork.RETURN_NAMES,
+            (
+                "prompt",
+                "negative",
+                "sec_quality",
+                "sec_subject",
+                "sec_composition",
+                "sec_style",
+                "sec_trigger",
+                "neg_quality",
+                "neg_anatomy",
+                "neg_style",
+                "sections_schema",
+            ),
+        )
+        self.assertEqual(len(PromptWorkbenchFork.RETURN_TYPES), len(PromptWorkbenchFork.RETURN_NAMES))
+
     def test_tags_mode_flattens_newlines_and_normalizes_commas(self):
         node = PromptWorkbenchFork()
-        prompt, negative = node.emit_prompt(
+        out = node.emit_prompt(
             prompt="1girl,\nsolo, , blue_eyes",
             negative="bad_hands\nworst_quality",
             output_format="tags",
         )
+        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, "1girl, solo, blue_eyes,")
         self.assertEqual(negative, "bad_hands, worst_quality,")
+        self.assertEqual(
+            out["ui"]["merged_preview"][0],
+            "[POSITIVE]\n1girl, solo, blue_eyes,\n\n[NEGATIVE]\nbad_hands, worst_quality,",
+        )
 
     def test_structured_mode_preserves_headers_braces_and_newlines(self):
         node = PromptWorkbenchFork()
         raw_prompt = "{\n【任务与范式】\n4:3横向画幅；人像摄影。\n\n【构图与机位】\n平视全身近景。\n}"
         raw_neg = "ANIME假发质感，手部扭曲崩坏。"
-        prompt, negative = node.emit_prompt(
+        out = node.emit_prompt(
             prompt=raw_prompt,
             negative=raw_neg,
             output_format="structured",
         )
+        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, raw_prompt)
         self.assertEqual(negative, raw_neg)
 
     def test_json_mode_preserves_json_formatting(self):
         node = PromptWorkbenchFork()
         raw_json = '{\n  "shot": "50mm close-up"\n}'
-        prompt, negative = node.emit_prompt(
+        out = node.emit_prompt(
             prompt=raw_json,
             negative="lowres",
             output_format="json",
         )
+        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, raw_json)
         self.assertEqual(negative, "lowres")
+
+    def test_mcp_sections_merge_bypass_weights_and_schema(self):
+        node = PromptWorkbenchFork()
+        out = node.emit_prompt(
+            sec_quality="masterpiece\n(best quality:1.2)",
+            sec_subject="1girl, (silver_hair:1.15)",
+            sec_composition="cowboy shot",
+            sec_style="anime style",
+            sec_trigger="my_lora_trigger",
+            sec_trigger_enabled=0,
+            neg_quality="worst quality, lowres",
+            neg_anatomy="bad hands",
+            neg_anatomy_enabled=False,
+            neg_style="3d",
+            merge_order="subject,quality,composition,style,trigger",
+            tag_suggestions_subject="1girl, solo, long_hair",
+        )
+        res = out["result"]
+        prompt, negative = res[0], res[1]
+        self.assertEqual(prompt, "1girl, (silver_hair:1.15), masterpiece, (best quality:1.2), cowboy shot, anime style,")
+        self.assertEqual(negative, "worst quality, lowres, 3d,")
+        # Individual section output slots reflect enable/disable state.
+        self.assertEqual(res[2], "masterpiece, (best quality:1.2)")
+        self.assertEqual(res[3], "1girl, (silver_hair:1.15)")
+        self.assertEqual(res[6], "")  # sec_trigger bypassed
+        self.assertEqual(res[8], "")  # neg_anatomy bypassed
+
+        # UI merged_preview and sections_schema stay consistent with emitted outputs.
+        schema = json.loads(res[10])
+        self.assertEqual(schema["merged_prompt"], prompt)
+        self.assertEqual(schema["merged_negative"], negative)
+        self.assertEqual(schema["merge_order"], ["subject", "quality", "composition", "style", "trigger"])
+        trigger_entry = next(item for item in schema["positive"] if item["key"] == "trigger")
+        self.assertEqual(trigger_entry["enabled"], False)
+        self.assertEqual(trigger_entry["text"], "my_lora_trigger")
+        subject_entry = next(item for item in schema["positive"] if item["key"] == "subject")
+        self.assertEqual(subject_entry["suggestions"], "1girl, solo, long_hair")
+        self.assertEqual(out["ui"]["sections_schema"][0], res[10])
+        self.assertIn(prompt, out["ui"]["merged_preview"][0])
+        self.assertIn(negative, out["ui"]["merged_preview"][0])
+
+    def test_xy_trigger_sync_modes_and_custom_separator(self):
+        node = PromptWorkbenchFork()
+        append_out = node.emit_prompt(
+            sec_subject="1girl",
+            sec_trigger="base_trigger",
+            xy_trigger_sync="append",
+            xy_trigger_input="lora_a_trigger, base_trigger",
+            merge_separator=" | ",
+            normalize_tags=False,
+        )
+        self.assertEqual(append_out["result"][0], "1girl | base_trigger, lora_a_trigger")
+        self.assertEqual(append_out["result"][6], "base_trigger, lora_a_trigger")
+
+        replace_out = node.emit_prompt(
+            sec_subject="1girl",
+            sec_trigger="base_trigger",
+            xy_trigger_sync="replace",
+            xy_trigger_input="lora_b_trigger",
+        )
+        self.assertEqual(replace_out["result"][0], "1girl, lora_b_trigger,")
+
+        bypass_out = node.emit_prompt(
+            sec_subject="1girl",
+            sec_trigger="base_trigger",
+            sec_trigger_enabled=False,
+            xy_trigger_sync="replace",
+            xy_trigger_input="lora_b_trigger",
+        )
+        self.assertEqual(bypass_out["result"][0], "1girl,")
+        self.assertEqual(bypass_out["result"][6], "")
 
     def test_normalize_helpers_handle_empty_and_crlf(self):
         self.assertEqual(normalize_output_prompt(None), "")

@@ -71,6 +71,16 @@ import {
 
 const STATE_KEY = "promptWorkbenchState";
 const SORT_STORAGE_KEY = "prompt-workbench/library-sort";
+const MCP_POSITIVE_SECTION_KEYS = ["quality", "subject", "composition", "style", "trigger"];
+const MCP_NEGATIVE_SECTION_KEYS = ["quality", "anatomy", "style"];
+const MCP_SECTION_LABELS = {
+  quality: "【Quality】",
+  subject: "【Subject】",
+  composition: "【Composition】",
+  style: "【Style】",
+  trigger: "【Trigger】",
+  anatomy: "【Anatomy】",
+};
 let categoryColorErrorSerial = 0;
 let nextSectionDatalistId = 1;
 const MAX_RENDERED_TAGS = 250;
@@ -1117,13 +1127,168 @@ export class PromptEditor {
     }
   }
 
+  mcpWidget(name) {
+    return this.widgets?.[name] || this.node?.widgets?.find((widget) => widget.name === name) || null;
+  }
+
+  mcpBoolValue(name, defaultValue = true) {
+    const widget = this.mcpWidget(name);
+    if (!widget || widget.value === undefined || widget.value === null) return defaultValue;
+    if (typeof widget.value === "boolean") return widget.value;
+    if (typeof widget.value === "number") return widget.value !== 0;
+    const text = String(widget.value).trim().toLowerCase();
+    if (["0", "false", "no", "off", ""].includes(text)) return false;
+    if (["1", "true", "yes", "on"].includes(text)) return true;
+    return defaultValue;
+  }
+
+  hasActiveMcpSectionWidgets() {
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      if (String(this.mcpWidget(`sec_${key}`)?.value || "").trim()) return true;
+      if (this.mcpWidget(`sec_${key}_enabled`) && !this.mcpBoolValue(`sec_${key}_enabled`, true)) return true;
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      if (String(this.mcpWidget(`neg_${key}`)?.value || "").trim()) return true;
+      if (this.mcpWidget(`neg_${key}_enabled`) && !this.mcpBoolValue(`neg_${key}_enabled`, true)) return true;
+    }
+    const xyMode = String(this.mcpWidget("xy_trigger_sync")?.value || "off").trim().toLowerCase();
+    if (xyMode !== "off" && String(this.mcpWidget("xy_trigger_input")?.value || "").trim()) return true;
+    return false;
+  }
+
+  mcpWidgetSnapshot() {
+    const parts = [];
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      parts.push(`p:${key}:${String(this.mcpWidget(`sec_${key}`)?.value ?? "")}:${this.mcpBoolValue(`sec_${key}_enabled`, true) ? 1 : 0}`);
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      parts.push(`n:${key}:${String(this.mcpWidget(`neg_${key}`)?.value ?? "")}:${this.mcpBoolValue(`neg_${key}_enabled`, true) ? 1 : 0}`);
+    }
+    for (const name of ["merge_order", "merge_separator", "normalize_tags", "xy_trigger_sync", "xy_trigger_input"]) {
+      parts.push(`m:${name}:${String(this.mcpWidget(name)?.value ?? "")}`);
+    }
+    return parts.join("\u001f");
+  }
+
+  applyMcpSectionWidgets() {
+    if (!Array.isArray(this.sections)) return;
+    const nextSections = [];
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      const text = String(this.mcpWidget(`sec_${key}`)?.value || "");
+      const enabled = this.mcpBoolValue(`sec_${key}_enabled`, true);
+      const parsed = parsePrompt(text);
+      nextSections.push(createSection({
+        id: `mcp-pos-${key}`,
+        title: MCP_SECTION_LABELS[key] || key,
+        role: "positive",
+        enabled,
+        tags: tagsWithoutTrailingPlaceholder(parsed),
+        trailingSeparator: parsed.trailingSeparator,
+      }));
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      const text = String(this.mcpWidget(`neg_${key}`)?.value || "");
+      const enabled = this.mcpBoolValue(`neg_${key}_enabled`, true);
+      const parsed = parsePrompt(text);
+      nextSections.push(createSection({
+        id: `mcp-neg-${key}`,
+        title: `Neg ${MCP_SECTION_LABELS[key] || key}`,
+        role: "negative",
+        enabled,
+        tags: tagsWithoutTrailingPlaceholder(parsed),
+        trailingSeparator: parsed.trailingSeparator,
+      }));
+    }
+    this.sections = nextSections;
+    if (!this.sections.some((section) => section.id === this.activeSectionId)) {
+      this.activeSectionId = this.sections[0]?.id || "mcp-pos-quality";
+    }
+    const rawFmt = this.widgets.outputFormat?.value;
+    if (["tags", "structured", "json"].includes(rawFmt)) this.outputFormat = rawFmt;
+  }
+
+  buildMcpSchemaSnapshot(outputs) {
+    const mergeOrderRaw = String(this.mcpWidget("merge_order")?.value || MCP_POSITIVE_SECTION_KEYS.join(","));
+    const order = [];
+    for (const rawToken of mergeOrderRaw.split(/[\s,]+/)) {
+      const token = rawToken.trim().toLowerCase().replace(/^sec_/, "");
+      if (MCP_POSITIVE_SECTION_KEYS.includes(token) && !order.includes(token)) order.push(token);
+    }
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      if (!order.includes(key)) order.push(key);
+    }
+    return JSON.stringify({
+      version: 1,
+      output_format: this.outputFormat || "tags",
+      merge_order: order,
+      merge_separator: String(this.mcpWidget("merge_separator")?.value ?? ", ") || ", ",
+      normalize_tags: this.mcpBoolValue("normalize_tags", true),
+      xy_trigger_sync: String(this.mcpWidget("xy_trigger_sync")?.value || "off"),
+      positive: order.map((key) => ({
+        key,
+        widget: `sec_${key}`,
+        enabled_widget: `sec_${key}_enabled`,
+        suggestions_widget: `tag_suggestions_${key}`,
+        enabled: this.mcpBoolValue(`sec_${key}_enabled`, true),
+        text: String(this.mcpWidget(`sec_${key}`)?.value || ""),
+        suggestions: String(this.mcpWidget(`tag_suggestions_${key}`)?.value || ""),
+      })),
+      negative: MCP_NEGATIVE_SECTION_KEYS.map((key) => ({
+        key,
+        widget: `neg_${key}`,
+        enabled_widget: `neg_${key}_enabled`,
+        enabled: this.mcpBoolValue(`neg_${key}_enabled`, true),
+        text: String(this.mcpWidget(`neg_${key}`)?.value || ""),
+      })),
+      merged_prompt: outputs.prompt,
+      merged_negative: outputs.negative,
+    }, null, 2);
+  }
+
+  applyExecutionFeedback(message) {
+    if (!message || typeof message !== "object") return;
+    this.syncing = true;
+    const preview = Array.isArray(message.merged_preview) ? message.merged_preview[0] : message.merged_preview;
+    const previewWidget = this.mcpWidget("merged_preview");
+    if (previewWidget && typeof preview === "string" && previewWidget.value !== preview) {
+      previewWidget.value = preview;
+      previewWidget.callback?.(preview, this.node, previewWidget);
+    }
+    const schema = Array.isArray(message.sections_schema) ? message.sections_schema[0] : message.sections_schema;
+    const schemaWidget = this.mcpWidget("sections_schema");
+    if (schemaWidget && typeof schema === "string" && schemaWidget.value !== schema) {
+      schemaWidget.value = schema;
+      schemaWidget.callback?.(schema, this.node, schemaWidget);
+    }
+    this.syncing = false;
+    this.node.graph?.setDirtyCanvas?.(true, true);
+  }
+
+  syncActiveSectionSuggestions(tagList) {
+    const active = this.activeSection?.();
+    if (!active?.id?.startsWith("mcp-pos-")) return;
+    const key = active.id.slice("mcp-pos-".length);
+    if (!MCP_POSITIVE_SECTION_KEYS.includes(key)) return;
+    const widget = this.mcpWidget(`tag_suggestions_${key}`);
+    if (!widget) return;
+    const nextValue = (Array.isArray(tagList) ? tagList : []).filter(Boolean).join(", ");
+    if (widget.value !== nextValue) {
+      this.syncing = true;
+      widget.value = nextValue;
+      widget.callback?.(nextValue, this.node, widget);
+      this.syncing = false;
+    }
+  }
+
   restore() {
     const widgetValue = String(this.widgets.prompt?.value || "");
     const negativeValue = String(this.widgets.negative?.value || "");
     const parsedWidget = parsePrompt(widgetValue);
     this.trailingSeparator = parsedWidget.trailingSeparator;
     const saved = this.node.properties?.[STATE_KEY];
-    if (saved?.version === 1) {
+    if (this.hasActiveMcpSectionWidgets() && (!saved || saved.version !== 1)) {
+      this.applyMcpSectionWidgets();
+    } else if (saved?.version === 1) {
       const state = sanitizeEditorState(saved);
       this.settings = state.settings;
       if (Array.isArray(this.sections)) {
@@ -1152,6 +1317,7 @@ export class PromptEditor {
     }
     this.lastWidgetValue = widgetValue;
     this.lastNegativeValue = negativeValue;
+    this.lastMcpSnapshot = this.mcpWidgetSnapshot();
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
   }
 
@@ -1221,8 +1387,64 @@ export class PromptEditor {
       outputFormatWidget.value = nextFormat;
       outputFormatWidget.callback?.(nextFormat, this.node, outputFormatWidget);
     }
+    if (Array.isArray(this.sections)) {
+      for (const section of this.sections) {
+        if (section.id?.startsWith("mcp-pos-")) {
+          const key = section.id.slice("mcp-pos-".length);
+          const textWidget = this.mcpWidget(`sec_${key}`);
+          const enabledWidget = this.mcpWidget(`sec_${key}_enabled`);
+          const sectionText = section.mode === "prose"
+            ? String(section.proseText || "").trim()
+            : this.promptEditorValue(section);
+          if (textWidget && textWidget.value !== sectionText) {
+            textWidget.value = sectionText;
+            textWidget.callback?.(sectionText, this.node, textWidget);
+          }
+          const isEnabled = section.enabled !== false;
+          if (enabledWidget && Boolean(enabledWidget.value) !== isEnabled) {
+            enabledWidget.value = isEnabled;
+            enabledWidget.callback?.(isEnabled, this.node, enabledWidget);
+          }
+        } else if (section.id?.startsWith("mcp-neg-")) {
+          const key = section.id.slice("mcp-neg-".length);
+          const textWidget = this.mcpWidget(`neg_${key}`);
+          const enabledWidget = this.mcpWidget(`neg_${key}_enabled`);
+          const sectionText = section.mode === "prose"
+            ? String(section.proseText || "").trim()
+            : this.promptEditorValue(section);
+          if (textWidget && textWidget.value !== sectionText) {
+            textWidget.value = sectionText;
+            textWidget.callback?.(sectionText, this.node, textWidget);
+          }
+          const isEnabled = section.enabled !== false;
+          if (enabledWidget && Boolean(enabledWidget.value) !== isEnabled) {
+            enabledWidget.value = isEnabled;
+            enabledWidget.callback?.(isEnabled, this.node, enabledWidget);
+          }
+        }
+      }
+      const previewWidget = this.mcpWidget("merged_preview");
+      if (previewWidget) {
+        const nextPreview = outputs.negative
+          ? `[POSITIVE]\n${outputs.prompt}\n\n[NEGATIVE]\n${outputs.negative}`
+          : outputs.prompt;
+        if (previewWidget.value !== nextPreview) {
+          previewWidget.value = nextPreview;
+          previewWidget.callback?.(nextPreview, this.node, previewWidget);
+        }
+      }
+      const schemaWidget = this.mcpWidget("sections_schema");
+      if (schemaWidget) {
+        const nextSchema = this.buildMcpSchemaSnapshot(outputs);
+        if (schemaWidget.value !== nextSchema) {
+          schemaWidget.value = nextSchema;
+          schemaWidget.callback?.(nextSchema, this.node, schemaWidget);
+        }
+      }
+    }
     this.lastWidgetValue = outputs.prompt;
     this.lastNegativeValue = outputs.negative;
+    this.lastMcpSnapshot = this.mcpWidgetSnapshot();
     this.persist();
     this.syncing = false;
   }
@@ -1233,6 +1455,18 @@ export class PromptEditor {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
     }
     if (this.syncing) return;
+    const mcpSnapshot = this.mcpWidgetSnapshot();
+    if (this.lastMcpSnapshot !== undefined && mcpSnapshot !== this.lastMcpSnapshot && this.hasActiveMcpSectionWidgets()) {
+      this.applyMcpSectionWidgets();
+      this.lastMcpSnapshot = mcpSnapshot;
+      this.dirtySectionIds?.clear();
+      this.applyBlacklist(this.settings.blacklistAction !== "warn");
+      this.syncToWidgets();
+      this.rebuildSectionViews?.();
+      this.render();
+      this.setStatus(t("STRINGウィジェットの変更を反映しました"));
+      return;
+    }
     const value = String(this.widgets.prompt?.value || "");
     const negativeValue = String(this.widgets.negative?.value || "");
     const changed = value !== this.lastWidgetValue || (this.widgets.negative && negativeValue !== this.lastNegativeValue);
@@ -3399,6 +3633,7 @@ export class PromptEditor {
         });
         if (signal.aborted) return;
         tagDbItems = results.map((item) => ({ prompt: item.tag, ja: item.translations[0] || "", translations: item.translations }));
+        this.syncActiveSectionSuggestions(tagDbItems.map((item) => item.prompt));
         redraw();
       }, TAG_DB_SEARCH_DELAY_MS);
     };
