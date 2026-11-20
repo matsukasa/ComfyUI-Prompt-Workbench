@@ -1201,11 +1201,6 @@
   font-size: 13.5px;
   resize: none;
 }
-.paio-tag-enable-cb {
-  margin: 0;
-  cursor: pointer;
-  accent-color: var(--paio-primary);
-}
 .paio-prose-phrase-group {
   font-size: 10.5px;
   opacity: 0.78;

@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20261120-dual-dnd";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-dual-dnd";
+import { PromptEditor } from "./prompt_editor.js?v=20261120-click-toggle";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-click-toggle";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
@@ -12,7 +12,7 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-dual-dnd", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-click-toggle", import.meta.url).href;
   document.head.append(link);
 }
 

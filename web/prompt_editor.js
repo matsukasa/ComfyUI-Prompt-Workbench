@@ -4561,14 +4561,6 @@ export class PromptEditor {
     const preferred = tagDbState?.state === "alias" ? tagDbState.preferred : "";
     if (preferred) notices.push(t("別名です。推奨: {tag}", { tag: preferred }));
     const tagDbNote = tagDbState?.state === "unknown" ? t("タグDBに未登録") : "";
-    const enableCheck = element("input", { type: "checkbox", className: "paio-tag-enable-cb" });
-    enableCheck.checked = tag.enabled !== false;
-    enableCheck.title = t("チェックで有効/無効を切替");
-    enableCheck.setAttribute("aria-label", t("{tag} を有効にする", { tag: primaryText }));
-    enableCheck.addEventListener("pointerdown", (event) => event.stopPropagation());
-    enableCheck.addEventListener("click", (event) => event.stopPropagation());
-    enableCheck.addEventListener("change", () => this.toggleOne(index));
-
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
     const stateMark = element("span", { className: "paio-state-mark", text: this.isFavoriteValue(tag.value) ? "★" : "☆" });
@@ -4584,9 +4576,9 @@ export class PromptEditor {
       this.replaceWithPreferredTag(index, preferred);
     }, t("{tag} に置き換える", { tag: preferred })) : null;
     preferredButton?.classList.add("paio-tag-preferred");
-    appendPresentChildren(row, enableCheck, selectMark, stateMark, content, preferredButton, warning);
+    appendPresentChildren(row, selectMark, stateMark, content, preferredButton, warning);
 
-    row.title = [translation, ...notices, tagDbNote, t("左チェック: 有効/無効、クリック: 選択、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択")].filter(Boolean).join("\n");
+    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択、Shift/Ctrl+クリック: 複数選択")].filter(Boolean).join("\n");
 
     row.addEventListener("click", (event) => {
       if (this.didDrag || this.didMarqueeDrag) {
@@ -4594,8 +4586,13 @@ export class PromptEditor {
         this.didMarqueeDrag = false;
         return;
       }
+      if (event.shiftKey || event.ctrlKey || event.metaKey) {
+        clearTimeout(this.clickTimer);
+        this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
+        return;
+      }
       clearTimeout(this.clickTimer);
-      this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
+      this.clickTimer = window.setTimeout(() => this.toggleOne(index), TAG_SINGLE_CLICK_DELAY_MS);
     });
     row.addEventListener("dblclick", (event) => {
       event.preventDefault();
