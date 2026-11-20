@@ -734,3 +734,45 @@ test("Issue #3 & #6: multilingual settings, language detection, section category
   assert.match(requestedUrl, /role=lighting/);
   assert.match(requestedUrl, /q=rim/);
 });
+
+test("PR #20 Codex review fixes: prototype pollution guard and buildSectionsPayload trailing-separator parity", () => {
+  // P1: __proto__ / constructor / prototype paths must not pollute Object.prototype
+  const maliciousJson = '{"__proto__":{"polluted":"yes"},"constructor":{"prototype":{"evil":"1"}},"subject":"portrait"}';
+  const parsed = parseStructuredPrompt(maliciousJson);
+  const outFromParsed = buildStructuredOutputs(parsed.sections, { outputFormat: "json" });
+  assert.equal(({}).polluted, undefined);
+  assert.equal(({}).evil, undefined);
+  assert.deepEqual(JSON.parse(outFromParsed.prompt), { subject: "portrait" });
+
+  // Also guard manually created dotted sections with unsafe segments
+  const manualSections = [
+    createSection({ title: "__proto__.polluted", mode: "prose", proseText: "yes" }),
+    createSection({ title: "constructor.prototype.evil", mode: "prose", proseText: "1" }),
+    createSection({ title: "subject.core", mode: "prose", proseText: "portrait" }),
+  ];
+  const outFromManual = buildStructuredOutputs(manualSections, { outputFormat: "json" });
+  assert.equal(({}).polluted, undefined);
+  assert.equal(({}).evil, undefined);
+  assert.deepEqual(JSON.parse(outFromManual.prompt), { subject: { core: "portrait" } });
+
+  // P2: buildSectionsPayload must match buildStructuredOutputs trailingSeparator suppression in json/structured mode
+  const tagSection = createSection({
+    id: "sec-1",
+    title: "subject",
+    mode: "tags",
+    trailingSeparator: true,
+    socketOutput: true,
+    tags: [createTag("portrait")],
+  });
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [tagSection],
+    activeSectionId: "sec-1",
+    outputFormat: "json",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    settings: sanitizeSettings({ autoTranslate: false }),
+    node: { outputs: [{ name: "prompt" }, { name: "negative" }] },
+  });
+  const payload = JSON.parse(editor.buildSectionsPayload());
+  assert.equal(payload.sections[0].text, "portrait");
+});

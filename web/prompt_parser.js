@@ -601,6 +601,8 @@ function splitInlineBracketSections(text) {
   return sections;
 }
 
+const UNSAFE_JSON_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
 function flattenJsonPromptValue(prefix, value, out, roleOverride = null) {
   if (value === null || value === undefined) return;
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
@@ -622,7 +624,7 @@ function flattenJsonPromptValue(prefix, value, out, roleOverride = null) {
     if (!entries.length) return;
     for (const [childKey, childVal] of entries) {
       const cleanChild = String(childKey || "").trim();
-      if (!cleanChild) continue;
+      if (!cleanChild || UNSAFE_JSON_KEYS.has(cleanChild)) continue;
       if (cleanChild === "_value" && typeof childVal !== "object") {
         out.push({ title: prefix, body: String(childVal ?? "").trim(), role: roleOverride, modeHint: null });
         continue;
@@ -662,7 +664,7 @@ function parseJsonPromptObject(text) {
     } else {
       for (const [rawKey, rawVal] of entries) {
         const key = String(rawKey || "").trim();
-        if (!key) continue;
+        if (!key || UNSAFE_JSON_KEYS.has(key)) continue;
         flattenJsonPromptValue(key, rawVal, flattened, null);
       }
     }
@@ -677,6 +679,7 @@ function setNestedJsonValue(root, rawKey, value, fallbackSuffix = 1) {
     .split(".")
     .map((part) => part.trim())
     .filter(Boolean);
+  if (parts.some((segment) => UNSAFE_JSON_KEYS.has(segment))) return;
   if (parts.length <= 1) {
     const baseKey = parts[0] || `section_${fallbackSuffix}`;
     let key = baseKey;
@@ -691,15 +694,18 @@ function setNestedJsonValue(root, rawKey, value, fallbackSuffix = 1) {
   let cursor = root;
   for (let i = 0; i < parts.length - 1; i += 1) {
     const segment = parts[i];
-    const existing = cursor[segment];
+    const hasOwn = Object.hasOwn(cursor, segment);
+    const existing = hasOwn ? cursor[segment] : undefined;
     if (existing === undefined || existing === null) {
-      cursor[segment] = {};
+      cursor[segment] = Object.create(null);
       cursor = cursor[segment];
     } else if (typeof existing === "object" && !Array.isArray(existing)) {
       cursor = existing;
     } else {
-      cursor[segment] = { _value: existing };
-      cursor = cursor[segment];
+      const container = Object.create(null);
+      container._value = existing;
+      cursor[segment] = container;
+      cursor = container;
     }
   }
   const leaf = parts[parts.length - 1];
@@ -952,7 +958,7 @@ export function buildStructuredOutputs(sections, options = {}) {
 
   if (outputFormat === "json") {
     const buildJsonObj = (list, fallbackPrefix = "section") => {
-      const obj = {};
+      const obj = Object.create(null);
       list.forEach((section, idx) => {
         const body = sectionBody(section, true);
         if (!body) return;

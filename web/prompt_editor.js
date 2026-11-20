@@ -1585,7 +1585,7 @@ export class PromptEditor {
         } else if (structuredMode) {
           text = serializeStructuredSectionBody(section.tags || [], outputLanguage, {
             replaceUnderscores,
-            trailingSeparator: section.trailingSeparator,
+            trailingSeparator: false,
           });
         } else {
           text = outputPrompt(section.tags || [], outputLanguage, {
