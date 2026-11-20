@@ -1246,6 +1246,11 @@
   color: var(--paio-warning);
   border-color: color-mix(in oklch, var(--paio-warning), transparent 45%);
 }
+.paio-section-socket-btn.is-active {
+  color: #fff;
+  background: var(--paio-info);
+  border-color: color-mix(in srgb, var(--paio-info) 75%, white);
+}
 .paio-section-meta {
   color: var(--paio-muted);
   font-size: 11px;

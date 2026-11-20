@@ -391,6 +391,7 @@ export function createSection(overrides = {}) {
     translatedTo: String(overrides.translatedTo || ""),
     enabled: overrides.enabled !== false,
     collapsed: Boolean(overrides.collapsed),
+    socketInput: Boolean(overrides.socketInput),
     trailingSeparator: Boolean(overrides.trailingSeparator),
     tags,
   };

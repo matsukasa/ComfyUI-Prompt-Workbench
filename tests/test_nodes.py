@@ -30,12 +30,36 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         node = PromptWorkbench()
         self.assertEqual(node.emit_prompt(prompt="1girl,\nsolo, , blue_eyes"), ("1girl, solo, blue_eyes,",))
 
-    def test_fork_node_keeps_compact_three_widget_two_output_layout(self):
+    def test_fork_node_keeps_compact_layout_and_accepts_dynamic_section_sockets(self):
         inputs = PromptWorkbenchFork.INPUT_TYPES()
         self.assertEqual(list(inputs["required"].keys()), ["prompt"])
-        self.assertEqual(list(inputs["optional"].keys()), ["negative", "output_format"])
+        self.assertEqual(list(inputs["optional"].keys()), ["negative", "output_format", "sections_payload"])
+        self.assertIn("【Trigger】", inputs["optional"])
+        self.assertEqual(inputs["optional"]["【Trigger】"], ("STRING", {"forceInput": True}))
         self.assertEqual(PromptWorkbenchFork.RETURN_TYPES, ("STRING", "STRING"))
         self.assertEqual(PromptWorkbenchFork.RETURN_NAMES, ("prompt", "negative"))
+
+        payload = json.dumps({
+            "version": 1,
+            "wrap_braces": False,
+            "include_negative_in_prompt": False,
+            "sections": [
+                {"id": "sec-1", "title": "【Subject】", "socket_name": "【Subject】", "role": "positive", "mode": "tags", "enabled": True, "text": "1girl"},
+                {"id": "sec-2", "title": "【Trigger】", "socket_name": "【Trigger】", "role": "positive", "mode": "tags", "enabled": True, "text": "base_word"},
+                {"id": "sec-3", "title": "【Disabled】", "socket_name": "【Disabled】", "role": "positive", "mode": "tags", "enabled": False, "text": "skip_me"},
+                {"id": "sec-4", "title": "【Negative】", "socket_name": "【Negative】", "role": "negative", "mode": "tags", "enabled": True, "text": "lowres"},
+            ],
+        })
+        node = PromptWorkbenchFork()
+        prompt, negative = node.emit_prompt(
+            prompt="1girl, base_word,",
+            negative="lowres,",
+            output_format="tags",
+            sections_payload=payload,
+            **{"【Trigger】": "lora_trigger, base_word", "【Disabled】": "should_not_appear"},
+        )
+        self.assertEqual(prompt, "1girl, base_word, lora_trigger,")
+        self.assertEqual(negative, "lowres,")
 
     def test_mcp_node_declares_stable_widgets_and_output_slots(self):
         opt = PromptWorkbenchMCP.INPUT_TYPES()["optional"]

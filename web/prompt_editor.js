@@ -1368,6 +1368,91 @@ export class PromptEditor {
     this.node.graph?.setDirtyCanvas?.(true, true);
   }
 
+  sectionSocketNames() {
+    const names = new Map();
+    const used = new Set(["prompt", "negative", "output_format", "sections_payload"]);
+    const sections = Array.isArray(this.sections) ? this.sections : [];
+    sections.forEach((section, index) => {
+      const base = String(section?.title || "").trim() || `Section ${index + 1}`;
+      let candidate = base;
+      let suffix = 2;
+      while (used.has(candidate)) {
+        candidate = `${base} (${suffix++})`;
+      }
+      used.add(candidate);
+      names.set(section.id, candidate);
+    });
+    return names;
+  }
+
+  syncDynamicSectionSockets() {
+    if (!this.node || !Array.isArray(this.sections)) return;
+    const socketNames = this.sectionSocketNames();
+    const desired = this.sections
+      .filter((section) => Boolean(section.socketInput))
+      .map((section) => ({
+        sectionId: section.id,
+        name: socketNames.get(section.id) || section.title || section.id,
+      }));
+    const desiredById = new Map(desired.map((entry) => [entry.sectionId, entry.name]));
+    const reservedWidgetNames = new Set(["prompt", "negative", "output_format", "sections_payload"]);
+    const existingInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
+
+    // Re-attach existing inputs restored from workflow JSON by matching socket name.
+    for (const input of existingInputs) {
+      if (!input || input._paioSectionId || reservedWidgetNames.has(input.name)) continue;
+      const matched = desired.find((entry) => entry.name === input.name);
+      if (matched) input._paioSectionId = matched.sectionId;
+    }
+
+    // Remove dynamic sockets whose section was removed or turned OFF.
+    for (let index = existingInputs.length - 1; index >= 0; index -= 1) {
+      const input = existingInputs[index];
+      if (!input || reservedWidgetNames.has(input.name)) continue;
+      if (!input._paioSectionId) continue;
+      if (!desiredById.has(input._paioSectionId)) {
+        if (typeof this.node.removeInput === "function") this.node.removeInput(index);
+        else existingInputs.splice(index, 1);
+      }
+    }
+
+    // Add missing sockets or rename existing ones without breaking links.
+    for (const entry of desired) {
+      const currentInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
+      const existing = currentInputs.find((input) => input?._paioSectionId === entry.sectionId);
+      if (existing) {
+        if (existing.name !== entry.name) existing.name = entry.name;
+      } else if (typeof this.node.addInput === "function") {
+        const added = this.node.addInput(entry.name, "STRING");
+        const target = added || this.node.inputs?.[this.node.inputs.length - 1];
+        if (target) target._paioSectionId = entry.sectionId;
+      }
+    }
+    this.node.graph?.setDirtyCanvas?.(true, true);
+  }
+
+  buildSectionsPayload() {
+    if (!Array.isArray(this.sections)) return "";
+    const socketNames = this.sectionSocketNames();
+    return JSON.stringify({
+      version: 1,
+      wrap_braces: Boolean(this.wrapBraces),
+      include_negative_in_prompt: Boolean(this.includeNegativeInPrompt),
+      sections: this.sections.map((section) => ({
+        id: section.id,
+        title: section.title || "",
+        socket_name: socketNames.get(section.id) || section.title || section.id,
+        socket_input: Boolean(section.socketInput),
+        role: section.role === "negative" ? "negative" : "positive",
+        mode: section.mode === "prose" ? "prose" : "tags",
+        enabled: section.enabled !== false,
+        text: section.mode === "prose"
+          ? String(section.proseText || "").trim()
+          : this.promptEditorValue(section),
+      })),
+    });
+  }
+
   syncToWidgets() {
     this.syncing = true;
     const outputs = this.currentOutputs();
@@ -1387,6 +1472,15 @@ export class PromptEditor {
       outputFormatWidget.value = nextFormat;
       outputFormatWidget.callback?.(nextFormat, this.node, outputFormatWidget);
     }
+    const payloadWidget = this.mcpWidget("sections_payload");
+    if (payloadWidget && Array.isArray(this.sections)) {
+      const nextPayload = this.buildSectionsPayload();
+      if (payloadWidget.value !== nextPayload) {
+        payloadWidget.value = nextPayload;
+        payloadWidget.callback?.(nextPayload, this.node, payloadWidget);
+      }
+    }
+    this.syncDynamicSectionSockets();
     if (Array.isArray(this.sections)) {
       for (const section of this.sections) {
         if (section.id?.startsWith("mcp-pos-")) {
@@ -2222,6 +2316,11 @@ export class PromptEditor {
     removeUnlinkedWidgetInput(this.node, "prompt");
     removeUnlinkedWidgetInput(this.node, "negative");
     removeUnlinkedWidgetInput(this.node, "output_format");
+    removeUnlinkedWidgetInput(this.node, "sections_payload");
+    for (const widget of Object.values(this.widgets || {})) {
+      if (widget?.name) removeUnlinkedWidgetInput(this.node, widget.name);
+    }
+    this.syncDynamicSectionSockets?.();
     compactNodeWidgetLayout(this.node);
     for (const widget of Object.values(this.widgets)) {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
@@ -4295,6 +4394,18 @@ export class PromptEditor {
       }, t("クリックで Positive / Negative を切替"));
       roleBtn.classList.add("paio-section-role");
 
+      const socketBtn = button("IN", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.socketInput = !section.socketInput;
+        this.syncToWidgets();
+        this.render();
+      }, t("このセクション名で入力ソケットを表示/非表示"));
+      socketBtn.classList.add("paio-section-socket-btn");
+      socketBtn.classList.toggle("is-active", Boolean(section.socketInput));
+      socketBtn.setAttribute("aria-pressed", String(Boolean(section.socketInput)));
+
       const upBtn = button("↑", (event) => { event.stopPropagation(); this.moveSection(section.id, -1); }, t("上へ移動"));
       const downBtn = button("↓", (event) => { event.stopPropagation(); this.moveSection(section.id, 1); }, t("下へ移動"));
       const delBtn = button("×", (event) => { event.stopPropagation(); this.removeSection(section.id); }, t("セクションを削除"));
@@ -4308,6 +4419,7 @@ export class PromptEditor {
         titlePicker,
         modeBadge,
         roleBtn,
+        socketBtn,
         upBtn,
         downBtn,
         delBtn,
@@ -4474,6 +4586,12 @@ export class PromptEditor {
           if (roleBtn) {
             roleBtn.textContent = section.role === "negative" ? "Neg" : "Pos";
             roleBtn.classList.toggle("is-negative", section.role === "negative");
+          }
+          const socketBtn = card.querySelector(".paio-section-socket-btn");
+          if (socketBtn) {
+            const hasSocket = Boolean(section.socketInput);
+            socketBtn.classList.toggle("is-active", hasSocket);
+            socketBtn.setAttribute("aria-pressed", String(hasSocket));
           }
           const origLine = card.querySelector(".paio-section-orig-line");
           if (origLine) {

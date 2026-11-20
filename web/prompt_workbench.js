@@ -1,10 +1,44 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20261120-split-mcp";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-split-mcp";
+import { PromptEditor, removeUnlinkedWidgetInput } from "./prompt_editor.js?v=20261120-dynamic-sockets";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-dynamic-sockets";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
+const MCP_NON_SOCKET_WIDGETS = [
+  "prompt",
+  "negative",
+  "output_format",
+  "merge_order",
+  "merge_separator",
+  "normalize_tags",
+  "sec_quality_enabled",
+  "sec_subject_enabled",
+  "sec_composition_enabled",
+  "sec_style_enabled",
+  "sec_trigger_enabled",
+  "neg_quality_enabled",
+  "neg_anatomy_enabled",
+  "neg_style_enabled",
+  "xy_trigger_sync",
+  "tag_suggestions_quality",
+  "tag_suggestions_subject",
+  "tag_suggestions_composition",
+  "tag_suggestions_style",
+  "tag_suggestions_trigger",
+  "merged_preview",
+  "sections_schema",
+];
+const MCP_SECTION_SOCKET_CANDIDATES = [
+  "sec_quality",
+  "sec_subject",
+  "sec_composition",
+  "sec_style",
+  "sec_trigger",
+  "neg_quality",
+  "neg_anatomy",
+  "neg_style",
+];
 
 function ensureStyles() {
   const id = "prompt-workbench-styles";
@@ -12,8 +46,21 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-split-mcp", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-dynamic-sockets", import.meta.url).href;
   document.head.append(link);
+}
+
+function pruneUnusedMcpInputs(node) {
+  if (!node) return;
+  for (const name of MCP_NON_SOCKET_WIDGETS) {
+    removeUnlinkedWidgetInput(node, name);
+  }
+  for (const name of MCP_SECTION_SOCKET_CANDIDATES) {
+    const widget = node.widgets?.find((item) => item.name === name);
+    if (!String(widget?.value || "").trim()) {
+      removeUnlinkedWidgetInput(node, name);
+    }
+  }
 }
 
 function applyMcpExecutionFeedback(node, message) {
@@ -29,6 +76,7 @@ function applyMcpExecutionFeedback(node, message) {
   };
   writeWidget("merged_preview", message.merged_preview);
   writeWidget("sections_schema", message.sections_schema);
+  pruneUnusedMcpInputs(node);
   node.graph?.setDirtyCanvas?.(true, true);
 }
 
@@ -40,6 +88,20 @@ app.registerExtension({
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (nodeData.name === "PromptWorkbenchMCP") {
+      const previousCreated = nodeType.prototype.onNodeCreated;
+      nodeType.prototype.onNodeCreated = function onNodeCreated() {
+        const result = previousCreated?.apply(this, arguments);
+        pruneUnusedMcpInputs(this);
+        queueMicrotask(() => pruneUnusedMcpInputs(this));
+        return result;
+      };
+      const previousConfigured = nodeType.prototype.onConfigure;
+      nodeType.prototype.onConfigure = function onConfigure() {
+        const result = previousConfigured?.apply(this, arguments);
+        pruneUnusedMcpInputs(this);
+        queueMicrotask(() => pruneUnusedMcpInputs(this));
+        return result;
+      };
       const previousExecuted = nodeType.prototype.onExecuted;
       nodeType.prototype.onExecuted = function onExecuted(message) {
         const result = previousExecuted?.apply(this, arguments);
@@ -58,7 +120,8 @@ app.registerExtension({
         if (isFork) {
           const negative = this.widgets?.find((widget) => widget.name === "negative");
           const outputFormat = this.widgets?.find((widget) => widget.name === "output_format");
-          this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat }, api);
+          const sections_payload = this.widgets?.find((widget) => widget.name === "sections_payload");
+          this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat, sections_payload }, api);
         } else {
           this.promptWorkbenchEditor = new UpstreamPromptEditor(this, { prompt }, api);
         }

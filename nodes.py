@@ -165,8 +165,93 @@ class PromptWorkbench:
         return (normalize_output_prompt(prompt),)
 
 
+class DynamicOptionalInputs(dict):
+    """Optional INPUT_TYPES mapping that accepts dynamic frontend-created STRING sockets."""
+
+    def __contains__(self, key):
+        return True
+
+    def __getitem__(self, key):
+        if super().__contains__(key):
+            return super().__getitem__(key)
+        return ("STRING", {"forceInput": True})
+
+
+def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format="tags"):
+    try:
+        payload = json.loads(sections_payload) if sections_payload else None
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict) or not isinstance(payload.get("sections"), list):
+        return None
+
+    wrap_braces = bool(payload.get("wrap_braces"))
+    include_neg = bool(payload.get("include_negative_in_prompt"))
+    pos_blocks = []
+    neg_blocks = []
+
+    for index, raw_section in enumerate(payload["sections"]):
+        if not isinstance(raw_section, dict):
+            continue
+        if not _coerce_enabled(raw_section.get("enabled"), default=True):
+            continue
+        role = "negative" if raw_section.get("role") == "negative" else "positive"
+        mode = "prose" if raw_section.get("mode") == "prose" else "tags"
+        title = str(raw_section.get("title") or "").strip()
+        socket_name = str(raw_section.get("socket_name") or title or f"Section {index + 1}").strip()
+        base_text = str(raw_section.get("text") or "").strip()
+        incoming = dynamic_inputs.get(socket_name)
+        incoming_text = "" if incoming is None else str(incoming).strip()
+
+        if incoming_text:
+            if mode == "prose":
+                if not base_text:
+                    merged_text = incoming_text
+                elif re.search(r"[,，。.;；]$", base_text):
+                    merged_text = f"{base_text} {incoming_text}"
+                else:
+                    merged_text = f"{base_text}, {incoming_text}"
+            else:
+                merged_text = _merge_unique_tags(base_text, incoming_text, normalize_tags=True)
+        else:
+            merged_text = base_text
+
+        if not merged_text:
+            continue
+        entry = (title or f"section_{index + 1}", title, merged_text)
+        if role == "negative":
+            neg_blocks.append(entry)
+            if include_neg:
+                pos_blocks.append(entry)
+        else:
+            pos_blocks.append(entry)
+
+    def render_blocks(blocks, apply_braces=False):
+        if not blocks:
+            return ""
+        if output_format == "json":
+            obj = {}
+            for fallback_key, title, text in blocks:
+                key = title or fallback_key
+                if key in obj:
+                    obj[key] = f"{obj[key]}\n{text}"
+                else:
+                    obj[key] = text
+            return json.dumps(obj, ensure_ascii=False, indent=2)
+        if output_format == "structured":
+            rendered = [f"{title}\n{text}" if title else text for _, title, text in blocks]
+            body = normalize_structured_prompt("\n\n".join(rendered))
+            return f"{{\n{body}\n}}" if apply_braces and body else body
+        return normalize_output_prompt(", ".join(text for _, _, text in blocks))
+
+    return (
+        render_blocks(pos_blocks, apply_braces=wrap_braces),
+        render_blocks(neg_blocks, apply_braces=False),
+    )
+
+
 class PromptWorkbenchFork:
-    """Normalize structured or multi-section prompts with optional negative output."""
+    """Normalize structured or multi-section prompts with optional dynamic section input sockets."""
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -177,16 +262,22 @@ class PromptWorkbenchFork:
                     {"default": "", "multiline": True, "dynamicPrompts": True},
                 ),
             },
-            "optional": {
-                "negative": (
-                    "STRING",
-                    {"default": "", "multiline": True, "dynamicPrompts": True},
-                ),
-                "output_format": (
-                    ["tags", "structured", "json"],
-                    {"default": "tags"},
-                ),
-            },
+            "optional": DynamicOptionalInputs(
+                {
+                    "negative": (
+                        "STRING",
+                        {"default": "", "multiline": True, "dynamicPrompts": True},
+                    ),
+                    "output_format": (
+                        ["tags", "structured", "json"],
+                        {"default": "tags"},
+                    ),
+                    "sections_payload": (
+                        "STRING",
+                        {"default": "", "multiline": False},
+                    ),
+                }
+            ),
         }
 
     RETURN_TYPES = ("STRING", "STRING")
@@ -195,7 +286,19 @@ class PromptWorkbenchFork:
     CATEGORY = "prompt/Prompt Workbench"
     DESCRIPTION = "Edit structured tags or multi-section prompts and pass STRING outputs."
 
-    def emit_prompt(self, prompt="", negative="", output_format="tags"):
+    def emit_prompt(self, prompt="", negative="", output_format="tags", sections_payload="", **kwargs):
+        dynamic_inputs = {
+            str(key): str(val)
+            for key, val in kwargs.items()
+            if val is not None and str(val).strip() != ""
+        }
+        if dynamic_inputs:
+            merged = _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format=output_format)
+            if merged is not None:
+                return merged
+            extra = ", ".join(dynamic_inputs.values())
+            prompt = f"{prompt}\n{extra}" if str(prompt or "").strip() else extra
+
         if output_format in ("structured", "json"):
             return (
                 normalize_structured_prompt(prompt),

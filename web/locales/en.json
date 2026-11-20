@@ -308,6 +308,7 @@
     "カタログ": "Catalog",
     "タグ追加・タグセット・散文フレーズのカタログを表示／折りたたみ": "Show or collapse tag, tag set, and prose phrase catalog",
     "ドラッグして編集エリアとカタログの比率を調整": "Drag to resize editor and catalog split",
-    "{count}件のタグを「{section}」へ移動しました": "Moved {count} tag(s) to “{section}”"
+    "{count}件のタグを「{section}」へ移動しました": "Moved {count} tag(s) to “{section}”",
+    "このセクション名で入力ソケットを表示/非表示": "Show or hide input socket using this section name"
   }
 }

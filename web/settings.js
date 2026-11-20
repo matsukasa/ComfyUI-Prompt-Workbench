@@ -225,6 +225,7 @@ function sanitizeSection(section, index = 0) {
     translatedTo: String(section?.translatedTo || "").slice(0, 16),
     enabled: section?.enabled !== false,
     collapsed: Boolean(section?.collapsed),
+    socketInput: Boolean(section?.socketInput),
     trailingSeparator: Boolean(section?.trailingSeparator),
     tags: tags.slice(0, 2000).map(sanitizeTag),
   };
