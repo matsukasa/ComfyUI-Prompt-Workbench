@@ -1,40 +1,10 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { PromptEditor } from "./prompt_editor.js?v=20261120-mcp-sections";
-import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-mcp-sections";
+import { PromptEditor } from "./prompt_editor.js?v=20261120-split-mcp";
+import { PromptEditor as UpstreamPromptEditor } from "./upstream/prompt_editor.js?v=20261120-split-mcp";
 import { initializeUiLanguage } from "./i18n.js";
 
 const EXTENSION_NAME = "prompt.prompt-workbench";
-const FORK_EXTRA_WIDGET_NAMES = [
-  "merge_order",
-  "merge_separator",
-  "normalize_tags",
-  "sec_quality",
-  "sec_quality_enabled",
-  "sec_subject",
-  "sec_subject_enabled",
-  "sec_composition",
-  "sec_composition_enabled",
-  "sec_style",
-  "sec_style_enabled",
-  "sec_trigger",
-  "sec_trigger_enabled",
-  "neg_quality",
-  "neg_quality_enabled",
-  "neg_anatomy",
-  "neg_anatomy_enabled",
-  "neg_style",
-  "neg_style_enabled",
-  "xy_trigger_sync",
-  "xy_trigger_input",
-  "tag_suggestions_quality",
-  "tag_suggestions_subject",
-  "tag_suggestions_composition",
-  "tag_suggestions_style",
-  "tag_suggestions_trigger",
-  "merged_preview",
-  "sections_schema",
-];
 
 function ensureStyles() {
   const id = "prompt-workbench-styles";
@@ -42,8 +12,24 @@ function ensureStyles() {
   const link = document.createElement("link");
   link.id = id;
   link.rel = "stylesheet";
-  link.href = new URL("./prompt_workbench.css?v=20261120-mcp-sections", import.meta.url).href;
+  link.href = new URL("./prompt_workbench.css?v=20261120-split-mcp", import.meta.url).href;
   document.head.append(link);
+}
+
+function applyMcpExecutionFeedback(node, message) {
+  if (!node || !message || typeof message !== "object") return;
+  const writeWidget = (name, raw) => {
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    if (typeof value !== "string") return;
+    const widget = node.widgets?.find((item) => item.name === name);
+    if (widget && widget.value !== value) {
+      widget.value = value;
+      widget.callback?.(value, node, widget);
+    }
+  };
+  writeWidget("merged_preview", message.merged_preview);
+  writeWidget("sections_schema", message.sections_schema);
+  node.graph?.setDirtyCanvas?.(true, true);
 }
 
 app.registerExtension({
@@ -53,6 +39,15 @@ app.registerExtension({
     await initializeUiLanguage();
   },
   async beforeRegisterNodeDef(nodeType, nodeData) {
+    if (nodeData.name === "PromptWorkbenchMCP") {
+      const previousExecuted = nodeType.prototype.onExecuted;
+      nodeType.prototype.onExecuted = function onExecuted(message) {
+        const result = previousExecuted?.apply(this, arguments);
+        applyMcpExecutionFeedback(this, message);
+        return result;
+      };
+      return;
+    }
     if (nodeData.name !== "PromptWorkbench" && nodeData.name !== "PromptWorkbenchFork") return;
     const isFork = nodeData.name === "PromptWorkbenchFork";
     const previousCreated = nodeType.prototype.onNodeCreated;
@@ -63,12 +58,7 @@ app.registerExtension({
         if (isFork) {
           const negative = this.widgets?.find((widget) => widget.name === "negative");
           const outputFormat = this.widgets?.find((widget) => widget.name === "output_format");
-          const widgets = { prompt, negative, outputFormat };
-          for (const name of FORK_EXTRA_WIDGET_NAMES) {
-            const widget = this.widgets?.find((item) => item.name === name);
-            if (widget) widgets[name] = widget;
-          }
-          this.promptWorkbenchEditor = new PromptEditor(this, widgets, api);
+          this.promptWorkbenchEditor = new PromptEditor(this, { prompt, negative, outputFormat }, api);
         } else {
           this.promptWorkbenchEditor = new UpstreamPromptEditor(this, { prompt }, api);
         }
@@ -85,13 +75,5 @@ app.registerExtension({
       requestAnimationFrame(stabilize);
       return result;
     };
-    if (isFork) {
-      const previousExecuted = nodeType.prototype.onExecuted;
-      nodeType.prototype.onExecuted = function onExecuted(message) {
-        const result = previousExecuted?.apply(this, arguments);
-        this.promptWorkbenchEditor?.applyExecutionFeedback?.(message);
-        return result;
-      };
-    }
   },
 });

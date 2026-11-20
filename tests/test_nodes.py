@@ -6,17 +6,20 @@ from nodes import (
     NODE_DISPLAY_NAME_MAPPINGS,
     PromptWorkbench,
     PromptWorkbenchFork,
+    PromptWorkbenchMCP,
     normalize_output_prompt,
     normalize_structured_prompt,
 )
 
 
 class TestPromptWorkbenchNode(unittest.TestCase):
-    def test_both_upstream_and_fork_nodes_are_registered(self):
+    def test_upstream_fork_and_mcp_nodes_are_registered(self):
         self.assertIs(NODE_CLASS_MAPPINGS["PromptWorkbench"], PromptWorkbench)
         self.assertIs(NODE_CLASS_MAPPINGS["PromptWorkbenchFork"], PromptWorkbenchFork)
+        self.assertIs(NODE_CLASS_MAPPINGS["PromptWorkbenchMCP"], PromptWorkbenchMCP)
         self.assertEqual(NODE_DISPLAY_NAME_MAPPINGS["PromptWorkbench"], "Prompt Workbench")
         self.assertEqual(NODE_DISPLAY_NAME_MAPPINGS["PromptWorkbenchFork"], "Prompt Workbench (Fork)")
+        self.assertEqual(NODE_DISPLAY_NAME_MAPPINGS["PromptWorkbenchMCP"], "Prompt Workbench (MCP)")
 
     def test_upstream_node_keeps_single_prompt_io(self):
         inputs = PromptWorkbench.INPUT_TYPES()
@@ -27,8 +30,15 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         node = PromptWorkbench()
         self.assertEqual(node.emit_prompt(prompt="1girl,\nsolo, , blue_eyes"), ("1girl, solo, blue_eyes,",))
 
-    def test_fork_declares_stable_mcp_widgets_and_output_slots(self):
-        opt = PromptWorkbenchFork.INPUT_TYPES()["optional"]
+    def test_fork_node_keeps_compact_three_widget_two_output_layout(self):
+        inputs = PromptWorkbenchFork.INPUT_TYPES()
+        self.assertEqual(list(inputs["required"].keys()), ["prompt"])
+        self.assertEqual(list(inputs["optional"].keys()), ["negative", "output_format"])
+        self.assertEqual(PromptWorkbenchFork.RETURN_TYPES, ("STRING", "STRING"))
+        self.assertEqual(PromptWorkbenchFork.RETURN_NAMES, ("prompt", "negative"))
+
+    def test_mcp_node_declares_stable_widgets_and_output_slots(self):
+        opt = PromptWorkbenchMCP.INPUT_TYPES()["optional"]
         expected_widgets = [
             "negative",
             "output_format",
@@ -64,7 +74,7 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         for name in expected_widgets:
             self.assertIn(name, opt)
         self.assertEqual(
-            PromptWorkbenchFork.RETURN_NAMES,
+            PromptWorkbenchMCP.RETURN_NAMES,
             (
                 "prompt",
                 "negative",
@@ -79,50 +89,43 @@ class TestPromptWorkbenchNode(unittest.TestCase):
                 "sections_schema",
             ),
         )
-        self.assertEqual(len(PromptWorkbenchFork.RETURN_TYPES), len(PromptWorkbenchFork.RETURN_NAMES))
+        self.assertEqual(len(PromptWorkbenchMCP.RETURN_TYPES), len(PromptWorkbenchMCP.RETURN_NAMES))
 
     def test_tags_mode_flattens_newlines_and_normalizes_commas(self):
         node = PromptWorkbenchFork()
-        out = node.emit_prompt(
+        prompt, negative = node.emit_prompt(
             prompt="1girl,\nsolo, , blue_eyes",
             negative="bad_hands\nworst_quality",
             output_format="tags",
         )
-        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, "1girl, solo, blue_eyes,")
         self.assertEqual(negative, "bad_hands, worst_quality,")
-        self.assertEqual(
-            out["ui"]["merged_preview"][0],
-            "[POSITIVE]\n1girl, solo, blue_eyes,\n\n[NEGATIVE]\nbad_hands, worst_quality,",
-        )
 
     def test_structured_mode_preserves_headers_braces_and_newlines(self):
         node = PromptWorkbenchFork()
         raw_prompt = "{\n【任务与范式】\n4:3横向画幅；人像摄影。\n\n【构图与机位】\n平视全身近景。\n}"
         raw_neg = "ANIME假发质感，手部扭曲崩坏。"
-        out = node.emit_prompt(
+        prompt, negative = node.emit_prompt(
             prompt=raw_prompt,
             negative=raw_neg,
             output_format="structured",
         )
-        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, raw_prompt)
         self.assertEqual(negative, raw_neg)
 
     def test_json_mode_preserves_json_formatting(self):
         node = PromptWorkbenchFork()
         raw_json = '{\n  "shot": "50mm close-up"\n}'
-        out = node.emit_prompt(
+        prompt, negative = node.emit_prompt(
             prompt=raw_json,
             negative="lowres",
             output_format="json",
         )
-        prompt, negative = out["result"][:2]
         self.assertEqual(prompt, raw_json)
         self.assertEqual(negative, "lowres")
 
     def test_mcp_sections_merge_bypass_weights_and_schema(self):
-        node = PromptWorkbenchFork()
+        node = PromptWorkbenchMCP()
         out = node.emit_prompt(
             sec_quality="masterpiece\n(best quality:1.2)",
             sec_subject="1girl, (silver_hair:1.15)",
@@ -162,7 +165,7 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         self.assertIn(negative, out["ui"]["merged_preview"][0])
 
     def test_xy_trigger_sync_modes_and_custom_separator(self):
-        node = PromptWorkbenchFork()
+        node = PromptWorkbenchMCP()
         append_out = node.emit_prompt(
             sec_subject="1girl",
             sec_trigger="base_trigger",
