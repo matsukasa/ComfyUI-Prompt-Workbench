@@ -149,8 +149,11 @@ test("split layout height tracks outer node grow and shrink without snapping bac
   // targetRootHeight = 1000 - 70 - 20 = 910; split = 910 - 80 = 830
   assert.equal(vars.get("--paio-split-height"), "830px");
   assert.equal(editor.node.size[1], 1000);
-  // computeSize reports the minimum floor (not current 930px) so LiteGraph allows shrinking back down.
-  assert.equal(editor.domWidget.computeSize()[1], 380); // 280 + 80 + 20
+  // Both computeSize and computedHeight stay at the minimum floor so LiteGraph
+  // allows shrinking both width and height back down and never runaway-grows.
+  assert.deepEqual(editor.domWidget.computeSize(), [540, 380]); // 280 + 80 + 20
+  assert.equal(editor.domWidget.computedHeight, 380);
+  assert.equal(editor.domWidget.options.getMinHeight(), 380);
 
   // Even if the browser measures root.offsetHeight slightly larger than targetRootHeight,
   // repeated syncWidgetLayout calls must never runaway-grow the outer node.
@@ -172,7 +175,7 @@ test("split layout height tracks outer node grow and shrink without snapping bac
 
   editor.node.setSize([800, 300]);
   assert.equal(vars.get("--paio-split-height"), "280px");
-  assert.equal(editor.node.size[1], 450); // 80 + 280 + 20 + 70
+  assert.equal(editor.domWidget.computedHeight, 380);
 });
 
 test("split layout clamps left pane ratio on narrow nodes and stacks below 440px", () => {

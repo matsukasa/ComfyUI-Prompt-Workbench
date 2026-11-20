@@ -2269,6 +2269,7 @@ export class PromptEditor {
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
       hideOnZoom: false,
+      getMinHeight: () => (this.splitLayout ? this.minSplitWidgetHeight() : this.widgetHeight()),
       onDraw: (widget) => this.syncWidgetLayout(widget),
       afterResize: () => this.syncWidgetLayout(),
       getValue: () => String(promptWidget?.value || ""),
@@ -2280,7 +2281,7 @@ export class PromptEditor {
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
     domWidget.computeSize = (width = this.node.size?.[0] || 540) => [
-      width,
+      this.splitLayout ? 540 : width,
       this.splitLayout ? this.minSplitWidgetHeight() : this.widgetHeight(),
     ];
     removeWidgetFromLayout(this.node, promptWidget);
@@ -2303,7 +2304,7 @@ export class PromptEditor {
     this.render();
     if (typeof ResizeObserver === "function") {
       this.layoutObserver = new ResizeObserver(() => {
-        if (!this.disposed) this.syncWidgetLayout();
+        if (!this.disposed && !this.splitLayout) this.syncWidgetLayout();
       });
       this.layoutObserver.observe(this.root);
     }
@@ -2368,19 +2369,13 @@ export class PromptEditor {
       this.syncSplitBounds();
       const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
       if (this.splitLayout) {
-        // Two-pane mode is strictly outer-node-driven: never feed current
-        // offsetHeight back into node.setSize() (which causes runaway growth
-        // and blocks shrinking). Clamp only against the fixed minimum floor.
+        // Two-pane mode is strictly outer-node-driven: keep computedHeight at
+        // the fixed minimum floor and never call node.setSize() from draw/resize
+        // loops so LiteGraph can both grow and shrink smoothly without runaway.
         const minWidgetH = this.minSplitWidgetHeight();
-        const minimumNodeHeight = minWidgetH + nodeOverhead;
-        const currentNodeHeight = Number(this.node.size?.[1]) || BASE_NODE_HEIGHT;
-        const targetWidgetHeight = Math.max(minWidgetH, currentNodeHeight - nodeOverhead);
-        const computedHeight = targetWidgetHeight + 4;
-        const changed = widget.computedHeight !== computedHeight;
-        widget.computedHeight = computedHeight;
-        if (currentNodeHeight < minimumNodeHeight) {
-          this.node.setSize([this.node.size[0], minimumNodeHeight]);
-        } else if (changed) {
+        const changed = widget.computedHeight !== minWidgetH;
+        widget.computedHeight = minWidgetH;
+        if (changed) {
           this.node.graph?.setDirtyCanvas?.(true, true);
         }
         return;
