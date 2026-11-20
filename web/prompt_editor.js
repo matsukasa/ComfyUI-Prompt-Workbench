@@ -2263,13 +2263,20 @@ export class PromptEditor {
   attach() {
     const promptWidget = this.widgets.prompt;
     hideWidgetForGood(promptWidget, ":prompt");
-    // Keep intrinsic height measurable even when the frontend adds h-full/flex-1.
-    this.root.style.height = "auto";
-    this.root.style.flex = "0 0 auto";
+    if (this.splitLayout) {
+      // Two-pane mode fills the ComfyUI DOMWidget container via CSS flexbox so
+      // outer-frame resize works natively without JS height feedback loops.
+      this.root.style.height = "100%";
+      this.root.style.flex = "1 1 auto";
+    } else {
+      // Keep intrinsic height measurable even when the frontend adds h-full/flex-1.
+      this.root.style.height = "auto";
+      this.root.style.flex = "0 0 auto";
+    }
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
       hideOnZoom: false,
-      getMinHeight: () => (this.splitLayout ? this.minSplitWidgetHeight() : this.widgetHeight()),
+      getMinHeight: () => (this.splitLayout ? 420 : this.widgetHeight()),
       onDraw: (widget) => this.syncWidgetLayout(widget),
       afterResize: () => this.syncWidgetLayout(),
       getValue: () => String(promptWidget?.value || ""),
@@ -2282,7 +2289,7 @@ export class PromptEditor {
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
     domWidget.computeSize = (width = this.node.size?.[0] || 540) => [
       this.splitLayout ? 540 : width,
-      this.splitLayout ? this.minSplitWidgetHeight() : this.widgetHeight(),
+      this.splitLayout ? 420 : this.widgetHeight(),
     ];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
@@ -2345,20 +2352,6 @@ export class PromptEditor {
       const effectivePct = Math.min(maxPct, Math.max(minPct, desired));
       this.splitLayout.style.setProperty("--paio-left-pane-width", `${effectivePct.toFixed(2)}%`);
     }
-
-    if (this.root?.offsetHeight > 0) {
-      const nodeHeight = Number(this.node?.size?.[1]) || BASE_NODE_HEIGHT;
-      const margin = Number(this.domWidget?.margin ?? 10);
-      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
-      const targetRootHeight = nodeHeight - nodeOverhead - margin * 2;
-      const innerChrome = this.splitInnerChromeHeight();
-      const minSplit = stacked ? 460 : MIN_SPLIT_HEIGHT;
-      const nextSplitHeight = Math.max(minSplit, Math.floor(targetRootHeight - innerChrome));
-      const nextValue = `${nextSplitHeight}px`;
-      if (this.splitLayout.style.getPropertyValue("--paio-split-height") !== nextValue) {
-        this.splitLayout.style.setProperty("--paio-split-height", nextValue);
-      }
-    }
   }
 
   syncWidgetLayout(widget = this.domWidget) {
@@ -2367,19 +2360,13 @@ export class PromptEditor {
     try {
       this.syncWidgetWidth(widget);
       this.syncSplitBounds();
-      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
       if (this.splitLayout) {
-        // Two-pane mode is strictly outer-node-driven: keep computedHeight at
-        // the fixed minimum floor and never call node.setSize() from draw/resize
-        // loops so LiteGraph can both grow and shrink smoothly without runaway.
-        const minWidgetH = this.minSplitWidgetHeight();
-        const changed = widget.computedHeight !== minWidgetH;
-        widget.computedHeight = minWidgetH;
-        if (changed) {
-          this.node.graph?.setDirtyCanvas?.(true, true);
-        }
+        // Two-pane mode relies on ComfyUI's native DOMWidget container height
+        // and CSS flexbox (height: 100% / flex: 1 1 0). Do not mutate
+        // widget.computedHeight or node.size here.
         return;
       }
+      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
       const height = this.widgetHeight();
       // LiteGraph adds a four-pixel gap to computeSize() heights.
       const computedHeight = height + 4;

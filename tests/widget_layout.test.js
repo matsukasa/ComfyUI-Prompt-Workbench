@@ -122,15 +122,25 @@ test("content resize observation updates bounds and disconnects when removed", (
   }
 });
 
-test("split layout height tracks outer node grow and shrink without snapping back", () => {
-  const editor = attachEditor(800);
-  const vars = new Map([["--paio-split-height", "560px"]]);
-  const classes = new Set();
-  editor.splitLayout = {
-    clientWidth: 760,
-    get offsetHeight() {
-      return parseInt(vars.get("--paio-split-height") || "560", 10);
+test("split layout delegates vertical sizing to native CSS flex without mutating node.size or computedHeight", () => {
+  const prompt = { name: "prompt", value: "cat", options: {} };
+  const node = {
+    size: [800, 900], widgets: [prompt],
+    graph: { setDirtyCanvas() {} },
+    addDOMWidget(name, type, element, options) {
+      const widget = { name, type, element, options, margin: 10 };
+      this.widgets.push(widget);
+      return widget;
     },
+    setSize(size) {
+      this.size = size;
+      for (const widget of this.widgets) widget.options.afterResize?.call(widget, this);
+    },
+  };
+  const vars = new Map();
+  const classes = new Set();
+  const splitLayout = {
+    clientWidth: 760,
     style: {
       setProperty(name, value) { vars.set(name, value); },
       getPropertyValue(name) { return vars.get(name) || ""; },
@@ -140,42 +150,27 @@ test("split layout height tracks outer node grow and shrink without snapping bac
       contains(name) { return classes.has(name); },
     },
   };
-  Object.defineProperty(editor.root, "offsetHeight", {
-    configurable: true,
-    get() { return 80 + editor.splitLayout.offsetHeight; },
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    node, widgets: { prompt }, root: { style: {} }, splitLayout, settings: sanitizeSettings({}), render() {},
   });
+  editor.attach();
+
+  assert.equal(editor.root.style.height, "100%");
+  assert.equal(editor.root.style.flex, "1 1 auto");
+  assert.deepEqual(editor.domWidget.computeSize(), [540, 420]);
+  assert.equal(editor.domWidget.options.getMinHeight(), 420);
 
   editor.node.setSize([800, 1000]);
-  // targetRootHeight = 1000 - 70 - 20 = 910; split = 910 - 80 = 830
-  assert.equal(vars.get("--paio-split-height"), "830px");
   assert.equal(editor.node.size[1], 1000);
-  // Both computeSize and computedHeight stay at the minimum floor so LiteGraph
-  // allows shrinking both width and height back down and never runaway-grows.
-  assert.deepEqual(editor.domWidget.computeSize(), [540, 380]); // 280 + 80 + 20
-  assert.equal(editor.domWidget.computedHeight, 380);
-  assert.equal(editor.domWidget.options.getMinHeight(), 380);
+  assert.equal(editor.domWidget.computedHeight, undefined);
+  assert.equal(vars.has("--paio-split-height"), false);
 
-  // Even if the browser measures root.offsetHeight slightly larger than targetRootHeight,
-  // repeated syncWidgetLayout calls must never runaway-grow the outer node.
-  Object.defineProperty(editor.root, "offsetHeight", {
-    configurable: true,
-    get() { return 95 + editor.splitLayout.offsetHeight; },
-  });
   for (let frame = 0; frame < 5; frame++) editor.syncWidgetLayout();
   assert.equal(editor.node.size[1], 1000);
 
-  Object.defineProperty(editor.root, "offsetHeight", {
-    configurable: true,
-    get() { return 80 + editor.splitLayout.offsetHeight; },
-  });
-  editor.node.setSize([800, 560]);
-  // targetRootHeight = 560 - 70 - 20 = 470; split = 470 - 80 = 390
-  assert.equal(vars.get("--paio-split-height"), "390px");
-  assert.equal(editor.node.size[1], 560);
-
-  editor.node.setSize([800, 300]);
-  assert.equal(vars.get("--paio-split-height"), "280px");
-  assert.equal(editor.domWidget.computedHeight, 380);
+  editor.node.setSize([600, 500]);
+  assert.deepEqual(editor.node.size, [600, 500]);
+  assert.equal(editor.domWidget.width, 600);
 });
 
 test("split layout clamps left pane ratio on narrow nodes and stacks below 440px", () => {
