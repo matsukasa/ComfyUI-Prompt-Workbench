@@ -28,6 +28,7 @@ import {
 import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
 export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
+import { attachTagSuggestions, promptTokenSpanAt, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
 import { applyCategoryColor, categoryColorId, categoryBaseColor, majorCategory,
   sanitizeCategoryColors, validCategoryColor, tagCategoryIndex, categoryPromptKey } from "./category_colors.js";
 import {
@@ -65,6 +66,10 @@ let categoryColorErrorSerial = 0;
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
+const TAG_DB_SEARCH_DELAY_MS = 300;
+const TAG_DB_SEARCH_LIMIT = 50;
+const TAG_DB_CHECK_DELAY_MS = 400;
+const TAG_DB_CHECK_BATCH = 200;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
 const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
 const TAG_SINGLE_CLICK_DELAY_MS = 450;
@@ -720,6 +725,7 @@ export class PromptEditor {
     // state initialization until that synchronous lifecycle has completed.
     queueMicrotask(() => { if (!this.disposed) this.loadSharedFavorites(); });
     queueMicrotask(() => { if (!this.disposed) this.loadDefaultSettings(); });
+    this.tagDbStates = new Map();
     this.loadModelRegistry();
     this.pollTimer = window.setInterval(() => this.syncFromWidgets(), 400);
   }
@@ -1135,6 +1141,32 @@ export class PromptEditor {
         event.preventDefault();
         this.addFromInput();
       }
+    });
+    const tagDbLanguage = () => this.settings.localLanguage;
+    attachTagSuggestions(this.promptTextarea, { api: this.api, language: tagDbLanguage });
+    attachTagSuggestions(this.addInput, {
+      api: this.api,
+      language: tagDbLanguage,
+      onPick: (item) => {
+        const raw = String(this.addInput.value || "");
+        const caret = Number.isInteger(this.addInput.selectionStart) ? this.addInput.selectionStart : raw.length;
+        const span = promptTokenSpanAt(raw, caret);
+        const before = raw.slice(0, span.start).trim();
+        const after = raw.slice(span.end).replace(/^[\s,]+/u, "").trim();
+        if (before || after) {
+          const insertion = span.hasFollowingSeparator ? item.tag : `${item.tag}, `;
+          this.addInput.setRangeText(insertion, span.start, span.end, "end");
+          this.addFromInput();
+          return;
+        }
+        this.pushUndo();
+        this.addValues(
+          [{ value: item.tag, translation: item.translations[0] || "", translatedTo: this.settings.localLanguage }],
+          { trailingSeparator: true },
+        );
+        this.addInput.value = "";
+        this.setStatus(t("{tag} を追加しました", { tag: item.tag }));
+      },
     });
     this.searchInput = element("input", { className: "paio-search" });
     this.searchInput.type = "search";
@@ -2672,6 +2704,9 @@ export class PromptEditor {
     const resultStatus = element("span", { className: "paio-example-count", text: t("読み込み中…") });
     const selected = new Set();
     let library = null;
+    let tagDbItems = [];
+    let tagDbTimer = 0;
+    let tagDbAbort = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
     const categoryScrollPositions = new Map();
     let renderLimit = INITIAL_EXAMPLE_LIMIT;
@@ -2741,9 +2776,12 @@ export class PromptEditor {
       const matches = sortExampleTags(filterExampleLibraryTags(library, resolved.small?.id, query)
         .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))),
       this.settings.exampleSortOrder, this.settings.tagUsage, this.settings.libraryFile);
-      resultStatus.textContent = t("{count}件", { count: matches.length });
+      const catalogKeys = new Set(matches.map((item) => tagDbKey(item.prompt)));
+      const tagDbMatches = !query ? [] : tagDbItems.filter((item) => !catalogKeys.has(tagDbKey(item.prompt))
+        && (!this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))));
+      resultStatus.textContent = t("{count}件", { count: matches.length + tagDbMatches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
-      for (const item of matches.slice(0, visibleLimit)) {
+      for (const item of [...matches.slice(0, visibleLimit), ...tagDbMatches]) {
         const translation = cleanTranslation(item.ja);
         const favorite = favoriteKeys.has(favoriteTagKey(item.prompt));
         const chip = button("", (event) => {
@@ -2787,13 +2825,13 @@ export class PromptEditor {
         chip.replaceChildren(
           element("span", { className: "paio-favorite-mark", text: favorite ? "★" : "☆" }),
           element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
-          ...(translation ? [element("span", { className: "paio-example-chip-translation", text: translation })] : []),
+          ...(translation ? [element("span", { className: "paio-example-chip-translation", text: item.translations?.join(" / ") || translation })] : []),
         );
         chip.classList.toggle("is-selected", selected.has(item.prompt));
         chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
         list.append(chip);
       }
-      if (!matches.length) list.append(element("p", { className: "paio-empty", text: t("一致する例はありません") }));
+      if (!matches.length && !tagDbMatches.length) list.append(element("p", { className: "paio-empty", text: t("一致する例はありません") }));
       if (!query && matches.length > renderLimit) {
         list.append(button(t("さらに表示（残り {count}）", { count: matches.length - renderLimit }), () => {
           renderLimit += EXAMPLE_PAGE_SIZE;
@@ -2819,13 +2857,37 @@ export class PromptEditor {
         list.replaceChildren(element("p", { className: "paio-empty paio-error", text: t("内蔵例を読み込めませんでした") }));
         this.setStatus(t("内蔵例を読み込めませんでした"), true);
       });
-    search.addEventListener("input", () => { renderLimit = INITIAL_EXAMPLE_LIMIT; redraw(); });
+    const refreshTagDbItems = () => {
+      clearTimeout(tagDbTimer);
+      tagDbAbort?.abort();
+      tagDbItems = [];
+      const query = search.value.trim();
+      if (!shouldSearchTagDb(query)) return;
+      tagDbTimer = window.setTimeout(async () => {
+        tagDbAbort = new AbortController();
+        const { signal } = tagDbAbort;
+        const results = await searchTagDb(this.api, query, {
+          language: this.settings.localLanguage,
+          contains: true,
+          limit: TAG_DB_SEARCH_LIMIT,
+          signal,
+        });
+        if (signal.aborted) return;
+        tagDbItems = results.map((item) => ({ prompt: item.tag, ja: item.translations[0] || "", translations: item.translations }));
+        redraw();
+      }, TAG_DB_SEARCH_DELAY_MS);
+    };
+    search.addEventListener("input", () => {
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      refreshTagDbItems();
+      redraw();
+    });
     this.exampleBulkButton = button(t("選択した{count}件を追加", { count: 0 }), () => {
       if (!selected.size) return;
       this.pushUndo();
       this.addValues(
         [...selected].map((prompt) => {
-          const item = library?.tags.find((tag) => tag.prompt === prompt);
+          const item = [...(library?.tags || []), ...tagDbItems].find((tag) => tag.prompt === prompt);
           const translation = cleanTranslation(item?.ja);
           return { value: prompt, translation, translatedTo: translation ? this.settings.localLanguage : "" };
         }),
@@ -3079,6 +3141,47 @@ export class PromptEditor {
         this.renderTags();
       }));
     }
+    this.scheduleTagDbCheck();
+  }
+
+  scheduleTagDbCheck() {
+    clearTimeout(this.tagDbTimer);
+    this.tagDbTimer = window.setTimeout(() => this.checkTagDb(), TAG_DB_CHECK_DELAY_MS);
+  }
+
+  async checkTagDb() {
+    if (!this.tagDbStates) return;
+    const pending = [...new Set(this.currentTags.filter((tag) => tag.type === "normal").map((tag) => promptBody(tag.value)))]
+      .filter((value) => value && !containsJapaneseText(value) && !this.tagDbStates.has(value));
+    if (!pending.length) return;
+    const results = await validateTagDb(this.api, pending.slice(0, TAG_DB_CHECK_BATCH));
+    if (!results) {
+      this.tagDbStates = null;
+      return;
+    }
+    for (const result of results) this.tagDbStates.set(result.tag, result);
+    if (results.some((result) => result.state === "alias")) this.renderTags();
+    else if (pending.length > TAG_DB_CHECK_BATCH) this.scheduleTagDbCheck();
+  }
+
+  replaceWithPreferredTag(index, preferred) {
+    const initialId = this.currentTags[index]?.id;
+    this.commitPromptBeforeAction();
+    const tag = initialId
+      ? this.currentTags.find((item) => item.id === initialId)
+      : this.currentTags[index];
+    if (!tag) return;
+    this.pushUndo();
+    tag.value = replacePromptBody(tag.value, preferred);
+    tag.translation = "";
+    tag.translatedTo = "";
+    tag.translationError = "";
+    tag.translationErrorTarget = "";
+    tag.type = classifyTag(tag.value);
+    this.applyBlacklist(this.settings.blacklistAction !== "warn");
+    this.syncToWidgets();
+    this.render();
+    this.setStatus(t("{tag} に置き換えました", { tag: preferred }));
   }
 
   renderTag(tag, index, duplicate) {
@@ -3108,7 +3211,11 @@ export class PromptEditor {
     if (tag.blacklistMatch) notices.push(t("ブラックリスト一致"));
     if (tag.missingModel) notices.push(t("モデルが見つかりません"));
     if (tag.translationError) notices.push(tag.translationError);
-    row.title = [translation, ...notices, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作")].filter(Boolean).join("\n");
+    const tagDbState = this.tagDbStates?.get(promptBody(tag.value));
+    const preferred = tagDbState?.state === "alias" ? tagDbState.preferred : "";
+    if (preferred) notices.push(t("別名です。推奨: {tag}", { tag: preferred }));
+    const tagDbNote = tagDbState?.state === "unknown" ? t("タグDBに未登録") : "";
+    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作")].filter(Boolean).join("\n");
 
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
@@ -3119,7 +3226,13 @@ export class PromptEditor {
     ]);
     if (secondaryText) content.append(element("span", { className: "paio-tag-translation", text: secondaryText }));
     const warning = notices.length ? element("span", { className: "paio-tag-warning", text: "!", title: notices.join(" / ") }) : null;
-    appendPresentChildren(row, selectMark, stateMark, content, warning);
+    const preferredButton = preferred ? button(`→ ${preferred}`, (event) => {
+      event.stopPropagation();
+      clearTimeout(this.clickTimer);
+      this.replaceWithPreferredTag(index, preferred);
+    }, t("{tag} に置き換える", { tag: preferred })) : null;
+    preferredButton?.classList.add("paio-tag-preferred");
+    appendPresentChildren(row, selectMark, stateMark, content, preferredButton, warning);
 
     row.addEventListener("click", (event) => {
       if (this.didDrag) {
@@ -3636,6 +3749,7 @@ export class PromptEditor {
         const tag = tasks[offset] && currentTag(tasks[offset]);
         if (!tag) return;
         const translated = promptBody(cleanTranslation(result?.translated));
+        if (target === "en" && applySmartTranslationResult(tag, translated, target, this.settings.localLanguage)) return;
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
         tag.translationError = translated ? "" : (result?.error || t("翻訳結果が空でした"));

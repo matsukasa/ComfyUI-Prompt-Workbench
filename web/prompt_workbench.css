@@ -720,3 +720,27 @@
   .paio-editor .paio-category-colored { background: ButtonFace; color: ButtonText; border-color: ButtonText; }
   .paio-editor .paio-category-colored:is(.is-selected, .is-active) { outline: 2px solid Highlight; }
 }
+
+.paio-tagdb-suggestions { width: 360px; gap: 0; padding: 4px; }
+.paio-tagdb-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 8px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.paio-tagdb-option:hover, .paio-tagdb-option.is-active { background: color-mix(in oklch, currentColor, transparent 86%); }
+.paio-tagdb-option-tag { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paio-tagdb-option-count { grid-area: 1 / 2; color: var(--descrip-text, oklch(0.76 0 0)); font-size: 11px; }
+.paio-tagdb-option-translation {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  color: var(--descrip-text, oklch(0.76 0 0));
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.paio-tagdb-option-translation:empty { display: none; }
+.paio-tag-preferred { flex: 0 1 auto; max-width: 45%; min-height: 20px; padding: 1px 5px; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }

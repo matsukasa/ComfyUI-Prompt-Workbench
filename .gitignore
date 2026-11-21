@@ -19,6 +19,8 @@ user_data/
 !/tests/category_colors.test.js
 !/tests/category_colors_harness.html
 !/tests/library_sort.test.js
+!/tests/tagdb_tokens.test.mjs
+!/tests/test_tagdb.py
 /DESIGN.md
 /PRODUCT.md
 /SOURCE_AUDIT.md
