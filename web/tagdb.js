@@ -47,7 +47,14 @@ export function promptTokenSpanAt(text, caret) {
   while (start > 0 && !isSeparator(value[start - 1])) start -= 1;
   while (start < caret && /[\s([{]/u.test(value[start])) start += 1;
   let end = caret;
-  while (end < value.length && !isSeparator(value[end]) && !/[)\]}:]/u.test(value[end])) end += 1;
+  while (end < value.length) {
+    if (value[end] === "\\" && end + 1 < value.length) {
+      end += 2;
+      continue;
+    }
+    if (isSeparator(value[end]) || /[)\]}:]/u.test(value[end])) break;
+    end += 1;
+  }
   while (end > start && /\s/u.test(value[end - 1])) end -= 1;
   const trailing = value.slice(end);
   const hasFollowingSeparator = /^\s*[,\n)\]}:]/u.test(trailing);
