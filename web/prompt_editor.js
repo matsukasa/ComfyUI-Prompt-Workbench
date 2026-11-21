@@ -3527,6 +3527,8 @@ export class PromptEditor {
     this.tagList.addEventListener("pointerdown", (event) => {
       if (event.button !== 0 || !event.shiftKey) return;
       if (event.target?.closest?.("input, textarea, select, button")) return;
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
       commitActiveInlineEdit();
       event.preventDefault();
       event.stopPropagation();
