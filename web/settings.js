@@ -3,6 +3,8 @@ import { sanitizeCategoryColors } from "./category_colors.js";
 
 export const DEFAULT_CATALOG_NAME = "tag_catalog";
 export const FAVORITES_SCHEMA = "prompt-workbench/favorites";
+export const SUPPORTED_OUTPUT_LANGUAGES = Object.freeze(["en", "ja", "zh", "zh-CN", "zh-TW", "ko"]);
+export const SUPPORTED_LOCAL_LANGUAGES = Object.freeze(["ja", "en", "zh", "zh-CN", "zh-TW", "ko"]);
 
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
@@ -34,6 +36,10 @@ export const DEFAULT_SETTINGS = Object.freeze({
   tagListHeight: 260,
   exampleListHeight: 118,
   tagSetListHeight: 160,
+  leftPaneWidthPercent: 46,
+  catalogOpen: false,
+  catalogPanePercent: 46,
+  showSectionTranslationsInList: true,
 });
 
 const MAX_IMPORT_BYTES = 1024 * 1024;
@@ -96,7 +102,7 @@ export function sanitizeSettings(input = {}) {
   if (["local", "offline", "libretranslate", "deepl", "openai"].includes(input.translationProvider)) {
     settings.translationProvider = input.translationProvider;
   }
-  if (["en", "ja"].includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
+  if (SUPPORTED_OUTPUT_LANGUAGES.includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
   if (["original", "local", "both"].includes(input.translationDisplay)) {
     settings.translationDisplay = input.translationDisplay;
   }
@@ -171,6 +177,18 @@ export function sanitizeSettings(input = {}) {
   if (Number.isFinite(Number(input.tagListHeight))) {
     settings.tagListHeight = Math.min(720, Math.max(96, Math.round(Number(input.tagListHeight))));
   }
+  if (Number.isFinite(Number(input.leftPaneWidthPercent))) {
+    settings.leftPaneWidthPercent = Math.min(70, Math.max(25, Number(input.leftPaneWidthPercent)));
+  }
+  if (Object.hasOwn(input, "catalogOpen")) {
+    settings.catalogOpen = Boolean(input.catalogOpen);
+  }
+  if (Number.isFinite(Number(input.catalogPanePercent))) {
+    settings.catalogPanePercent = Math.min(72, Math.max(25, Number(input.catalogPanePercent)));
+  }
+  if (Object.hasOwn(input, "showSectionTranslationsInList")) {
+    settings.showSectionTranslationsInList = Boolean(input.showSectionTranslationsInList);
+  }
   return settings;
 }
 
@@ -184,6 +202,7 @@ function sanitizeTag(tag) {
   const legacyDisabled = /^.+\S\s+(?:null|undefined)$/iu.test(rawValue);
   const value = legacyDisabled ? rawValue.replace(/\s+(?:null|undefined)$/iu, "").trim() : rawValue;
   const translation = sanitizeTranslation(tag?.translation);
+  const rawSeparator = String(tag?.separatorAfter || "");
   return {
     id: String(tag?.id || "").slice(0, 80),
     value,
@@ -192,16 +211,57 @@ function sanitizeTag(tag) {
     translatedTo: String(tag?.translatedTo || "").slice(0, 16),
     type: String(tag?.type || "normal").slice(0, 32),
     lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(tag?.lineBreakAfter) || 0))),
+    separatorAfter: ["；", "，", "、", "。", "．"].includes(rawSeparator) ? rawSeparator : "",
+  };
+}
+
+function sanitizeSection(section, index = 0) {
+  const tags = Array.isArray(section?.tags) ? section.tags : [];
+  return {
+    id: String(section?.id || `sec-${index + 1}`).slice(0, 80),
+    title: String(section?.title || "").slice(0, 200).trim(),
+    role: section?.role === "negative" ? "negative" : "positive",
+    mode: section?.mode === "prose" ? "prose" : "tags",
+    proseText: String(section?.proseText || "").slice(0, 40000),
+    translation: String(section?.translation || "").slice(0, 40000),
+    translatedTo: String(section?.translatedTo || "").slice(0, 16),
+    enabled: section?.enabled !== false,
+    collapsed: Boolean(section?.collapsed),
+    socketInput: Boolean(section?.socketInput),
+    socketOutput: Boolean(section?.socketOutput),
+    trailingSeparator: Boolean(section?.trailingSeparator),
+    tags: tags.slice(0, 2000).map(sanitizeTag),
   };
 }
 
 export function sanitizeEditorState(input = {}) {
   const state = input && typeof input === "object" ? input : {};
-  const tags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
+  const rawTags = Array.isArray(state.tags) ? state.tags : Array.isArray(state.positive) ? state.positive : [];
+  const tags = rawTags.slice(0, 2000).map(sanitizeTag);
+  const trailingSeparator = Boolean(state.trailingSeparator);
+  const rawSections = Array.isArray(state.sections) && state.sections.length
+    ? state.sections.slice(0, 64).map((section, index) => sanitizeSection(section, index))
+    : [{
+        id: "sec-1",
+        title: "",
+        role: "positive",
+        enabled: true,
+        collapsed: false,
+        trailingSeparator,
+        tags,
+      }];
+  const activeSectionId = rawSections.some((sec) => sec.id === state.activeSectionId)
+    ? String(state.activeSectionId)
+    : rawSections[0].id;
   return {
     version: 1,
-    trailingSeparator: Boolean(state.trailingSeparator),
-    tags: tags.slice(0, 2000).map(sanitizeTag),
+    trailingSeparator,
+    tags,
+    sections: rawSections,
+    activeSectionId,
+    outputFormat: ["structured", "json"].includes(state.outputFormat) ? state.outputFormat : "tags",
+    wrapBraces: Boolean(state.wrapBraces),
+    includeNegativeInPrompt: Boolean(state.includeNegativeInPrompt),
     settings: sanitizeSettings(state.settings),
   };
 }

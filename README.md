@@ -93,6 +93,17 @@ clone後、ComfyUIを再起動してください。
 5. インストールが終わったらComfyUIを再起動します。
 
 Registryの公開ページは [ComfyUI Prompt Workbench](https://registry.comfy.org/nodes/prompt-workbench) です。
+
+### タグDB連携
+
+[genai-image-tag-db](https://huggingface.co/datasets/NEXTAltair/genai-image-tag-db) のSQLiteがHugging Faceのキャッシュにあれば、次の機能が有効になります。ネットワークには接続せず、DBは読み取り専用で開きます。
+
+- `タグを追加` の検索で、カタログにないタグも全件から検索
+- プロンプト本文とタグ追加欄の入力補完（↑↓で選択、Tab / Enterで確定、Escで閉じる）
+- 別名タグの検出と、推奨タグへの置き換え
+- タグの翻訳（カタログの辞書にないタグをDBから変換。自然文は翻訳サービスを使用）
+
+CC4版とMIT版の両方があれば、どちらも検索します。別の場所にあるDBは、環境変数 `PROMPT_WORKBENCH_TAGDB` にパスを指定します（複数はOSのパス区切り文字で連結）。Python 3.11以上が必要です。
 Managerで見つからない、またはインストールできない場合は、上記のGitHub cloneを使ってください。
 
 ### Registry版のタグデータを追加する

@@ -94,6 +94,17 @@ The Registry listing is available at [ComfyUI Prompt Workbench](https://registry
 
 If Manager cannot find or install the node, use the GitHub clone method above.
 
+### Tag Database
+
+When the [genai-image-tag-db](https://huggingface.co/datasets/NEXTAltair/genai-image-tag-db) SQLite files are in the Hugging Face cache, these features are enabled. No network access is made, and the databases are opened read-only.
+
+- Search every tag from the `Add tags` search, including tags outside the catalogue
+- Autocomplete in the prompt text and the add-tag field (arrow keys to select, Tab / Enter to accept, Esc to close)
+- Detect alias tags and replace them with the preferred tag
+- Translate tags missing from the catalogue dictionary (natural-language text still uses the translation service)
+
+If both the CC4 and MIT databases are present, both are searched. To use databases elsewhere, set `PROMPT_WORKBENCH_TAGDB` to their paths, joined with the OS path separator. Python 3.11 or later is required.
+
 ### Add Tag Data To A Registry Installation
 
 Installation through Comfy Registry does not include the tag catalogue file `tag_catalog.json` or the tag set file `tag_sets.json`. Download both files from GitHub. They contain the full data, including adult tags.

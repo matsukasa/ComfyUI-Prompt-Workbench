@@ -1,0 +1,414 @@
+const OPEN_TO_CLOSE = {
+  "(": ")", "[": "]", "{": "}", "<": ">",
+  "（": "）", "［": "］", "｛": "｝", "＜": "＞",
+  "「": "」", "『": "』", "“": "”", "‘": "’",
+};
+const CLOSE_TO_OPEN = Object.fromEntries(
+  Object.entries(OPEN_TO_CLOSE).map(([open, close]) => [close, open]),
+);
+
+let nextTagId = 1;
+
+function isTagWordCharacter(character) {
+  return /[\p{L}\p{N}_-]/u.test(character || "");
+}
+
+function isSingleQuoteDelimiter(input, index) {
+  return !(
+    isTagWordCharacter(input[index - 1]) &&
+    isTagWordCharacter(input[index + 1])
+  );
+}
+
+function normalizeLegacyDisabledValue(raw) {
+  const text = String(raw ?? "").trim();
+  const match = text.match(/^(.+\S)\s+(?:null|undefined)$/iu);
+  return match ? { value: match[1].trim(), disabled: true } : { value: text, disabled: false };
+}
+
+export function normalizeTranslationText(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return "";
+  return text
+    .split(/\s+/u)
+    .filter((token) => !/^(null|undefined)$/iu.test(token))
+    .join(" ")
+    .trim();
+}
+
+export function createTag(raw, overrides = {}) {
+  const legacy = normalizeLegacyDisabledValue(raw);
+  const value = legacy.value;
+  const restoredId = /^paio-(\d+)$/u.exec(String(overrides.id || ""));
+  if (restoredId && Number.isSafeInteger(Number(restoredId[1]) + 1)) nextTagId = Math.max(nextTagId, Number(restoredId[1]) + 1);
+  return {
+    id: overrides.id || `paio-${nextTagId++}`,
+    value,
+    enabled: legacy.disabled ? false : overrides.enabled !== false,
+    selected: Boolean(overrides.selected),
+    translation: normalizeTranslationText(overrides.translation),
+    translatedTo: String(overrides.translatedTo || ""),
+    translationError: String(overrides.translationError || ""),
+    translationErrorTarget: String(overrides.translationErrorTarget || ""),
+    type: overrides.type || classifyTag(value),
+    lineBreakAfter: Math.max(0, Math.min(20, Math.floor(Number(overrides.lineBreakAfter) || 0))),
+    missingModel: Boolean(overrides.missingModel),
+    blacklistMatch: Boolean(overrides.blacklistMatch),
+  };
+}
+
+export function splitPrompt(text) {
+  const input = String(text ?? "");
+  if (!input.length) return { values: [], separators: [], errors: [], trailingSeparator: false };
+
+  const values = [];
+  const separators = [];
+  const errors = [];
+  const stack = [];
+  let buffer = "";
+  let quote = null;
+  let escaped = false;
+  let lastWasSeparator = false;
+
+  const push = (separator) => {
+    values.push(buffer.trim());
+    separators.push(separator);
+    buffer = "";
+    lastWasSeparator = true;
+  };
+
+  for (let index = 0; index < input.length; index += 1) {
+    const character = input[index];
+
+    if (escaped) {
+      buffer += character;
+      escaped = false;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (character === "\\") {
+      buffer += character;
+      escaped = true;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (quote) {
+      buffer += character;
+      if (character === quote && (quote !== "'" || isSingleQuoteDelimiter(input, index))) quote = null;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (character === '"' || (character === "'" && isSingleQuoteDelimiter(input, index))) {
+      quote = character;
+      buffer += character;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (Object.hasOwn(OPEN_TO_CLOSE, character)) {
+      stack.push(character);
+      buffer += character;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (Object.hasOwn(CLOSE_TO_OPEN, character)) {
+      if (stack.at(-1) === CLOSE_TO_OPEN[character]) {
+        stack.pop();
+      } else {
+        errors.push({ index, message: `Unexpected closing bracket: ${character}` });
+      }
+      buffer += character;
+      lastWasSeparator = false;
+      continue;
+    }
+    if (([",", "，", "、", "；", "。", "．", "\n", "\r"].includes(character)) && stack.length === 0) {
+      if (character === "\r" && input[index + 1] === "\n") index += 1;
+      push(character === "\r" ? "\n" : character);
+      continue;
+    }
+    buffer += character;
+    if (!/\s/.test(character)) lastWasSeparator = false;
+  }
+
+  if (escaped) errors.push({ index: input.length - 1, message: "Dangling escape" });
+  if (quote) errors.push({ index: input.length, message: `Unclosed quote: ${quote}` });
+  for (const open of stack.reverse()) {
+    errors.push({ index: input.length, message: `Unclosed bracket: ${open}` });
+  }
+
+  if (buffer.length || lastWasSeparator) {
+    values.push(buffer.trim());
+    separators.push("");
+  }
+  return { values, separators, errors, trailingSeparator: lastWasSeparator };
+}
+
+export function parsePrompt(text, previousTags = []) {
+  const parsed = splitPrompt(text);
+  const lineBreaksAfter = new Array(parsed.values.length).fill(0);
+  let lastNonEmptyIndex = -1;
+  for (const [index, value] of parsed.values.entries()) {
+    if (String(value).trim()) lastNonEmptyIndex = index;
+    if (parsed.separators[index] === "\n" && lastNonEmptyIndex >= 0) {
+      lineBreaksAfter[lastNonEmptyIndex] += 1;
+    }
+  }
+  const reusable = new Map();
+  for (const tag of previousTags) {
+    const key = tag.value;
+    if (!reusable.has(key)) reusable.set(key, []);
+    reusable.get(key).push(tag);
+  }
+  const tags = parsed.values.map((value, index) => {
+    const old = reusable.get(value)?.shift();
+    return createTag(value, { ...(old || {}), lineBreakAfter: lineBreaksAfter[index] });
+  });
+  return { tags, errors: parsed.errors, trailingSeparator: parsed.trailingSeparator };
+}
+
+export function serializePrompt(tags, options = {}) {
+  const includeDisabled = Boolean(options.includeDisabled);
+  const preserveEmpty = Boolean(options.preserveEmpty);
+  const value = (tags || [])
+    .filter((tag) => includeDisabled || tag.enabled !== false)
+    .map((tag) => {
+      const value = String(tag.value ?? "").trim();
+      return options.stripLineBreaks ? value.replace(/[\r\n]+/gu, " ") : value;
+    })
+    .filter((value) => preserveEmpty || value.length > 0)
+    .join(", ");
+  return value && options.trailingSeparator ? `${value},` : value;
+}
+
+export function serializeEditorPrompt(tags, options = {}) {
+  const includeDisabled = Boolean(options.includeDisabled);
+  const entries = (tags || [])
+    .filter((tag) => includeDisabled || tag.enabled !== false)
+    .map((tag) => ({
+      value: String(tag.value ?? "").trim(),
+      lineBreakAfter: Math.max(0, Math.floor(Number(tag.lineBreakAfter) || 0)),
+    }))
+    .filter((entry) => entry.value.length > 0);
+  let result = "";
+  for (const [index, entry] of entries.entries()) {
+    const isLast = index === entries.length - 1;
+    result += entry.value;
+    if (entry.lineBreakAfter > 0) {
+      if (!isLast || options.trailingSeparator) result += ",";
+      result += "\n".repeat(entry.lineBreakAfter);
+    } else if (!isLast) {
+      result += ", ";
+    } else if (options.trailingSeparator) {
+      result += ",";
+    }
+  }
+  return result;
+}
+
+export function outputPrompt(tags, outputLanguage = "en", options = {}) {
+  const value = serializePrompt(
+    (tags || []).map((tag) => ({
+      ...tag,
+      value:
+        normalizeTranslationText(tag.translation) && tag.translatedTo === outputLanguage
+          ? replacePromptBody(tag.value, promptBody(normalizeTranslationText(tag.translation)))
+          : tag.value,
+    })),
+    options,
+  );
+  return options.replaceUnderscores ? value.replace(/_/gu, " ") : value;
+}
+
+// Translation is text; weight/attention syntax belongs to the current tag.
+// Only unwrap a pair that encloses the entire value, not '(a), (b)'.
+function outerAttention(value) {
+  const text = String(value || "").trim();
+  const close = { "(": ")", "[": "]" }[text[0]];
+  if (!close || text.at(-1) !== close || splitPrompt(text).values.length !== 1) return null;
+  let depth = 0;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    if (escaped) { escaped = false; continue; }
+    if (text[index] === "\\") { escaped = true; continue; }
+    if (text[index] === text[0]) depth += 1;
+    if (text[index] === close && --depth === 0 && index !== text.length - 1) return null;
+  }
+  if (depth !== 0) return null;
+  const weighted = parseExplicitWeight(text);
+  return { prefix: text[0], suffix: weighted ? `:${weighted.weight.toFixed(2)}${close}` : close,
+    body: weighted ? weighted.body : text.slice(1, -1) };
+}
+
+export function promptBody(value) {
+  const text = String(value || "").trim();
+  const attention = outerAttention(text);
+  return attention ? promptBody(attention.body) : text;
+}
+
+export function replacePromptBody(value, replacement) {
+  const text = String(value || "").trim();
+  const next = String(replacement || "").trim();
+  if (!next) return text;
+  const attention = outerAttention(text);
+  return attention ? `${attention.prefix}${replacePromptBody(attention.body, next)}${attention.suffix}` : next;
+}
+
+export function classifyTag(value) {
+  const text = String(value || "").trim();
+  if (!text) return "empty";
+  if (/^<lora:[^>]+>$/i.test(text)) return "lora";
+  if (/^<lyco:[^>]+>$/i.test(text)) return "lycoris";
+  if (/^(embedding:)?[\w.-]+$/i.test(text) && /^embedding:/i.test(text)) return "embedding";
+  if (/^__[^_].*__$/u.test(text)) return "wildcard";
+  if (/^\{[\s\S]*\|[\s\S]*\}$/u.test(text)) return "dynamic";
+  if (/^BREAK$/i.test(text)) return "break";
+  if (/^(#|\/\/|\/\*)/.test(text)) return "comment";
+  return "normal";
+}
+
+export function canonicalTagKey(value) {
+  let text = String(value || "").trim();
+  // Only remove attention delimiters when they enclose the whole tag. Merely
+  // checking the first and last characters corrupts multi-tag text such as
+  // "(cat), (dog)" and can make unrelated values share a duplicate key.
+  while (true) {
+    const attention = outerAttention(text);
+    if (!attention) break;
+    text = attention.body.trim();
+  }
+  return text.replace(/\s+/g, " ").toLocaleLowerCase();
+}
+
+export function findDuplicateKeys(tags) {
+  const counts = new Map();
+  for (const tag of tags || []) {
+    const key = canonicalTagKey(tag.value);
+    if (key) counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return new Set([...counts].filter(([, count]) => count > 1).map(([key]) => key));
+}
+
+export function parseExplicitWeight(value) {
+  const text = String(value || "").trim();
+  if (/^<(lora|lyco):/i.test(text)) return null;
+  const match = text.match(/^([([])([\s\S]+):\s*(-?\d+(?:\.\d+)?)\s*([)\]])$/u);
+  if (!match) return null;
+  const pairs = { "(": ")", "[": "]" };
+  if (pairs[match[1]] !== match[4]) return null;
+  return {
+    open: match[1],
+    close: match[4],
+    body: match[2],
+    weight: Number(match[3]),
+  };
+}
+
+export function parseAdapterStrength(value) {
+  const text = String(value || "").trim();
+  const match = text.match(/^<(lora|lyco):([^:<>]+):\s*(\d+(?:\.\d+)?)>$/iu);
+  if (!match || !match[2].trim()) return null;
+  return {
+    type: match[1],
+    name: match[2],
+    weight: Number(match[3]),
+  };
+}
+
+function roundWeight(value) {
+  return Number(Number(value).toFixed(2));
+}
+
+export function getTagWeight(value) {
+  const text = String(value || "").trim();
+  if (!text) return null;
+  const adapter = parseAdapterStrength(text);
+  if (adapter) return adapter.weight;
+  if (/^<(lora|lyco):/i.test(text)) return null;
+  return parseExplicitWeight(text)?.weight ?? 1;
+}
+
+export function setTagWeight(value, weight, min = 0.05, max = 2) {
+  const text = String(value || "").trim();
+  if (!text) return text;
+  const numericWeight = Number(weight);
+  if (!Number.isFinite(numericWeight)) return text;
+  const next = Math.min(max, Math.max(min, roundWeight(numericWeight)));
+  const adapter = parseAdapterStrength(text);
+  if (adapter) return `<${adapter.type}:${adapter.name}:${next.toFixed(2)}>`;
+  if (/^<(lora|lyco):/i.test(text)) return text;
+  const parsed = parseExplicitWeight(text);
+  if (next === 1) return parsed ? parsed.body.trim() : text;
+  const formatted = next.toFixed(2);
+  if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;
+  return `(${text}:${formatted})`;
+}
+
+export function adjustTagWeight(value, delta, min = 0.05, max = 2) {
+  const text = String(value || "").trim();
+  if (!text) return text;
+  const numericDelta = Number(delta || 0);
+  if (!Number.isFinite(numericDelta)) return text;
+  const adapter = parseAdapterStrength(text);
+  if (!adapter && /^<(lora|lyco):/i.test(text)) return text;
+  const parsed = parseExplicitWeight(text);
+  const current = adapter?.weight ?? (parsed ? parsed.weight : 1);
+  const next = Math.min(max, Math.max(min, roundWeight(current + numericDelta)));
+  // Match setTagWeight: a resulting weight of exactly 1 is the plain tag,
+  // not an explicit "(tag:1.00)" wrapper.
+  if (next === 1 && !adapter) return parsed ? parsed.body.trim() : text;
+  const formatted = next.toFixed(2);
+  if (adapter) return `<${adapter.type}:${adapter.name}:${formatted}>`;
+  if (parsed) return `${parsed.open}${parsed.body}:${formatted}${parsed.close}`;
+  return `(${text}:${formatted})`;
+}
+
+export function normalizePromptTags(tags, { removeEmpty = true, removeDuplicates = false } = {}) {
+  const seen = new Set();
+  const normalized = [];
+  for (const original of tags || []) {
+    const tag = createTag(String(original.value || "").trim(), original);
+    if (removeEmpty && !tag.value) continue;
+    const key = canonicalTagKey(tag.value);
+    if (removeDuplicates && key && seen.has(key)) continue;
+    if (key) seen.add(key);
+    normalized.push(tag);
+  }
+  return normalized;
+}
+
+export function compileBlacklist(entries) {
+  const compiled = [];
+  for (const entry of entries || []) {
+    if (!entry || typeof entry.pattern !== "string" || !entry.pattern.length) continue;
+    const mode = ["exact", "iexact", "contains", "regex"].includes(entry.mode)
+      ? entry.mode
+      : "exact";
+    let regex = null;
+    let error = "";
+    if (mode === "regex") {
+      if (entry.pattern.length > 256) {
+        error = "Regex is too long";
+      } else if (/\([^)]*[+*][^)]*\)[+*{]/.test(entry.pattern)) {
+        error = "Potentially expensive nested quantifier";
+      } else {
+        try {
+          regex = new RegExp(entry.pattern, "u");
+        } catch (exception) {
+          error = exception.message;
+        }
+      }
+    }
+    compiled.push({ mode, pattern: entry.pattern, regex, error });
+  }
+  return compiled;
+}
+
+export function matchesBlacklist(value, compiled) {
+  const text = String(value || "");
+  return (compiled || []).some((entry) => {
+    if (entry.error) return false;
+    if (entry.mode === "exact") return text === entry.pattern;
+    if (entry.mode === "iexact") return text.toLocaleLowerCase() === entry.pattern.toLocaleLowerCase();
+    if (entry.mode === "contains") return text.includes(entry.pattern);
+    return entry.regex?.test(text) || false;
+  });
+}

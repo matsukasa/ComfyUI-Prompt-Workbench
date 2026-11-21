@@ -1,4 +1,17 @@
+import json
 import re
+
+POSITIVE_SECTION_KEYS = ("quality", "subject", "composition", "style", "trigger")
+NEGATIVE_SECTION_KEYS = ("quality", "anatomy", "style")
+DEFAULT_MERGE_ORDER = ",".join(POSITIVE_SECTION_KEYS)
+SECTION_DISPLAY_TITLES = {
+    "quality": "Quality",
+    "subject": "Subject",
+    "composition": "Composition",
+    "style": "Style",
+    "trigger": "Trigger",
+    "anatomy": "Anatomy",
+}
 
 
 def normalize_output_prompt(prompt):
@@ -10,6 +23,165 @@ def normalize_output_prompt(prompt):
     value = re.sub(r"^(?:,\s*)+", "", value)
     value = re.sub(r"(?:,\s*)+$", "", value).rstrip()
     return f"{value}," if value else ""
+
+
+def normalize_structured_prompt(prompt):
+    """Normalize line endings and outer whitespace while keeping section layout."""
+    value = "" if prompt is None else str(prompt)
+    value = value.replace("\r\n", "\n").replace("\r", "\n")
+    lines = [line.rstrip() for line in value.split("\n")]
+    return "\n".join(lines).strip()
+
+
+def _coerce_enabled(value, default=True):
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text = str(value).strip().lower()
+    if text in ("0", "false", "no", "off", ""):
+        return False
+    if text in ("1", "true", "yes", "on"):
+        return True
+    return default
+
+
+def _unescape_separator(separator):
+    if separator is None:
+        return ", "
+    text = str(separator)
+    if text == "":
+        return ", "
+    return (
+        text.replace("\\r\\n", "\n")
+        .replace("\\n", "\n")
+        .replace("\\t", "\t")
+    )
+
+
+def _split_tag_items(text):
+    raw = "" if text is None else str(text)
+    if not raw.strip():
+        return []
+    # Split only on top-level commas or newlines while keeping brackets, quotes, and escapes intact.
+    open_to_close = {"(": ")", "[": "]", "{": "}", "<": ">"}
+    close_chars = set(open_to_close.values())
+    stack = []
+    in_quote = None
+    escaped = False
+    items = []
+    buf = []
+
+    for ch in raw:
+        if escaped:
+            buf.append(ch)
+            escaped = False
+            continue
+        if ch == "\\":
+            buf.append(ch)
+            escaped = True
+            continue
+        if in_quote:
+            buf.append(ch)
+            if ch == in_quote:
+                in_quote = None
+            continue
+        if ch == '"':
+            buf.append(ch)
+            in_quote = ch
+            continue
+        if ch in open_to_close:
+            stack.append(open_to_close[ch])
+            buf.append(ch)
+            continue
+        if ch in close_chars and stack and stack[-1] == ch:
+            stack.pop()
+            buf.append(ch)
+            continue
+        if not stack and ch in (",", "\n", "\r"):
+            token = "".join(buf).strip()
+            if token:
+                items.append(token)
+            buf = []
+            continue
+        buf.append(ch)
+
+    tail = "".join(buf).strip()
+    if tail:
+        items.append(tail)
+    return items
+
+
+def _normalize_section_text(text, normalize_tags=True):
+    raw = "" if text is None else str(text)
+    if not raw.strip():
+        return ""
+    if not normalize_tags:
+        return normalize_structured_prompt(raw)
+    items = _split_tag_items(raw)
+    return ", ".join(items)
+
+
+def _merge_unique_tags(first_text, second_text, normalize_tags=True):
+    seen = set()
+    merged = []
+    for item in _split_tag_items(first_text) + _split_tag_items(second_text):
+        key = re.sub(r"\s+", " ", item.strip().lower())
+        if key not in seen:
+            seen.add(key)
+            merged.append(item)
+    return ", ".join(merged)
+
+
+def _resolve_trigger_text(sec_trigger, xy_trigger_sync="off", xy_trigger_input="", normalize_tags=True):
+    base = "" if sec_trigger is None else str(sec_trigger)
+    incoming = "" if xy_trigger_input is None else str(xy_trigger_input)
+    mode = str(xy_trigger_sync or "off").strip().lower()
+    if mode == "off" or not incoming.strip():
+        return _normalize_section_text(base, normalize_tags=normalize_tags)
+    if mode == "replace":
+        return _normalize_section_text(incoming, normalize_tags=normalize_tags)
+    if mode == "prepend":
+        return _merge_unique_tags(incoming, base, normalize_tags=normalize_tags)
+    if mode == "append":
+        return _merge_unique_tags(base, incoming, normalize_tags=normalize_tags)
+    return _normalize_section_text(base, normalize_tags=normalize_tags)
+
+
+def _parse_merge_order(merge_order, valid_keys):
+    raw = "" if merge_order is None else str(merge_order)
+    ordered = []
+    for token in re.split(r"[\s,]+", raw.strip()):
+        key = token.strip().lower()
+        if key.startswith("sec_"):
+            key = key[4:]
+        if key in valid_keys and key not in ordered:
+            ordered.append(key)
+    for key in valid_keys:
+        if key not in ordered:
+            ordered.append(key)
+    return ordered
+
+
+def _format_merged_sections(entries, output_format="tags", merge_separator=", ", normalize_tags=True):
+    active = [(key, text) for key, text in entries if text]
+    if not active:
+        return ""
+    if output_format == "json":
+        return json.dumps({key: text for key, text in active}, ensure_ascii=False, indent=2)
+    if output_format == "structured":
+        blocks = [f"【{SECTION_DISPLAY_TITLES.get(key, key)}】\n{text}" for key, text in active]
+        return normalize_structured_prompt("\n\n".join(blocks))
+    sep = _unescape_separator(merge_separator)
+    joined = sep.join(text for _, text in active)
+    if normalize_tags:
+        if "\n" in sep:
+            lines = [normalize_output_prompt(text) for _, text in active]
+            return normalize_structured_prompt(sep.join(line for line in lines if line))
+        return normalize_output_prompt(joined)
+    return joined
 
 
 class PromptWorkbench:
@@ -36,5 +208,572 @@ class PromptWorkbench:
         return (normalize_output_prompt(prompt),)
 
 
-NODE_CLASS_MAPPINGS = {"PromptWorkbench": PromptWorkbench}
-NODE_DISPLAY_NAME_MAPPINGS = {"PromptWorkbench": "Prompt Workbench"}
+class DynamicOptionalInputs(dict):
+    """Optional INPUT_TYPES mapping that accepts dynamic frontend-created STRING sockets."""
+
+    def __contains__(self, key):
+        return True
+
+    def __getitem__(self, key):
+        if super().__contains__(key):
+            return super().__getitem__(key)
+        return ("STRING", {"forceInput": True})
+
+
+class DynamicReturnTypes(tuple):
+    """Tuple-compatible RETURN_TYPES reporting 'STRING' for dynamic slots >= len(self)."""
+
+    def __getitem__(self, index):
+        if isinstance(index, int) and index >= super().__len__():
+            return "STRING"
+        return super().__getitem__(index)
+
+
+def _strip_section_brackets(title, fallback):
+    text = str(title or "").strip()
+    if not text:
+        return fallback
+    text = re.sub(r"^#+\s*", "", text).strip()
+    for open_b, close_b in (("【", "】"), ("[", "]"), ("［", "］")):
+        if text.startswith(open_b) and text.endswith(close_b) and len(text) >= 2:
+            text = text[1:-1].strip()
+            break
+    text = re.sub(r"[:：]+$", "", text).strip()
+    return text or fallback
+
+
+def _set_nested_json_value(root, raw_key, value, fallback_suffix=1):
+    parts = [part.strip() for part in str(raw_key or "").split(".") if part.strip()]
+    if len(parts) <= 1:
+        base_key = parts[0] if parts else f"section_{fallback_suffix}"
+        key = base_key
+        suffix = fallback_suffix
+        while key in root:
+            key = f"{base_key}_{suffix}"
+            suffix += 1
+        root[key] = value
+        return
+
+    cursor = root
+    for segment in parts[:-1]:
+        existing = cursor.get(segment)
+        if existing is None:
+            cursor[segment] = {}
+            cursor = cursor[segment]
+        elif isinstance(existing, dict):
+            cursor = existing
+        else:
+            cursor[segment] = {"_value": existing}
+            cursor = cursor[segment]
+
+    leaf = parts[-1]
+    key = leaf
+    suffix = fallback_suffix
+    while key in cursor:
+        key = f"{leaf}_{suffix}"
+        suffix += 1
+    cursor[key] = value
+
+
+def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format="tags"):
+    try:
+        payload = json.loads(sections_payload) if sections_payload else None
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict) or not isinstance(payload.get("sections"), list):
+        return None
+
+    wrap_braces = bool(payload.get("wrap_braces"))
+    include_neg = bool(payload.get("include_negative_in_prompt"))
+    nest_roles = bool(payload.get("nest_roles"))
+    pos_blocks = []
+    neg_blocks = []
+    extra_outputs_by_id = {}
+    fallback_output_ids = []
+
+    for index, raw_section in enumerate(payload["sections"]):
+        if not isinstance(raw_section, dict):
+            continue
+        sec_id = str(raw_section.get("id") or f"sec-{index + 1}")
+        enabled = _coerce_enabled(raw_section.get("enabled"), default=True)
+        wants_output = bool(raw_section.get("socket_output"))
+        role = "negative" if raw_section.get("role") == "negative" else "positive"
+        mode = "prose" if raw_section.get("mode") == "prose" else "tags"
+        title = str(raw_section.get("title") or "").strip()
+        socket_name = str(raw_section.get("socket_name") or title or f"Section {index + 1}").strip()
+        base_text = str(raw_section.get("text") or "").strip()
+        incoming = dynamic_inputs.get(socket_name)
+        incoming_text = "" if incoming is None else str(incoming).strip()
+
+        if incoming_text:
+            if mode == "prose":
+                if not base_text:
+                    merged_text = incoming_text
+                elif re.search(r"[,，。.;；]$", base_text):
+                    merged_text = f"{base_text} {incoming_text}"
+                else:
+                    merged_text = f"{base_text}, {incoming_text}"
+            else:
+                merged_text = _merge_unique_tags(base_text, incoming_text, normalize_tags=True)
+        else:
+            merged_text = base_text
+
+        if wants_output:
+            extra_outputs_by_id[sec_id] = merged_text if enabled else ""
+            fallback_output_ids.append(sec_id)
+
+        if not enabled or not merged_text:
+            continue
+        entry = (title or f"section_{index + 1}", title, merged_text, mode)
+        if role == "negative":
+            neg_blocks.append(entry)
+            if include_neg:
+                pos_blocks.append(entry)
+        else:
+            pos_blocks.append(entry)
+
+    raw_output_order = payload.get("output_order")
+    if isinstance(raw_output_order, list) and raw_output_order:
+        ordered_ids = [str(item) for item in raw_output_order if str(item) in extra_outputs_by_id]
+        for sec_id in fallback_output_ids:
+            if sec_id not in ordered_ids:
+                ordered_ids.append(sec_id)
+    else:
+        ordered_ids = fallback_output_ids
+    extra_outputs = [extra_outputs_by_id[sec_id] for sec_id in ordered_ids]
+
+    def render_blocks(blocks, apply_braces=False, is_negative=False):
+        if not blocks:
+            return ""
+        if output_format == "json":
+            if is_negative:
+                return normalize_structured_prompt("\n\n".join(text for _, _, text, _ in blocks))
+            obj = {}
+            for idx, (fallback_key, title, text, _) in enumerate(blocks):
+                base_key = _strip_section_brackets(title, fallback_key or f"section_{idx + 1}")
+                _set_nested_json_value(obj, base_key, text, fallback_suffix=idx + 1)
+            if nest_roles:
+                wrapped = {"positive": obj}
+                if neg_blocks:
+                    if len(neg_blocks) == 1 and not neg_blocks[0][1]:
+                        wrapped["negative"] = neg_blocks[0][2]
+                    else:
+                        neg_obj = {}
+                        for idx, (fallback_key, title, text, _) in enumerate(neg_blocks):
+                            base_key = _strip_section_brackets(title, fallback_key or f"negative_{idx + 1}")
+                            _set_nested_json_value(neg_obj, base_key, text, fallback_suffix=idx + 1)
+                        wrapped["negative"] = neg_obj
+                return json.dumps(wrapped, ensure_ascii=False, indent=2)
+            return json.dumps(obj, ensure_ascii=False, indent=2)
+        if output_format == "structured":
+            rendered = [
+                (f"{title}\n{text}" if (title and not is_negative) else text)
+                for _, title, text, _ in blocks
+            ]
+            body = normalize_structured_prompt("\n\n".join(rendered))
+            return f"{{\n{body}\n}}" if apply_braces and body else body
+        if any(mode == "prose" for _, _, _, mode in blocks):
+            return ", ".join(normalize_structured_prompt(text) for _, _, text, _ in blocks if text)
+        return normalize_output_prompt(", ".join(text for _, _, text, _ in blocks))
+
+    return (
+        render_blocks(pos_blocks, apply_braces=wrap_braces, is_negative=False),
+        render_blocks(neg_blocks, apply_braces=False, is_negative=True),
+        *extra_outputs,
+    )
+
+
+class PromptWorkbenchFork:
+    """Normalize structured or multi-section prompts with optional dynamic section input sockets."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+            },
+            "optional": DynamicOptionalInputs(
+                {
+                    "negative": (
+                        "STRING",
+                        {"default": "", "multiline": True, "dynamicPrompts": True},
+                    ),
+                    "output_format": (
+                        ["tags", "structured", "json"],
+                        {"default": "tags"},
+                    ),
+                    "sections_payload": (
+                        "STRING",
+                        {"default": "", "multiline": False},
+                    ),
+                }
+            ),
+        }
+
+    RETURN_TYPES = DynamicReturnTypes(("STRING", "STRING"))
+    RETURN_NAMES = ("prompt", "negative")
+    FUNCTION = "emit_prompt"
+    CATEGORY = "prompt/Prompt Workbench"
+    DESCRIPTION = "Edit structured tags or multi-section prompts and pass STRING outputs."
+
+    def emit_prompt(self, prompt="", negative="", output_format="tags", sections_payload="", **kwargs):
+        dynamic_inputs = {
+            str(key): str(val)
+            for key, val in kwargs.items()
+            if val is not None and str(val).strip() != ""
+        }
+        has_section_outputs = False
+        has_pos_prose = False
+        has_neg_prose = False
+        if sections_payload:
+            try:
+                parsed_payload = json.loads(sections_payload)
+                if isinstance(parsed_payload, dict) and isinstance(parsed_payload.get("sections"), list):
+                    for sec in parsed_payload["sections"]:
+                        if not isinstance(sec, dict):
+                            continue
+                        if bool(sec.get("socket_output")):
+                            has_section_outputs = True
+                        if _coerce_enabled(sec.get("enabled"), default=True) and sec.get("mode") == "prose":
+                            if sec.get("role") == "negative":
+                                has_neg_prose = True
+                                if bool(parsed_payload.get("include_negative_in_prompt")):
+                                    has_pos_prose = True
+                            else:
+                                has_pos_prose = True
+            except (TypeError, ValueError, json.JSONDecodeError):
+                has_section_outputs = False
+        if dynamic_inputs or has_section_outputs:
+            merged = _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_format=output_format)
+            if merged is not None:
+                return merged
+            if dynamic_inputs:
+                extra = ", ".join(dynamic_inputs.values())
+                prompt = f"{prompt}\n{extra}" if str(prompt or "").strip() else extra
+
+        if output_format in ("structured", "json"):
+            return (
+                normalize_structured_prompt(prompt),
+                normalize_structured_prompt(negative),
+            )
+        return (
+            normalize_structured_prompt(prompt) if has_pos_prose else normalize_output_prompt(prompt),
+            normalize_structured_prompt(negative) if has_neg_prose else normalize_output_prompt(negative),
+        )
+
+
+class PromptWorkbenchMCP:
+    """MCP-friendly multi-section prompt workbench with stable widgets and per-section outputs."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+            },
+            "optional": {
+                "negative": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "output_format": (
+                    ["tags", "structured", "json"],
+                    {"default": "tags"},
+                ),
+                "merge_order": (
+                    "STRING",
+                    {"default": DEFAULT_MERGE_ORDER, "multiline": False},
+                ),
+                "merge_separator": (
+                    "STRING",
+                    {"default": ", ", "multiline": False},
+                ),
+                "normalize_tags": (
+                    "BOOLEAN",
+                    {"default": True},
+                ),
+                "sec_quality": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "sec_quality_enabled": ("BOOLEAN", {"default": True}),
+                "sec_subject": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "sec_subject_enabled": ("BOOLEAN", {"default": True}),
+                "sec_composition": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "sec_composition_enabled": ("BOOLEAN", {"default": True}),
+                "sec_style": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "sec_style_enabled": ("BOOLEAN", {"default": True}),
+                "sec_trigger": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "sec_trigger_enabled": ("BOOLEAN", {"default": True}),
+                "neg_quality": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "neg_quality_enabled": ("BOOLEAN", {"default": True}),
+                "neg_anatomy": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "neg_anatomy_enabled": ("BOOLEAN", {"default": True}),
+                "neg_style": (
+                    "STRING",
+                    {"default": "", "multiline": True, "dynamicPrompts": True},
+                ),
+                "neg_style_enabled": ("BOOLEAN", {"default": True}),
+                "xy_trigger_sync": (
+                    ["off", "append", "replace", "prepend"],
+                    {"default": "off"},
+                ),
+                "xy_trigger_input": (
+                    "STRING",
+                    {"default": "", "multiline": True},
+                ),
+                "tag_suggestions_quality": ("STRING", {"default": "", "multiline": True}),
+                "tag_suggestions_subject": ("STRING", {"default": "", "multiline": True}),
+                "tag_suggestions_composition": ("STRING", {"default": "", "multiline": True}),
+                "tag_suggestions_style": ("STRING", {"default": "", "multiline": True}),
+                "tag_suggestions_trigger": ("STRING", {"default": "", "multiline": True}),
+                "output_sections": ("STRING", {"default": "", "multiline": False}),
+                "merged_preview": ("STRING", {"default": "", "multiline": True}),
+                "sections_schema": ("STRING", {"default": "", "multiline": True}),
+            },
+        }
+
+    RETURN_TYPES = DynamicReturnTypes(("STRING", "STRING"))
+    RETURN_NAMES = ("prompt", "negative")
+    FUNCTION = "emit_prompt"
+    CATEGORY = "prompt/Prompt Workbench"
+    DESCRIPTION = "Edit structured tags or multi-section prompts and pass STRING outputs."
+
+    def emit_prompt(
+        self,
+        prompt="",
+        negative="",
+        output_format="tags",
+        merge_order=DEFAULT_MERGE_ORDER,
+        merge_separator=", ",
+        normalize_tags=True,
+        sec_quality="",
+        sec_quality_enabled=True,
+        sec_subject="",
+        sec_subject_enabled=True,
+        sec_composition="",
+        sec_composition_enabled=True,
+        sec_style="",
+        sec_style_enabled=True,
+        sec_trigger="",
+        sec_trigger_enabled=True,
+        neg_quality="",
+        neg_quality_enabled=True,
+        neg_anatomy="",
+        neg_anatomy_enabled=True,
+        neg_style="",
+        neg_style_enabled=True,
+        xy_trigger_sync="off",
+        xy_trigger_input="",
+        tag_suggestions_quality="",
+        tag_suggestions_subject="",
+        tag_suggestions_composition="",
+        tag_suggestions_style="",
+        tag_suggestions_trigger="",
+        output_sections="",
+        merged_preview="",
+        sections_schema="",
+    ):
+        norm_flag = _coerce_enabled(normalize_tags, default=True)
+        xy_mode = str(xy_trigger_sync or "off").strip().lower()
+        if xy_mode not in ("off", "append", "replace", "prepend"):
+            xy_mode = "off"
+
+        pos_raw = {
+            "quality": "" if sec_quality is None else str(sec_quality),
+            "subject": "" if sec_subject is None else str(sec_subject),
+            "composition": "" if sec_composition is None else str(sec_composition),
+            "style": "" if sec_style is None else str(sec_style),
+            "trigger": "" if sec_trigger is None else str(sec_trigger),
+        }
+        pos_enabled = {
+            "quality": _coerce_enabled(sec_quality_enabled, default=True),
+            "subject": _coerce_enabled(sec_subject_enabled, default=True),
+            "composition": _coerce_enabled(sec_composition_enabled, default=True),
+            "style": _coerce_enabled(sec_style_enabled, default=True),
+            "trigger": _coerce_enabled(sec_trigger_enabled, default=True),
+        }
+        neg_raw = {
+            "quality": "" if neg_quality is None else str(neg_quality),
+            "anatomy": "" if neg_anatomy is None else str(neg_anatomy),
+            "style": "" if neg_style is None else str(neg_style),
+        }
+        neg_enabled = {
+            "quality": _coerce_enabled(neg_quality_enabled, default=True),
+            "anatomy": _coerce_enabled(neg_anatomy_enabled, default=True),
+            "style": _coerce_enabled(neg_style_enabled, default=True),
+        }
+        suggestions = {
+            "quality": "" if tag_suggestions_quality is None else str(tag_suggestions_quality),
+            "subject": "" if tag_suggestions_subject is None else str(tag_suggestions_subject),
+            "composition": "" if tag_suggestions_composition is None else str(tag_suggestions_composition),
+            "style": "" if tag_suggestions_style is None else str(tag_suggestions_style),
+            "trigger": "" if tag_suggestions_trigger is None else str(tag_suggestions_trigger),
+        }
+
+        pos_resolved = {}
+        pos_outputs = {}
+        for key in POSITIVE_SECTION_KEYS:
+            if key == "trigger":
+                resolved = _resolve_trigger_text(
+                    pos_raw[key],
+                    xy_trigger_sync=xy_mode,
+                    xy_trigger_input=xy_trigger_input,
+                    normalize_tags=norm_flag,
+                )
+            else:
+                resolved = _normalize_section_text(pos_raw[key], normalize_tags=norm_flag)
+            pos_resolved[key] = resolved
+            pos_outputs[key] = resolved if pos_enabled[key] else ""
+
+        neg_resolved = {}
+        neg_outputs = {}
+        for key in NEGATIVE_SECTION_KEYS:
+            resolved = _normalize_section_text(neg_raw[key], normalize_tags=norm_flag)
+            neg_resolved[key] = resolved
+            neg_outputs[key] = resolved if neg_enabled[key] else ""
+
+        order = _parse_merge_order(merge_order, POSITIVE_SECTION_KEYS)
+        has_pos_sections = (
+            any(text.strip() for text in pos_raw.values())
+            or (xy_mode != "off" and bool(str(xy_trigger_input or "").strip()))
+            or any(not flag for flag in pos_enabled.values())
+        )
+        has_neg_sections = (
+            any(text.strip() for text in neg_raw.values())
+            or any(not flag for flag in neg_enabled.values())
+        )
+
+        if has_pos_sections:
+            final_prompt = _format_merged_sections(
+                [(key, pos_outputs[key]) for key in order],
+                output_format=output_format,
+                merge_separator=merge_separator,
+                normalize_tags=norm_flag,
+            )
+        elif output_format in ("structured", "json"):
+            final_prompt = normalize_structured_prompt(prompt)
+        elif norm_flag:
+            final_prompt = normalize_output_prompt(prompt)
+        else:
+            final_prompt = normalize_structured_prompt(prompt)
+
+        if has_neg_sections:
+            final_negative = _format_merged_sections(
+                [(key, neg_outputs[key]) for key in NEGATIVE_SECTION_KEYS],
+                output_format=output_format,
+                merge_separator=merge_separator,
+                normalize_tags=norm_flag,
+            )
+        elif output_format in ("structured", "json"):
+            final_negative = normalize_structured_prompt(negative)
+        elif norm_flag:
+            final_negative = normalize_output_prompt(negative)
+        else:
+            final_negative = normalize_structured_prompt(negative)
+
+        preview_text = (
+            f"[POSITIVE]\n{final_prompt}\n\n[NEGATIVE]\n{final_negative}"
+            if final_negative
+            else final_prompt
+        )
+        schema_payload = {
+            "version": 1,
+            "output_format": output_format,
+            "merge_order": order,
+            "merge_separator": ", " if merge_separator is None or merge_separator == "" else str(merge_separator),
+            "normalize_tags": norm_flag,
+            "xy_trigger_sync": xy_mode,
+            "positive": [
+                {
+                    "key": key,
+                    "widget": f"sec_{key}",
+                    "enabled_widget": f"sec_{key}_enabled",
+                    "suggestions_widget": f"tag_suggestions_{key}",
+                    "enabled": pos_enabled[key],
+                    "text": pos_resolved[key],
+                    "suggestions": suggestions[key],
+                }
+                for key in order
+            ],
+            "negative": [
+                {
+                    "key": key,
+                    "widget": f"neg_{key}",
+                    "enabled_widget": f"neg_{key}_enabled",
+                    "enabled": neg_enabled[key],
+                    "text": neg_resolved[key],
+                }
+                for key in NEGATIVE_SECTION_KEYS
+            ],
+            "merged_prompt": final_prompt,
+            "merged_negative": final_negative,
+        }
+        schema_json = json.dumps(schema_payload, ensure_ascii=False, indent=2)
+
+        output_lookup = {
+            "sec_quality": pos_outputs["quality"],
+            "sec_subject": pos_outputs["subject"],
+            "sec_composition": pos_outputs["composition"],
+            "sec_style": pos_outputs["style"],
+            "sec_trigger": pos_outputs["trigger"],
+            "neg_quality": neg_outputs["quality"],
+            "neg_anatomy": neg_outputs["anatomy"],
+            "neg_style": neg_outputs["style"],
+            "sections_schema": schema_json,
+        }
+        requested_outputs = []
+        seen_outputs = set()
+        for token in re.split(r"[\s,]+", str(output_sections or "").strip()):
+            key = token.strip().lower()
+            if key in output_lookup and key not in seen_outputs:
+                seen_outputs.add(key)
+                requested_outputs.append(output_lookup[key])
+
+        return {
+            "ui": {
+                "merged_preview": [preview_text],
+                "sections_schema": [schema_json],
+            },
+            "result": (
+                final_prompt,
+                final_negative,
+                *requested_outputs,
+            ),
+        }
+
+
+NODE_CLASS_MAPPINGS = {
+    "PromptWorkbench": PromptWorkbench,
+    "PromptWorkbenchFork": PromptWorkbenchFork,
+    "PromptWorkbenchMCP": PromptWorkbenchMCP,
+}
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "PromptWorkbench": "Prompt Workbench",
+    "PromptWorkbenchFork": "Prompt Workbench (Fork)",
+    "PromptWorkbenchMCP": "Prompt Workbench (MCP)",
+}

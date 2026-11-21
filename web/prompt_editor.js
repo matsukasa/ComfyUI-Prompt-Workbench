@@ -1,19 +1,29 @@
 import {
+  SECTION_HEADING_GROUPS,
+  SECTION_TEMPLATES,
   adjustTagWeight,
+  buildStructuredOutputs,
   canonicalTagKey,
   classifyTag,
   compileBlacklist,
+  createSection,
   createTag,
   findDuplicateKeys,
   getTagWeight,
+  inferSectionCategory,
+  inferSectionRole,
+  looksLikeStructuredPrompt,
   matchesBlacklist,
   normalizePromptTags,
   outputPrompt,
   parsePrompt,
+  parseStructuredPrompt,
   promptBody,
   replacePromptBody,
   serializeEditorPrompt,
   serializePrompt,
+  serializeSectionEditorText,
+  serializeStructuredSectionBody,
   setTagWeight,
 } from "./prompt_parser.js";
 import {
@@ -28,6 +38,7 @@ import {
 import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
 export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
+import { attachTagSuggestions, searchPhraseCatalog, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
 import { applyCategoryColor, categoryColorId, categoryBaseColor, majorCategory,
   sanitizeCategoryColors, validCategoryColor, tagCategoryIndex, categoryPromptKey } from "./category_colors.js";
 import {
@@ -61,10 +72,25 @@ import {
 
 const STATE_KEY = "promptWorkbenchState";
 const SORT_STORAGE_KEY = "prompt-workbench/library-sort";
+const MCP_POSITIVE_SECTION_KEYS = ["quality", "subject", "composition", "style", "trigger"];
+const MCP_NEGATIVE_SECTION_KEYS = ["quality", "anatomy", "style"];
+const MCP_SECTION_LABELS = {
+  quality: "【Quality】",
+  subject: "【Subject】",
+  composition: "【Composition】",
+  style: "【Style】",
+  trigger: "【Trigger】",
+  anatomy: "【Anatomy】",
+};
 let categoryColorErrorSerial = 0;
+let nextSectionDatalistId = 1;
 const MAX_RENDERED_TAGS = 250;
 const INITIAL_EXAMPLE_LIMIT = 24;
 const EXAMPLE_PAGE_SIZE = 24;
+const TAG_DB_SEARCH_DELAY_MS = 300;
+const TAG_DB_SEARCH_LIMIT = 50;
+const TAG_DB_CHECK_DELAY_MS = 400;
+const TAG_DB_CHECK_BATCH = 200;
 const MAX_EXAMPLE_SEARCH_RESULTS = 50;
 const MAX_CATALOG_FILE_BYTES = 4 * 1024 * 1024;
 const TAG_SINGLE_CLICK_DELAY_MS = 450;
@@ -74,6 +100,15 @@ const CATALOG_FILE_PICKER_TYPES = [{
 }];
 const CATALOG_FILE_PICKER_ID = "prompt-workbench-catalog-save";
 const TAG_SET_FILE_PICKER_ID = "prompt-workbench-tag-set-save";
+const PROSE_PHRASES = [
+  { group: "構図・レンズ", prompt: "Medium close-up portrait, 50mm lens, shallow depth of field, eye-level", ja: "ミディアムクローズアップ、50mmレンズ、浅い被写界深度、アイレベル" },
+  { group: "構図・レンズ", prompt: "50mm标准焦段，平视全身近景，浅景深虚化背景", ja: "50mm標準レンズ、アイレベル全身寄り、浅い被写界深度で背景ボケ" },
+  { group: "構図・レンズ", prompt: "Pure 90-degree side profile silhouette, camera facing left", ja: "真横90度のプロフィールシルエット、画面左向き" },
+  { group: "光影・雰囲気", prompt: "Soft key light from upper left, subtle rim lighting, natural skin texture", ja: "左上からの柔らかいキーライト、繊細なリムライト、自然な肌質感" },
+  { group: "光影・雰囲気", prompt: "左上方柔和主光斜向倾洒，后方透出环境轮廓光", ja: "左上から柔らかいキーライトが斜めに差し込み、背後から環境リム光" },
+  { group: "光影・雰囲気", prompt: "Golden hour window light casting warm soft shadows across the room.", ja: "ゴールデンアワーの窓光が部屋に温かい柔らかい影を落とす。" },
+  { group: "質感・カメラ", prompt: "Shot on 35mm medium format film with fine grain and realistic color grading.", ja: "35mm中判フィルム撮影、繊細な粒子とリアルな色調" },
+];
 const DEFAULT_EXAMPLE_LIST_HEIGHT = 118;
 const MIN_EXAMPLE_LIST_HEIGHT = 96;
 const MAX_EXAMPLE_LIST_HEIGHT = 520;
@@ -86,6 +121,8 @@ const MAX_PROMPT_TEXT_HEIGHT = 420;
 const DEFAULT_TAG_LIST_HEIGHT = 260;
 const MIN_TAG_LIST_HEIGHT = 96;
 const MAX_TAG_LIST_HEIGHT = 720;
+const MIN_SPLIT_HEIGHT = 280;
+const DEFAULT_SPLIT_HEIGHT = 560;
 const BASE_DOM_WIDGET_HEIGHT = 690;
 const BASE_NODE_HEIGHT = 760;
 const COLOR_DEFAULTS = {
@@ -100,6 +137,28 @@ export function clampTagListHeight(value) {
 
 export function clampPromptTextHeight(value) {
   return Math.min(MAX_PROMPT_TEXT_HEIGHT, Math.max(MIN_PROMPT_TEXT_HEIGHT, Math.round(Number(value) || DEFAULT_PROMPT_TEXT_HEIGHT)));
+}
+
+export function normalizeMarqueeRect(startX, startY, endX, endY) {
+  const left = Math.min(startX, endX);
+  const top = Math.min(startY, endY);
+  const right = Math.max(startX, endX);
+  const bottom = Math.max(startY, endY);
+  return { left, top, right, bottom, width: right - left, height: bottom - top };
+}
+
+export function rectsIntersect(a, b) {
+  return a.left <= b.right && a.right >= b.left && a.top <= b.bottom && a.bottom >= b.top;
+}
+
+export function applyMarqueeSelection(tags, hitIndices, initialSelectedIds = new Set(), additive = false) {
+  let lastIndex = null;
+  tags.forEach((tag, index) => {
+    const selected = hitIndices.has(index) || (additive && initialSelectedIds.has(tag.id));
+    tag.selected = selected;
+    if (selected) lastIndex = index;
+  });
+  return lastIndex;
 }
 
 function clampTagSetListHeight(value) {
@@ -412,8 +471,20 @@ export function parseImportedTagSetText(value) {
   return normalized;
 }
 
+export function detectTextLanguage(value) {
+  const text = String(value || "");
+  if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return "ja";
+  if (/[\p{Script=Hangul}]/u.test(text)) return "ko";
+  if (/[\p{Script=Han}]/u.test(text)) return "zh";
+  return "en";
+}
+
 export function containsJapaneseText(value) {
   return /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(String(value || ""));
+}
+
+export function containsNonAsciiScript(value) {
+  return /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(String(value || ""));
 }
 
 export function translatableTagText(value) {
@@ -427,11 +498,14 @@ export function replaceTagTextPreservingSyntax(value, replacement) {
 export function applySmartTranslationResult(tag, translatedValue, target, localLanguage = "ja") {
   const translated = cleanTranslation(translatedValue);
   if (!tag || !translated) return false;
-  if (target === "en" && containsJapaneseText(translated)) return false;
-  if (target.toLocaleLowerCase().startsWith("ja") && !containsJapaneseText(translated)) return false;
+  const targetBase = String(target || "en").toLocaleLowerCase().split("-", 1)[0];
+  if (targetBase === "en" && containsNonAsciiScript(translated)) return false;
+  if (targetBase === "ja" && !containsJapaneseText(translated)) return false;
+  if (targetBase === "zh" && !/[\p{Script=Han}]/u.test(translated)) return false;
+  if (targetBase === "ko" && !/[\p{Script=Hangul}]/u.test(translated)) return false;
 
   const sourceText = translatableTagText(tag.value);
-  if (target === "en" && containsJapaneseText(sourceText)) {
+  if (targetBase === "en" && containsNonAsciiScript(sourceText)) {
     tag.value = replaceTagTextPreservingSyntax(tag.value, translated);
     tag.translation = sourceText;
     tag.translatedTo = localLanguage;
@@ -684,7 +758,13 @@ export class PromptEditor {
     this.node = node;
     this.widgets = widgets;
     this.api = api;
-    this.tags = [];
+    this.sections = [createSection({ id: "sec-1" })];
+    this.activeSectionId = this.sections[0].id;
+    this.outputFormat = "tags";
+    this.wrapBraces = false;
+    this.includeNegativeInPrompt = false;
+    this.dirtySectionIds = new Set();
+    this.sectionTextareas = new Map();
     this.settings = { ...DEFAULT_SETTINGS };
     this.filterText = "";
     this.filterMode = "all";
@@ -692,15 +772,16 @@ export class PromptEditor {
     this.redoStack = [];
     this.lastSelectedIndex = null;
     this.dragIndex = null;
+    this.dragTagIds = null;
+    this.dragSourceSectionId = null;
     this.didDrag = false;
     this.clickTimer = null;
     this.renderLimit = MAX_RENDERED_TAGS;
-    this.promptDirty = false;
-    this.trailingSeparator = false;
     this.contextMenu = null;
     this.modelRegistry = { loras: null, embeddings: null };
     this.syncing = false;
     this.lastWidgetValue = "";
+    this.lastNegativeValue = "";
     this.exampleData = null;
     this.exampleLoadPromise = null;
     this.tagSetData = null;
@@ -720,8 +801,62 @@ export class PromptEditor {
     // state initialization until that synchronous lifecycle has completed.
     queueMicrotask(() => { if (!this.disposed) this.loadSharedFavorites(); });
     queueMicrotask(() => { if (!this.disposed) this.loadDefaultSettings(); });
+    this.tagDbStates = new Map();
     this.loadModelRegistry();
     this.pollTimer = window.setInterval(() => this.syncFromWidgets(), 400);
+  }
+
+  activeSection() {
+    if (!Array.isArray(this.sections) || !this.sections.length) return null;
+    const found = this.sections.find((section) => section.id === this.activeSectionId);
+    if (found) return found;
+    this.activeSectionId = this.sections[0].id;
+    return this.sections[0];
+  }
+
+  get tags() {
+    return this.activeSection()?.tags ?? this._fallbackTags ?? [];
+  }
+
+  set tags(value) {
+    const next = Array.isArray(value) ? value : [];
+    const active = this.activeSection();
+    if (active) active.tags = next;
+    else this._fallbackTags = next;
+  }
+
+  get trailingSeparator() {
+    return this.activeSection()?.trailingSeparator ?? Boolean(this._fallbackTrailingSeparator);
+  }
+
+  set trailingSeparator(value) {
+    const active = this.activeSection();
+    if (active) active.trailingSeparator = Boolean(value);
+    else this._fallbackTrailingSeparator = Boolean(value);
+  }
+
+  get promptDirty() {
+    if (!Array.isArray(this.sections)) return Boolean(this._fallbackPromptDirty);
+    return Boolean(this.dirtySectionIds?.has(this.activeSectionId));
+  }
+
+  set promptDirty(value) {
+    if (!Array.isArray(this.sections)) {
+      this._fallbackPromptDirty = Boolean(value);
+      return;
+    }
+    this.dirtySectionIds ||= new Set();
+    if (value) this.dirtySectionIds.add(this.activeSectionId);
+    else this.dirtySectionIds.delete(this.activeSectionId);
+  }
+
+  isMultiSectionView() {
+    if (!Array.isArray(this.sections)) return false;
+    return this.sections.length > 1
+      || this.outputFormat === "structured"
+      || Boolean(this.sections[0]?.title)
+      || this.sections[0]?.role === "negative"
+      || this.sections[0]?.enabled === false;
   }
 
   get currentTags() {
@@ -870,16 +1005,50 @@ export class PromptEditor {
     }
   }
 
-  promptEditorValue() {
+  promptEditorValue(section = this.activeSection?.() || null) {
+    if (section && Array.isArray(this.sections)) {
+      return serializeSectionEditorText(section, this.outputFormat || "tags");
+    }
     return serializeEditorPrompt(this.tags, {
       trailingSeparator: this.trailingSeparator,
     });
   }
 
+  currentOutputs() {
+    if (Array.isArray(this.sections)) {
+      return buildStructuredOutputs(this.sections, {
+        outputFormat: this.outputFormat || "tags",
+        outputLanguage: this.settings.outputLanguage,
+        replaceUnderscores: this.settings.replaceUnderscoresForOutput,
+        wrapBraces: this.wrapBraces,
+        includeNegativeInPrompt: this.includeNegativeInPrompt,
+        nestRoles: Boolean(this.nestRoles),
+      });
+    }
+    return {
+      prompt: outputPrompt(this.tags, this.settings.outputLanguage, {
+        trailingSeparator: true,
+        stripLineBreaks: true,
+        replaceUnderscores: this.settings.replaceUnderscoresForOutput,
+      }),
+      negative: "",
+    };
+  }
+
   snapshot() {
+    const payload = Array.isArray(this.sections)
+      ? {
+          sections: this.sections,
+          activeSectionId: this.activeSectionId,
+          outputFormat: this.outputFormat,
+          wrapBraces: this.wrapBraces,
+          includeNegativeInPrompt: this.includeNegativeInPrompt,
+          settings: this.settings,
+        }
+      : { tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator };
     return typeof structuredClone === "function"
-      ? structuredClone({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator })
-      : JSON.parse(JSON.stringify({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator }));
+      ? structuredClone(payload)
+      : JSON.parse(JSON.stringify(payload));
   }
 
   pushUndo() {
@@ -889,10 +1058,19 @@ export class PromptEditor {
   }
 
   restoreSnapshot(snapshot) {
-    this.tags = snapshot.tags;
+    if (Array.isArray(this.sections) && Array.isArray(snapshot.sections)) {
+      this.sections = snapshot.sections.map((section) => createSection(section));
+      this.activeSectionId = snapshot.activeSectionId || this.sections[0]?.id || "sec-1";
+      this.outputFormat = ["structured", "json"].includes(snapshot.outputFormat) ? snapshot.outputFormat : "tags";
+      this.wrapBraces = Boolean(snapshot.wrapBraces);
+      this.includeNegativeInPrompt = Boolean(snapshot.includeNegativeInPrompt);
+      this.dirtySectionIds?.clear();
+    } else {
+      this.tags = snapshot.tags;
+      this.trailingSeparator = Boolean(snapshot.trailingSeparator);
+      this.promptDirty = false;
+    }
     this.settings = snapshot.settings;
-    this.trailingSeparator = Boolean(snapshot.trailingSeparator);
-    this.promptDirty = false;
     this.translationGeneration += 1;
     this.translationBusy = false;
     if (this.favoritesStore?.base.revision >= 0) {
@@ -917,34 +1095,247 @@ export class PromptEditor {
     this.restoreSnapshot(snapshot);
   }
 
+  applyRawWidgetValue(widgetValue, negativeValue = "") {
+    if (Array.isArray(this.sections) && looksLikeStructuredPrompt(widgetValue)) {
+      const parsed = parseStructuredPrompt(widgetValue, this.sections);
+      this.sections = parsed.sections;
+      this.activeSectionId = this.sections[0]?.id || "sec-1";
+      this.outputFormat = parsed.isJson ? "json" : "structured";
+      this.nestRoles = Boolean(parsed.nestRoles);
+      this.wrapBraces = parsed.wrapBraces;
+      this.includeNegativeInPrompt = !this.nestRoles && parsed.sections.some((section) => section.role === "negative");
+      if (negativeValue.trim() && !this.sections.some((section) => section.role === "negative")) {
+        const negParsed = parsePrompt(negativeValue);
+        this.sections.push(createSection({
+          title: t("【ネガティブ】"),
+          role: "negative",
+          trailingSeparator: negParsed.trailingSeparator,
+          tags: tagsWithoutTrailingPlaceholder(negParsed),
+        }));
+      }
+      return;
+    }
+    const parsedWidget = parsePrompt(widgetValue, this.tags);
+    if (Array.isArray(this.sections)) {
+      const nextSections = [createSection({
+        id: this.sections[0]?.id || "sec-1",
+        title: "",
+        role: "positive",
+        trailingSeparator: parsedWidget.trailingSeparator,
+        tags: tagsWithoutTrailingPlaceholder(parsedWidget),
+      })];
+      if (negativeValue.trim()) {
+        const negParsed = parsePrompt(negativeValue);
+        nextSections.push(createSection({
+          title: t("【ネガティブ】"),
+          role: "negative",
+          trailingSeparator: negParsed.trailingSeparator,
+          tags: tagsWithoutTrailingPlaceholder(negParsed),
+        }));
+      }
+      this.sections = nextSections;
+      this.activeSectionId = this.sections[0].id;
+      const rawFmt = this.widgets.outputFormat?.value;
+      this.outputFormat = ["structured", "json"].includes(rawFmt) ? rawFmt : "tags";
+      this.wrapBraces = false;
+      this.includeNegativeInPrompt = false;
+    } else {
+      this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
+      this.trailingSeparator = parsedWidget.trailingSeparator;
+    }
+  }
+
+  mcpWidget(name) {
+    return this.widgets?.[name] || this.node?.widgets?.find((widget) => widget.name === name) || null;
+  }
+
+  mcpBoolValue(name, defaultValue = true) {
+    const widget = this.mcpWidget(name);
+    if (!widget || widget.value === undefined || widget.value === null) return defaultValue;
+    if (typeof widget.value === "boolean") return widget.value;
+    if (typeof widget.value === "number") return widget.value !== 0;
+    const text = String(widget.value).trim().toLowerCase();
+    if (["0", "false", "no", "off", ""].includes(text)) return false;
+    if (["1", "true", "yes", "on"].includes(text)) return true;
+    return defaultValue;
+  }
+
+  hasActiveMcpSectionWidgets() {
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      if (String(this.mcpWidget(`sec_${key}`)?.value || "").trim()) return true;
+      if (this.mcpWidget(`sec_${key}_enabled`) && !this.mcpBoolValue(`sec_${key}_enabled`, true)) return true;
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      if (String(this.mcpWidget(`neg_${key}`)?.value || "").trim()) return true;
+      if (this.mcpWidget(`neg_${key}_enabled`) && !this.mcpBoolValue(`neg_${key}_enabled`, true)) return true;
+    }
+    const xyMode = String(this.mcpWidget("xy_trigger_sync")?.value || "off").trim().toLowerCase();
+    if (xyMode !== "off" && String(this.mcpWidget("xy_trigger_input")?.value || "").trim()) return true;
+    return false;
+  }
+
+  mcpWidgetSnapshot() {
+    const parts = [];
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      parts.push(`p:${key}:${String(this.mcpWidget(`sec_${key}`)?.value ?? "")}:${this.mcpBoolValue(`sec_${key}_enabled`, true) ? 1 : 0}`);
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      parts.push(`n:${key}:${String(this.mcpWidget(`neg_${key}`)?.value ?? "")}:${this.mcpBoolValue(`neg_${key}_enabled`, true) ? 1 : 0}`);
+    }
+    for (const name of ["merge_order", "merge_separator", "normalize_tags", "xy_trigger_sync", "xy_trigger_input"]) {
+      parts.push(`m:${name}:${String(this.mcpWidget(name)?.value ?? "")}`);
+    }
+    return parts.join("\u001f");
+  }
+
+  applyMcpSectionWidgets() {
+    if (!Array.isArray(this.sections)) return;
+    const nextSections = [];
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      const text = String(this.mcpWidget(`sec_${key}`)?.value || "");
+      const enabled = this.mcpBoolValue(`sec_${key}_enabled`, true);
+      const parsed = parsePrompt(text);
+      nextSections.push(createSection({
+        id: `mcp-pos-${key}`,
+        title: MCP_SECTION_LABELS[key] || key,
+        role: "positive",
+        enabled,
+        tags: tagsWithoutTrailingPlaceholder(parsed),
+        trailingSeparator: parsed.trailingSeparator,
+      }));
+    }
+    for (const key of MCP_NEGATIVE_SECTION_KEYS) {
+      const text = String(this.mcpWidget(`neg_${key}`)?.value || "");
+      const enabled = this.mcpBoolValue(`neg_${key}_enabled`, true);
+      const parsed = parsePrompt(text);
+      nextSections.push(createSection({
+        id: `mcp-neg-${key}`,
+        title: `Neg ${MCP_SECTION_LABELS[key] || key}`,
+        role: "negative",
+        enabled,
+        tags: tagsWithoutTrailingPlaceholder(parsed),
+        trailingSeparator: parsed.trailingSeparator,
+      }));
+    }
+    this.sections = nextSections;
+    if (!this.sections.some((section) => section.id === this.activeSectionId)) {
+      this.activeSectionId = this.sections[0]?.id || "mcp-pos-quality";
+    }
+    const rawFmt = this.widgets.outputFormat?.value;
+    if (["tags", "structured", "json"].includes(rawFmt)) this.outputFormat = rawFmt;
+  }
+
+  buildMcpSchemaSnapshot(outputs) {
+    const mergeOrderRaw = String(this.mcpWidget("merge_order")?.value || MCP_POSITIVE_SECTION_KEYS.join(","));
+    const order = [];
+    for (const rawToken of mergeOrderRaw.split(/[\s,]+/)) {
+      const token = rawToken.trim().toLowerCase().replace(/^sec_/, "");
+      if (MCP_POSITIVE_SECTION_KEYS.includes(token) && !order.includes(token)) order.push(token);
+    }
+    for (const key of MCP_POSITIVE_SECTION_KEYS) {
+      if (!order.includes(key)) order.push(key);
+    }
+    return JSON.stringify({
+      version: 1,
+      output_format: this.outputFormat || "tags",
+      merge_order: order,
+      merge_separator: String(this.mcpWidget("merge_separator")?.value ?? ", ") || ", ",
+      normalize_tags: this.mcpBoolValue("normalize_tags", true),
+      xy_trigger_sync: String(this.mcpWidget("xy_trigger_sync")?.value || "off"),
+      positive: order.map((key) => ({
+        key,
+        widget: `sec_${key}`,
+        enabled_widget: `sec_${key}_enabled`,
+        suggestions_widget: `tag_suggestions_${key}`,
+        enabled: this.mcpBoolValue(`sec_${key}_enabled`, true),
+        text: String(this.mcpWidget(`sec_${key}`)?.value || ""),
+        suggestions: String(this.mcpWidget(`tag_suggestions_${key}`)?.value || ""),
+      })),
+      negative: MCP_NEGATIVE_SECTION_KEYS.map((key) => ({
+        key,
+        widget: `neg_${key}`,
+        enabled_widget: `neg_${key}_enabled`,
+        enabled: this.mcpBoolValue(`neg_${key}_enabled`, true),
+        text: String(this.mcpWidget(`neg_${key}`)?.value || ""),
+      })),
+      merged_prompt: outputs.prompt,
+      merged_negative: outputs.negative,
+    }, null, 2);
+  }
+
+  applyExecutionFeedback(message) {
+    if (!message || typeof message !== "object") return;
+    this.syncing = true;
+    const preview = Array.isArray(message.merged_preview) ? message.merged_preview[0] : message.merged_preview;
+    const previewWidget = this.mcpWidget("merged_preview");
+    if (previewWidget && typeof preview === "string" && previewWidget.value !== preview) {
+      previewWidget.value = preview;
+      previewWidget.callback?.(preview, this.node, previewWidget);
+    }
+    const schema = Array.isArray(message.sections_schema) ? message.sections_schema[0] : message.sections_schema;
+    const schemaWidget = this.mcpWidget("sections_schema");
+    if (schemaWidget && typeof schema === "string" && schemaWidget.value !== schema) {
+      schemaWidget.value = schema;
+      schemaWidget.callback?.(schema, this.node, schemaWidget);
+    }
+    this.syncing = false;
+    this.node.graph?.setDirtyCanvas?.(true, true);
+  }
+
+  syncActiveSectionSuggestions(tagList) {
+    const active = this.activeSection?.();
+    if (!active?.id?.startsWith("mcp-pos-")) return;
+    const key = active.id.slice("mcp-pos-".length);
+    if (!MCP_POSITIVE_SECTION_KEYS.includes(key)) return;
+    const widget = this.mcpWidget(`tag_suggestions_${key}`);
+    if (!widget) return;
+    const nextValue = (Array.isArray(tagList) ? tagList : []).filter(Boolean).join(", ");
+    if (widget.value !== nextValue) {
+      this.syncing = true;
+      widget.value = nextValue;
+      widget.callback?.(nextValue, this.node, widget);
+      this.syncing = false;
+    }
+  }
+
   restore() {
     const widgetValue = String(this.widgets.prompt?.value || "");
+    const negativeValue = String(this.widgets.negative?.value || "");
     const parsedWidget = parsePrompt(widgetValue);
     this.trailingSeparator = parsedWidget.trailingSeparator;
     const saved = this.node.properties?.[STATE_KEY];
-    if (saved?.version === 1) {
+    if (this.hasActiveMcpSectionWidgets() && (!saved || saved.version !== 1)) {
+      this.applyMcpSectionWidgets();
+    } else if (saved?.version === 1) {
       const state = sanitizeEditorState(saved);
       this.settings = state.settings;
-      this.tags = state.tags.map((tag) => createTag(tag.value, tag));
-      if (Object.hasOwn(saved, "trailingSeparator")) this.trailingSeparator = state.trailingSeparator;
-      const savedValue = outputPrompt(this.tags, this.settings.outputLanguage, {
-        trailingSeparator: true,
-        stripLineBreaks: true,
-        replaceUnderscores: this.settings.replaceUnderscoresForOutput,
-      });
+      if (Array.isArray(this.sections)) {
+        this.sections = state.sections.map((section) => createSection(section));
+        this.activeSectionId = state.activeSectionId;
+        this.outputFormat = state.outputFormat;
+        this.wrapBraces = state.wrapBraces;
+        this.includeNegativeInPrompt = state.includeNegativeInPrompt;
+      } else {
+        this.tags = state.tags.map((tag) => createTag(tag.value, tag));
+        if (Object.hasOwn(saved, "trailingSeparator")) this.trailingSeparator = state.trailingSeparator;
+      }
+      const savedOutputs = this.currentOutputs();
+      const savedValue = savedOutputs.prompt;
       // Accept the previous version's translation-only output as well, so
       // fixing weight serialization does not discard an older saved state.
       const legacyValue = serializePrompt(this.tags.map((tag) => ({ ...tag,
         value: tag.translation && tag.translatedTo === this.settings.outputLanguage ? tag.translation : tag.value,
       })), { trailingSeparator: true, stripLineBreaks: true });
-      const comparable = (value) => String(value).trim().replace(/,+$/u, "").trim();
+      const comparable = (value) => String(value).replace(/\r\n/g, "\n").trim().replace(/,+$/u, "").trim();
       if (comparable(widgetValue) !== comparable(savedValue) && comparable(widgetValue) !== comparable(legacyValue)) {
-        this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
+        this.applyRawWidgetValue(widgetValue, negativeValue);
       }
     } else {
-      this.tags = tagsWithoutTrailingPlaceholder(parsedWidget);
+      this.applyRawWidgetValue(widgetValue, negativeValue);
     }
     this.lastWidgetValue = widgetValue;
+    this.lastNegativeValue = negativeValue;
+    this.lastMcpSnapshot = this.mcpWidgetSnapshot();
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
   }
 
@@ -953,6 +1344,7 @@ export class PromptEditor {
     this.translationBusy = false;
     this.undoStack.length = 0;
     this.redoStack.length = 0;
+    this.dirtySectionIds?.clear();
     this.promptDirty = false;
     this.restore();
     if (this.favoritesStore?.base.revision >= 0) Object.assign(this.settings, this.favoritesStore.value);
@@ -979,25 +1371,333 @@ export class PromptEditor {
     this.node.properties[STATE_KEY] = sanitizeEditorState({
       version: 1,
       tags: this.tags,
-      settings: this.settings,
       trailingSeparator: this.trailingSeparator,
+      ...(Array.isArray(this.sections)
+        ? {
+            sections: this.sections,
+            activeSectionId: this.activeSectionId,
+            outputFormat: this.outputFormat,
+            wrapBraces: this.wrapBraces,
+            includeNegativeInPrompt: this.includeNegativeInPrompt,
+          }
+        : {}),
+      settings: this.settings,
     });
     this.node.graph?.setDirtyCanvas?.(true, true);
   }
 
+  sectionSocketNames() {
+    const names = new Map();
+    const used = new Set(["prompt", "negative", "output_format", "sections_payload"]);
+    const sections = Array.isArray(this.sections) ? this.sections : [];
+    sections.forEach((section, index) => {
+      const base = String(section?.title || "").trim() || `Section ${index + 1}`;
+      let candidate = base;
+      let suffix = 2;
+      while (used.has(candidate)) {
+        candidate = `${base} (${suffix++})`;
+      }
+      used.add(candidate);
+      names.set(section.id, candidate);
+    });
+    return names;
+  }
+
+  syncDynamicSectionSockets() {
+    if (!this.node || !Array.isArray(this.sections)) return;
+    const socketNames = this.sectionSocketNames();
+    const desired = this.sections
+      .filter((section) => Boolean(section.socketInput))
+      .map((section) => ({
+        sectionId: section.id,
+        name: socketNames.get(section.id) || section.title || section.id,
+      }));
+    const desiredById = new Map(desired.map((entry) => [entry.sectionId, entry.name]));
+    const reservedWidgetNames = new Set(["prompt", "negative", "output_format", "sections_payload"]);
+    const existingInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
+
+    // Re-attach existing inputs restored from workflow JSON by matching socket name.
+    for (const input of existingInputs) {
+      if (!input || input._paioSectionId || reservedWidgetNames.has(input.name)) continue;
+      const matched = desired.find((entry) => entry.name === input.name);
+      if (matched) input._paioSectionId = matched.sectionId;
+    }
+
+    // Remove dynamic or orphaned unlinked sockets not in desired sections.
+    let socketsChanged = false;
+    for (let index = existingInputs.length - 1; index >= 0; index -= 1) {
+      const input = existingInputs[index];
+      if (!input) continue;
+      const isLinked = (input.link !== null && input.link !== undefined)
+        || (Array.isArray(input.links) && input.links.length > 0);
+      if (reservedWidgetNames.has(input.name)) {
+        if (!isLinked) {
+          if (typeof this.node.removeInput === "function") this.node.removeInput(index);
+          else existingInputs.splice(index, 1);
+          socketsChanged = true;
+        }
+        continue;
+      }
+      const keep = Boolean(input._paioSectionId && desiredById.has(input._paioSectionId));
+      if (!keep && (!isLinked || Boolean(input._paioSectionId))) {
+        if (typeof this.node.removeInput === "function") this.node.removeInput(index);
+        else existingInputs.splice(index, 1);
+        socketsChanged = true;
+      }
+    }
+
+    // Add missing input sockets or rename existing ones without breaking links.
+    for (const entry of desired) {
+      const currentInputs = Array.isArray(this.node.inputs) ? this.node.inputs : [];
+      const existing = currentInputs.find((input) => input?._paioSectionId === entry.sectionId);
+      if (existing) {
+        if (existing.name !== entry.name) {
+          existing.name = entry.name;
+          socketsChanged = true;
+        }
+      } else if (typeof this.node.addInput === "function") {
+        const added = this.node.addInput(entry.name, "STRING");
+        const target = added || this.node.inputs?.[this.node.inputs.length - 1];
+        if (target) target._paioSectionId = entry.sectionId;
+        socketsChanged = true;
+      }
+    }
+
+    const resolveGraphLink = (linkId) => {
+      if (linkId === null || linkId === undefined) return null;
+      const links = this.node?.graph?.links;
+      if (!links) return null;
+      if (typeof links.get === "function") return links.get(linkId) || null;
+      return links[linkId] || null;
+    };
+
+    // Reorder dynamic input sockets to match section block order while preserving links.
+    if (Array.isArray(this.node.inputs) && desired.length > 1) {
+      const staticInputs = this.node.inputs.filter((input) => !input?._paioSectionId);
+      const dynamicById = new Map(
+        this.node.inputs.filter((input) => input?._paioSectionId).map((input) => [input._paioSectionId, input]),
+      );
+      const orderedDynamic = desired.map((entry) => dynamicById.get(entry.sectionId)).filter(Boolean);
+      const nextInputs = [...staticInputs, ...orderedDynamic];
+      if (nextInputs.length === this.node.inputs.length && nextInputs.some((item, idx) => item !== this.node.inputs[idx])) {
+        this.node.inputs.splice(0, this.node.inputs.length, ...nextInputs);
+        this.node.inputs.forEach((input, slotIdx) => {
+          const link = resolveGraphLink(input?.link);
+          if (link) link.target_slot = slotIdx;
+          if (Array.isArray(input?.links)) {
+            for (const linkId of input.links) {
+              const linked = resolveGraphLink(linkId);
+              if (linked) linked.target_slot = slotIdx;
+            }
+          }
+        });
+        socketsChanged = true;
+      }
+    }
+
+    // Sync on-demand dynamic output sockets (after fixed index 0: prompt, 1: negative).
+    const desiredOutputs = this.sections
+      .filter((section) => Boolean(section.socketOutput))
+      .map((section) => ({
+        sectionId: section.id,
+        name: socketNames.get(section.id) || section.title || section.id,
+      }));
+    const desiredOutById = new Map(desiredOutputs.map((entry) => [entry.sectionId, entry.name]));
+    const existingOutputs = Array.isArray(this.node.outputs) ? this.node.outputs : [];
+    for (let index = 2; index < existingOutputs.length; index += 1) {
+      const output = existingOutputs[index];
+      if (!output || output._paioSectionOutId) continue;
+      const matched = desiredOutputs.find((entry) => entry.name === output.name);
+      if (matched) output._paioSectionOutId = matched.sectionId;
+    }
+    for (let index = existingOutputs.length - 1; index >= 2; index -= 1) {
+      const output = existingOutputs[index];
+      if (!output) continue;
+      if (!output._paioSectionOutId || !desiredOutById.has(output._paioSectionOutId)) {
+        if (typeof this.node.removeOutput === "function") this.node.removeOutput(index);
+        else existingOutputs.splice(index, 1);
+        socketsChanged = true;
+      }
+    }
+    for (const entry of desiredOutputs) {
+      const currentOutputs = Array.isArray(this.node.outputs) ? this.node.outputs : [];
+      const existing = currentOutputs.find((output, idx) => idx >= 2 && output?._paioSectionOutId === entry.sectionId);
+      if (existing) {
+        if (existing.name !== entry.name) {
+          existing.name = entry.name;
+          socketsChanged = true;
+        }
+      } else if (typeof this.node.addOutput === "function") {
+        const added = this.node.addOutput(entry.name, "STRING");
+        const target = added || this.node.outputs?.[this.node.outputs.length - 1];
+        if (target) target._paioSectionOutId = entry.sectionId;
+        socketsChanged = true;
+      }
+    }
+
+    // Reorder dynamic output sockets (index >= 2) to match section block order while preserving links.
+    if (Array.isArray(this.node.outputs) && this.node.outputs.length > 3 && desiredOutputs.length > 1) {
+      const fixedOutputs = this.node.outputs.slice(0, 2);
+      const dynamicOutById = new Map(
+        this.node.outputs.slice(2).filter((output) => output?._paioSectionOutId).map((output) => [output._paioSectionOutId, output]),
+      );
+      const orderedDynamicOut = desiredOutputs.map((entry) => dynamicOutById.get(entry.sectionId)).filter(Boolean);
+      const nextOutputs = [...fixedOutputs, ...orderedDynamicOut];
+      if (nextOutputs.length === this.node.outputs.length && nextOutputs.some((item, idx) => item !== this.node.outputs[idx])) {
+        this.node.outputs.splice(0, this.node.outputs.length, ...nextOutputs);
+        for (let slotIdx = 2; slotIdx < this.node.outputs.length; slotIdx += 1) {
+          const output = this.node.outputs[slotIdx];
+          if (Array.isArray(output?.links)) {
+            for (const linkId of output.links) {
+              const linked = resolveGraphLink(linkId);
+              if (linked) linked.origin_slot = slotIdx;
+            }
+          }
+        }
+        socketsChanged = true;
+      }
+    }
+
+    this.node.setDirtyCanvas?.(true, true);
+    this.node.graph?.setDirtyCanvas?.(true, true);
+    if (socketsChanged) this.node.graph?.change?.();
+  }
+
+  buildSectionsPayload() {
+    if (!Array.isArray(this.sections)) return "";
+    const socketNames = this.sectionSocketNames();
+    const outputLanguage = this.settings?.outputLanguage || "en";
+    const replaceUnderscores = Boolean(this.settings?.replaceUnderscoresForOutput);
+    const structuredMode = this.outputFormat === "structured" || this.outputFormat === "json";
+    const outputOrder = Array.isArray(this.node?.outputs)
+      ? this.node.outputs.slice(2).map((output) => output?._paioSectionOutId).filter(Boolean)
+      : [];
+    return JSON.stringify({
+      version: 1,
+      wrap_braces: Boolean(this.wrapBraces),
+      include_negative_in_prompt: Boolean(this.includeNegativeInPrompt),
+      nest_roles: Boolean(this.nestRoles),
+      output_order: outputOrder,
+      sections: this.sections.map((section) => {
+        let text = "";
+        if (section.mode === "prose") {
+          const translated = section.translation && section.translatedTo === outputLanguage
+            ? section.translation
+            : section.proseText;
+          text = String(translated || "").trim();
+        } else if (structuredMode) {
+          text = serializeStructuredSectionBody(section.tags || [], outputLanguage, {
+            replaceUnderscores,
+            trailingSeparator: false,
+          });
+        } else {
+          text = outputPrompt(section.tags || [], outputLanguage, {
+            trailingSeparator: false,
+            stripLineBreaks: true,
+            replaceUnderscores,
+          });
+        }
+        return {
+          id: section.id,
+          title: section.title || "",
+          socket_name: socketNames.get(section.id) || section.title || section.id,
+          socket_input: Boolean(section.socketInput),
+          socket_output: Boolean(section.socketOutput),
+          role: section.role === "negative" ? "negative" : "positive",
+          mode: section.mode === "prose" ? "prose" : "tags",
+          enabled: section.enabled !== false,
+          text,
+        };
+      }),
+    });
+  }
+
   syncToWidgets() {
     this.syncing = true;
-    const value = outputPrompt(this.tags, this.settings.outputLanguage, {
-      trailingSeparator: true,
-      stripLineBreaks: true,
-      replaceUnderscores: this.settings.replaceUnderscoresForOutput,
-    });
-    const widget = this.widgets.prompt;
-    if (widget && widget.value !== value) {
-      widget.value = value;
-      widget.callback?.(value, this.node, widget);
+    this.syncDynamicSectionSockets();
+    const outputs = this.currentOutputs();
+    const promptWidget = this.widgets.prompt;
+    if (promptWidget && promptWidget.value !== outputs.prompt) {
+      promptWidget.value = outputs.prompt;
+      promptWidget.callback?.(outputs.prompt, this.node, promptWidget);
     }
-    this.lastWidgetValue = value;
+    const negativeWidget = this.widgets.negative;
+    if (negativeWidget && negativeWidget.value !== outputs.negative) {
+      negativeWidget.value = outputs.negative;
+      negativeWidget.callback?.(outputs.negative, this.node, negativeWidget);
+    }
+    const outputFormatWidget = this.widgets.outputFormat;
+    const nextFormat = this.outputFormat || "tags";
+    if (outputFormatWidget && outputFormatWidget.value !== nextFormat) {
+      outputFormatWidget.value = nextFormat;
+      outputFormatWidget.callback?.(nextFormat, this.node, outputFormatWidget);
+    }
+    const payloadWidget = this.mcpWidget("sections_payload");
+    if (payloadWidget && Array.isArray(this.sections)) {
+      const nextPayload = this.buildSectionsPayload();
+      if (payloadWidget.value !== nextPayload) {
+        payloadWidget.value = nextPayload;
+        payloadWidget.callback?.(nextPayload, this.node, payloadWidget);
+      }
+    }
+    if (Array.isArray(this.sections)) {
+      for (const section of this.sections) {
+        if (section.id?.startsWith("mcp-pos-")) {
+          const key = section.id.slice("mcp-pos-".length);
+          const textWidget = this.mcpWidget(`sec_${key}`);
+          const enabledWidget = this.mcpWidget(`sec_${key}_enabled`);
+          const sectionText = section.mode === "prose"
+            ? String(section.proseText || "").trim()
+            : this.promptEditorValue(section);
+          if (textWidget && textWidget.value !== sectionText) {
+            textWidget.value = sectionText;
+            textWidget.callback?.(sectionText, this.node, textWidget);
+          }
+          const isEnabled = section.enabled !== false;
+          if (enabledWidget && Boolean(enabledWidget.value) !== isEnabled) {
+            enabledWidget.value = isEnabled;
+            enabledWidget.callback?.(isEnabled, this.node, enabledWidget);
+          }
+        } else if (section.id?.startsWith("mcp-neg-")) {
+          const key = section.id.slice("mcp-neg-".length);
+          const textWidget = this.mcpWidget(`neg_${key}`);
+          const enabledWidget = this.mcpWidget(`neg_${key}_enabled`);
+          const sectionText = section.mode === "prose"
+            ? String(section.proseText || "").trim()
+            : this.promptEditorValue(section);
+          if (textWidget && textWidget.value !== sectionText) {
+            textWidget.value = sectionText;
+            textWidget.callback?.(sectionText, this.node, textWidget);
+          }
+          const isEnabled = section.enabled !== false;
+          if (enabledWidget && Boolean(enabledWidget.value) !== isEnabled) {
+            enabledWidget.value = isEnabled;
+            enabledWidget.callback?.(isEnabled, this.node, enabledWidget);
+          }
+        }
+      }
+      const previewWidget = this.mcpWidget("merged_preview");
+      if (previewWidget) {
+        const nextPreview = outputs.negative
+          ? `[POSITIVE]\n${outputs.prompt}\n\n[NEGATIVE]\n${outputs.negative}`
+          : outputs.prompt;
+        if (previewWidget.value !== nextPreview) {
+          previewWidget.value = nextPreview;
+          previewWidget.callback?.(nextPreview, this.node, previewWidget);
+        }
+      }
+      const schemaWidget = this.mcpWidget("sections_schema");
+      if (schemaWidget) {
+        const nextSchema = this.buildMcpSchemaSnapshot(outputs);
+        if (schemaWidget.value !== nextSchema) {
+          schemaWidget.value = nextSchema;
+          schemaWidget.callback?.(nextSchema, this.node, schemaWidget);
+        }
+      }
+    }
+    this.lastWidgetValue = outputs.prompt;
+    this.lastNegativeValue = outputs.negative;
+    this.lastMcpSnapshot = this.mcpWidgetSnapshot();
     this.persist();
     this.syncing = false;
   }
@@ -1008,17 +1708,29 @@ export class PromptEditor {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
     }
     if (this.syncing) return;
-    const value = String(this.widgets.prompt?.value || "");
-    const changed = value !== this.lastWidgetValue;
-    if (changed) {
-      const parsed = parsePrompt(value, this.tags);
-      this.tags = tagsWithoutTrailingPlaceholder(parsed);
-      this.trailingSeparator = parsed.trailingSeparator;
-      this.lastWidgetValue = value;
+    const mcpSnapshot = this.mcpWidgetSnapshot();
+    if (this.lastMcpSnapshot !== undefined && mcpSnapshot !== this.lastMcpSnapshot && this.hasActiveMcpSectionWidgets()) {
+      this.applyMcpSectionWidgets();
+      this.lastMcpSnapshot = mcpSnapshot;
+      this.dirtySectionIds?.clear();
+      this.applyBlacklist(this.settings.blacklistAction !== "warn");
+      this.syncToWidgets();
+      this.rebuildSectionViews?.();
+      this.render();
+      this.setStatus(t("STRINGウィジェットの変更を反映しました"));
+      return;
     }
+    const value = String(this.widgets.prompt?.value || "");
+    const negativeValue = String(this.widgets.negative?.value || "");
+    const changed = value !== this.lastWidgetValue || (this.widgets.negative && negativeValue !== this.lastNegativeValue);
     if (changed) {
+      this.applyRawWidgetValue(value, negativeValue);
+      this.lastWidgetValue = value;
+      this.lastNegativeValue = negativeValue;
+      this.dirtySectionIds?.clear();
       this.applyBlacklist(this.settings.blacklistAction !== "warn");
       this.persist();
+      this.rebuildSectionViews?.();
       this.render();
       this.setStatus(t("STRINGウィジェットの変更を反映しました"));
     }
@@ -1026,27 +1738,36 @@ export class PromptEditor {
 
   build() {
     loadLibrarySortSettings(this.settings);
-    const root = element("section", { className: "paio-editor" });
+    const root = element("section", { className: "paio-editor paio-editor--fork" });
     root.setAttribute("aria-label", "Prompt Workbench editor");
     containNodeContextMenu(root);
 
     this.syncBadge = element("span", { className: "paio-sync-badge", text: t("同期済み") });
 
-    this.promptTextarea = element("textarea", { className: "paio-prompt-textarea" });
-    this.promptTextarea.rows = 4;
-    this.promptTextarea.style.height = `${clampPromptTextHeight(this.settings.promptTextHeight)}px`;
-    this.promptTextarea.placeholder = t("プロンプトを入力するか、下のタグ追加から選んでください");
-    this.promptTextarea.setAttribute("aria-label", t("現在のプロンプト本文"));
-    this.promptTextarea.addEventListener("input", () => {
+    this.singlePromptTextarea = element("textarea", { className: "paio-prompt-textarea" });
+    this.singlePromptTextarea.rows = 4;
+    this.singlePromptTextarea.style.height = `${clampPromptTextHeight(this.settings.promptTextHeight)}px`;
+    this.singlePromptTextarea.placeholder = t("プロンプトを入力するか、下のタグ追加から選んでください");
+    this.singlePromptTextarea.setAttribute("aria-label", t("現在のプロンプト本文"));
+    this.singlePromptTextarea.addEventListener("input", () => {
       this.promptDirty = true;
       this.renderSyncState();
     });
-    this.promptTextarea.addEventListener("keydown", (event) => {
+    this.singlePromptTextarea.addEventListener("paste", (event) => {
+      if (this.singlePromptTextarea.value.trim()) return;
+      const pasted = event.clipboardData?.getData("text/plain") || "";
+      if (looksLikeStructuredPrompt(pasted)) {
+        event.preventDefault();
+        this.applyBulkSplitText(pasted);
+      }
+    });
+    this.singlePromptTextarea.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         this.applyPromptText();
       }
     });
+    this.promptTextarea = this.singlePromptTextarea;
     this.applyPromptButton = button(t("タグへ反映"), () => this.applyPromptText(), t("本文を解析してタグへ反映（Ctrl+Enter）"));
     const promptActions = element("div", { className: "paio-prompt-actions" }, [this.applyPromptButton]);
     const promptResizeHandle = element("div", { className: "paio-example-resize-handle paio-prompt-textarea-resize-handle" }, [
@@ -1059,7 +1780,7 @@ export class PromptEditor {
     const applyPromptTextHeight = (height, nodeHeight = null, persist = false) => {
       const nextHeight = clampPromptTextHeight(height);
       this.settings.promptTextHeight = nextHeight;
-      this.promptTextarea.style.height = `${nextHeight}px`;
+      this.singlePromptTextarea.style.height = `${nextHeight}px`;
       promptResizeHandle.setAttribute("aria-valuemin", String(MIN_PROMPT_TEXT_HEIGHT));
       promptResizeHandle.setAttribute("aria-valuemax", String(MAX_PROMPT_TEXT_HEIGHT));
       promptResizeHandle.setAttribute("aria-valuenow", String(nextHeight));
@@ -1117,14 +1838,189 @@ export class PromptEditor {
       const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
       applyPromptTextHeight(applied, currentNodeHeight + applied - currentHeight, true);
     });
-    this.translationBar = this.buildTranslationBar();
-    const promptPane = collapsiblePane(t("プロンプト本文"), "paio-prompt-pane", [
-      this.promptTextarea,
+
+    this.outputFormatButtons = new Map();
+    const formatGroup = element("div", { className: "paio-segmented", ariaLabel: t("出力形式") });
+    formatGroup.setAttribute("role", "group");
+    for (const [value, label] of [["tags", "タグ結合"], ["structured", "構造化"], ["json", "JSON"]]) {
+      const control = button(t(label), () => {
+        this.commitPromptBeforeAction();
+        if ((value === "structured" || value === "json") && this.sections?.length === 1 && !this.sections[0].title) {
+          const currentText = this.promptEditorValue(this.sections[0]);
+          if (looksLikeStructuredPrompt(currentText)) {
+            this.applyBulkSplitText(currentText);
+            this.outputFormat = value;
+            this.syncToWidgets();
+            this.render();
+            return;
+          }
+        }
+        this.pushUndo();
+        this.outputFormat = value;
+        this.rebuildSectionViews();
+        this.syncToWidgets();
+        this.render();
+      });
+      control.classList.add("paio-segmented-button");
+      this.outputFormatButtons.set(value, control);
+      formatGroup.append(control);
+    }
+    this.wrapBracesToggle = button(t("{ } 囲み"), () => {
+      this.commitPromptBeforeAction();
+      this.pushUndo();
+      this.wrapBraces = !this.wrapBraces;
+      this.syncToWidgets();
+      this.render();
+    }, t("構造化出力全体を { } で囲む"));
+    this.wrapBracesToggle.classList.add("paio-toggle-pill");
+    this.includeNegativeToggle = button(t("Neg→prompt"), () => {
+      this.commitPromptBeforeAction();
+      this.pushUndo();
+      this.includeNegativeInPrompt = !this.includeNegativeInPrompt;
+      this.syncToWidgets();
+      this.render();
+    }, t("ネガティブセクションもprompt出力に含める"));
+    this.includeNegativeToggle.classList.add("paio-toggle-pill");
+    const addSectionBtn = button(t("＋ セクション"), () => this.addSection(), t("新しいプロンプト入力欄を追加"));
+    const bulkSplitBtn = button(t("一括分割"), () => this.openBulkSplitDialog(), t("【見出し】や { } / JSON 付きテキストを一括読込・分割"));
+    const templateSelect = element("select", { className: "paio-select paio-section-template-select" });
+    templateSelect.setAttribute("aria-label", t("セクションテンプレートを選択"));
+    templateSelect.title = t("よく使うセクション構成を一括追加・適用");
+    const templatePlaceholder = element("option", { text: t("テンプレート…") });
+    templatePlaceholder.value = "";
+    templateSelect.append(templatePlaceholder);
+    for (const tpl of SECTION_TEMPLATES) {
+      const option = element("option", { text: t(tpl.label) });
+      option.value = tpl.id;
+      templateSelect.append(option);
+    }
+    templateSelect.addEventListener("change", () => {
+      const templateId = templateSelect.value;
+      templateSelect.value = "";
+      if (templateId) this.applySectionTemplate(templateId);
+    });
+    this.sectionTitleDatalistId = `paio-section-headings-${nextSectionDatalistId++}`;
+    const headingDatalist = element("datalist");
+    headingDatalist.id = this.sectionTitleDatalistId;
+    for (const group of SECTION_HEADING_GROUPS) {
+      for (const item of group.items) {
+        const option = element("option");
+        option.value = item;
+        headingDatalist.append(option);
+      }
+    }
+    const showBlockJaCheck = element("input", { type: "checkbox" });
+    showBlockJaCheck.checked = this.settings.showSectionTranslationsInList !== false;
+    showBlockJaCheck.addEventListener("change", () => {
+      this.settings.showSectionTranslationsInList = showBlockJaCheck.checked;
+      this.persist();
+      this.rebuildSectionViews();
+      this.render();
+    });
+    const showBlockJaLabel = element("label", { className: "paio-inline-check" }, [
+      showBlockJaCheck,
+      element("span", { text: t("一覧に訳を表示") }),
+    ]);
+
+    this.settingsDialog = this.buildSettingsDialog();
+    this.blacklistDialog = this.buildBlacklistDialog();
+    this.ioDialog = this.buildIoDialog();
+    this.bulkSplitDialog = this.buildBulkSplitDialog();
+
+    // House secondary section toggles and management dialogs inside Settings
+    // to keep the primary toolbar focused on frequent actions.
+    this.settingsDialog.body?.prepend(
+      element("div", { className: "paio-toolbar" }, [
+        this.includeNegativeToggle,
+        showBlockJaLabel,
+        button(t("コピー/IO"), () => { closeDialog(this.settingsDialog); openDialog(this.ioDialog); }, t("コピー・エクスポート・インポート")),
+        button(t("禁止"), () => { closeDialog(this.settingsDialog); openDialog(this.blacklistDialog); }, t("ブラックリスト")),
+      ]),
+    );
+
+    this.sectionControls = element("div", { className: "paio-section-controls" }, [
+      element("span", { className: "paio-translation-label", text: t("出力") }),
+      formatGroup,
+      this.wrapBracesToggle,
+      addSectionBtn,
+      bulkSplitBtn,
+      button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
+      this.syncBadge,
+      headingDatalist,
+    ]);
+
+    this.promptSingleContainer = element("div", { className: "paio-prompt-single" }, [
+      this.singlePromptTextarea,
       promptResizeHandle,
       promptActions,
-      this.translationBar,
     ]);
-    promptPane.summary.append(element("span", { className: "paio-section-header-meta" }, [this.syncBadge]));
+    this.promptSingleContainer.hidden = true;
+    this.sectionsContainer = element("div", { className: "paio-sections-list" });
+    this.sectionCountLabel = element("span", { className: "paio-section-count-label" });
+    const leftPaneHeader = element("div", { className: "paio-pane-head" }, [
+      element("div", { className: "paio-pane-title-group" }, [
+        element("strong", { text: t("セクションブロック") }),
+        this.sectionCountLabel,
+      ]),
+      element("div", { className: "paio-pane-actions" }, [
+        button(t("全ON"), () => this.setAllSectionsEnabled(true), t("すべてのセクションを有効にする")),
+        button(t("全OFF"), () => this.setAllSectionsEnabled(false), t("すべてのセクションを無効にする")),
+      ]),
+    ]);
+    const leftPane = element("div", { className: "paio-pane paio-pane-left" }, [
+      leftPaneHeader,
+      this.sectionsContainer,
+    ]);
+
+    const splitter = element("div", { className: "paio-splitter", title: t("ドラッグして左右ペインの比率を調整") });
+    splitter.tabIndex = 0;
+    splitter.setAttribute("role", "separator");
+    splitter.setAttribute("aria-orientation", "vertical");
+
+    this.translationBar = this.buildTranslationBar();
+
+    this.activeSectionTitleLabel = element("strong", { className: "paio-active-section-title", text: t("編集中セクション") });
+    this.sectionModeButtons = new Map();
+    const modeSwitch = element("div", { className: "paio-segmented", ariaLabel: t("セクション編集モード") });
+    for (const [modeVal, modeLabel] of [["prose", "散文モード"], ["tags", "タグモード"]]) {
+      const btn = button(t(modeLabel), () => this.setActiveSectionMode(modeVal));
+      btn.classList.add("paio-segmented-button");
+      this.sectionModeButtons.set(modeVal, btn);
+      modeSwitch.append(btn);
+    }
+    const activeWorkspaceHead = element("div", { className: "paio-pane-head" }, [
+      this.activeSectionTitleLabel,
+      modeSwitch,
+    ]);
+
+    this.proseOrigTextarea = element("textarea", { className: "paio-prompt-textarea paio-prose-textarea" });
+    this.proseOrigTextarea.rows = 3;
+    this.proseOrigTextarea.placeholder = t("出力されるプロンプト（英語・中国語など自然文）を入力...");
+    this.proseOrigTextarea.addEventListener("input", () => this.handleProseOrigInput());
+
+    this.proseJaTextarea = element("textarea", { className: "paio-prompt-textarea paio-prose-textarea" });
+    this.proseJaTextarea.rows = 3;
+    this.proseJaTextarea.placeholder = t("日本語訳（上の「① 選択を日本語訳」で自動取得、または日本語で下書き入力）");
+    this.proseJaTextarea.addEventListener("input", () => this.handleProseJaInput());
+
+    const applyJaQuickBtn = button(t("日本語の編集内容を原文へ反映 →"), () => this.translateSectionJaToOriginal(this.activeSectionId));
+    applyJaQuickBtn.classList.add("paio-subtle-action");
+    this.proseWorkspace = element("div", { className: "paio-prose-workspace" }, [
+      element("div", { className: "paio-bilingual-box" }, [
+        element("div", { className: "paio-bilingual-head" }, [
+          element("strong", { text: t("出力プロンプト（原文）") }),
+          element("span", { className: "paio-hint", text: t("散文モード：TagDB警告・末尾カンマなし") }),
+        ]),
+        this.proseOrigTextarea,
+      ]),
+      element("div", { className: "paio-bilingual-box is-ja" }, [
+        element("div", { className: "paio-bilingual-head" }, [
+          element("strong", { text: t("日本語訳（確認・日本語で編集用）") }),
+          applyJaQuickBtn,
+        ]),
+        this.proseJaTextarea,
+      ]),
+    ]);
 
     this.addInput = element("textarea", { className: "paio-add-input" });
     this.addInput.rows = 1;
@@ -1135,6 +2031,21 @@ export class PromptEditor {
         event.preventDefault();
         this.addFromInput();
       }
+    });
+    const tagDbLanguage = () => this.settings.localLanguage;
+    attachTagSuggestions(this.singlePromptTextarea, { api: this.api, language: tagDbLanguage });
+    attachTagSuggestions(this.addInput, {
+      api: this.api,
+      language: tagDbLanguage,
+      onPick: (item) => {
+        this.pushUndo();
+        this.addValues(
+          [{ value: item.tag, translation: item.translations[0] || "", translatedTo: this.settings.localLanguage }],
+          { trailingSeparator: true },
+        );
+        this.addInput.value = "";
+        this.setStatus(t("{tag} を追加しました", { tag: item.tag }));
+      },
     });
     this.searchInput = element("input", { className: "paio-search" });
     this.searchInput.type = "search";
@@ -1183,113 +2094,273 @@ export class PromptEditor {
       button("↷", () => this.redo(), t("やり直す")),
       button(t("整形"), () => this.normalize(false)),
       button(t("重複削除"), () => this.normalize(true)),
-      button(t("禁止"), () => openDialog(this.blacklistDialog), t("ブラックリスト")),
-      button(t("設定"), () => { this.refreshCategoryColorSettings?.(); openDialog(this.settingsDialog); }),
     ]);
 
     this.bulkBar = element("div", { className: "paio-bulk" });
-    this.tagSummary = element("div", { className: "paio-tag-summary" });
+    this.tagSummary = element("span");
+    const tagSummaryRow = element("div", { className: "paio-tag-summary" }, [
+      element("span", { className: "paio-hint", text: t("クリック: 有効/無効 / ダブルクリック: 編集 / Shift+ドラッグ: 矩形選択 / Shift・Ctrl+クリック: 複数選択") }),
+      this.tagSummary,
+    ]);
     this.tagList = element("div", { className: "paio-tags" });
     this.tagList.setAttribute("role", "list");
-    this.tagList.style.height = `${clampTagListHeight(this.settings.tagListHeight)}px`;
-    const tagListResizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-list-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
+    this.attachTagListMarquee();
+    this.status = element("p", { className: "paio-status", text: t("準備完了") });
+    this.status.setAttribute("aria-live", "polite");
+
+    const currentTagsDisclosure = element("span", { className: "paio-disclosure", text: "▾" });
+    const currentTagsToggle = element("button", { className: "paio-collapsible-toggle", type: "button" }, [
+      currentTagsDisclosure,
+      element("strong", { text: t("現在のタグ") }),
     ]);
-    tagListResizeHandle.tabIndex = 0;
-    tagListResizeHandle.setAttribute("role", "separator");
-    tagListResizeHandle.setAttribute("aria-orientation", "horizontal");
-    tagListResizeHandle.setAttribute("aria-label", t("現在のタグ一覧の高さを変更"));
-    const applyTagListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampTagListHeight(height);
-      this.settings.tagListHeight = nextHeight;
-      this.tagList.style.height = `${nextHeight}px`;
-      tagListResizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_LIST_HEIGHT));
-      tagListResizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_LIST_HEIGHT));
-      tagListResizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([Math.max(this.node.size?.[0] || 0, 540), nodeHeight]);
+    currentTagsToggle.setAttribute("aria-expanded", "true");
+    const currentTagsBody = element("div", { className: "paio-current-tags-body" }, [
+      this.bulkBar,
+      tagSummaryRow,
+      this.tagList,
+    ]);
+    const currentTagsPane = element("div", { className: "paio-current-tags-pane" }, [
+      currentTagsToggle,
+      currentTagsBody,
+    ]);
+    currentTagsToggle.addEventListener("click", () => {
+      const collapsed = !currentTagsPane.classList.contains("is-collapsed");
+      currentTagsPane.classList.toggle("is-collapsed", collapsed);
+      currentTagsBody.hidden = collapsed;
+      currentTagsToggle.setAttribute("aria-expanded", String(!collapsed));
+      currentTagsDisclosure.textContent = collapsed ? "▶" : "▾";
+    });
+    this.currentTagsSummaryTitle = currentTagsToggle.querySelector("strong");
+
+    this.activeTagPromptTextarea = element("textarea", { className: "paio-prompt-textarea paio-section-text-input" });
+    this.activeTagPromptTextarea.rows = 3;
+    this.activeTagPromptTextarea.placeholder = t("このセクションのタグを入力（例: 1girl, solo）");
+    this.activeTagPromptTextarea.setAttribute("aria-label", t("セクションの本文を一括編集"));
+    this.activeTagPromptTextarea.addEventListener("input", () => {
+      this.dirtySectionIds.add(this.activeSectionId);
+      this.renderSyncState();
+    });
+    this.activeTagPromptTextarea.addEventListener("paste", (event) => {
+      if (this.activeTagPromptTextarea.value.trim()) return;
+      const pasted = event.clipboardData?.getData("text/plain") || "";
+      if (looksLikeStructuredPrompt(pasted)) {
+        event.preventDefault();
+        this.applyBulkSplitText(pasted);
       }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
+    });
+    this.activeTagPromptTextarea.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        this.applyPromptText(this.activeSectionId);
+      }
+    });
+    attachTagSuggestions(this.activeTagPromptTextarea, { api: this.api, language: () => this.settings.localLanguage });
+    this.promptTextarea = this.activeTagPromptTextarea;
+    this.activeSectionApplyButton = button(t("タグへ反映"), () => this.applyPromptText(this.activeSectionId), t("本文を解析してタグへ反映（Ctrl+Enter）"));
+    this.activeSectionApplyButton.classList.add("paio-section-apply");
+    const sectionTextPane = collapsiblePane(t("テキスト直接編集（一括貼付・反映）"), "paio-section-text-pane", [
+      this.activeTagPromptTextarea,
+      element("div", { className: "paio-prompt-actions" }, [this.activeSectionApplyButton]),
+    ]);
+    sectionTextPane.pane.open = false;
+
+    this.tagsWorkspace = element("div", { className: "paio-tags-workspace" }, [
+      addRow,
+      tools,
+      currentTagsPane,
+      sectionTextPane.pane,
+    ]);
+    const activeSectionWorkspace = element("div", { className: "paio-active-section-pane" }, [
+      activeWorkspaceHead,
+      this.proseWorkspace,
+      this.tagsWorkspace,
+    ]);
+
+    this.examplesPanel = this.buildExamplesPanel();
+    this.tagSetsPanel = this.buildTagSetsPanel();
+    this.prosePhrasesPanel = this.buildProsePhrasesPanel();
+    this.libraryTabs = this.buildLibraryTabs();
+    this.catalogOpen = Boolean(this.settings.catalogOpen);
+    const catalogDisclosure = element("span", { className: "paio-disclosure", text: this.catalogOpen ? "▾" : "▶" });
+    const catalogToggleBtn = element("button", { className: "paio-button paio-library-toggle", type: "button" }, [
+      catalogDisclosure,
+      element("span", { text: t("カタログ") }),
+    ]);
+    catalogToggleBtn.setAttribute("aria-expanded", String(this.catalogOpen));
+    catalogToggleBtn.title = t("タグ追加・タグセット・散文フレーズのカタログを表示／折りたたみ");
+    this.libraryHeader = element("div", { className: "paio-library-header" }, [
+      catalogToggleBtn,
+      this.libraryTabs,
+    ]);
+    this.libraryBody = element("div", { className: "paio-library-body-wrap" }, [
+      this.examplesPanel,
+      this.tagSetsPanel,
+      this.prosePhrasesPanel,
+    ]);
+    this.libraryBox = element("div", { className: "paio-library-pane" }, [
+      this.libraryHeader,
+      this.libraryBody,
+    ]);
+
+    const hSplitter = element("div", { className: "paio-h-splitter", title: t("ドラッグして編集エリアとカタログの比率を調整") });
+    hSplitter.tabIndex = 0;
+    hSplitter.setAttribute("role", "separator");
+    hSplitter.setAttribute("aria-orientation", "horizontal");
+    this.hSplitter = hSplitter;
+
+    const rightSplit = element("div", { className: "paio-right-split" }, [
+      activeSectionWorkspace,
+      hSplitter,
+      this.libraryBox,
+    ]);
+    this.rightSplit = rightSplit;
+
+    const applyCatalogRatio = (pct, persist = false) => {
+      const clamped = Math.min(72, Math.max(25, Number(pct) || 46));
+      this.settings.catalogPanePercent = Number(clamped.toFixed(1));
+      rightSplit.style.setProperty("--paio-catalog-height", `${this.settings.catalogPanePercent}%`);
+      hSplitter.setAttribute("aria-valuemin", "25");
+      hSplitter.setAttribute("aria-valuemax", "72");
+      hSplitter.setAttribute("aria-valuenow", String(Math.round(this.settings.catalogPanePercent)));
       if (persist) this.persist();
-      return nextHeight;
     };
-    applyTagListHeight(this.settings.tagListHeight);
-    tagListResizeHandle.addEventListener("pointerdown", (event) => {
+    applyCatalogRatio(this.settings.catalogPanePercent);
+
+    this.setCatalogOpen = (open, persist = true) => {
+      this.catalogOpen = Boolean(open);
+      this.settings.catalogOpen = this.catalogOpen;
+      this.libraryBox.classList.toggle("is-collapsed", !this.catalogOpen);
+      this.libraryBody.hidden = !this.catalogOpen;
+      hSplitter.hidden = !this.catalogOpen;
+      rightSplit.classList.toggle("is-catalog-open", this.catalogOpen);
+      catalogToggleBtn.setAttribute("aria-expanded", String(this.catalogOpen));
+      catalogDisclosure.textContent = this.catalogOpen ? "▾" : "▶";
+      if (this.catalogOpen && this.activeLibraryTab === "tagSets") this.refreshTagSetsPanel?.();
+      if (persist) this.persist();
+    };
+    catalogToggleBtn.addEventListener("click", () => this.setCatalogOpen(!this.catalogOpen));
+
+    hSplitter.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || !this.catalogOpen) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const pointerId = event.pointerId;
+      hSplitter.classList.add("is-dragging");
+      hSplitter.setPointerCapture?.(pointerId);
+      const applyY = (clientY) => {
+        const rect = rightSplit.getBoundingClientRect();
+        if (!rect.height) return;
+        const pct = ((rect.bottom - clientY) / rect.height) * 100;
+        applyCatalogRatio(pct);
+      };
+      const move = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId) return;
+        applyY(moveEvent.clientY);
+      };
+      const finish = (finishEvent) => {
+        if (finishEvent.pointerId !== pointerId) return;
+        hSplitter.removeEventListener("pointermove", move);
+        hSplitter.removeEventListener("pointerup", finish);
+        hSplitter.removeEventListener("pointercancel", finish);
+        hSplitter.releasePointerCapture?.(pointerId);
+        hSplitter.classList.remove("is-dragging");
+        applyCatalogRatio(this.settings.catalogPanePercent, true);
+      };
+      hSplitter.addEventListener("pointermove", move);
+      hSplitter.addEventListener("pointerup", finish);
+      hSplitter.addEventListener("pointercancel", finish);
+    });
+    hSplitter.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const cur = Number(this.settings.catalogPanePercent) || 46;
+      const next = event.key === "Home" ? 46 : cur + (event.key === "ArrowUp" ? 4 : -4);
+      applyCatalogRatio(next, true);
+    });
+    hSplitter.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      applyCatalogRatio(46, true);
+    });
+    this.setCatalogOpen(this.catalogOpen, false);
+
+    const rightPane = element("div", { className: "paio-pane paio-pane-right" }, [
+      this.translationBar,
+      rightSplit,
+    ]);
+
+    const splitLayout = element("div", { className: "paio-split-layout" }, [
+      leftPane,
+      splitter,
+      rightPane,
+    ]);
+    this.splitLayout = splitLayout;
+    const initialLeftPct = Math.min(70, Math.max(25, Number(this.settings.leftPaneWidthPercent) || 46));
+    splitLayout.style.setProperty("--paio-left-pane-width", `${initialLeftPct}%`);
+
+    splitter.addEventListener("pointerdown", (event) => {
       if (event.button !== 0) return;
       event.preventDefault();
       event.stopPropagation();
       const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.tagListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      tagListResizeHandle.classList.add("is-dragging");
-      tagListResizeHandle.setPointerCapture?.(pointerId);
+      splitter.classList.add("is-dragging");
+      splitter.setPointerCapture?.(pointerId);
+      const applyX = (clientX) => {
+        const rect = splitLayout.getBoundingClientRect();
+        if (!rect.width) return;
+        const splitterW = 6;
+        const minPct = Math.min(70, (160 / rect.width) * 100);
+        const maxPct = Math.max(minPct, Math.min(70, ((rect.width - splitterW - 220) / rect.width) * 100));
+        const pct = Math.min(maxPct, Math.max(minPct, ((clientX - rect.left) / rect.width) * 100));
+        this.settings.leftPaneWidthPercent = Number(pct.toFixed(1));
+        splitLayout.style.setProperty("--paio-left-pane-width", `${this.settings.leftPaneWidthPercent}%`);
+      };
       const move = (moveEvent) => {
         if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampTagListHeight(startHeight + moveEvent.clientY - startY);
-        applyTagListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
+        applyX(moveEvent.clientX);
       };
       const finish = (finishEvent) => {
         if (finishEvent.pointerId !== pointerId) return;
-        tagListResizeHandle.removeEventListener("pointermove", move);
-        tagListResizeHandle.removeEventListener("pointerup", finish);
-        tagListResizeHandle.removeEventListener("pointercancel", finish);
-        tagListResizeHandle.releasePointerCapture?.(pointerId);
-        tagListResizeHandle.classList.remove("is-dragging");
-        applyTagListHeight(this.settings.tagListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
+        splitter.removeEventListener("pointermove", move);
+        splitter.removeEventListener("pointerup", finish);
+        splitter.removeEventListener("pointercancel", finish);
+        splitter.releasePointerCapture?.(pointerId);
+        splitter.classList.remove("is-dragging");
+        this.persist();
       };
-      tagListResizeHandle.addEventListener("pointermove", move);
-      tagListResizeHandle.addEventListener("pointerup", finish);
-      tagListResizeHandle.addEventListener("pointercancel", finish);
+      splitter.addEventListener("pointermove", move);
+      splitter.addEventListener("pointerup", finish);
+      splitter.addEventListener("pointercancel", finish);
     });
-    tagListResizeHandle.addEventListener("dblclick", (event) => {
+    splitter.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+      event.preventDefault();
+      const cur = Number(this.settings.leftPaneWidthPercent) || 46;
+      const next = event.key === "Home" ? 46 : Math.min(70, Math.max(25, cur + (event.key === "ArrowRight" ? 4 : -4)));
+      this.settings.leftPaneWidthPercent = next;
+      splitLayout.style.setProperty("--paio-left-pane-width", `${next}%`);
+      this.persist();
+    });
+    splitter.addEventListener("dblclick", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const currentHeight = this.settings.tagListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyTagListHeight(DEFAULT_TAG_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_LIST_HEIGHT - currentHeight, true);
+      this.settings.leftPaneWidthPercent = 46;
+      splitLayout.style.setProperty("--paio-left-pane-width", "46%");
+      this.persist();
     });
-    tagListResizeHandle.addEventListener("keydown", (event) => {
-      if (!["ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.tagListHeight;
-      const nextHeight = event.key === "Home"
-        ? DEFAULT_TAG_LIST_HEIGHT
-        : currentHeight + (event.key === "ArrowDown" ? 20 : -20);
-      const applied = clampTagListHeight(nextHeight);
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyTagListHeight(applied, currentNodeHeight + applied - currentHeight, true);
-    });
-    this.status = element("p", { className: "paio-status", text: t("準備完了") });
-    this.status.setAttribute("aria-live", "polite");
-    const currentTagsPane = collapsiblePane(t("現在のタグ"), "paio-current-tags-pane", [
-      this.bulkBar,
-      this.tagSummary,
-      this.tagList,
-      tagListResizeHandle,
-      this.status,
-    ]);
 
-    this.settingsDialog = this.buildSettingsDialog();
-    this.examplesPanel = this.buildExamplesPanel();
-    this.tagSetsPanel = this.buildTagSetsPanel();
-    this.libraryTabs = this.buildLibraryTabs();
-    const libraryTabsPane = collapsiblePane(t("タグ追加タブ"), "paio-library-tabs-pane", [this.libraryTabs]);
-    this.blacklistDialog = this.buildBlacklistDialog();
-    this.ioDialog = this.buildIoDialog();
     this.setLibraryTab(this.activeLibraryTab);
+    this.rebuildSectionViews();
 
     root.append(
-      promptPane.pane,
-      addRow,
-      tools,
-      currentTagsPane.pane,
-      libraryTabsPane.pane,
-      this.examplesPanel,
-      this.tagSetsPanel,
+      this.sectionControls,
+      this.promptSingleContainer,
+      splitLayout,
+      this.status,
       this.settingsDialog,
       this.blacklistDialog,
       this.ioDialog,
+      this.bulkSplitDialog,
     );
     return root;
   }
@@ -1297,12 +2368,20 @@ export class PromptEditor {
   attach() {
     const promptWidget = this.widgets.prompt;
     hideWidgetForGood(promptWidget, ":prompt");
-    // Keep intrinsic height measurable even when the frontend adds h-full/flex-1.
-    this.root.style.height = "auto";
-    this.root.style.flex = "0 0 auto";
+    if (this.splitLayout) {
+      // Two-pane mode fills the ComfyUI DOMWidget container via CSS flexbox so
+      // outer-frame resize works natively without JS height feedback loops.
+      this.root.style.height = "100%";
+      this.root.style.flex = "1 1 auto";
+    } else {
+      // Keep intrinsic height measurable even when the frontend adds h-full/flex-1.
+      this.root.style.height = "auto";
+      this.root.style.flex = "0 0 auto";
+    }
     const domWidget = this.node.addDOMWidget("prompt", "div", this.root, {
       serialize: true,
       hideOnZoom: false,
+      getMinHeight: () => (this.splitLayout ? 420 : this.widgetHeight()),
       onDraw: (widget) => this.syncWidgetLayout(widget),
       afterResize: () => this.syncWidgetLayout(),
       getValue: () => String(promptWidget?.value || ""),
@@ -1313,17 +2392,15 @@ export class PromptEditor {
     this.domWidget = domWidget;
     domWidget.serialize = true;
     domWidget.serializeValue = async () => String(promptWidget?.value || "");
-    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [width, this.widgetHeight()];
+    domWidget.computeSize = (width = this.node.size?.[0] || 540) => [
+      this.splitLayout ? 540 : width,
+      this.splitLayout ? 420 : this.widgetHeight(),
+    ];
     removeWidgetFromLayout(this.node, promptWidget);
     this.stabilizeLayout();
     this.node.setSize([
       Math.max(this.node.size?.[0] || 0, 540),
-      Math.max(this.node.size?.[1] || 0,
-        BASE_NODE_HEIGHT
-        + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
-        + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-        + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
-        + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT),
+      Math.max(this.node.size?.[1] || 0, BASE_NODE_HEIGHT),
     ]);
     const previousRemoved = this.node.onRemoved;
     this.node.onRemoved = () => {
@@ -1339,7 +2416,7 @@ export class PromptEditor {
     this.render();
     if (typeof ResizeObserver === "function") {
       this.layoutObserver = new ResizeObserver(() => {
-        if (!this.disposed) this.syncWidgetLayout();
+        if (!this.disposed && !this.splitLayout) this.syncWidgetLayout();
       });
       this.layoutObserver.observe(this.root);
     }
@@ -1348,26 +2425,66 @@ export class PromptEditor {
   widgetHeight() {
     const measuredHeight = this.root.offsetHeight;
     if (measuredHeight > 0) return measuredHeight + (this.domWidget?.margin ?? 10) * 2;
-    return BASE_DOM_WIDGET_HEIGHT
-      + this.settings.promptTextHeight - DEFAULT_PROMPT_TEXT_HEIGHT
-      + this.settings.exampleListHeight - DEFAULT_EXAMPLE_LIST_HEIGHT
-      + this.settings.tagListHeight - DEFAULT_TAG_LIST_HEIGHT
-      + this.settings.tagSetListHeight - DEFAULT_TAG_SET_LIST_HEIGHT;
+    return BASE_DOM_WIDGET_HEIGHT;
+  }
+
+  splitInnerChromeHeight() {
+    if (!this.splitLayout) return 0;
+    const currentSplitHeight = this.splitLayout.offsetHeight || 0;
+    if (this.root?.offsetHeight > 0 && currentSplitHeight > 0) {
+      return Math.max(0, this.root.offsetHeight - currentSplitHeight);
+    }
+    return (this.sectionControls?.offsetHeight || 0) + (this.status?.offsetHeight || 0) + 32;
+  }
+
+  minSplitWidgetHeight() {
+    const stacked = Boolean(this.splitLayout?.classList?.contains("is-stacked"));
+    const minSplit = stacked ? 460 : MIN_SPLIT_HEIGHT;
+    const margin = Number(this.domWidget?.margin ?? 10);
+    return minSplit + this.splitInnerChromeHeight() + margin * 2;
+  }
+
+  syncSplitBounds() {
+    if (!this.splitLayout) return;
+    const splitWidth = this.splitLayout.clientWidth || Math.max(0, (this.node?.size?.[0] || 540) - 38);
+    const stacked = splitWidth > 0 && splitWidth < 440;
+    this.splitLayout.classList.toggle("is-stacked", stacked);
+    if (!stacked && splitWidth > 0) {
+      const splitterW = 6;
+      const minPct = Math.min(70, (160 / splitWidth) * 100);
+      const maxPct = Math.max(minPct, Math.min(70, ((splitWidth - splitterW - 220) / splitWidth) * 100));
+      const desired = Number(this.settings.leftPaneWidthPercent) || 46;
+      const effectivePct = Math.min(maxPct, Math.max(minPct, desired));
+      this.splitLayout.style.setProperty("--paio-left-pane-width", `${effectivePct.toFixed(2)}%`);
+    }
   }
 
   syncWidgetLayout(widget = this.domWidget) {
-    if (!widget) return;
-    this.syncWidgetWidth(widget);
-    const height = this.widgetHeight();
-    // LiteGraph adds a four-pixel gap to computeSize() heights.
-    const computedHeight = height + 4;
-    const changed = widget.computedHeight !== computedHeight;
-    widget.computedHeight = computedHeight;
-    const minimumNodeHeight = height + BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
-    if (this.node.size?.[1] < minimumNodeHeight) {
-      this.node.setSize([this.node.size[0], minimumNodeHeight]);
-    } else if (changed) {
-      this.node.graph?.setDirtyCanvas?.(true, true);
+    if (!widget || this._syncingLayout) return;
+    this._syncingLayout = true;
+    try {
+      this.syncWidgetWidth(widget);
+      this.syncSplitBounds();
+      if (this.splitLayout) {
+        // Two-pane mode relies on ComfyUI's native DOMWidget container height
+        // and CSS flexbox (height: 100% / flex: 1 1 0). Do not mutate
+        // widget.computedHeight or node.size here.
+        return;
+      }
+      const nodeOverhead = BASE_NODE_HEIGHT - BASE_DOM_WIDGET_HEIGHT;
+      const height = this.widgetHeight();
+      // LiteGraph adds a four-pixel gap to computeSize() heights.
+      const computedHeight = height + 4;
+      const changed = widget.computedHeight !== computedHeight;
+      widget.computedHeight = computedHeight;
+      const minimumNodeHeight = height + nodeOverhead;
+      if (this.node.size?.[1] < minimumNodeHeight) {
+        this.node.setSize([this.node.size[0], minimumNodeHeight]);
+      } else if (changed) {
+        this.node.graph?.setDirtyCanvas?.(true, true);
+      }
+    } finally {
+      this._syncingLayout = false;
     }
   }
 
@@ -1379,6 +2496,13 @@ export class PromptEditor {
 
   stabilizeLayout() {
     removeUnlinkedWidgetInput(this.node, "prompt");
+    removeUnlinkedWidgetInput(this.node, "negative");
+    removeUnlinkedWidgetInput(this.node, "output_format");
+    removeUnlinkedWidgetInput(this.node, "sections_payload");
+    for (const widget of Object.values(this.widgets || {})) {
+      if (widget?.name) removeUnlinkedWidgetInput(this.node, widget.name);
+    }
+    this.syncDynamicSectionSockets?.();
     compactNodeWidgetLayout(this.node);
     for (const widget of Object.values(this.widgets)) {
       hideWidgetForGood(widget, widget?.name ? `:${widget.name}` : "");
@@ -1392,7 +2516,24 @@ export class PromptEditor {
   }
 
   buildTranslationBar() {
-    const bar = element("div", { className: "paio-translation-bar" });
+    const bar = element("div", { className: "paio-translation-flow" });
+
+    const providerSelect = element("select", { className: "paio-select paio-translation-provider-select" });
+    providerSelect.setAttribute("aria-label", t("翻訳手段"));
+    for (const [value, text] of [
+      ["local", "無料翻訳（辞書→MyMemory）"],
+      ["offline", "ローカル辞書のみ"],
+      ["libretranslate", "LibreTranslate"],
+      ["deepl", "DeepL"],
+      ["openai", "OpenAI互換"],
+      ["clipboard", "外部AI（ChatGPT等）往復"],
+    ]) {
+      const opt = element("option", { text: t(text) });
+      opt.value = value;
+      providerSelect.append(opt);
+    }
+    providerSelect.value = this.translationWorkflowProvider || this.settings.translationProvider || "local";
+
     const label = element("span", { className: "paio-translation-label", text: t("表示") });
     const modes = element("div", { className: "paio-segmented" });
     this.translationDisplayButtons = new Map();
@@ -1409,9 +2550,54 @@ export class PromptEditor {
       modes.append(control);
     }
 
-    this.translateButton = button(t("翻訳"), () => this.translatePrompt(), t("日本語タグを英語へ置換し、英語タグへ日本語訳を追加"));
+    const headRow = element("div", { className: "paio-pane-head" }, [
+      element("strong", { text: t("翻訳ワークフロー（読む・日本語で直して戻す）") }),
+      element("div", { className: "paio-trans-meta" }, [
+        label,
+        modes,
+        providerSelect,
+      ]),
+    ]);
+
+    this.translateSectionBtn = button(t("① 選択を日本語訳"), () => this.translateSectionToLocal(this.activeSectionId), t("選択中ブロックを日本語へ翻訳"));
+    this.translateSectionBtn.classList.add("paio-is-info");
+    this.translateAllSectionsBtn = button(t("全ブロック日本語訳"), () => this.translateAllSectionsToLocal(), t("すべてのブロックを日本語へ翻訳"));
+    this.translateButton = button(t("② 日本語→原文へ反映"), () => this.translateSectionJaToOriginal(this.activeSectionId), t("日本語訳（または日本語タグ）を出力用言語へ変換して原文へ反映"));
     this.translateButton.classList.add("paio-translate-button");
-    bar.append(label, modes, this.translateButton);
+
+    const stepRow = element("div", { className: "paio-trans-steps" }, [
+      this.translateSectionBtn,
+      this.translateAllSectionsBtn,
+      element("span", { className: "paio-hint", text: "→" }),
+      this.translateButton,
+    ]);
+
+    this.llmPasteTextarea = element("textarea", { className: "paio-prompt-textarea paio-llm-paste-area" });
+    this.llmPasteTextarea.rows = 3;
+    this.llmPasteTextarea.placeholder = t("外部AIが返した【見出し】付き日本語訳をここに貼り付けて「Step 2」を押してください...");
+    const copyLlmBtn = button(t("Step 1: 翻訳用プロンプトをコピー"), () => this.copyLlmTranslationPrompt());
+    copyLlmBtn.classList.add("paio-is-info");
+    const applyLlmBtn = button(t("Step 2: 貼付結果を「日本語訳」へ反映"), () => this.applyLlmPastedTranslations(this.llmPasteTextarea.value));
+    applyLlmBtn.classList.add("paio-translate-button");
+
+    this.llmBridgeDrawer = element("div", { className: "paio-llm-bridge" }, [
+      element("p", { className: "paio-hint", text: t("見出し構造を保ったまま外部AIへコピーし、返答を貼付すると各ブロックの日本語訳へ自動で戻ります。") }),
+      element("div", { className: "paio-trans-steps" }, [copyLlmBtn, applyLlmBtn]),
+      this.llmPasteTextarea,
+    ]);
+    this.llmBridgeDrawer.hidden = providerSelect.value !== "clipboard";
+
+    providerSelect.addEventListener("change", () => {
+      this.translationWorkflowProvider = providerSelect.value;
+      const isClipboard = providerSelect.value === "clipboard";
+      this.llmBridgeDrawer.hidden = !isClipboard;
+      if (!isClipboard) {
+        this.settings.translationProvider = providerSelect.value;
+        this.persist();
+      }
+    });
+
+    bar.append(headRow, stepRow, this.llmBridgeDrawer);
     return bar;
   }
 
@@ -1453,12 +2639,31 @@ export class PromptEditor {
     }
     provider.value = this.settings.translationProvider;
     const output = element("select", { className: "paio-select" });
-    for (const [value, label] of [["en", "英語"], ["ja", "日本語"]]) {
+    for (const [value, label] of [
+      ["en", "英語 (en)"],
+      ["ja", "日本語 (ja)"],
+      ["zh", "中国語・簡体 (zh)"],
+      ["zh-TW", "中国語・繁体 (zh-TW)"],
+      ["ko", "韓国語 (ko)"],
+    ]) {
       const option = element("option", { text: t(label) });
       option.value = value;
       output.append(option);
     }
     output.value = this.settings.outputLanguage;
+    const localLang = element("select", { className: "paio-select" });
+    for (const [value, label] of [
+      ["ja", "日本語 (ja)"],
+      ["en", "英語 (en)"],
+      ["zh", "中国語・簡体 (zh)"],
+      ["zh-TW", "中国語・繁体 (zh-TW)"],
+      ["ko", "韓国語 (ko)"],
+    ]) {
+      const option = element("option", { text: t(label) });
+      option.value = value;
+      localLang.append(option);
+    }
+    localLang.value = this.settings.localLanguage || "ja";
     const auto = element("input", { type: "checkbox" });
     auto.checked = this.settings.autoTranslate;
     const replaceUnderscores = element("input", { type: "checkbox" });
@@ -1515,8 +2720,9 @@ export class PromptEditor {
     translationPanel.append(
       element("h4", { text: t("翻訳") }),
       this.labeled(t("翻訳プロバイダー"), provider),
+      this.labeled(t("対訳（表示）言語"), localLang),
       this.labeled(t("入力時に自動翻訳"), auto),
-      element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、日本語タグを英語へ置換し、英語タグには日本語訳を追加します。") }),
+      element("p", { className: "paio-settings-help", text: t("上部の「翻訳」ボタンは、非英語タグを出力言語へ置換し、対訳言語の訳を追加します。") }),
     );
     const filePanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "files" } }, libraryManager.fileRoot);
     const libraryPanel = element("section", { className: "paio-settings-panel paio-library-panel", dataset: { panel: "library" } }, libraryManager.editorRoot);
@@ -1548,6 +2754,7 @@ export class PromptEditor {
       this.settings.weightStep = Number(step.value);
       this.settings.duplicatePolicy = duplicate.value;
       this.settings.translationProvider = provider.value;
+      this.settings.localLanguage = localLang.value;
       this.settings.outputLanguage = output.value;
       this.settings.autoTranslate = auto.checked;
       this.settings.replaceUnderscoresForOutput = replaceUnderscores.checked;
@@ -2245,32 +3452,97 @@ export class PromptEditor {
   }
 
   buildLibraryTabs() {
-    const tags = button(t("タグ"), () => this.setLibraryTab("tags"));
-    const tagSets = button(t("タグセット"), () => this.setLibraryTab("tagSets"));
+    const pick = (tab) => {
+      this.setLibraryTab(tab);
+      if (!this.catalogOpen) this.setCatalogOpen?.(true);
+    };
+    const tags = button(t("タグ追加"), () => pick("tags"));
+    const tagSets = button(t("タグセット"), () => pick("tagSets"));
+    const prose = button(t("散文フレーズ"), () => pick("prose"));
     tags.dataset.tab = "tags";
     tagSets.dataset.tab = "tagSets";
-    return element("div", { className: "paio-library-tabs paio-tabs" }, [tags, tagSets]);
+    prose.dataset.tab = "prose";
+    return element("div", { className: "paio-library-tabs paio-tabs" }, [tags, tagSets, prose]);
+  }
+
+  buildProsePhrasesPanel() {
+    const panel = element("div", { className: "paio-examples paio-prose-phrases" });
+    const search = element("input", { className: "paio-search", type: "search" });
+    search.placeholder = t("英語・中国語・日本語でフレーズ検索");
+    const list = element("div", { className: "paio-example-list paio-prose-phrase-list" });
+    let fetchGeneration = 0;
+
+    const renderItems = (items) => {
+      list.replaceChildren();
+      if (!items.length) {
+        list.append(element("p", { className: "paio-empty", text: t("一致するフレーズはありません") }));
+        return;
+      }
+      const outBase = String(this.settings?.outputLanguage || "en").toLocaleLowerCase().split("-", 1)[0];
+      const localLang = this.settings?.localLanguage || "ja";
+      for (const item of items) {
+        const textMap = item.text || {};
+        const promptText = textMap[outBase] || item.prompt || textMap.en || "";
+        const translationText = item.translation || item.ja || textMap[localLang] || textMap.ja || "";
+        const badge = item.matched_role ? `★ [${item.group}]` : `[${item.group}]`;
+        const chip = button("", () => {
+          this.pushUndo();
+          this.addValues([{ value: promptText, translation: translationText, translatedTo: localLang }], { trailingSeparator: true });
+          this.setStatus(t("フレーズを追加しました"));
+        }, `${promptText}\n${translationText}`);
+        chip.classList.add("paio-example-chip", "paio-prose-phrase-chip");
+        chip.replaceChildren(
+          element("span", { className: "paio-prose-phrase-group", text: badge }),
+          element("span", { className: "paio-example-chip-prompt", text: promptText }),
+          element("span", { className: "paio-example-chip-translation", text: translationText }),
+        );
+        list.append(chip);
+      }
+    };
+
+    const redraw = async () => {
+      const gen = ++fetchGeneration;
+      const q = search.value.trim();
+      const active = this.activeSection?.();
+      const role = inferSectionCategory(active?.title || "");
+      const localLang = this.settings?.localLanguage || "ja";
+      const remote = await searchPhraseCatalog(this.api, q, { role, language: localLang, limit: 40 });
+      if (gen !== fetchGeneration) return;
+      if (remote.length) {
+        renderItems(remote);
+        return;
+      }
+      const lower = q.toLocaleLowerCase();
+      const fallback = PROSE_PHRASES.filter((item) => !lower
+        || item.prompt.toLocaleLowerCase().includes(lower)
+        || item.ja.toLocaleLowerCase().includes(lower)
+        || item.group.toLocaleLowerCase().includes(lower));
+      renderItems(fallback);
+    };
+
+    this.refreshProsePhrasesPanel = () => { redraw(); };
+    search.addEventListener("input", () => { redraw(); });
+    panel.append(element("div", { className: "paio-example-controls" }, [search]), list);
+    redraw();
+    return panel;
   }
 
   setLibraryTab(tab) {
-    this.activeLibraryTab = tab === "tagSets" ? "tagSets" : "tags";
-    this.examplesPanel.hidden = this.activeLibraryTab !== "tags";
-    this.tagSetsPanel.hidden = this.activeLibraryTab !== "tagSets";
+    this.activeLibraryTab = ["tagSets", "prose"].includes(tab) ? tab : "tags";
+    if (this.examplesPanel) this.examplesPanel.hidden = this.activeLibraryTab !== "tags";
+    if (this.tagSetsPanel) this.tagSetsPanel.hidden = this.activeLibraryTab !== "tagSets";
+    if (this.prosePhrasesPanel) this.prosePhrasesPanel.hidden = this.activeLibraryTab !== "prose";
     this.libraryTabs?.querySelectorAll?.(".paio-button").forEach((control) => {
       const active = control.dataset.tab === this.activeLibraryTab;
       control.classList.toggle("is-active", active);
       control.setAttribute("aria-pressed", String(active));
     });
     if (this.activeLibraryTab === "tagSets") this.refreshTagSetsPanel?.();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   buildTagSetsPanel() {
-    const panel = element("details", { className: "paio-examples paio-tag-sets" });
-    panel.open = true;
-    const summary = element("summary", { className: "paio-examples-summary" });
-    const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
-    disclosure.setAttribute("aria-hidden", "true");
-    summary.append(disclosure, element("strong", { text: t("タグセット") }));
+    const panel = element("div", { className: "paio-examples paio-tag-sets" });
     const categoryBands = element("div", { className: "paio-example-category-bands" });
     const pathStatus = element("span", { className: "paio-example-path", text: t("タグセットを読み込み中…") });
     const search = element("input", { className: "paio-search" });
@@ -2293,82 +3565,6 @@ export class PromptEditor {
     favoriteOnly.setAttribute("aria-pressed", String(this.settings.showFavoritesOnly));
     const list = element("div", { className: "paio-example-list paio-tag-set-list" });
     list.setAttribute("aria-live", "polite");
-    list.style.height = `${clampTagSetListHeight(this.settings.tagSetListHeight)}px`;
-    const resizeHandle = element("div", { className: "paio-example-resize-handle paio-tag-set-list-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-    ]);
-    resizeHandle.tabIndex = 0;
-    resizeHandle.setAttribute("role", "separator");
-    resizeHandle.setAttribute("aria-orientation", "horizontal");
-    resizeHandle.setAttribute("aria-label", t("タグセット一覧の高さを変更"));
-    const applyListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampTagSetListHeight(height);
-      this.settings.tagSetListHeight = nextHeight;
-      list.style.height = `${nextHeight}px`;
-      resizeHandle.setAttribute("aria-valuemin", String(MIN_TAG_SET_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuemax", String(MAX_TAG_SET_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([
-          Math.max(this.node.size?.[0] || 0, 540),
-          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_TAG_SET_LIST_HEIGHT, nodeHeight),
-        ]);
-      }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
-      if (persist) this.persist();
-      return nextHeight;
-    };
-    applyListHeight(this.settings.tagSetListHeight);
-    resizeHandle.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.tagSetListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      resizeHandle.classList.add("is-dragging");
-      resizeHandle.setPointerCapture?.(pointerId);
-      const move = (moveEvent) => {
-        if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampTagSetListHeight(startHeight + moveEvent.clientY - startY);
-        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
-      };
-      const finish = (finishEvent) => {
-        if (finishEvent.pointerId !== pointerId) return;
-        resizeHandle.removeEventListener("pointermove", move);
-        resizeHandle.removeEventListener("pointerup", finish);
-        resizeHandle.removeEventListener("pointercancel", finish);
-        resizeHandle.releasePointerCapture?.(pointerId);
-        resizeHandle.classList.remove("is-dragging");
-        applyListHeight(this.settings.tagSetListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
-      };
-      resizeHandle.addEventListener("pointermove", move);
-      resizeHandle.addEventListener("pointerup", finish);
-      resizeHandle.addEventListener("pointercancel", finish);
-    });
-    resizeHandle.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currentHeight = this.settings.tagSetListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyListHeight(DEFAULT_TAG_SET_LIST_HEIGHT, currentNodeHeight + DEFAULT_TAG_SET_LIST_HEIGHT - currentHeight, true);
-    });
-    resizeHandle.addEventListener("keydown", (event) => {
-      if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.tagSetListHeight;
-      const step = event.shiftKey ? 48 : 16;
-      const nextHeight = event.key === "Home"
-        ? DEFAULT_TAG_SET_LIST_HEIGHT
-        : event.key === "End"
-          ? MAX_TAG_SET_LIST_HEIGHT
-          : event.key === "ArrowUp"
-            ? currentHeight - step
-            : currentHeight + step;
-      const applied = applyListHeight(nextHeight, (this.node.size?.[1] || BASE_NODE_HEIGHT) + nextHeight - currentHeight, true);
-      this.setStatus(t("タグセット一覧の高さ: {height}px", { height: applied }));
-    });
     let library = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
     let renderLimit = INITIAL_EXAMPLE_LIMIT;
@@ -2550,18 +3746,13 @@ export class PromptEditor {
     const footer = element("div", { className: "paio-example-footer" }, [
       element("span", { className: "paio-hint", text: t("右クリック: お気に入り") }),
     ]);
-    panel.append(summary, navigation, controls, list, resizeHandle, footer);
+    panel.append(navigation, controls, list, footer);
     redraw();
     return panel;
   }
 
   buildExamplesPanel() {
-    const panel = element("details", { className: "paio-examples" });
-    panel.open = true;
-    const summary = element("summary", { className: "paio-examples-summary" });
-    const disclosure = element("span", { className: "paio-examples-disclosure", text: "▶" });
-    disclosure.setAttribute("aria-hidden", "true");
-    summary.append(disclosure, element("strong", { text: t("タグを追加") }));
+    const panel = element("div", { className: "paio-examples" });
     const search = element("input", { className: "paio-search" });
     search.type = "search";
     search.placeholder = t("英語・日本語でタグを検索");
@@ -2584,7 +3775,6 @@ export class PromptEditor {
     const pathStatus = element("span", { className: "paio-example-path", text: t("分類を読み込み中…") });
     const list = element("div", { className: "paio-example-list" });
     list.setAttribute("aria-live", "polite");
-    list.style.height = `${clampExampleListHeight(this.settings.exampleListHeight)}px`;
     const openExampleFavoriteMenu = (event) => {
       const chip = event.target?.closest?.(".paio-example-chip");
       const prompt = chip?.dataset?.prompt;
@@ -2598,80 +3788,12 @@ export class PromptEditor {
       if (event.button === 2) openExampleFavoriteMenu(event);
     }, true);
     list.addEventListener("contextmenu", openExampleFavoriteMenu, true);
-    const resizeHandle = element("div", { className: "paio-example-resize-handle" }, [
-      element("span", { className: "paio-example-resize-mark", text: "⋯" }),
-    ]);
-    resizeHandle.tabIndex = 0;
-    resizeHandle.setAttribute("role", "separator");
-    resizeHandle.setAttribute("aria-orientation", "horizontal");
-    resizeHandle.setAttribute("aria-label", t("タグ一覧の高さを変更"));
-    const applyListHeight = (height, nodeHeight = null, persist = false) => {
-      const nextHeight = clampExampleListHeight(height);
-      this.settings.exampleListHeight = nextHeight;
-      list.style.height = `${nextHeight}px`;
-      resizeHandle.setAttribute("aria-valuemin", String(MIN_EXAMPLE_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuemax", String(MAX_EXAMPLE_LIST_HEIGHT));
-      resizeHandle.setAttribute("aria-valuenow", String(nextHeight));
-      if (this.node && nodeHeight !== null) {
-        this.node.setSize([
-          Math.max(this.node.size?.[0] || 0, 540),
-          Math.max(BASE_NODE_HEIGHT + nextHeight - DEFAULT_EXAMPLE_LIST_HEIGHT, nodeHeight),
-        ]);
-      }
-      this.node?.graph?.setDirtyCanvas?.(true, true);
-      if (persist) this.persist();
-      return nextHeight;
-    };
-    applyListHeight(this.settings.exampleListHeight);
-    resizeHandle.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const pointerId = event.pointerId;
-      const startY = event.clientY;
-      const startHeight = this.settings.exampleListHeight;
-      const startNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      resizeHandle.classList.add("is-dragging");
-      resizeHandle.setPointerCapture?.(pointerId);
-      const move = (moveEvent) => {
-        if (moveEvent.pointerId !== pointerId) return;
-        const nextHeight = clampExampleListHeight(startHeight + moveEvent.clientY - startY);
-        applyListHeight(nextHeight, startNodeHeight + nextHeight - startHeight);
-      };
-      const finish = (finishEvent) => {
-        if (finishEvent.pointerId !== pointerId) return;
-        resizeHandle.removeEventListener("pointermove", move);
-        resizeHandle.removeEventListener("pointerup", finish);
-        resizeHandle.removeEventListener("pointercancel", finish);
-        resizeHandle.releasePointerCapture?.(pointerId);
-        resizeHandle.classList.remove("is-dragging");
-        applyListHeight(this.settings.exampleListHeight, this.node.size?.[1] || BASE_NODE_HEIGHT, true);
-      };
-      resizeHandle.addEventListener("pointermove", move);
-      resizeHandle.addEventListener("pointerup", finish);
-      resizeHandle.addEventListener("pointercancel", finish);
-    });
-    resizeHandle.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const currentHeight = this.settings.exampleListHeight;
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      applyListHeight(DEFAULT_EXAMPLE_LIST_HEIGHT, currentNodeHeight + DEFAULT_EXAMPLE_LIST_HEIGHT - currentHeight, true);
-    });
-    resizeHandle.addEventListener("keydown", (event) => {
-      if (!['ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) return;
-      event.preventDefault();
-      const currentHeight = this.settings.exampleListHeight;
-      const nextHeight = event.key === 'Home'
-        ? DEFAULT_EXAMPLE_LIST_HEIGHT
-        : currentHeight + (event.key === 'ArrowDown' ? 20 : -20);
-      const currentNodeHeight = this.node.size?.[1] || BASE_NODE_HEIGHT;
-      const applied = clampExampleListHeight(nextHeight);
-      applyListHeight(applied, currentNodeHeight + applied - currentHeight, true);
-    });
     const resultStatus = element("span", { className: "paio-example-count", text: t("読み込み中…") });
     const selected = new Set();
     let library = null;
+    let tagDbItems = [];
+    let tagDbTimer = 0;
+    let tagDbAbort = null;
     let categoryPath = { largeId: "", mediumId: "", smallId: "" };
     const categoryScrollPositions = new Map();
     let renderLimit = INITIAL_EXAMPLE_LIMIT;
@@ -2741,9 +3863,12 @@ export class PromptEditor {
       const matches = sortExampleTags(filterExampleLibraryTags(library, resolved.small?.id, query)
         .filter((item) => !this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))),
       this.settings.exampleSortOrder, this.settings.tagUsage, this.settings.libraryFile);
-      resultStatus.textContent = t("{count}件", { count: matches.length });
+      const catalogKeys = new Set(matches.map((item) => tagDbKey(item.prompt)));
+      const tagDbMatches = !query ? [] : tagDbItems.filter((item) => !catalogKeys.has(tagDbKey(item.prompt))
+        && (!this.settings.showFavoritesOnly || favoriteKeys.has(favoriteTagKey(item.prompt))));
+      resultStatus.textContent = t("{count}件", { count: matches.length + tagDbMatches.length });
       const visibleLimit = query ? MAX_EXAMPLE_SEARCH_RESULTS : renderLimit;
-      for (const item of matches.slice(0, visibleLimit)) {
+      for (const item of [...matches.slice(0, visibleLimit), ...tagDbMatches]) {
         const translation = cleanTranslation(item.ja);
         const favorite = favoriteKeys.has(favoriteTagKey(item.prompt));
         const chip = button("", (event) => {
@@ -2787,13 +3912,13 @@ export class PromptEditor {
         chip.replaceChildren(
           element("span", { className: "paio-favorite-mark", text: favorite ? "★" : "☆" }),
           element("span", { className: "paio-example-chip-prompt", text: item.prompt }),
-          ...(translation ? [element("span", { className: "paio-example-chip-translation", text: translation })] : []),
+          ...(translation ? [element("span", { className: "paio-example-chip-translation", text: item.translations?.join(" / ") || translation })] : []),
         );
         chip.classList.toggle("is-selected", selected.has(item.prompt));
         chip.setAttribute("aria-pressed", String(selected.has(item.prompt)));
         list.append(chip);
       }
-      if (!matches.length) list.append(element("p", { className: "paio-empty", text: t("一致する例はありません") }));
+      if (!matches.length && !tagDbMatches.length) list.append(element("p", { className: "paio-empty", text: t("一致する例はありません") }));
       if (!query && matches.length > renderLimit) {
         list.append(button(t("さらに表示（残り {count}）", { count: matches.length - renderLimit }), () => {
           renderLimit += EXAMPLE_PAGE_SIZE;
@@ -2819,13 +3944,38 @@ export class PromptEditor {
         list.replaceChildren(element("p", { className: "paio-empty paio-error", text: t("内蔵例を読み込めませんでした") }));
         this.setStatus(t("内蔵例を読み込めませんでした"), true);
       });
-    search.addEventListener("input", () => { renderLimit = INITIAL_EXAMPLE_LIMIT; redraw(); });
+    const refreshTagDbItems = () => {
+      clearTimeout(tagDbTimer);
+      tagDbAbort?.abort();
+      tagDbItems = [];
+      const query = search.value.trim();
+      if (!shouldSearchTagDb(query)) return;
+      tagDbTimer = window.setTimeout(async () => {
+        tagDbAbort = new AbortController();
+        const { signal } = tagDbAbort;
+        const results = await searchTagDb(this.api, query, {
+          language: this.settings.localLanguage,
+          contains: true,
+          limit: TAG_DB_SEARCH_LIMIT,
+          signal,
+        });
+        if (signal.aborted) return;
+        tagDbItems = results.map((item) => ({ prompt: item.tag, ja: item.translations[0] || "", translations: item.translations }));
+        this.syncActiveSectionSuggestions(tagDbItems.map((item) => item.prompt));
+        redraw();
+      }, TAG_DB_SEARCH_DELAY_MS);
+    };
+    search.addEventListener("input", () => {
+      renderLimit = INITIAL_EXAMPLE_LIMIT;
+      refreshTagDbItems();
+      redraw();
+    });
     this.exampleBulkButton = button(t("選択した{count}件を追加", { count: 0 }), () => {
       if (!selected.size) return;
       this.pushUndo();
       this.addValues(
         [...selected].map((prompt) => {
-          const item = library?.tags.find((tag) => tag.prompt === prompt);
+          const item = [...(library?.tags || []), ...tagDbItems].find((tag) => tag.prompt === prompt);
           const translation = cleanTranslation(item?.ja);
           return { value: prompt, translation, translatedTo: translation ? this.settings.localLanguage : "" };
         }),
@@ -2868,7 +4018,7 @@ export class PromptEditor {
       element("span", { className: "paio-hint", text: t("Ctrl+クリックで複数選択") }),
       this.exampleBulkButton,
     ]);
-    panel.append(summary, navigation, controls, list, resizeHandle, footer);
+    panel.append(navigation, controls, list, footer);
     redraw();
     return panel;
   }
@@ -2909,6 +4059,743 @@ export class PromptEditor {
     return dialog;
   }
 
+  buildBulkSplitDialog() {
+    const dialog = this.buildDialog("一括テキスト読込・分割");
+    const help = element("p", {
+      className: "paio-hint",
+      text: t("{ } や 【見出し】 / ## 見出し / [見出し] 付きのプロンプトをまとめて貼り付けてセクションへ分割できます。"),
+    });
+    const textarea = element("textarea", { className: "paio-dialog-textarea" });
+    textarea.rows = 12;
+    textarea.placeholder = "{\n【任务与范式】\n...\n\n【可选负面提示词】\n...\n}";
+    this.bulkSplitTextarea = textarea;
+    const apply = button(t("分割して反映"), () => {
+      this.applyBulkSplitText(textarea.value);
+      closeDialog(dialog);
+    });
+    const clearBtn = button(t("クリア"), () => {
+      textarea.value = "";
+      textarea.focus();
+    });
+    dialog.body.append(help, textarea, element("div", { className: "paio-toolbar" }, [apply, clearBtn]));
+    return dialog;
+  }
+
+  openBulkSplitDialog() {
+    this.commitPromptBeforeAction();
+    if (this.bulkSplitTextarea) {
+      this.bulkSplitTextarea.value = this.currentOutputs().prompt || "";
+    }
+    openDialog(this.bulkSplitDialog);
+  }
+
+  applyBulkSplitText(rawText) {
+    if (!Array.isArray(this.sections)) return;
+    this.pushUndo();
+    const parsed = parseStructuredPrompt(rawText, this.sections);
+    this.sections = parsed.sections;
+    this.activeSectionId = this.sections[0]?.id || "sec-1";
+    this.dirtySectionIds?.clear();
+    if (parsed.isJson) {
+      this.outputFormat = "json";
+      this.nestRoles = Boolean(parsed.nestRoles);
+    } else if (parsed.wrapBraces || parsed.sections.length > 1 || parsed.sections.some((section) => section.title)) {
+      this.outputFormat = "structured";
+      this.nestRoles = false;
+    }
+    this.wrapBraces = parsed.wrapBraces;
+    if (parsed.wrapBraces && parsed.sections.some((section) => section.role === "negative")) {
+      this.includeNegativeInPrompt = true;
+    }
+    this.applyBlacklist(this.settings.blacklistAction !== "warn");
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+    if (parsed.errors.length) {
+      this.setStatus(t("{count}セクションに分割しましたが構文警告が{errors}件あります", { count: this.sections.length, errors: parsed.errors.length }), true);
+    } else {
+      this.setStatus(t("{count}セクションに分割しました", { count: this.sections.length }));
+    }
+  }
+
+  selectSection(sectionId) {
+    if (!Array.isArray(this.sections) || this.activeSectionId === sectionId) return;
+    this.flushPendingTagToggle?.();
+    const prevId = this.activeSectionId;
+    if (this.dirtySectionIds?.has(prevId)) {
+      this.applyPromptText(prevId);
+    }
+    this.activeSectionId = sectionId;
+    this.renderLimit = MAX_RENDERED_TAGS;
+    this.rebuildSectionViews?.();
+    this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
+    this.persist();
+    this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
+  }
+
+  addSection() {
+    if (!Array.isArray(this.sections)) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    const created = createSection({ title: "", role: "positive" });
+    this.sections.push(created);
+    this.activeSectionId = created.id;
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+    this.sectionsContainer?.querySelector(`[data-section-id="${created.id}"]`)?.scrollIntoView?.({ block: "nearest" });
+    this.addInput?.focus?.();
+    this.setStatus(t("セクションを追加しました"));
+  }
+
+  removeSection(sectionId) {
+    if (!Array.isArray(this.sections) || this.sections.length <= 1) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    const index = this.sections.findIndex((section) => section.id === sectionId);
+    if (index < 0) return;
+    this.sections.splice(index, 1);
+    this.dirtySectionIds?.delete(sectionId);
+    if (this.activeSectionId === sectionId) {
+      const next = this.sections[Math.min(index, this.sections.length - 1)];
+      this.activeSectionId = next.id;
+    }
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+    this.setStatus(t("セクションを削除しました"));
+  }
+
+  applySectionTemplate(templateId) {
+    if (!Array.isArray(this.sections)) return false;
+    const template = SECTION_TEMPLATES.find((item) => item.id === templateId);
+    if (!template) return false;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    const hasExistingContent = this.sections.some((section) => section.tags.length > 0);
+    if (!hasExistingContent) {
+      this.sections = template.titles.map((title) => createSection({
+        title,
+        role: inferSectionRole(title),
+      }));
+      this.activeSectionId = this.sections[0]?.id || "sec-1";
+      this.outputFormat = template.outputFormat;
+      this.wrapBraces = template.wrapBraces;
+      this.includeNegativeInPrompt = template.includeNegativeInPrompt;
+    } else {
+      const expanded = [];
+      let didSplitExisting = false;
+      for (const section of this.sections) {
+        if (!section.title && section.tags.length > 0) {
+          const raw = this.promptEditorValue(section);
+          if (looksLikeStructuredPrompt(raw)) {
+            const parsed = parseStructuredPrompt(raw, this.sections);
+            expanded.push(...parsed.sections);
+            didSplitExisting = true;
+            continue;
+          }
+        }
+        if (section.tags.length > 0 || section.title) expanded.push(section);
+      }
+      const existingTitles = new Set(expanded.map((section) => section.title).filter(Boolean));
+      for (const title of template.titles) {
+        if (existingTitles.has(title)) continue;
+        expanded.push(createSection({ title, role: inferSectionRole(title) }));
+        existingTitles.add(title);
+      }
+      this.sections = expanded.length ? expanded : this.sections;
+      if (!this.sections.some((section) => section.id === this.activeSectionId)) {
+        this.activeSectionId = this.sections[0]?.id || "sec-1";
+      }
+      if (didSplitExisting || (this.sections.length === 1 && !this.sections[0].title)) {
+        this.outputFormat = template.outputFormat;
+      }
+    }
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+    this.setStatus(
+      hasExistingContent
+        ? t("テンプレート「{name}」を追加しました（既存の内容は保持）", { name: t(template.label) })
+        : t("テンプレート「{name}」を適用しました", { name: t(template.label) }),
+    );
+    return true;
+  }
+
+  moveSection(sectionId, delta) {
+    if (!Array.isArray(this.sections)) return;
+    const index = this.sections.findIndex((section) => section.id === sectionId);
+    const target = index + delta;
+    if (index < 0 || target < 0 || target >= this.sections.length) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    const [item] = this.sections.splice(index, 1);
+    this.sections.splice(target, 0, item);
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  sectionTranslationPreview(section) {
+    if (!section) return "";
+    if (section.mode === "prose") {
+      return cleanTranslation(section.translation);
+    }
+    const direct = cleanTranslation(section.translation);
+    if (direct) return direct;
+    return (section.tags || [])
+      .filter((tag) => tag.enabled !== false)
+      .map((tag) => cleanTranslation(tag.translation))
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  setAllSectionsEnabled(enabled) {
+    if (!Array.isArray(this.sections)) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    for (const section of this.sections) section.enabled = Boolean(enabled);
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  setActiveSectionMode(mode) {
+    const active = this.activeSection();
+    if (!active) return;
+    const nextMode = mode === "prose" ? "prose" : "tags";
+    if (active.mode === nextMode) return;
+    this.commitPromptBeforeAction();
+    this.pushUndo();
+    if (nextMode === "prose") {
+      active.proseText = serializeStructuredSectionBody(active.tags, null, {
+        trailingSeparator: active.trailingSeparator,
+      });
+      const joinedJa = this.sectionTranslationPreview(active);
+      if (joinedJa) {
+        active.translation = joinedJa;
+        active.translatedTo = this.settings.localLanguage;
+      }
+      active.mode = "prose";
+    } else {
+      const disabledTags = (active.tags || []).filter((tag) => tag.enabled === false);
+      const parsed = parsePrompt(active.proseText || "", (active.tags || []).filter((tag) => tag.enabled !== false));
+      active.tags = [...tagsWithoutTrailingPlaceholder(parsed), ...disabledTags];
+      active.trailingSeparator = parsed.trailingSeparator;
+      active.mode = "tags";
+    }
+    this.dirtySectionIds?.delete(active.id);
+    this.rebuildSectionViews();
+    this.syncToWidgets();
+    this.render();
+  }
+
+  handleProseOrigInput() {
+    const active = this.activeSection();
+    if (!active || active.mode !== "prose" || !this.proseOrigTextarea) return;
+    const text = this.proseOrigTextarea.value;
+    const disabledTags = (active.tags || []).filter((tag) => tag.enabled === false);
+    active.proseText = text;
+    active.tags = [
+      ...(text.trim()
+        ? [createTag(text.trim(), { translation: active.translation, translatedTo: active.translatedTo })]
+        : []),
+      ...disabledTags,
+    ];
+    const card = this.sectionsContainer?.querySelector(`[data-section-id="${active.id}"]`);
+    const origEl = card?.querySelector(".paio-section-orig-line");
+    if (origEl) origEl.textContent = text.trim() || t("（空 — 右ペインで入力）");
+    this.syncToWidgets();
+  }
+
+  handleProseJaInput() {
+    const active = this.activeSection();
+    if (!active || !this.proseJaTextarea) return;
+    active.translation = this.proseJaTextarea.value;
+    active.translatedTo = active.translation.trim() ? this.settings.localLanguage : "";
+    const card = this.sectionsContainer?.querySelector(`[data-section-id="${active.id}"]`);
+    const jaEl = card?.querySelector(".paio-section-ja-line");
+    if (jaEl) {
+      const ja = cleanTranslation(active.translation);
+      jaEl.textContent = ja ? t("訳: {text}", { text: ja }) : "";
+      jaEl.hidden = !ja || this.settings.showSectionTranslationsInList === false;
+    }
+    this.persist();
+  }
+
+  async translateSectionToLocal(sectionId) {
+    const section = this.sections?.find((s) => s.id === sectionId) || this.activeSection();
+    if (!section) return;
+    if (section.mode === "prose") {
+      await this.translateProseSections([section], this.settings.localLanguage, false);
+      return;
+    }
+    if (this.activeSectionId !== section.id) this.selectSection(section.id);
+    const indexes = section.tags.map((_t, i) => i);
+    await this.translateIndexes(indexes, this.settings.localLanguage);
+  }
+
+  async translateAllSectionsToLocal() {
+    if (!Array.isArray(this.sections) || !this.sections.length) return;
+    this.commitPromptBeforeAction();
+    const proseSecs = this.sections.filter((s) => s.mode === "prose" && (s.proseText || "").trim());
+    if (proseSecs.length) {
+      await this.translateProseSections(proseSecs, this.settings.localLanguage, false);
+    }
+    const tagSecs = this.sections.filter((s) => s.mode !== "prose" && s.tags?.length);
+    if (tagSecs.length) {
+      const generation = this.translationGeneration;
+      const targetLang = this.settings.localLanguage || "ja";
+      const localBase = String(targetLang).toLocaleLowerCase().split("-", 1)[0];
+      const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
+      const items = tagSecs.flatMap((sec) => sec.tags.map((tag) => ({
+        secId: sec.id,
+        tagId: tag.id,
+        originalValue: tag.value,
+        text: translatableTagText(tag.value),
+      })))
+        .filter((item) => item.text && detectTextLanguage(item.text) !== localBase);
+      if (items.length) {
+        this.setStatus(t("{count}件のタグを翻訳中…", { count: items.length }));
+        const results = await translateTags(this.api, items.map((i) => i.text), {
+          provider: this.settings.translationProvider,
+          source: "auto",
+          target: targetLang,
+          catalog: this.settings.libraryFile,
+          timeoutMs: translationBatchTimeoutMs(items.length),
+          isCancelled: () => this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId,
+        });
+        if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
+        items.forEach((item, idx) => {
+          const currentSec = this.sections?.find((s) => s.id === item.secId);
+          const currentTag = currentSec?.tags?.find((tObj) => tObj.id === item.tagId);
+          if (!currentTag || currentTag.value !== item.originalValue) return;
+          const tr = cleanTranslation(results[idx]?.translated);
+          if (tr) {
+            currentTag.translation = tr;
+            currentTag.translatedTo = targetLang;
+          }
+        });
+      }
+      this.syncToWidgets();
+      this.render();
+    }
+    this.setStatus(t("全ブロックの対訳を更新しました"));
+  }
+
+  async translateSectionJaToOriginal(sectionId) {
+    const section = this.sections?.find((s) => s.id === sectionId) || this.activeSection();
+    if (!section) return;
+    if (section.mode === "prose") {
+      if (!cleanTranslation(section.translation)) {
+        this.setStatus(t("対訳欄に入力してから実行してください"), true);
+        return;
+      }
+      await this.translateProseSections([section], this.settings.outputLanguage || "en", true);
+      return;
+    }
+    if (this.activeSectionId !== section.id) this.selectSection(section.id);
+    await this.translatePrompt();
+  }
+
+  async translateProseSections(targetSections, targetLang, fromTranslationField) {
+    const pairs = targetSections
+      .map((sec) => ({
+        secId: sec.id,
+        sourceText: fromTranslationField ? String(sec.translation || "").trim() : String(sec.proseText || "").trim(),
+      }))
+      .filter((pair) => pair.sourceText);
+    if (!pairs.length) {
+      this.setStatus(t("翻訳対象のテキストがありません"));
+      return;
+    }
+    const generation = this.translationGeneration;
+    const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
+    const provider = this.settings.translationProvider || "local";
+    this.setStatus(t("{count}ブロックを翻訳中…", { count: pairs.length }));
+    try {
+      const results = await translateTags(this.api, pairs.map((p) => p.sourceText), {
+        provider,
+        source: "auto",
+        target: targetLang,
+        catalog: this.settings.libraryFile,
+        timeoutMs: translationBatchTimeoutMs(pairs.length * 4),
+        isCancelled: () => this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId,
+      });
+      if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
+      const applicable = [];
+      pairs.forEach(({ secId, sourceText }, idx) => {
+        const currentSec = this.sections?.find((item) => item.id === secId);
+        if (!currentSec) return;
+        const latestSource = fromTranslationField
+          ? String(currentSec.translation || "").trim()
+          : String(currentSec.proseText || "").trim();
+        if (latestSource !== sourceText) return;
+        const translated = cleanTranslation(results[idx]?.translated);
+        if (!translated) return;
+        applicable.push({ sec: currentSec, translated });
+      });
+      if (!applicable.length) {
+        this.setStatus(t("翻訳結果を取得できませんでした（プロバイダー設定を確認してください）"), true);
+        return;
+      }
+      this.pushUndo();
+      for (const { sec, translated } of applicable) {
+        if (fromTranslationField) {
+          sec.proseText = translated;
+          sec.tags = [createTag(translated, { translation: sec.translation, translatedTo: this.settings.localLanguage })];
+        } else {
+          sec.translation = translated;
+          sec.translatedTo = targetLang;
+        }
+      }
+      this.syncToWidgets();
+      this.render();
+      this.setStatus(t("{count}ブロックを翻訳しました", { count: applicable.length }));
+    } catch (error) {
+      if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
+      this.setStatus(t("翻訳に失敗しました: {error}", { error: error.message }), true);
+    }
+  }
+
+  async copyLlmTranslationPrompt() {
+    this.commitPromptBeforeAction();
+    const body = (this.sections || []).map((section, idx) => {
+      const heading = section.title || `【セクション${idx + 1}】`;
+      const text = section.mode === "prose"
+        ? (section.proseText || "")
+        : serializeStructuredSectionBody(section.tags, null, { trailingSeparator: section.trailingSeparator });
+      return `${heading}\n${text}`;
+    }).join("\n\n");
+    const promptTxt = `以下の各見出し（【】や[]）をそのまま保持して、自然で正確な日本語へ翻訳して返してください:\n\n${body}`;
+    await copyText(promptTxt);
+    this.setStatus(t("外部AI用の見出し保持翻訳プロンプトをコピーしました"));
+  }
+
+  applyLlmPastedTranslations(rawText) {
+    const raw = String(rawText || "").trim();
+    if (!raw) return;
+    const parsed = parseStructuredPrompt(raw, []);
+    let matchedCount = 0;
+    this.pushUndo();
+    for (const parsedSec of parsed.sections) {
+      const title = String(parsedSec.title || "").trim();
+      const body = serializeStructuredSectionBody(parsedSec.tags, null, { trailingSeparator: false }).trim();
+      if (!title || !body) continue;
+      const target = this.sections.find((sec) => sec.title === title);
+      if (!target) continue;
+      target.translation = body;
+      target.translatedTo = this.settings.localLanguage;
+      matchedCount += 1;
+    }
+    this.persist();
+    this.rebuildSectionViews();
+    this.render();
+    this.setStatus(matchedCount
+      ? t("{count}ブロックの日本語訳へ反映しました", { count: matchedCount })
+      : t("一致する【見出し】が見つかりませんでした"), matchedCount === 0);
+  }
+
+  clearSectionDropTargets() {
+    this.sectionsContainer?.querySelectorAll(".paio-section-card")
+      .forEach((item) => item.classList.remove("is-drop-target", "is-section-drop-before", "is-section-drop-after"));
+  }
+
+  reorderSection(sourceSectionId, targetSectionId, position = "before") {
+    if (!Array.isArray(this.sections) || !sourceSectionId || !targetSectionId || sourceSectionId === targetSectionId) {
+      return false;
+    }
+    this.commitPromptBeforeAction();
+    const sourceIndex = this.sections.findIndex((section) => section.id === sourceSectionId);
+    const targetIndex = this.sections.findIndex((section) => section.id === targetSectionId);
+    if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return false;
+    this.pushUndo();
+    const [moved] = this.sections.splice(sourceIndex, 1);
+    const remainingTargetIndex = this.sections.findIndex((section) => section.id === targetSectionId);
+    const insertionIndex = remainingTargetIndex + (position === "after" ? 1 : 0);
+    this.sections.splice(insertionIndex, 0, moved);
+    this.syncToWidgets();
+    this.rebuildSectionViews();
+    this.render();
+    return true;
+  }
+
+  canDropTagsOnSection(sectionId) {
+    return Boolean(
+      Array.isArray(this.dragTagIds)
+      && this.dragTagIds.length > 0
+      && this.dragSourceSectionId
+      && sectionId
+      && this.dragSourceSectionId !== sectionId
+    );
+  }
+
+  moveTagsToSection(tagIds, targetSectionId, sourceSectionId = this.dragSourceSectionId || this.activeSectionId) {
+    if (!Array.isArray(this.sections) || !Array.isArray(tagIds) || !tagIds.length) return 0;
+    this.commitPromptBeforeAction();
+    const sourceSection = this.sections.find((section) => section.id === sourceSectionId) || this.activeSection();
+    const targetSection = this.sections.find((section) => section.id === targetSectionId);
+    if (!sourceSection || !targetSection || sourceSection.id === targetSection.id) return 0;
+    const idSet = new Set(tagIds);
+    const movedTags = (sourceSection.tags || []).filter((tag) => idSet.has(tag.id));
+    if (!movedTags.length) return 0;
+    this.pushUndo();
+    sourceSection.tags = (sourceSection.tags || []).filter((tag) => !idSet.has(tag.id));
+    if (targetSection.mode === "prose") {
+      const enabledTags = movedTags.filter((tag) => tag.enabled !== false);
+      const disabledTags = movedTags.filter((tag) => tag.enabled === false);
+      const addition = enabledTags.map((tag) => tag.value).filter(Boolean).join(", ");
+      const existing = String(targetSection.proseText || "").trim();
+      if (addition) {
+        if (!existing) targetSection.proseText = addition;
+        else if (/[,，。.;；]$/.test(existing)) targetSection.proseText = `${existing} ${addition}`;
+        else targetSection.proseText = `${existing}, ${addition}`;
+      }
+      if (disabledTags.length) {
+        targetSection.tags ||= [];
+        for (const moved of disabledTags) {
+          moved.selected = false;
+          targetSection.tags.push(moved);
+        }
+      }
+    } else {
+      targetSection.tags ||= [];
+      for (const moved of movedTags) {
+        moved.selected = false;
+        targetSection.tags.push(moved);
+      }
+    }
+    this.lastSelectedIndex = null;
+    this.syncToWidgets();
+    this.render();
+    const targetIndex = Math.max(0, this.sections.indexOf(targetSection));
+    const targetLabel = targetSection.title || t("セクション {index}", { index: targetIndex + 1 });
+    this.setStatus(t("{count}件のタグを「{section}」へ移動しました", {
+      count: movedTags.length,
+      section: targetLabel,
+    }));
+    return movedTags.length;
+  }
+
+  rebuildSectionViews() {
+    if (!this.promptSingleContainer || !this.sectionsContainer) return;
+    this.promptSingleContainer.hidden = true;
+    this.sectionsContainer.hidden = false;
+    this.sectionTextareas ||= new Map();
+    this.sectionTextareas.clear();
+    const cards = this.sections.map((section, index) => {
+      const isActive = section.id === this.activeSectionId;
+      const card = element("section", { className: "paio-section-card" });
+      card.dataset.sectionId = section.id;
+      card.addEventListener("click", () => this.selectSection(section.id));
+      card.addEventListener("dragover", (event) => {
+        if (this.dragSectionId && this.dragSectionId !== section.id) {
+          event.preventDefault();
+          this.clearSectionDropTargets();
+          const bounds = card.getBoundingClientRect();
+          const position = event.clientY >= bounds.top + bounds.height / 2 ? "after" : "before";
+          card.classList.add(position === "after" ? "is-section-drop-after" : "is-section-drop-before");
+          if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+          return;
+        }
+        if (!this.canDropTagsOnSection(section.id)) return;
+        event.preventDefault();
+        this.clearSectionDropTargets();
+        card.classList.add("is-drop-target");
+        if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+      });
+      card.addEventListener("dragleave", (event) => {
+        if (event.relatedTarget && card.contains(event.relatedTarget)) return;
+        card.classList.remove("is-drop-target", "is-section-drop-before", "is-section-drop-after");
+      });
+      card.addEventListener("drop", (event) => {
+        if (this.dragSectionId && this.dragSectionId !== section.id) {
+          event.preventDefault();
+          event.stopPropagation();
+          const position = card.classList.contains("is-section-drop-after") ? "after" : "before";
+          const sourceSectionId = this.dragSectionId;
+          this.dragSectionId = null;
+          this.clearSectionDropTargets();
+          this.reorderSection(sourceSectionId, section.id, position);
+          return;
+        }
+        if (!this.canDropTagsOnSection(section.id)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const tagIds = [...this.dragTagIds];
+        const sourceId = this.dragSourceSectionId;
+        this.clearSectionDropTargets();
+        this.dragIndex = null;
+        this.dragTagIds = null;
+        this.dragSourceSectionId = null;
+        this.moveTagsToSection(tagIds, section.id, sourceId);
+      });
+
+      const dragHandle = element("span", {
+        className: "paio-section-drag-handle",
+        text: "⋮⋮",
+        title: t("ドラッグしてセクションの順序を入れ替え"),
+      });
+      dragHandle.draggable = this.sections.length > 1;
+      dragHandle.setAttribute("aria-label", t("セクションを並び替え"));
+      dragHandle.addEventListener("click", (event) => event.stopPropagation());
+      dragHandle.addEventListener("dragstart", (event) => {
+        event.stopPropagation();
+        this.dragSectionId = section.id;
+        this.dragIndex = null;
+        this.dragTagIds = null;
+        this.dragSourceSectionId = null;
+        card.classList.add("is-dragging");
+        event.dataTransfer?.setData("text/plain", section.title || section.id);
+        if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+      });
+      dragHandle.addEventListener("dragend", () => {
+        card.classList.remove("is-dragging");
+        this.clearSectionDropTargets();
+        this.dragSectionId = null;
+      });
+
+      const switchBtn = button("", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.enabled = section.enabled === false;
+        this.syncToWidgets();
+        this.render();
+      }, t("クリックで出力 ON/OFF を切替"));
+      switchBtn.className = `paio-switch-btn ${section.enabled !== false ? "is-on" : ""}`;
+      switchBtn.replaceChildren(
+        element("span", { className: "paio-switch-dot" }),
+        element("span", { text: section.enabled !== false ? "ON" : "OFF" }),
+      );
+
+      const titleInput = element("input", { className: "paio-section-title-input" });
+      titleInput.type = "text";
+      titleInput.value = section.title || "";
+      titleInput.placeholder = t("見出し（任意）");
+      titleInput.setAttribute("aria-label", t("セクション見出し"));
+      if (this.sectionTitleDatalistId) titleInput.setAttribute("list", this.sectionTitleDatalistId);
+      titleInput.addEventListener("focus", () => this.selectSection(section.id));
+      titleInput.addEventListener("click", (event) => event.stopPropagation());
+      titleInput.addEventListener("input", () => {
+        section.title = titleInput.value.trim();
+        this.syncToWidgets();
+        this.renderSectionHeaderSummary();
+      });
+
+      const titlePicker = element("select", { className: "paio-select paio-section-title-picker" });
+      titlePicker.setAttribute("aria-label", t("セクション見出しを候補から選択"));
+      titlePicker.title = t("セクション見出しを候補から選択");
+      const pickerPlaceholder = element("option", { text: t("候補…") });
+      pickerPlaceholder.value = "";
+      titlePicker.append(pickerPlaceholder);
+      for (const group of SECTION_HEADING_GROUPS) {
+        const optgroup = element("optgroup");
+        optgroup.label = t(group.label);
+        for (const item of group.items) {
+          const option = element("option", { text: item });
+          option.value = item;
+          optgroup.append(option);
+        }
+        titlePicker.append(optgroup);
+      }
+      titlePicker.addEventListener("focus", () => this.selectSection(section.id));
+      titlePicker.addEventListener("click", (event) => event.stopPropagation());
+      titlePicker.addEventListener("change", () => {
+        const chosen = titlePicker.value;
+        titlePicker.value = "";
+        if (!chosen) return;
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.title = chosen;
+        section.role = inferSectionRole(chosen);
+        titleInput.value = chosen;
+        this.syncToWidgets();
+        this.render();
+      });
+
+      const modeBadge = element("span", {
+        className: `paio-section-mode-badge ${section.mode === "prose" ? "is-prose" : "is-tags"}`,
+        text: section.mode === "prose" ? t("散文") : t("タグ"),
+      });
+
+      const roleBtn = button(section.role === "negative" ? "Neg" : "Pos", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.role = section.role === "negative" ? "positive" : "negative";
+        this.syncToWidgets();
+        this.render();
+      }, t("クリックで Positive / Negative を切替"));
+      roleBtn.classList.add("paio-section-role");
+
+      const socketBtn = button("IN", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.socketInput = !section.socketInput;
+        this.syncToWidgets();
+        this.render();
+      }, t("このセクション名で入力ソケットを表示/非表示"));
+      socketBtn.classList.add("paio-section-socket-btn");
+      socketBtn.classList.toggle("is-active", Boolean(section.socketInput));
+      socketBtn.setAttribute("aria-pressed", String(Boolean(section.socketInput)));
+
+      const outSocketBtn = button("OUT", (event) => {
+        event.stopPropagation();
+        this.commitPromptBeforeAction();
+        this.pushUndo();
+        section.socketOutput = !section.socketOutput;
+        this.syncToWidgets();
+        this.render();
+      }, t("このセクション名で出力ソケットを表示/非表示"));
+      outSocketBtn.classList.add("paio-section-out-btn");
+      outSocketBtn.classList.toggle("is-active", Boolean(section.socketOutput));
+      outSocketBtn.setAttribute("aria-pressed", String(Boolean(section.socketOutput)));
+
+      const delBtn = button("×", (event) => { event.stopPropagation(); this.removeSection(section.id); }, t("セクションを削除"));
+      delBtn.disabled = this.sections.length <= 1;
+
+      const header = element("div", { className: "paio-section-card-header" }, [
+        dragHandle,
+        switchBtn,
+        titleInput,
+        titlePicker,
+        modeBadge,
+        roleBtn,
+        socketBtn,
+        outSocketBtn,
+        delBtn,
+      ]);
+      card.append(header);
+
+      const jaPreviewText = this.sectionTranslationPreview(section);
+      const showJa = this.settings.showSectionTranslationsInList !== false;
+      const origText = section.mode === "prose"
+        ? String(section.proseText || "").trim()
+        : this.promptEditorValue(section).trim();
+      const origLine = element("div", {
+        className: "paio-section-orig-line",
+        text: origText || t("（空 — クリックして編集）"),
+      });
+      const jaLine = element("div", {
+        className: "paio-section-ja-line",
+        text: jaPreviewText ? t("訳: {text}", { text: jaPreviewText }) : "",
+      });
+      jaLine.hidden = !showJa || !jaPreviewText;
+      card.append(element("div", { className: "paio-section-summary" }, [origLine, jaLine]));
+      return card;
+    });
+    this.sectionsContainer.replaceChildren(...cards);
+    this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
+  }
+
+  renderSectionHeaderSummary() {
+    if (!this.currentTagsSummaryTitle) return;
+    this.currentTagsSummaryTitle.textContent = t("現在のタグ");
+  }
+
   buildIoDialog() {
     const dialog = this.buildDialog("コピー・インポート・エクスポート");
     const file = element("input");
@@ -2923,14 +4810,42 @@ export class PromptEditor {
       try {
         if (selected.name.toLocaleLowerCase().endsWith(".json")) {
           const state = parseImportedState(text);
-          this.tags = state.tags.map((tag) => createTag(tag.value, tag));
+          if (Array.isArray(this.sections)) {
+            this.sections = state.sections.map((section) => createSection(section));
+            this.activeSectionId = state.activeSectionId;
+            this.outputFormat = state.outputFormat;
+            this.wrapBraces = state.wrapBraces;
+            this.includeNegativeInPrompt = state.includeNegativeInPrompt;
+          } else {
+            this.tags = state.tags.map((tag) => createTag(tag.value, tag));
+            this.trailingSeparator = state.trailingSeparator;
+          }
           this.settings = state.settings;
-          this.trailingSeparator = state.trailingSeparator;
+        } else if (Array.isArray(this.sections) && looksLikeStructuredPrompt(text)) {
+          const parsed = parseStructuredPrompt(text, this.sections);
+          this.sections = parsed.sections;
+          this.activeSectionId = this.sections[0]?.id || "sec-1";
+          this.outputFormat = "structured";
+          this.wrapBraces = parsed.wrapBraces;
+          this.includeNegativeInPrompt = parsed.sections.some((section) => section.role === "negative");
         } else {
           const parsed = parsePrompt(text);
-          this.tags = tagsWithoutTrailingPlaceholder(parsed);
-          this.trailingSeparator = parsed.trailingSeparator;
+          if (Array.isArray(this.sections)) {
+            this.sections = [createSection({
+              id: "sec-1",
+              trailingSeparator: parsed.trailingSeparator,
+              tags: tagsWithoutTrailingPlaceholder(parsed),
+            })];
+            this.activeSectionId = "sec-1";
+            this.outputFormat = "tags";
+            this.wrapBraces = false;
+            this.includeNegativeInPrompt = false;
+          } else {
+            this.tags = tagsWithoutTrailingPlaceholder(parsed);
+            this.trailingSeparator = parsed.trailingSeparator;
+          }
         }
+        this.dirtySectionIds?.clear();
         this.promptDirty = false;
         this.translationGeneration += 1;
         this.translationBusy = false;
@@ -2953,8 +4868,21 @@ export class PromptEditor {
       button(t("プロンプトをコピー"), () => this.copyPrompt()),
       button(t("表示言語込みで選択をコピー"), () => this.copySelected(true)),
       button(t("選択を英語でコピー"), () => this.copySelectedLanguage("en")),
-      button(t("TXTを書き出す"), () => download("prompt.txt", this.outputPromptForExport(this.currentTags, { trailingSeparator: true }), "text/plain;charset=utf-8")),
-      button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({ tags: this.tags, settings: this.settings, trailingSeparator: this.trailingSeparator }), "application/json;charset=utf-8")),
+      button(t("TXTを書き出す"), () => download("prompt.txt", this.currentOutputs().prompt, "text/plain;charset=utf-8")),
+      button(t("状態JSONを書き出す"), () => download("prompt_workbench_state.json", exportEditorState({
+        tags: this.tags,
+        trailingSeparator: this.trailingSeparator,
+        ...(Array.isArray(this.sections)
+          ? {
+              sections: this.sections,
+              activeSectionId: this.activeSectionId,
+              outputFormat: this.outputFormat,
+              wrapBraces: this.wrapBraces,
+              includeNegativeInPrompt: this.includeNegativeInPrompt,
+            }
+          : {}),
+        settings: this.settings,
+      }), "application/json;charset=utf-8")),
     ];
     dialog.body.append(file, element("div", { className: "paio-toolbar" }, controls));
     return dialog;
@@ -2962,25 +4890,196 @@ export class PromptEditor {
 
   render() {
     this.applyCustomColors();
-    if (!this.promptDirty && this.promptTextarea) this.promptTextarea.value = this.promptEditorValue();
+    if (Array.isArray(this.sections) && this.sectionsContainer) {
+      const enabledSections = this.sections.filter((section) => section.enabled !== false).length;
+      if (this.sectionCountLabel) {
+        this.sectionCountLabel.textContent = t("{enabled}/{total} 有効", {
+          enabled: enabledSections,
+          total: this.sections.length,
+        });
+      }
+      const showJa = this.settings.showSectionTranslationsInList !== false;
+      for (const section of this.sections) {
+        const card = this.sectionsContainer.querySelector(`[data-section-id="${section.id}"]`);
+        if (card) {
+          card.classList.toggle("is-active", section.id === this.activeSectionId);
+          card.classList.toggle("is-disabled", section.enabled === false);
+          card.classList.toggle("is-negative", section.role === "negative");
+          const switchBtn = card.querySelector(".paio-switch-btn");
+          if (switchBtn) {
+            const on = section.enabled !== false;
+            switchBtn.classList.toggle("is-on", on);
+            const labelEl = switchBtn.querySelector("span:last-child");
+            if (labelEl) labelEl.textContent = on ? "ON" : "OFF";
+          }
+          const modeBadge = card.querySelector(".paio-section-mode-badge");
+          if (modeBadge) {
+            modeBadge.classList.toggle("is-prose", section.mode === "prose");
+            modeBadge.classList.toggle("is-tags", section.mode !== "prose");
+            modeBadge.textContent = section.mode === "prose" ? t("散文") : t("タグ");
+          }
+          const roleBtn = card.querySelector(".paio-section-role");
+          if (roleBtn) {
+            roleBtn.textContent = section.role === "negative" ? "Neg" : "Pos";
+            roleBtn.classList.toggle("is-negative", section.role === "negative");
+          }
+          const socketBtn = card.querySelector(".paio-section-socket-btn");
+          if (socketBtn) {
+            const hasSocket = Boolean(section.socketInput);
+            socketBtn.classList.toggle("is-active", hasSocket);
+            socketBtn.setAttribute("aria-pressed", String(hasSocket));
+          }
+          const outSocketBtn = card.querySelector(".paio-section-out-btn");
+          if (outSocketBtn) {
+            const hasOutSocket = Boolean(section.socketOutput);
+            outSocketBtn.classList.toggle("is-active", hasOutSocket);
+            outSocketBtn.setAttribute("aria-pressed", String(hasOutSocket));
+          }
+          const origLine = card.querySelector(".paio-section-orig-line");
+          if (origLine) {
+            const origText = section.mode === "prose"
+              ? String(section.proseText || "").trim()
+              : this.promptEditorValue(section).trim();
+            origLine.textContent = origText || t("（空 — クリックして編集）");
+          }
+          const jaLine = card.querySelector(".paio-section-ja-line");
+          if (jaLine) {
+            const jaText = this.sectionTranslationPreview(section);
+            jaLine.textContent = jaText ? t("訳: {text}", { text: jaText }) : "";
+            jaLine.hidden = !showJa || !jaText;
+          }
+        }
+      }
+      const activeForText = this.activeSection();
+      if (this.activeTagPromptTextarea && activeForText && !this.dirtySectionIds?.has(activeForText.id)) {
+        this.activeTagPromptTextarea.value = this.promptEditorValue(activeForText);
+      }
+      this.promptTextarea = this.activeTagPromptTextarea || this.singlePromptTextarea;
+    } else if (!this.promptDirty && this.promptTextarea) {
+      this.promptTextarea.value = this.promptEditorValue();
+    }
+
+    const active = this.activeSection();
+    if (this.activeSectionTitleLabel && active) {
+      const idx = Math.max(0, (this.sections || []).indexOf(active));
+      const label = active.title || t("セクション {index}", { index: idx + 1 });
+      const roleTag = active.role === "negative" ? "Negative" : "Positive";
+      this.activeSectionTitleLabel.textContent = t("編集中: {section}（{role}）", { section: label, role: roleTag });
+    }
+    const activeMode = active?.mode === "prose" ? "prose" : "tags";
+    for (const [modeVal, btn] of this.sectionModeButtons || []) {
+      const isSelected = modeVal === activeMode;
+      btn.classList.toggle("is-active", isSelected);
+      btn.setAttribute("aria-pressed", String(isSelected));
+    }
+    if (this.proseWorkspace) this.proseWorkspace.hidden = activeMode !== "prose";
+    if (this.tagsWorkspace) this.tagsWorkspace.hidden = activeMode === "prose";
+    if (activeMode === "prose" && active) {
+      if (this.proseOrigTextarea && document.activeElement !== this.proseOrigTextarea) {
+        this.proseOrigTextarea.value = active.proseText || "";
+      }
+      if (this.proseJaTextarea && document.activeElement !== this.proseJaTextarea) {
+        this.proseJaTextarea.value = active.translation || "";
+      }
+    }
+
+    this.renderSectionToolbar();
+    this.renderSectionHeaderSummary();
     this.renderSyncState();
     this.renderTranslationControls();
     this.renderBulk();
     this.renderTags();
   }
 
-  renderSyncState() {
-    if (!this.syncBadge || !this.applyPromptButton) return;
-    this.syncBadge.textContent = t(this.promptDirty ? "未反映" : "同期済み");
-    this.syncBadge.classList.toggle("is-dirty", this.promptDirty);
-    this.applyPromptButton.disabled = !this.promptDirty;
+  renderSectionToolbar() {
+    const format = this.outputFormat || "tags";
+    for (const [value, control] of this.outputFormatButtons || []) {
+      const active = value === format;
+      control.classList.toggle("is-active", active);
+      control.setAttribute("aria-pressed", String(active));
+    }
+    if (this.wrapBracesToggle) {
+      this.wrapBracesToggle.hidden = format !== "structured";
+      this.wrapBracesToggle.classList.toggle("is-active", Boolean(this.wrapBraces));
+      this.wrapBracesToggle.setAttribute("aria-pressed", String(Boolean(this.wrapBraces)));
+    }
+    if (this.includeNegativeToggle) {
+      const hasNegative = Array.isArray(this.sections) && this.sections.some((section) => section.role === "negative");
+      this.includeNegativeToggle.hidden = !hasNegative;
+      this.includeNegativeToggle.classList.toggle("is-active", Boolean(this.includeNegativeInPrompt));
+      this.includeNegativeToggle.setAttribute("aria-pressed", String(Boolean(this.includeNegativeInPrompt)));
+    }
   }
 
-  applyPromptText() {
-    if (!this.promptTextarea || !this.promptDirty) return;
+  renderSyncState() {
+    const anyDirty = (this.dirtySectionIds?.size || 0) > 0 || Boolean(this.promptDirty);
+    if (this.syncBadge) {
+      this.syncBadge.textContent = t(anyDirty ? "未反映" : "同期済み");
+      this.syncBadge.classList.toggle("is-dirty", anyDirty);
+    }
+    if (this.applyPromptButton) {
+      this.applyPromptButton.disabled = !this.promptDirty;
+    }
+    if (this.activeSectionApplyButton) {
+      this.activeSectionApplyButton.disabled = !this.dirtySectionIds?.has(this.activeSectionId);
+    }
+    if (this.sectionsContainer && Array.isArray(this.sections)) {
+      for (const section of this.sections) {
+        const card = this.sectionsContainer.querySelector(`[data-section-id="${section.id}"]`);
+        const isDirty = Boolean(this.dirtySectionIds?.has(section.id));
+        card?.classList.toggle("is-dirty", isDirty);
+      }
+    }
+  }
+
+  applyPromptText(targetSectionId = null) {
+    if (!Array.isArray(this.sections)) {
+      if (!this.promptTextarea || !this.promptDirty) return;
+      this.pushUndo();
+      const previousTags = this.currentTags;
+      const parsed = parsePrompt(this.promptTextarea.value, previousTags.filter((tag) => tag.enabled !== false));
+      const nextTags = tagsWithoutTrailingPlaceholder(parsed);
+      const survivingIds = new Set(nextTags.map((tag) => tag.id));
+      const disabledBefore = new Map();
+      let anchorId = null;
+      for (let index = previousTags.length - 1; index >= 0; index -= 1) {
+        const tag = previousTags[index];
+        if (tag.enabled === false) {
+          if (!disabledBefore.has(anchorId)) disabledBefore.set(anchorId, []);
+          disabledBefore.get(anchorId).push(tag);
+        } else if (survivingIds.has(tag.id)) {
+          anchorId = tag.id;
+        }
+      }
+      this.tags = nextTags.flatMap((tag) => [...(disabledBefore.get(tag.id) || []).reverse(), tag]);
+      this.tags.push(...(disabledBefore.get(null) || []).reverse());
+      this.trailingSeparator = parsed.trailingSeparator;
+      this.promptDirty = false;
+      this.applyBlacklist(this.settings.blacklistAction !== "warn");
+      this.syncToWidgets();
+      this.render();
+      if (parsed.errors.length) this.setStatus(t("本文を反映しましたが構文警告が{count}件あります", { count: parsed.errors.length }), true);
+      else this.setStatus(t("本文をタグへ反映しました"));
+      if (this.settings.autoTranslate) this.translatePrompt();
+      return;
+    }
+
+    const sectionId = targetSectionId || this.activeSectionId;
+    const section = this.sections.find((item) => item.id === sectionId);
+    const textarea = this.activeTagPromptTextarea || this.promptTextarea;
+    if (!section || !textarea || !this.dirtySectionIds?.has(sectionId)) return;
+
+    const rawText = textarea.value;
+    const otherSectionsEmpty = this.sections.every((item) => item.id === sectionId || item.tags.length === 0);
+    if (otherSectionsEmpty && !section.title && looksLikeStructuredPrompt(rawText)
+      || (this.sections.every((item) => item.tags.length === 0) && looksLikeStructuredPrompt(rawText))) {
+      this.applyBulkSplitText(rawText);
+      return;
+    }
+
     this.pushUndo();
-    const previousTags = this.currentTags;
-    const parsed = parsePrompt(this.promptTextarea.value, previousTags.filter((tag) => tag.enabled !== false));
+    const previousTags = section.tags;
+    const parsed = parsePrompt(rawText, previousTags.filter((tag) => tag.enabled !== false));
     const nextTags = tagsWithoutTrailingPlaceholder(parsed);
     const survivingIds = new Set(nextTags.map((tag) => tag.id));
     const disabledBefore = new Map();
@@ -2995,19 +5094,25 @@ export class PromptEditor {
         anchorId = tag.id;
       }
     }
-    this.tags = nextTags.flatMap((tag) => [...(disabledBefore.get(tag.id) || []).reverse(), tag]);
-    this.tags.push(...(disabledBefore.get(null) || []).reverse());
-    this.trailingSeparator = parsed.trailingSeparator;
-    this.promptDirty = false;
+    section.tags = nextTags.flatMap((tag) => [...(disabledBefore.get(tag.id) || []).reverse(), tag]);
+    section.tags.push(...(disabledBefore.get(null) || []).reverse());
+    section.trailingSeparator = parsed.trailingSeparator;
+    this.dirtySectionIds.delete(sectionId);
     this.applyBlacklist(this.settings.blacklistAction !== "warn");
     this.syncToWidgets();
     this.render();
     if (parsed.errors.length) this.setStatus(t("本文を反映しましたが構文警告が{count}件あります", { count: parsed.errors.length }), true);
     else this.setStatus(t("本文をタグへ反映しました"));
-    if (this.settings.autoTranslate) this.translatePrompt();
+    if (this.settings.autoTranslate && sectionId === this.activeSectionId) this.translatePrompt();
   }
 
   commitPromptBeforeAction() {
+    if (Array.isArray(this.sections) && this.dirtySectionIds?.size) {
+      for (const sectionId of [...this.dirtySectionIds]) {
+        this.applyPromptText(sectionId);
+      }
+      return;
+    }
     if (this.promptDirty) this.applyPromptText();
   }
 
@@ -3079,6 +5184,50 @@ export class PromptEditor {
         this.renderTags();
       }));
     }
+    if (this.activeSection()?.mode !== "prose") {
+      this.scheduleTagDbCheck();
+    }
+  }
+
+  scheduleTagDbCheck() {
+    clearTimeout(this.tagDbTimer);
+    this.tagDbTimer = window.setTimeout(() => this.checkTagDb(), TAG_DB_CHECK_DELAY_MS);
+  }
+
+  async checkTagDb() {
+    if (!this.tagDbStates) return;
+    if (this.activeSection?.()?.mode === "prose") return;
+    const pending = [...new Set(this.currentTags.filter((tag) => tag.type === "normal").map((tag) => promptBody(tag.value)))]
+      .filter((value) => value && !containsNonAsciiScript(value) && !this.tagDbStates.has(value));
+    if (!pending.length) return;
+    const results = await validateTagDb(this.api, pending.slice(0, TAG_DB_CHECK_BATCH));
+    if (!results) {
+      this.tagDbStates = null;
+      return;
+    }
+    for (const result of results) this.tagDbStates.set(result.tag, result);
+    if (results.some((result) => result.state === "alias")) this.renderTags();
+    else if (pending.length > TAG_DB_CHECK_BATCH) this.scheduleTagDbCheck();
+  }
+
+  replaceWithPreferredTag(index, preferred) {
+    const initialId = this.currentTags[index]?.id;
+    this.commitPromptBeforeAction();
+    const tag = initialId
+      ? this.currentTags.find((item) => item.id === initialId)
+      : this.currentTags[index];
+    if (!tag) return;
+    this.pushUndo();
+    tag.value = replacePromptBody(tag.value, preferred);
+    tag.translation = "";
+    tag.translatedTo = "";
+    tag.translationError = "";
+    tag.translationErrorTarget = "";
+    tag.type = classifyTag(tag.value);
+    this.applyBlacklist(this.settings.blacklistAction !== "warn");
+    this.syncToWidgets();
+    this.render();
+    this.setStatus(t("{tag} に置き換えました", { tag: preferred }));
   }
 
   renderTag(tag, index, duplicate) {
@@ -3108,8 +5257,10 @@ export class PromptEditor {
     if (tag.blacklistMatch) notices.push(t("ブラックリスト一致"));
     if (tag.missingModel) notices.push(t("モデルが見つかりません"));
     if (tag.translationError) notices.push(tag.translationError);
-    row.title = [translation, ...notices, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作")].filter(Boolean).join("\n");
-
+    const tagDbState = this.tagDbStates?.get(promptBody(tag.value));
+    const preferred = tagDbState?.state === "alias" ? tagDbState.preferred : "";
+    if (preferred) notices.push(t("別名です。推奨: {tag}", { tag: preferred }));
+    const tagDbNote = tagDbState?.state === "unknown" ? t("タグDBに未登録") : "";
     const selectMark = element("span", { className: "paio-select-mark", text: tag.selected ? "✓" : "" });
     selectMark.setAttribute("aria-hidden", "true");
     const stateMark = element("span", { className: "paio-state-mark", text: this.isFavoriteValue(tag.value) ? "★" : "☆" });
@@ -3119,37 +5270,45 @@ export class PromptEditor {
     ]);
     if (secondaryText) content.append(element("span", { className: "paio-tag-translation", text: secondaryText }));
     const warning = notices.length ? element("span", { className: "paio-tag-warning", text: "!", title: notices.join(" / ") }) : null;
-    appendPresentChildren(row, selectMark, stateMark, content, warning);
+    const preferredButton = preferred ? button(`→ ${preferred}`, (event) => {
+      event.stopPropagation();
+      clearTimeout(this.clickTimer);
+      this.replaceWithPreferredTag(index, preferred);
+    }, t("{tag} に置き換える", { tag: preferred })) : null;
+    preferredButton?.classList.add("paio-tag-preferred");
+    appendPresentChildren(row, selectMark, stateMark, content, preferredButton, warning);
+
+    row.title = [translation, ...notices, tagDbNote, t("クリック: 有効/無効、ダブルクリック: 編集、右クリック: 詳細操作、Shift+ドラッグ: 矩形選択、Shift/Ctrl+クリック: 複数選択")].filter(Boolean).join("\n");
 
     row.addEventListener("click", (event) => {
-      if (this.didDrag) {
+      if (this.didDrag || this.didMarqueeDrag) {
         this.didDrag = false;
+        this.didMarqueeDrag = false;
         return;
       }
       if (event.shiftKey || event.ctrlKey || event.metaKey) {
-        clearTimeout(this.clickTimer);
+        this.cancelPendingTagToggle();
         this.selectIndex(index, event.shiftKey, event.ctrlKey || event.metaKey);
         return;
       }
-      clearTimeout(this.clickTimer);
-      this.clickTimer = window.setTimeout(() => this.toggleOne(index), TAG_SINGLE_CLICK_DELAY_MS);
+      this.scheduleTagToggle(this.activeSectionId || null, tag.id);
     });
     row.addEventListener("dblclick", (event) => {
       event.preventDefault();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.beginInlineEdit(row, tag, index);
     });
     row.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.showContextMenu(event, tag, index);
     });
     row.addEventListener("pointerdown", (event) => {
       if (event.button !== 2) return;
       event.preventDefault();
       event.stopPropagation();
-      clearTimeout(this.clickTimer);
+      this.cancelPendingTagToggle();
       this.showContextMenu(event, tag, index);
     });
     row.addEventListener("keydown", (event) => {
@@ -3166,16 +5325,29 @@ export class PromptEditor {
       }
     });
     row.addEventListener("dragstart", (event) => {
+      if (event.shiftKey || this.didMarqueeDrag) {
+        event.preventDefault();
+        return;
+      }
       this.dragIndex = index;
+      const selectedTags = tag.selected ? this.currentTags.filter((item) => item.selected) : [];
+      this.dragTagIds = selectedTags.length > 0 ? selectedTags.map((item) => item.id) : [tag.id];
+      this.dragSourceSectionId = this.activeSectionId || null;
       this.didDrag = true;
       row.classList.add("is-dragging");
-      event.dataTransfer?.setData("text/plain", tag.value);
+      const transferText = selectedTags.length > 0
+        ? selectedTags.map((item) => item.value).join(", ")
+        : tag.value;
+      event.dataTransfer?.setData("text/plain", transferText);
       if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
     });
     row.addEventListener("dragend", () => {
       row.classList.remove("is-dragging");
       this.tagList.querySelectorAll(".paio-tag").forEach((item) => item.classList.remove("is-drop-before", "is-drop-after"));
+      this.clearSectionDropTargets();
       this.dragIndex = null;
+      this.dragTagIds = null;
+      this.dragSourceSectionId = null;
       window.setTimeout(() => { this.didDrag = false; }, 0);
     });
     row.addEventListener("dragover", (event) => {
@@ -3202,7 +5374,10 @@ export class PromptEditor {
       const remainingTargetIndex = this.currentTags.findIndex((item) => item.id === targetId);
       const insertionIndex = remainingTargetIndex + (position === "after" ? 1 : 0);
       this.currentTags.splice(insertionIndex, 0, moved);
+      this.clearSectionDropTargets();
       this.dragIndex = null;
+      this.dragTagIds = null;
+      this.dragSourceSectionId = null;
       this.syncToWidgets();
       this.render();
     });
@@ -3271,6 +5446,7 @@ export class PromptEditor {
       return control;
     };
     const title = element("strong", { className: "paio-context-title", text: tag.value || t("空タグ") });
+    const selectedCount = tag.selected ? this.currentTags.filter((item) => item.selected).length : 0;
     const currentWeight = getTagWeight(tag.value);
     const weightLabel = tag.type === "lora" ? t("LoRA強度") : tag.type === "lycoris" ? t("LyCORIS強度") : t("重み");
     const weightInput = element("input", { className: "paio-context-weight-input" });
@@ -3342,7 +5518,9 @@ export class PromptEditor {
       action(t("英語へ翻訳"), () => this.translateIndexes([index], "en")),
       action(t("日本語へ翻訳"), () => this.translateIndexes([index], this.settings.localLanguage)),
       action(t(tag.enabled ? "無効にする" : "有効にする"), () => this.toggleOne(index)),
-      action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
+      selectedCount > 1
+        ? action(t("{count}件をコピー", { count: selectedCount }), () => this.copySelected(false))
+        : action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
       action(t("削除"), () => this.deleteOneById(tag.id), "is-danger"),
     );
     menu.style.left = `${Math.max(6, Math.min(event.clientX, window.innerWidth - 246))}px`;
@@ -3442,6 +5620,38 @@ export class PromptEditor {
 
   addValues(values, options = {}) {
     this.commitPromptBeforeAction();
+    const active = this.activeSection?.();
+    if (active && active.mode === "prose") {
+      const additions = [];
+      const jaAdditions = [];
+      for (const raw of values) {
+        const descriptor = raw && typeof raw === "object" ? raw : { value: raw };
+        const value = String(descriptor.value || "").trim();
+        if (!value) continue;
+        additions.push(value);
+        const ja = cleanTranslation(descriptor.translation);
+        if (ja) jaAdditions.push(ja);
+      }
+      if (additions.length) {
+        const cur = String(active.proseText || "").trim();
+        const joined = additions.join(", ");
+        active.proseText = !cur
+          ? joined
+          : (/[。；.!?\n]$/u.test(cur) ? `${cur} ${joined}` : `${cur}；${joined}`);
+        if (jaAdditions.length) {
+          const curJa = cleanTranslation(active.translation);
+          active.translation = curJa ? `${curJa} / ${jaAdditions.join(" / ")}` : jaAdditions.join(" / ");
+          active.translatedTo = this.settings.localLanguage;
+        }
+        active.tags = [createTag(active.proseText, {
+          translation: active.translation,
+          translatedTo: active.translatedTo,
+        })];
+        this.syncToWidgets();
+        this.render();
+      }
+      return;
+    }
     const target = this.tags;
     for (const raw of values) {
       const descriptor = raw && typeof raw === "object" ? raw : { value: raw };
@@ -3477,6 +5687,156 @@ export class PromptEditor {
     }
   }
 
+  attachTagListMarquee() {
+    this.tagList.addEventListener("mousedown", (event) => {
+      if (event.button !== 0 || !event.shiftKey) return;
+      if (event.target?.closest?.("input, textarea, select, button")) return;
+      event.preventDefault();
+      event.stopPropagation();
+    });
+    this.tagList.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || !event.shiftKey) return;
+      if (event.target?.closest?.("input, textarea, select, button")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const targetRow = event.target?.closest?.(".paio-tag");
+      const wasDraggable = targetRow ? targetRow.draggable : false;
+      if (targetRow) targetRow.draggable = false;
+      const pointerId = event.pointerId;
+      const startClientX = event.clientX;
+      const startClientY = event.clientY;
+      const additive = event.ctrlKey || event.metaKey;
+      const initialSelectedIds = new Set(this.currentTags.filter((tag) => tag.selected).map((tag) => tag.id));
+      let dragging = false;
+      let finished = false;
+      let marqueeBox = null;
+      let listRect = null;
+      let scaleX = 1;
+      let scaleY = 1;
+      let cachedRows = [];
+      let lastScrollLeft = this.tagList.scrollLeft;
+      let lastScrollTop = this.tagList.scrollTop;
+
+      const cacheGeometry = () => {
+        listRect = this.tagList.getBoundingClientRect();
+        scaleX = this.tagList.offsetWidth > 0 ? listRect.width / this.tagList.offsetWidth : 1;
+        scaleY = this.tagList.offsetHeight > 0 ? listRect.height / this.tagList.offsetHeight : 1;
+        lastScrollLeft = this.tagList.scrollLeft;
+        lastScrollTop = this.tagList.scrollTop;
+        cachedRows = [...this.tagList.querySelectorAll(".paio-tag")].map((row) => {
+          const index = Number(row.dataset.tagIndex);
+          return {
+            row,
+            index,
+            rect: row.getBoundingClientRect(),
+            mark: row.querySelector(".paio-select-mark"),
+            selected: Boolean(this.currentTags[index]?.selected),
+            target: false,
+          };
+        });
+      };
+
+      const updateSelection = (clientX, clientY) => {
+        if (!listRect || this.tagList.scrollLeft !== lastScrollLeft || this.tagList.scrollTop !== lastScrollTop) {
+          cacheGeometry();
+        }
+        const selectionRect = normalizeMarqueeRect(startClientX, startClientY, clientX, clientY);
+        const toContentX = (x) => Math.max(0, Math.min(this.tagList.scrollWidth, (x - listRect.left) / scaleX + lastScrollLeft));
+        const toContentY = (y) => Math.max(0, Math.min(this.tagList.scrollHeight, (y - listRect.top) / scaleY + lastScrollTop));
+        const boxRect = normalizeMarqueeRect(
+          toContentX(startClientX),
+          toContentY(startClientY),
+          toContentX(clientX),
+          toContentY(clientY),
+        );
+        if (marqueeBox) {
+          marqueeBox.style.left = `${boxRect.left}px`;
+          marqueeBox.style.top = `${boxRect.top}px`;
+          marqueeBox.style.width = `${boxRect.width}px`;
+          marqueeBox.style.height = `${boxRect.height}px`;
+        }
+        const hitIndices = new Set();
+        for (const item of cachedRows) {
+          if (Number.isInteger(item.index) && rectsIntersect(selectionRect, item.rect)) {
+            hitIndices.add(item.index);
+          }
+        }
+        this.lastSelectedIndex = applyMarqueeSelection(this.currentTags, hitIndices, initialSelectedIds, additive);
+        for (const item of cachedRows) {
+          const nextSelected = Boolean(this.currentTags[item.index]?.selected);
+          const nextTarget = hitIndices.has(item.index);
+          if (item.selected !== nextSelected) {
+            item.selected = nextSelected;
+            item.row.classList.toggle("is-selected", nextSelected);
+            if (item.mark) item.mark.textContent = nextSelected ? "✓" : "";
+          }
+          if (item.target !== nextTarget) {
+            item.target = nextTarget;
+            item.row.classList.toggle("is-marquee-target", nextTarget);
+          }
+        }
+      };
+
+      const onMove = (moveEvent) => {
+        if (finished) return;
+        if (!moveEvent.shiftKey) {
+          finish(moveEvent);
+          return;
+        }
+        if (!dragging) {
+          if (Math.hypot(moveEvent.clientX - startClientX, moveEvent.clientY - startClientY) < 1) return;
+          dragging = true;
+          this.didMarqueeDrag = true;
+          this.tagList.classList.add("is-marquee-selecting");
+          this.tagList.setPointerCapture?.(pointerId);
+          cacheGeometry();
+          marqueeBox = element("div", { className: "paio-marquee-box" });
+          this.tagList.append(marqueeBox);
+        }
+        moveEvent.preventDefault();
+        moveEvent.stopPropagation();
+        updateSelection(moveEvent.clientX, moveEvent.clientY);
+      };
+
+      const onKeyUp = (keyEvent) => {
+        if (keyEvent.key === "Shift") finish(keyEvent);
+      };
+
+      const finish = (endEvent) => {
+        if (finished) return;
+        finished = true;
+        window.removeEventListener("pointermove", onMove, true);
+        window.removeEventListener("pointerup", finish, true);
+        window.removeEventListener("pointercancel", finish, true);
+        window.removeEventListener("keyup", onKeyUp, true);
+        if (targetRow) targetRow.draggable = wasDraggable;
+        if (!dragging) return;
+        this.tagList.releasePointerCapture?.(pointerId);
+        if (endEvent?.type === "pointerup" && Number.isFinite(endEvent.clientX) && Number.isFinite(endEvent.clientY)) {
+          updateSelection(endEvent.clientX, endEvent.clientY);
+        }
+        marqueeBox?.remove();
+        this.tagList.classList.remove("is-marquee-selecting");
+        this.persist();
+        this.render();
+        if (endEvent?.type === "pointerup" || endEvent?.type === "pointercancel") {
+          window.setTimeout(() => { this.didMarqueeDrag = false; }, 0);
+        } else {
+          const clearClickGuard = () => {
+            window.setTimeout(() => { this.didMarqueeDrag = false; }, 0);
+          };
+          window.addEventListener("pointerup", clearClickGuard, { capture: true, once: true });
+          window.addEventListener("pointercancel", clearClickGuard, { capture: true, once: true });
+        }
+      };
+
+      window.addEventListener("pointermove", onMove, true);
+      window.addEventListener("pointerup", finish, true);
+      window.addEventListener("pointercancel", finish, true);
+      window.addEventListener("keyup", onKeyUp, true);
+    });
+  }
+
   selectIndex(index, range, additive) {
     if (range && this.lastSelectedIndex !== null) {
       const [start, end] = [this.lastSelectedIndex, index].sort((a, b) => a - b);
@@ -3489,12 +5849,14 @@ export class PromptEditor {
     }
     this.persist();
     this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   clearSelection() {
     this.clearSelectionState();
     this.persist();
     this.render();
+    if (this.activeLibraryTab === "prose") this.refreshProsePhrasesPanel?.();
   }
 
   clearSelectionState() {
@@ -3551,6 +5913,47 @@ export class PromptEditor {
       tag.value = adjustTagWeight(tag.value, this.settings.weightStep * direction, this.settings.weightMin, this.settings.weightMax);
       tag.type = classifyTag(tag.value);
     });
+  }
+
+  cancelPendingTagToggle() {
+    clearTimeout(this.clickTimer);
+    this.clickTimer = null;
+    this.pendingTagToggle = null;
+  }
+
+  flushPendingTagToggle() {
+    const pending = this.pendingTagToggle;
+    if (!pending) return;
+    this.cancelPendingTagToggle();
+    this.toggleTagInSection(pending.sectionId, pending.tagId);
+  }
+
+  scheduleTagToggle(sectionId, tagId) {
+    if (this.pendingTagToggle && (this.pendingTagToggle.sectionId !== sectionId || this.pendingTagToggle.tagId !== tagId)) {
+      this.flushPendingTagToggle();
+    } else {
+      clearTimeout(this.clickTimer);
+    }
+    this.pendingTagToggle = { sectionId, tagId };
+    this.clickTimer = globalThis.setTimeout(() => this.flushPendingTagToggle(), TAG_SINGLE_CLICK_DELAY_MS);
+  }
+
+  toggleTagInSection(sectionId, tagId) {
+    if (!tagId) return;
+    if (Array.isArray(this.sections) && sectionId) {
+      const targetSection = this.sections.find((section) => section.id === sectionId);
+      if (!targetSection) return;
+      if (this.activeSectionId === sectionId) this.commitPromptBeforeAction();
+      const targetTag = (targetSection.tags || []).find((tag) => tag.id === tagId);
+      if (!targetTag) return;
+      this.pushUndo();
+      targetTag.enabled = !targetTag.enabled;
+      this.syncToWidgets();
+      this.render();
+      return;
+    }
+    const index = this.currentTags.findIndex((tag) => tag.id === tagId);
+    if (index >= 0) this.toggleOne(index);
   }
 
   toggleOne(index) {
@@ -3636,6 +6039,7 @@ export class PromptEditor {
         const tag = tasks[offset] && currentTag(tasks[offset]);
         if (!tag) return;
         const translated = promptBody(cleanTranslation(result?.translated));
+        if (target === "en" && applySmartTranslationResult(tag, translated, target, this.settings.localLanguage)) return;
         tag.translation = translated;
         tag.translatedTo = translated ? target : "";
         tag.translationError = translated ? "" : (result?.error || t("翻訳結果が空でした"));
@@ -3681,7 +6085,7 @@ export class PromptEditor {
       const sourceText = translatableTagText(tag.value);
       const task = { id: tag.id, originalValue: tag.value, text: sourceText };
       tag.translationRequestId = requestId;
-      if (containsJapaneseText(sourceText)) japaneseTasks.push(task);
+      if (containsNonAsciiScript(sourceText)) japaneseTasks.push(task);
       else if (!cleanTranslation(tag.translation) || tag.translatedTo !== this.settings.localLanguage) localTasks.push(task);
     }
 
@@ -3805,7 +6209,7 @@ export class PromptEditor {
   }
 
   async copyPrompt() {
-    await copyText(this.outputPromptForExport(this.tags, { trailingSeparator: true }));
+    await copyText(this.currentOutputs().prompt);
     this.setStatus(t("プロンプトをコピーしました"));
   }
 
@@ -3819,12 +6223,15 @@ export class PromptEditor {
 
   applyBlacklist(mutate) {
     const compiled = compileBlacklist(this.settings.blacklist);
-    for (const tag of this.tags) tag.blacklistMatch = matchesBlacklist(tag.value, compiled);
-    if (!mutate) return;
-    if (this.settings.blacklistAction === "disable") {
-      this.tags.filter((tag) => tag.blacklistMatch).forEach((tag) => { tag.enabled = false; });
-    } else if (this.settings.blacklistAction === "delete") {
-      this.tags = this.tags.filter((tag) => !tag.blacklistMatch);
+    const targets = Array.isArray(this.sections) ? this.sections : [{ tags: this.tags }];
+    for (const section of targets) {
+      for (const tag of section.tags) tag.blacklistMatch = matchesBlacklist(tag.value, compiled);
+      if (!mutate) continue;
+      if (this.settings.blacklistAction === "disable") {
+        section.tags.filter((tag) => tag.blacklistMatch).forEach((tag) => { tag.enabled = false; });
+      } else if (this.settings.blacklistAction === "delete") {
+        section.tags = section.tags.filter((tag) => !tag.blacklistMatch);
+      }
     }
   }
 

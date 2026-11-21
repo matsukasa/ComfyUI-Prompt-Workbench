@@ -3,6 +3,7 @@ import html
 import json
 import os
 import re
+import sqlite3
 import tempfile
 import threading
 import time
@@ -10,6 +11,8 @@ import unicodedata
 from collections import OrderedDict, defaultdict, deque
 from pathlib import Path
 from urllib.parse import urlparse
+
+from . import tagdb
 
 MAX_REQUEST_BYTES = 64 * 1024
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
@@ -33,6 +36,20 @@ SUPPORTED_PROVIDERS = {"local", "offline", "libretranslate", "deepl", "openai"}
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
 _DICTIONARY_CACHE_SIGNATURE = None
 _DICTIONARY_CACHE_VALUE = {}
+_PHRASE_CATALOG_CACHE_SIGNATURE = None
+_PHRASE_CATALOG_CACHE_VALUE = []
+SUPPORTED_SECTION_ROLES = {
+    "composition",
+    "camera",
+    "subject",
+    "clothing",
+    "environment",
+    "lighting",
+    "color",
+    "style",
+    "quality",
+    "negative",
+}
 DEFAULT_SETTINGS_KEYS = {
     "weightStep",
     "weightMin",
@@ -158,6 +175,20 @@ def _load_dictionary(requested_name="", storage_directory=None):
 
         _DICTIONARY_CACHE_SIGNATURE = signature
         _DICTIONARY_CACHE_VALUE = dictionary
+        for phrase in load_phrase_catalog():
+            text_map = phrase.get("text") if isinstance(phrase, dict) else None
+            if not isinstance(text_map, dict):
+                continue
+            for dst_lang, dst_text in text_map.items():
+                if not isinstance(dst_lang, str) or not isinstance(dst_text, str) or not dst_text.strip():
+                    continue
+                dst_table = dictionary.setdefault(dst_lang.casefold(), {})
+                for src_lang, src_text in text_map.items():
+                    if src_lang == dst_lang or not isinstance(src_text, str) or not src_text.strip():
+                        continue
+                    src_key = _translation_lookup_key(src_text)
+                    if src_key and src_key not in dst_table:
+                        dst_table[src_key] = dst_text.strip()
     if requested_name:
         dictionary = {language: table.copy() for language, table in dictionary.items()}
         catalog = load_examples_catalog(
@@ -175,6 +206,120 @@ def _load_dictionary(requested_name="", storage_directory=None):
                 if alias_key:
                     dictionary["ja"][alias_key] = translation
     return dictionary
+
+
+def phrase_catalog_path(path=None):
+    return Path(path) if path is not None else Path(__file__).with_name("data") / "phrase_catalog.json"
+
+
+def load_phrase_catalog(path=None):
+    global _PHRASE_CATALOG_CACHE_SIGNATURE, _PHRASE_CATALOG_CACHE_VALUE
+    target = phrase_catalog_path(path)
+    if not target.is_file():
+        return []
+    stat = target.stat()
+    signature = (str(target), stat.st_mtime_ns, stat.st_size)
+    if path is None and signature == _PHRASE_CATALOG_CACHE_SIGNATURE:
+        return _PHRASE_CATALOG_CACHE_VALUE
+    try:
+        raw = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    phrases = raw.get("phrases") if isinstance(raw, dict) else raw
+    if not isinstance(phrases, list):
+        return []
+    normalized = []
+    for item in phrases:
+        if not isinstance(item, dict):
+            continue
+        text_map = item.get("text")
+        if not isinstance(text_map, dict):
+            continue
+        clean_text = {
+            str(lang).strip().casefold(): str(val).strip()
+            for lang, val in text_map.items()
+            if isinstance(lang, str) and isinstance(val, str) and val.strip()
+        }
+        if not clean_text:
+            continue
+        role = str(item.get("role") or "general").strip().lower()
+        mode = "tags" if str(item.get("mode") or "prose").strip().lower() == "tags" else "prose"
+        keywords = [
+            str(kw).strip()
+            for kw in (item.get("keywords") or [])
+            if isinstance(kw, str) and kw.strip()
+        ]
+        normalized.append(
+            {
+                "id": str(item.get("id") or f"phrase-{len(normalized) + 1}"),
+                "role": role,
+                "group": str(item.get("group") or role),
+                "mode": mode,
+                "text": clean_text,
+                "keywords": keywords,
+            }
+        )
+    if path is None:
+        _PHRASE_CATALOG_CACHE_SIGNATURE = signature
+        _PHRASE_CATALOG_CACHE_VALUE = normalized
+    return normalized
+
+
+def search_phrases(query="", role="", language="ja", mode="", limit=30, path=None):
+    items = load_phrase_catalog(path=path)
+    q = unicodedata.normalize("NFKC", str(query or "")).strip().casefold()
+    role_filter = str(role or "").strip().lower()
+    mode_filter = str(mode or "").strip().lower()
+    lang_code = str(language or "ja").strip().casefold()
+    lang_base = lang_code.split("-", 1)[0]
+    capped = max(1, min(int(limit or 30), 100))
+
+    scored = []
+    for index, item in enumerate(items):
+        if mode_filter in ("prose", "tags") and item["mode"] != mode_filter:
+            continue
+        role_match = bool(role_filter) and item["role"] == role_filter
+        haystacks = [
+            item["role"],
+            item["group"],
+            *item["keywords"],
+            *item["text"].values(),
+        ]
+        if q:
+            matched = any(
+                q in unicodedata.normalize("NFKC", str(part)).casefold()
+                for part in haystacks
+            )
+            if not matched:
+                continue
+        text_map = item["text"]
+        prompt_text = text_map.get("en") or next(iter(text_map.values()), "")
+        local_text = (
+            text_map.get(lang_code)
+            or text_map.get(lang_base)
+            or text_map.get("ja")
+            or prompt_text
+        )
+        # Prioritize matching section role, then keyword/exact prefix match, then catalog order.
+        rank = (0 if role_match else 1, index)
+        scored.append(
+            (
+                rank,
+                {
+                    "id": item["id"],
+                    "role": item["role"],
+                    "group": item["group"],
+                    "mode": item["mode"],
+                    "prompt": prompt_text,
+                    "translation": local_text,
+                    "text": text_map,
+                    "keywords": item["keywords"],
+                    "matched_role": role_match,
+                },
+            )
+        )
+    scored.sort(key=lambda pair: pair[0])
+    return [entry for _, entry in scored[:capped]]
 
 
 def catalog_storage_directory(base_directory=None):
@@ -1128,6 +1273,81 @@ async def _get_json(session, url, params):
         return data
 
 
+def _detect_source_language(text, target="en"):
+    value = str(text or "")
+    if re.search(r"[\u3040-\u309f\u30a0-\u30ff]", value):
+        return "ja"
+    if re.search(r"[\uac00-\ud7af\u1100-\u11ff]", value):
+        return "ko"
+    if re.search(r"[\u4e00-\u9fff]", value):
+        return "zh-CN"
+    target_lower = str(target or "en").lower()
+    if target_lower.startswith("en"):
+        return "ja"
+    return "en"
+
+
+def _normalize_deepl_lang(code):
+    lowered = str(code or "").strip().lower()
+    if lowered in ("zh", "zh-cn", "zh-hans", "zh-tw", "zh-hant"):
+        return "ZH"
+    return str(code or "").strip().upper()
+
+
+def _split_text_chunks(text, max_bytes=450):
+    raw = str(text or "").strip()
+    if not raw:
+        return []
+    if len(raw.encode("utf-8")) <= max_bytes:
+        return [(raw, "")]
+
+    segments = []
+    for line_idx, line in enumerate(raw.splitlines()):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        sep_before = "\n" if segments else ""
+        if len(stripped.encode("utf-8")) <= max_bytes:
+            segments.append((stripped, sep_before))
+            continue
+        # Split long lines by sentence punctuation, then comma/space, then characters.
+        parts = [p.strip() for p in re.split(r"(?<=[。！？.!?;；])\s*", stripped) if p.strip()]
+        if len(parts) <= 1:
+            parts = [p.strip() for p in re.split(r"(?<=[,，、])\s*", stripped) if p.strip()]
+        first_in_line = True
+        for part in parts:
+            joiner = sep_before if first_in_line else " "
+            first_in_line = False
+            if len(part.encode("utf-8")) <= max_bytes:
+                segments.append((part, joiner))
+                continue
+            buf = ""
+            for ch in part:
+                candidate = buf + ch
+                if buf and len(candidate.encode("utf-8")) > max_bytes:
+                    segments.append((buf.strip(), joiner))
+                    joiner = " "
+                    buf = ch
+                else:
+                    buf = candidate
+            if buf.strip():
+                segments.append((buf.strip(), joiner))
+
+    # Pack adjacent small segments within max_bytes while preserving line breaks.
+    packed = []
+    for seg, sep in segments:
+        if not packed:
+            packed.append((seg, ""))
+            continue
+        prev_text, prev_sep = packed[-1]
+        combined = f"{prev_text}{sep}{seg}"
+        if sep != "\n" and len(combined.encode("utf-8")) <= max_bytes:
+            packed[-1] = (combined, prev_sep)
+        else:
+            packed.append((seg, sep))
+    return packed
+
+
 def _mymemory_query(text):
     query = " ".join(text.replace("_", " ").split())
     if len(query.encode("utf-8")) > 500:
@@ -1151,17 +1371,35 @@ def _parse_mymemory_result(data, query):
 
 
 async def _translate_mymemory(session, text, source, target):
-    query = _mymemory_query(text)
-    source_language = source.lower()
-    target_language = target.lower()
+    source_language = str(source or "auto").strip().lower()
+    target_language = str(target or "en").strip().lower()
     if source_language == "auto":
-        source_language = "en" if target_language.startswith("ja") else "ja"
-    data = await _get_json(
-        session,
-        MYMEMORY_URL,
-        {"q": query, "langpair": f"{source_language}|{target_language}", "mt": "1"},
-    )
-    return _parse_mymemory_result(data, query)
+        source_language = _detect_source_language(text, target_language)
+    if target_language == "zh":
+        target_language = "zh-CN"
+
+    raw = str(text or "").strip()
+    if len(" ".join(raw.replace("_", " ").split()).encode("utf-8")) <= 500:
+        query = _mymemory_query(raw)
+        data = await _get_json(
+            session,
+            MYMEMORY_URL,
+            {"q": query, "langpair": f"{source_language}|{target_language}", "mt": "1"},
+        )
+        return _parse_mymemory_result(data, query)
+
+    chunks = _split_text_chunks(raw, max_bytes=450)
+    translated_parts = []
+    for chunk_text, sep in chunks:
+        query = _mymemory_query(chunk_text)
+        data = await _get_json(
+            session,
+            MYMEMORY_URL,
+            {"q": query, "langpair": f"{source_language}|{target_language}", "mt": "1"},
+        )
+        translated_chunk = _parse_mymemory_result(data, query)
+        translated_parts.append(f"{sep}{translated_chunk}" if translated_parts else translated_chunk)
+    return "".join(translated_parts).strip()
 
 
 async def translate_text(provider, text, source="auto", target="en", timeout=12, catalog_name="", rate_client=None):
@@ -1179,6 +1417,18 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
         return cached, True
 
     local_result = _local_translate(text, target, catalog_name)
+    tagdb_hit = False
+    if local_result == text:
+        try:
+            tagdb_result = await asyncio.to_thread(tagdb.translate, text, target)
+            if tagdb_result:
+                local_result = tagdb_result
+                tagdb_hit = True
+        except sqlite3.Error:
+            pass
+    if tagdb_hit and local_result != text:
+        _cache_set(key, local_result)
+        return local_result, False
     if target.lower().startswith("ja") and local_result != text:
         _cache_set(key, local_result)
         return local_result, False
@@ -1216,9 +1466,9 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
             base_url = _validate_url(
                 os.getenv("PROMPT_WORKBENCH_DEEPL_URL", "https://api-free.deepl.com/v2")
             )
-            payload = {"text": [text], "target_lang": target.upper()}
+            payload = {"text": [text], "target_lang": _normalize_deepl_lang(target)}
             if source.lower() != "auto":
-                payload["source_lang"] = source.upper()
+                payload["source_lang"] = _normalize_deepl_lang(source)
             data = await _post_json(
                 session,
                 f"{base_url}/translate",
@@ -1245,8 +1495,8 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
                     {
                         "role": "system",
                         "content": (
-                            "Translate the supplied Stable Diffusion prompt tag to "
-                            f"{target}. Return only the translation and preserve model syntax."
+                            "Translate the supplied image generation prompt text or tag to "
+                            f"{target}. Return only the translation and preserve prompt syntax and line breaks."
                         ),
                     },
                     {"role": "user", "content": text},
@@ -1425,6 +1675,62 @@ def register_routes():
             return web.json_response({"error": "The selected catalog no longer exists"}, status=404)
         except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
             return web.json_response({"error": str(exc)}, status=400)
+
+    @routes.get("/prompt_workbench/tagdb/status")
+    async def get_tagdb_status(_request):
+        try:
+            return web.json_response(await asyncio.to_thread(tagdb.status))
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+
+    @routes.get("/prompt_workbench/tagdb/search")
+    async def get_tagdb_search(request):
+        query = request.rel_url.query
+        try:
+            results = await asyncio.to_thread(
+                tagdb.search,
+                query.get("q", "")[:256],
+                language=query.get("language", "ja")[:16],
+                limit=int(query.get("limit", 20)),
+                contains=query.get("contains") == "1",
+            )
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+        return web.json_response({"results": results})
+
+    @routes.post("/prompt_workbench/tagdb/validate")
+    async def post_tagdb_validate(request):
+        if request.content_length and request.content_length > MAX_REQUEST_BYTES:
+            return web.json_response({"error": "Request is too large"}, status=413)
+        try:
+            body = await request.json()
+            tags = body.get("tags") if isinstance(body, dict) else None
+            if not isinstance(tags, list) or not all(isinstance(item, str) for item in tags):
+                raise ValueError("tags must be an array of strings")
+            available = await asyncio.to_thread(tagdb.database_paths)
+            results = await asyncio.to_thread(tagdb.validate, tags)
+        except (ValueError, json.JSONDecodeError) as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        except sqlite3.Error as exc:
+            return web.json_response({"error": str(exc)}, status=500)
+        return web.json_response({"available": bool(available), "results": results})
+
+    @routes.get("/prompt_workbench/phrases/search")
+    async def get_phrases_search(request):
+        query = request.rel_url.query
+        try:
+            results = search_phrases(
+                query=query.get("q", "")[:256],
+                role=query.get("role", "")[:32],
+                language=query.get("language", "ja")[:16],
+                mode=query.get("mode", "")[:16],
+                limit=int(query.get("limit", 30)),
+            )
+        except ValueError as exc:
+            return web.json_response({"error": str(exc)}, status=400)
+        return web.json_response({"results": results})
 
     @routes.get("/prompt_workbench/providers")
     async def get_providers(_request):

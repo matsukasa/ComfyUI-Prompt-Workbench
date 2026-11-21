@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "phrases": [
+    {
+      "id": "comp-medium-closeup-50mm",
+      "role": "composition",
+      "group": "構図・レンズ",
+      "mode": "prose",
+      "text": {
+        "en": "Medium close-up portrait, 50mm lens, shallow depth of field, eye-level",
+        "ja": "ミディアムクローズアップ、50mmレンズ、浅い被写界深度、アイレベル",
+        "zh": "中近景肖像，50mm镜头，浅景深，平视视角"
+      },
+      "keywords": ["portrait", "50mm", "eye-level", "構図", "バストアップ", "近景", "平视"]
+    },
+    {
+      "id": "comp-fullbody-50mm",
+      "role": "composition",
+      "group": "構図・レンズ",
+      "mode": "prose",
+      "text": {
+        "en": "50mm standard focal length, eye-level full-body framing, shallow depth of field with softly blurred background",
+        "ja": "50mm標準レンズ、アイレベル全身寄り、浅い被写界深度で背景ボケ",
+        "zh": "50mm标准焦段，平视全身近景，浅景深虚化背景"
+      },
+      "keywords": ["full body", "bokeh", "全身", "背景ボケ", "虚化"]
+    },
+    {
+      "id": "comp-rule-of-thirds",
+      "role": "composition",
+      "group": "構図・レンズ",
+      "mode": "prose",
+      "text": {
+        "en": "Balanced rule-of-thirds composition with generous negative space and leading lines",
+        "ja": "余白と視線誘導を活かした三分割構図",
+        "zh": "采用三分法构图，保留自然留白与视觉引导线"
+      },
+      "keywords": ["rule of thirds", "negative space", "三分割", "余白", "三分法"]
+    },
+    {
+      "id": "comp-side-profile",
+      "role": "composition",
+      "group": "構図・レンズ",
+      "mode": "prose",
+      "text": {
+        "en": "Pure 90-degree side profile silhouette, subject facing left",
+        "ja": "真横90度のプロフィールシルエット、被写体は左向き",
+        "zh": "纯90度侧面剪影构图，主体朝向左侧"
+      },
+      "keywords": ["side profile", "silhouette", "横顔", "シルエット", "侧面"]
+    },
+    {
+      "id": "comp-low-angle-wide",
+      "role": "composition",
+      "group": "構図・レンズ",
+      "mode": "prose",
+      "text": {
+        "en": "Dynamic low-angle wide shot emphasizing vertical scale and dramatic perspective",
+        "ja": "奥行きと高さを強調するダイナミックなローアングル広角ショット",
+        "zh": "低角度广角镜头，突出纵深感与戏剧性透视"
+      },
+      "keywords": ["low angle", "wide shot", "perspective", "煽り", "ローアングル", "広角", "广角"]
+    },
+    {
+      "id": "cam-35mm-film",
+      "role": "camera",
+      "group": "カメラ・質感",
+      "mode": "prose",
+      "text": {
+        "en": "Shot on 35mm medium format film with fine natural grain and realistic color grading",
+        "ja": "35mm中判フィルム撮影、繊細な粒子とリアルな色調",
+        "zh": "使用35mm中画幅胶片拍摄，细腻颗粒与真实色彩分级"
+      },
+      "keywords": ["35mm", "film", "grain", "フィルム", "粒子", "胶片"]
+    },
+    {
+      "id": "cam-85mm-portrait",
+      "role": "camera",
+      "group": "カメラ・質感",
+      "mode": "prose",
+      "text": {
+        "en": "Captured on 85mm f/1.8 prime lens, crisp focus on the eyes with creamy background bokeh",
+        "ja": "85mm f/1.8単焦点レンズ、瞳にシャープなピントと滑らかな背景ボケ",
+        "zh": "85mm f/1.8定焦镜头拍摄，眼部锐利对焦，背景奶油般虚化"
+      },
+      "keywords": ["85mm", "f/1.8", "prime lens", "単焦点", "ピント", "定焦"]
+    },
+    {
+      "id": "cam-macro-detail",
+      "role": "camera",
+      "group": "カメラ・質感",
+      "mode": "prose",
+      "text": {
+        "en": "Macro close-up capturing micro-textures, subtle dust particles, and sharp surface highlights",
+        "ja": "微細な質感・空気中の塵・繊細な表面ハイライトを捉えたマクロ接写",
+        "zh": "微距特写，清晰呈现材质肌理、微尘与柔和表面高光"
+      },
+      "keywords": ["macro", "texture", "detail", "マクロ", "質感", "微距"]
+    },
+    {
+      "id": "subj-natural-expression",
+      "role": "subject",
+      "group": "被写体・ポーズ",
+      "mode": "prose",
+      "text": {
+        "en": "A young woman with a calm, candid expression, looking slightly off-camera with relaxed shoulders",
+        "ja": "落ち着いた自然な表情の若い女性、肩の力を抜いてカメラから少し視線を外している",
+        "zh": "神情宁静自然的年轻女性，双肩放松，视线微微偏离镜头"
+      },
+      "keywords": ["woman", "candid", "expression", "女性", "表情", "視線", "人物"]
+    },
+    {
+      "id": "subj-turning-back",
+      "role": "subject",
+      "group": "被写体・ポーズ",
+      "mode": "prose",
+      "text": {
+        "en": "Turning back gently over the shoulder as wind softly lifts strands of hair",
+        "ja": "風に髪がふわっと揺れる中、肩越しに優しく振り返るポーズ",
+        "zh": "微风轻拂发丝，主体回眸越过肩头温柔望向镜头"
+      },
+      "keywords": ["looking back", "wind", "hair", "振り返り", "風", "髪", "回眸"]
+    },
+    {
+      "id": "subj-dynamic-motion",
+      "role": "subject",
+      "group": "被写体・ポーズ",
+      "mode": "prose",
+      "text": {
+        "en": "Mid-stride walking motion with natural fabric sway and slight motion blur at the edges",
+        "ja": "歩く途中の自然な動き、布の揺れと端のわずかなモーションブラー",
+        "zh": "行走瞬间的自然动态，衣摆轻扬，边缘带有轻微动态模糊"
+      },
+      "keywords": ["walking", "motion", "dynamic", "動き", "歩行", "动态"]
+    },
+    {
+      "id": "cloth-tailored-coat",
+      "role": "clothing",
+      "group": "衣装・素材",
+      "mode": "prose",
+      "text": {
+        "en": "Wearing a tailored wool overcoat layered over a cream knit sweater, visible fabric weave and soft folds",
+        "ja": "クリーム色のニットの上に仕立ての良いウールコートを重ね着、繊細な生地の織り目と自然なシワ",
+        "zh": "身穿剪裁考究的羊毛大衣内搭米白色针织衫，可见清晰织物纹理与自然褶皱"
+      },
+      "keywords": ["coat", "sweater", "fabric", "コート", "ニット", "衣装", "大衣"]
+    },
+    {
+      "id": "cloth-linen-casual",
+      "role": "clothing",
+      "group": "衣装・素材",
+      "mode": "prose",
+      "text": {
+        "en": "Lightweight breathable linen shirt with rolled sleeves and subtle natural creases",
+        "ja": "袖をまくった軽やかなリネンシャツ、自然なシワ感",
+        "zh": "卷起袖口的轻薄透气亚麻衬衫，带有自然褶皱质感"
+      },
+      "keywords": ["linen", "shirt", "casual", "シャツ", "リネン", "衬衫"]
+    },
+    {
+      "id": "env-rainy-street",
+      "role": "environment",
+      "group": "背景・空間",
+      "mode": "prose",
+      "text": {
+        "en": "Rain-slicked evening city street reflecting warm shopfront neon lights on wet asphalt",
+        "ja": "雨に濡れた夕暮れの街並み、濡れたアスファルトに暖かい店先のネオンが反射している",
+        "zh": "雨后湿润的傍晚街景，潮湿柏油路面倒映着温暖的店面霓虹灯光"
+      },
+      "keywords": ["rain", "city", "neon", "reflection", "雨", "街", "反射", "街景"]
+    },
+    {
+      "id": "env-sunlit-cafe",
+      "role": "environment",
+      "group": "背景・空間",
+      "mode": "prose",
+      "text": {
+        "en": "Quiet wooden cafe interior by a large window, ceramic coffee cup and open notebook on the table",
+        "ja": "大きな窓際の静かな木製カフェ店内、テーブルに陶器のコーヒーカップと開いたノート",
+        "zh": "靠窗的安静木质咖啡馆室内，桌面摆放陶瓷咖啡杯与翻开的笔记本"
+      },
+      "keywords": ["cafe", "window", "interior", "カフェ", "窓際", "室内", "咖啡馆"]
+    },
+    {
+      "id": "env-misty-forest",
+      "role": "environment",
+      "group": "背景・空間",
+      "mode": "prose",
+      "text": {
+        "en": "Misty morning forest trail with volumetric sunbeams filtering through tall pine trees",
+        "ja": "朝霧に包まれた森の小道、背の高い松の木々から差し込む光の筋",
+        "zh": "晨雾缭绕的森林小径，丁达尔阳光穿过高大松林洒下"
+      },
+      "keywords": ["forest", "mist", "sunbeams", "森", "霧", "木漏れ日", "森林"]
+    },
+    {
+      "id": "light-soft-key-rim",
+      "role": "lighting",
+      "group": "光影・雰囲気",
+      "mode": "prose",
+      "text": {
+        "en": "Soft key light from upper left, subtle rim lighting outlining the silhouette, natural skin texture",
+        "ja": "左上からの柔らかいキーライト、輪郭を縁取る繊細なリムライト、自然な肌質感",
+        "zh": "左上方柔和主光斜向倾洒，后方透出环境轮廓光，保留自然皮肤质感"
+      },
+      "keywords": ["key light", "rim light", "soft light", "キーライト", "リムライト", "主光", "轮廓光"]
+    },
+    {
+      "id": "light-golden-hour",
+      "role": "lighting",
+      "group": "光影・雰囲気",
+      "mode": "prose",
+      "text": {
+        "en": "Golden hour window light casting warm soft shadows across the room",
+        "ja": "ゴールデンアワーの窓光が部屋に温かい柔らかい影を落とす",
+        "zh": "黄金时刻窗外暖阳斜照，在室内投下柔和温暖的阴影"
+      },
+      "keywords": ["golden hour", "sunset", "window light", "夕日", "窓光", "黄金时刻"]
+    },
+    {
+      "id": "light-overcast-diffused",
+      "role": "lighting",
+      "group": "光影・雰囲気",
+      "mode": "prose",
+      "text": {
+        "en": "Evenly diffused overcast daylight with gentle shadow transitions and no harsh highlights",
+        "ja": "曇天の均一な拡散光、穏やかな陰影と白飛びのない柔らかなハイライト",
+        "zh": "阴天均匀漫射自然光，阴影过渡柔和，无刺眼高光"
+      },
+      "keywords": ["overcast", "diffused", "daylight", "曇り", "拡散光", "漫射光"]
+    },
+    {
+      "id": "color-cinematic-teal-amber",
+      "role": "color",
+      "group": "色彩・カラーグレーディング",
+      "mode": "prose",
+      "text": {
+        "en": "Muted cinematic color palette balancing cool slate shadows with warm amber highlights",
+        "ja": "落ち着いたクールな影色と暖かみのあるアンバーのハイライトが調和するシネマティックな配色",
+        "zh": "克制的电影感色调，冷灰蓝暗部与暖琥珀高光自然平衡"
+      },
+      "keywords": ["color grading", "palette", "cinematic", "色彩", "配色", "色调"]
+    },
+    {
+      "id": "color-pastel-airy",
+      "role": "color",
+      "group": "色彩・カラーグレーディング",
+      "mode": "prose",
+      "text": {
+        "en": "Airy high-key pastel tones with gentle contrast and luminous whites",
+        "ja": "柔らかなコントラストと透き通る白を基調とした軽やかなパステル調",
+        "zh": "通透的高调粉彩色系，柔和对比度与清透高光"
+      },
+      "keywords": ["pastel", "high-key", "airy", "パステル", "透明感", "粉彩"]
+    },
+    {
+      "id": "style-editorial-photo",
+      "role": "style",
+      "group": "画風・仕上げ",
+      "mode": "prose",
+      "text": {
+        "en": "Editorial fashion photography aesthetic, authentic unretouched realism, magazine cover polish",
+        "ja": "エディトリアル・ファッション写真の美学、過度な加工のないリアルな質感、雑誌表紙の完成度",
+        "zh": "杂志大片摄影风格，真实自然的未过度修图质感，精致构图与成片完成度"
+      },
+      "keywords": ["editorial", "photography", "realistic", "写真", "リアル", "杂志摄影"]
+    },
+    {
+      "id": "style-anime-cel",
+      "role": "style",
+      "group": "画風・仕上げ",
+      "mode": "prose",
+      "text": {
+        "en": "High-budget theatrical anime key visual with crisp lineart, painterly background art, and atmospheric glow",
+        "ja": "劇場版アニメのキービジュアル風、繊細な線画と絵画的な背景美術、空気感のある光演出",
+        "zh": "剧场版动画主视觉风格，清晰精致线稿，手绘感背景美术与通透空气光感"
+      },
+      "keywords": ["anime", "key visual", "lineart", "アニメ", "線画", "动画"]
+    },
+    {
+      "id": "qual-crisp-detail",
+      "role": "quality",
+      "group": "品質・ディテール",
+      "mode": "tags",
+      "text": {
+        "en": "masterpiece, best quality, ultra-detailed, sharp focus, natural textures",
+        "ja": "傑作, 最高品質, 超詳細, シャープフォーカス, 自然な質感",
+        "zh": "杰作, 最高质量, 超精细细节, 锐利对焦, 自然材质"
+      },
+      "keywords": ["masterpiece", "quality", "detailed", "品質", "高画質", "高质量"]
+    },
+    {
+      "id": "neg-standard-clean",
+      "role": "negative",
+      "group": "ネガティブ",
+      "mode": "tags",
+      "text": {
+        "en": "lowres, bad anatomy, bad hands, extra fingers, blurry, watermark, text, signature, jpeg artifacts",
+        "ja": "低解像度, 解剖学の破綻, 手の崩れ, 余分な指, ぼけ, 透かし, 文字, サイン, 圧縮ノイズ",
+        "zh": "低分辨率, 解剖错误, 手部畸形, 多余手指, 模糊, 水印, 文字, 签名, 压缩伪影"
+      },
+      "keywords": ["negative", "anatomy", "watermark", "ネガティブ", "品質低下", "负面"]
+    },
+    {
+      "id": "neg-overprocessed",
+      "role": "negative",
+      "group": "ネガティブ",
+      "mode": "prose",
+      "text": {
+        "en": "Avoid plastic-looking skin, oversaturated HDR colors, artificial airbrushing, and cluttered background distractions",
+        "ja": "プラスチックのような不自然な肌、彩度過多のHDR、過度なエアブラシ加工、雑然とした背景のノイズを避ける",
+        "zh": "避免塑料感皮肤、过饱和HDR色彩、过度磨皮以及杂乱分散注意力的背景元素"
+      },
+      "keywords": ["plastic skin", "overprocessed", "hdr", "不自然な肌", "ノイズ", "避免"]
+    }
+  ]
+}
