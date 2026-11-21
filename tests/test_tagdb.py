@@ -72,6 +72,19 @@ class TagDbTest(unittest.TestCase):
     def test_prefix_results_are_ordered_by_usage(self):
         self.assertEqual([item["tag"] for item in tagdb.search("long")], ["long sleeves", "long hair"])
 
+    def test_exact_match_is_not_dropped_by_prefix_limit(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        db_path = Path(directory.name) / "many_cats.sqlite"
+        entries = [("cat", 1, "cat", 5, [])] + [
+            (f"cat variant {i:02d}", 1, f"cat variant {i:02d}", 1000 - i, []) for i in range(60)
+        ]
+        make_database(db_path, entries)
+        with mock.patch.dict(os.environ, {tagdb.DATABASE_ENV: str(db_path)}):
+            results = tagdb.search("cat", limit=10, contains=True)
+        self.assertTrue(results)
+        self.assertEqual(results[0]["tag"], "cat")
+
     def test_alias_resolves_to_canonical_tag(self):
         result = tagdb.search("longhair")[0]
         self.assertEqual((result["tag"], result["matched"], result["count"]), ("long hair", "longhair", 500))

@@ -138,6 +138,8 @@ def _search_database(path, variants, format_name, limit, contains):
                     }
 
         for variant in variants:
+            collect(_TAG_EXACT, RANK_EXACT, {"name": variant})
+            collect(_TRANSLATION_EXACT, RANK_EXACT, {"name": variant})
             bounds = {"low": variant, "high": variant + "\U0010ffff"}
             collect(_TAG_PREFIX, RANK_PREFIX, bounds)
             collect(_TRANSLATION_PREFIX, RANK_PREFIX, bounds)

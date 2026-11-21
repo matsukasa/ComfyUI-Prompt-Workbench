@@ -28,7 +28,7 @@ import {
 import { fetchSharedFavorites, saveSharedFavorites, sharedFavoritesStore } from "./favorites.js";
 export { fetchSharedFavorites, saveSharedFavorites };
 import { translateTags } from "./translation.js";
-import { attachTagSuggestions, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
+import { attachTagSuggestions, promptTokenSpanAt, searchTagDb, shouldSearchTagDb, tagDbKey, validateTagDb } from "./tagdb.js";
 import { applyCategoryColor, categoryColorId, categoryBaseColor, majorCategory,
   sanitizeCategoryColors, validCategoryColor, tagCategoryIndex, categoryPromptKey } from "./category_colors.js";
 import {
@@ -1148,6 +1148,17 @@ export class PromptEditor {
       api: this.api,
       language: tagDbLanguage,
       onPick: (item) => {
+        const raw = String(this.addInput.value || "");
+        const caret = Number.isInteger(this.addInput.selectionStart) ? this.addInput.selectionStart : raw.length;
+        const span = promptTokenSpanAt(raw, caret);
+        const before = raw.slice(0, span.start).trim();
+        const after = raw.slice(span.end).replace(/^[\s,]+/u, "").trim();
+        if (before || after) {
+          const insertion = span.hasFollowingSeparator ? item.tag : `${item.tag}, `;
+          this.addInput.setRangeText(insertion, span.start, span.end, "end");
+          this.addFromInput();
+          return;
+        }
         this.pushUndo();
         this.addValues(
           [{ value: item.tag, translation: item.translations[0] || "", translatedTo: this.settings.localLanguage }],
@@ -3154,7 +3165,9 @@ export class PromptEditor {
   }
 
   replaceWithPreferredTag(index, preferred) {
-    const tag = this.currentTags[index];
+    const initialId = this.currentTags[index]?.id;
+    this.commitPromptBeforeAction();
+    const tag = (initialId ? this.currentTags.find((item) => item.id === initialId) : null) || this.currentTags[index];
     if (!tag) return;
     this.pushUndo();
     tag.value = replacePromptBody(tag.value, preferred);
