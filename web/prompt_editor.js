@@ -3580,7 +3580,11 @@ export class PromptEditor {
       };
 
       const updateSelection = (clientX, clientY) => {
-        if (!listRect || this.tagList.scrollLeft !== lastScrollLeft || this.tagList.scrollTop !== lastScrollTop) {
+        const rowsDetached = cachedRows.some((item) => !item.row?.isConnected);
+        if (marqueeBox && !marqueeBox.isConnected) {
+          this.tagList.append(marqueeBox);
+        }
+        if (!listRect || rowsDetached || this.tagList.scrollLeft !== lastScrollLeft || this.tagList.scrollTop !== lastScrollTop) {
           cacheGeometry();
         }
         const toContentX = (x) => Math.max(0, Math.min(this.tagList.scrollWidth, (x - listRect.left) / scaleX + lastScrollLeft));
