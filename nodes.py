@@ -747,9 +747,11 @@ class PromptWorkbenchMCP:
             "sections_schema": schema_json,
         }
         requested_outputs = []
+        seen_outputs = set()
         for token in re.split(r"[\s,]+", str(output_sections or "").strip()):
             key = token.strip().lower()
-            if key in output_lookup:
+            if key in output_lookup and key not in seen_outputs:
+                seen_outputs.add(key)
                 requested_outputs.append(output_lookup[key])
 
         return {
