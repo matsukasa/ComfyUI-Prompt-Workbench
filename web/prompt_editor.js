@@ -3167,7 +3167,9 @@ export class PromptEditor {
   replaceWithPreferredTag(index, preferred) {
     const initialId = this.currentTags[index]?.id;
     this.commitPromptBeforeAction();
-    const tag = (initialId ? this.currentTags.find((item) => item.id === initialId) : null) || this.currentTags[index];
+    const tag = initialId
+      ? this.currentTags.find((item) => item.id === initialId)
+      : this.currentTags[index];
     if (!tag) return;
     this.pushUndo();
     tag.value = replacePromptBody(tag.value, preferred);
