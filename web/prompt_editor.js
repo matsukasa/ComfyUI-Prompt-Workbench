@@ -3376,7 +3376,7 @@ export class PromptEditor {
       action(t("日本語へ翻訳"), () => this.translateIndexes([index], this.settings.localLanguage)),
       action(t(tag.enabled ? "無効にする" : "有効にする"), () => this.toggleOne(index)),
       selectedCount > 1
-        ? action(t("{count}件をコピー", { count: selectedCount }), () => this.copySelected(false))
+        ? action(t("{count}件をコピー", { count: selectedCount }), () => this.copySelected(false, { includeDisabled: true }))
         : action(t("コピー"), async () => { await copyText(tag.value); this.setStatus(t("タグをコピーしました")); }),
       action(t("削除"), () => this.deleteOneById(tag.id), "is-danger"),
     );
@@ -3513,15 +3513,21 @@ export class PromptEditor {
   }
 
   attachTagListMarquee() {
+    const commitActiveInlineEdit = () => {
+      const activeInput = this.tagList.querySelector(".paio-tag-input");
+      if (activeInput && typeof activeInput.blur === "function") activeInput.blur();
+    };
     this.tagList.addEventListener("mousedown", (event) => {
       if (event.button !== 0 || !event.shiftKey) return;
       if (event.target?.closest?.("input, textarea, select, button")) return;
+      commitActiveInlineEdit();
       event.preventDefault();
       event.stopPropagation();
     });
     this.tagList.addEventListener("pointerdown", (event) => {
       if (event.button !== 0 || !event.shiftKey) return;
       if (event.target?.closest?.("input, textarea, select, button")) return;
+      commitActiveInlineEdit();
       event.preventDefault();
       event.stopPropagation();
       const targetRow = event.target?.closest?.(".paio-tag");
@@ -3530,6 +3536,11 @@ export class PromptEditor {
       const pointerId = event.pointerId;
       const startClientX = event.clientX;
       const startClientY = event.clientY;
+      const initialRect = this.tagList.getBoundingClientRect();
+      const initialScaleX = this.tagList.offsetWidth > 0 ? initialRect.width / this.tagList.offsetWidth : 1;
+      const initialScaleY = this.tagList.offsetHeight > 0 ? initialRect.height / this.tagList.offsetHeight : 1;
+      const startContentX = Math.max(0, Math.min(this.tagList.scrollWidth, (startClientX - initialRect.left) / initialScaleX + this.tagList.scrollLeft));
+      const startContentY = Math.max(0, Math.min(this.tagList.scrollHeight, (startClientY - initialRect.top) / initialScaleY + this.tagList.scrollTop));
       const additive = event.ctrlKey || event.metaKey;
       const initialSelectedIds = new Set(this.currentTags.filter((tag) => tag.selected).map((tag) => tag.id));
       let dragging = false;
@@ -3550,10 +3561,15 @@ export class PromptEditor {
         lastScrollTop = this.tagList.scrollTop;
         cachedRows = [...this.tagList.querySelectorAll(".paio-tag")].map((row) => {
           const index = Number(row.dataset.tagIndex);
+          const rect = row.getBoundingClientRect();
+          const left = (rect.left - listRect.left) / scaleX + lastScrollLeft;
+          const top = (rect.top - listRect.top) / scaleY + lastScrollTop;
+          const right = (rect.right - listRect.left) / scaleX + lastScrollLeft;
+          const bottom = (rect.bottom - listRect.top) / scaleY + lastScrollTop;
           return {
             row,
             index,
-            rect: row.getBoundingClientRect(),
+            contentRect: { left, top, right, bottom },
             mark: row.querySelector(".paio-select-mark"),
             selected: Boolean(this.currentTags[index]?.selected),
             target: false,
@@ -3565,12 +3581,11 @@ export class PromptEditor {
         if (!listRect || this.tagList.scrollLeft !== lastScrollLeft || this.tagList.scrollTop !== lastScrollTop) {
           cacheGeometry();
         }
-        const selectionRect = normalizeMarqueeRect(startClientX, startClientY, clientX, clientY);
         const toContentX = (x) => Math.max(0, Math.min(this.tagList.scrollWidth, (x - listRect.left) / scaleX + lastScrollLeft));
         const toContentY = (y) => Math.max(0, Math.min(this.tagList.scrollHeight, (y - listRect.top) / scaleY + lastScrollTop));
         const boxRect = normalizeMarqueeRect(
-          toContentX(startClientX),
-          toContentY(startClientY),
+          startContentX,
+          startContentY,
           toContentX(clientX),
           toContentY(clientY),
         );
@@ -3582,7 +3597,7 @@ export class PromptEditor {
         }
         const hitIndices = new Set();
         for (const item of cachedRows) {
-          if (Number.isInteger(item.index) && rectsIntersect(selectionRect, item.rect)) {
+          if (Number.isInteger(item.index) && rectsIntersect(boxRect, item.contentRect)) {
             hitIndices.add(item.index);
           }
         }
@@ -3970,11 +3985,14 @@ export class PromptEditor {
     if (local.length) await this.translateIndexes(local, this.settings.localLanguage);
   }
 
-  async copySelected(withTranslation) {
+  async copySelected(withTranslation, options = {}) {
     const selected = this.currentTags.filter((tag) => tag.selected);
+    const exportTags = options.includeDisabled
+      ? selected.map((tag) => ({ ...tag, enabled: true }))
+      : selected;
     const value = withTranslation
       ? selected.map((tag) => cleanTranslation(tag.translation) ? `${tag.value} (${cleanTranslation(tag.translation)})` : tag.value).join(", ")
-      : this.outputPromptForExport(selected);
+      : this.outputPromptForExport(exportTags);
     await copyText(value);
     this.setStatus(t("選択タグをコピーしました"));
   }
