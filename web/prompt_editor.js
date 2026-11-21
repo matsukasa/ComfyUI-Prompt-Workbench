@@ -1022,6 +1022,7 @@ export class PromptEditor {
         replaceUnderscores: this.settings.replaceUnderscoresForOutput,
         wrapBraces: this.wrapBraces,
         includeNegativeInPrompt: this.includeNegativeInPrompt,
+        nestRoles: Boolean(this.nestRoles),
       });
     }
     return {
@@ -1100,8 +1101,9 @@ export class PromptEditor {
       this.sections = parsed.sections;
       this.activeSectionId = this.sections[0]?.id || "sec-1";
       this.outputFormat = parsed.isJson ? "json" : "structured";
+      this.nestRoles = Boolean(parsed.nestRoles);
       this.wrapBraces = parsed.wrapBraces;
-      this.includeNegativeInPrompt = parsed.sections.some((section) => section.role === "negative");
+      this.includeNegativeInPrompt = !this.nestRoles && parsed.sections.some((section) => section.role === "negative");
       if (negativeValue.trim() && !this.sections.some((section) => section.role === "negative")) {
         const negParsed = parsePrompt(negativeValue);
         this.sections.push(createSection({
@@ -1574,6 +1576,7 @@ export class PromptEditor {
       version: 1,
       wrap_braces: Boolean(this.wrapBraces),
       include_negative_in_prompt: Boolean(this.includeNegativeInPrompt),
+      nest_roles: Boolean(this.nestRoles),
       output_order: outputOrder,
       sections: this.sections.map((section) => {
         let text = "";
@@ -4095,8 +4098,10 @@ export class PromptEditor {
     this.dirtySectionIds?.clear();
     if (parsed.isJson) {
       this.outputFormat = "json";
+      this.nestRoles = Boolean(parsed.nestRoles);
     } else if (parsed.wrapBraces || parsed.sections.length > 1 || parsed.sections.some((section) => section.title)) {
       this.outputFormat = "structured";
+      this.nestRoles = false;
     }
     this.wrapBraces = parsed.wrapBraces;
     if (parsed.wrapBraces && parsed.sections.some((section) => section.role === "negative")) {
@@ -4341,24 +4346,35 @@ export class PromptEditor {
     const tagSecs = this.sections.filter((s) => s.mode !== "prose" && s.tags?.length);
     if (tagSecs.length) {
       const generation = this.translationGeneration;
-      const localBase = String(this.settings.localLanguage || "ja").toLocaleLowerCase().split("-", 1)[0];
-      const items = tagSecs.flatMap((sec) => sec.tags.map((tag) => ({ sec, tag, text: translatableTagText(tag.value) })))
+      const targetLang = this.settings.localLanguage || "ja";
+      const localBase = String(targetLang).toLocaleLowerCase().split("-", 1)[0];
+      const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
+      const items = tagSecs.flatMap((sec) => sec.tags.map((tag) => ({
+        secId: sec.id,
+        tagId: tag.id,
+        originalValue: tag.value,
+        text: translatableTagText(tag.value),
+      })))
         .filter((item) => item.text && detectTextLanguage(item.text) !== localBase);
       if (items.length) {
         this.setStatus(t("{count}件のタグを翻訳中…", { count: items.length }));
         const results = await translateTags(this.api, items.map((i) => i.text), {
           provider: this.settings.translationProvider,
           source: "auto",
-          target: this.settings.localLanguage,
+          target: targetLang,
           catalog: this.settings.libraryFile,
           timeoutMs: translationBatchTimeoutMs(items.length),
-          isCancelled: () => this.disposed || generation !== this.translationGeneration,
+          isCancelled: () => this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId,
         });
+        if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
         items.forEach((item, idx) => {
+          const currentSec = this.sections?.find((s) => s.id === item.secId);
+          const currentTag = currentSec?.tags?.find((tObj) => tObj.id === item.tagId);
+          if (!currentTag || currentTag.value !== item.originalValue) return;
           const tr = cleanTranslation(results[idx]?.translated);
           if (tr) {
-            item.tag.translation = tr;
-            item.tag.translatedTo = this.settings.localLanguage;
+            currentTag.translation = tr;
+            currentTag.translatedTo = targetLang;
           }
         });
       }
@@ -5197,7 +5213,9 @@ export class PromptEditor {
   replaceWithPreferredTag(index, preferred) {
     const initialId = this.currentTags[index]?.id;
     this.commitPromptBeforeAction();
-    const tag = (initialId ? this.currentTags.find((item) => item.id === initialId) : null) || this.currentTags[index];
+    const tag = initialId
+      ? this.currentTags.find((item) => item.id === initialId)
+      : this.currentTags[index];
     if (!tag) return;
     this.pushUndo();
     tag.value = replacePromptBody(tag.value, preferred);

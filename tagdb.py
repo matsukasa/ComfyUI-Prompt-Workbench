@@ -24,7 +24,7 @@ RANK_CONTAINS = 3
 
 _HITS_SQL = """
 WITH hit AS MATERIALIZED ({source})
-SELECT p.tag, COALESCE(n.type_name, ''), COALESCE(u.count, 0), hit.matched
+SELECT p.tag, COALESCE(n.type_name, ''), COALESCE(u.count, 0), MIN(hit.matched)
 FROM hit
 CROSS JOIN TAG_STATUS s ON s.tag_id = hit.tag_id AND s.format_id = :format_id
 JOIN TAG_STATUS c ON c.tag_id = s.preferred_tag_id AND c.format_id = s.format_id AND c.alias = 0
@@ -32,6 +32,7 @@ JOIN TAGS p ON p.tag_id = s.preferred_tag_id
 LEFT JOIN TAG_USAGE_COUNTS u ON u.tag_id = s.preferred_tag_id AND u.format_id = s.format_id
 LEFT JOIN TAG_TYPE_FORMAT_MAPPING m ON m.format_id = c.format_id AND m.type_id = c.type_id
 LEFT JOIN TAG_TYPE_NAME n ON n.type_name_id = m.type_name_id
+GROUP BY p.tag, COALESCE(n.type_name, ''), COALESCE(u.count, 0)
 ORDER BY COALESCE(u.count, 0) DESC
 LIMIT :limit
 """

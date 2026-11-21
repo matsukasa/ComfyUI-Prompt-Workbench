@@ -668,7 +668,7 @@ function parseJsonPromptObject(text) {
         flattenJsonPromptValue(key, rawVal, flattened, null);
       }
     }
-    return flattened.length ? flattened : null;
+    return flattened.length ? { entries: flattened, nestRoles: isRoleNested } : null;
   } catch {
     return null;
   }
@@ -726,8 +726,9 @@ function inferProseMode(body) {
 }
 
 export function parseStructuredPrompt(text, previousSections = []) {
-  const jsonEntries = parseJsonPromptObject(text);
-  if (jsonEntries) {
+  const jsonResult = parseJsonPromptObject(text);
+  if (jsonResult) {
+    const jsonEntries = jsonResult.entries;
     const reusableByTitle = new Map();
     for (const oldSection of previousSections || []) {
       const key = String(oldSection?.title || "");
@@ -752,7 +753,7 @@ export function parseStructuredPrompt(text, previousSections = []) {
         tags: parsed.tags.filter((tag) => String(tag?.value || "").trim()),
       });
     });
-    return { wrapBraces: false, sections, errors, isJson: true };
+    return { wrapBraces: false, sections, errors, isJson: true, nestRoles: Boolean(jsonResult.nestRoles) };
   }
 
   const { inner, wrapBraces } = unwrapOuterBraces(text);

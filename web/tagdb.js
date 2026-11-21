@@ -65,7 +65,7 @@ export function promptTokenSpanAt(text, caret) {
   while (end < value.length && !isSeparator(value[end]) && !/[)\]}:]/u.test(value[end])) end += 1;
   while (end > start && /\s/u.test(value[end - 1])) end -= 1;
   const trailing = value.slice(end);
-  const hasFollowingSeparator = /^\s*[,\n]/u.test(trailing);
+  const hasFollowingSeparator = /^\s*[,\n)\]}:]/u.test(trailing);
   return { start, end, text: value.slice(start, end), hasFollowingSeparator };
 }
 

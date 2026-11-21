@@ -65,22 +65,57 @@ function ensureStyles() {
 function syncMcpDynamicOutputs(node) {
   if (!node || !Array.isArray(node.outputs)) return;
   const raw = String(node.widgets?.find((item) => item.name === "output_sections")?.value || "");
-  const desired = raw
-    .split(/[\s,]+/)
-    .map((token) => token.trim().toLowerCase())
-    .filter((token) => MCP_ALLOWED_EXTRA_OUTPUTS.has(token));
-  while (node.outputs.length > 2 + desired.length) {
-    if (typeof node.removeOutput === "function") node.removeOutput(node.outputs.length - 1);
-    else node.outputs.pop();
+  const desired = [];
+  for (const token of raw.split(/[\s,]+/)) {
+    const key = token.trim().toLowerCase();
+    if (MCP_ALLOWED_EXTRA_OUTPUTS.has(key) && !desired.includes(key)) desired.push(key);
   }
-  desired.forEach((name, idx) => {
-    const slotIndex = 2 + idx;
-    if (node.outputs[slotIndex]) {
-      if (node.outputs[slotIndex].name !== name) node.outputs[slotIndex].name = name;
-    } else if (typeof node.addOutput === "function") {
-      node.addOutput(name, "STRING");
+  const desiredSet = new Set(desired);
+  const resolveGraphLink = (linkId) => {
+    const links = node.graph?.links;
+    if (!links) return null;
+    if (typeof links.get === "function") return links.get(linkId) || null;
+    return links[linkId] || null;
+  };
+
+  // Remove dynamic outputs (slot >= 2) that are no longer requested.
+  for (let i = node.outputs.length - 1; i >= 2; i -= 1) {
+    const output = node.outputs[i];
+    const name = String(output?.name || "").trim().toLowerCase();
+    if (!desiredSet.has(name)) {
+      if (typeof node.removeOutput === "function") node.removeOutput(i);
+      else node.outputs.splice(i, 1);
     }
-  });
+  }
+
+  // Add missing requested outputs.
+  const existingByName = new Map(
+    node.outputs.slice(2).map((output) => [String(output?.name || "").trim().toLowerCase(), output]),
+  );
+  for (const name of desired) {
+    if (!existingByName.has(name) && typeof node.addOutput === "function") {
+      const added = node.addOutput(name, "STRING");
+      existingByName.set(name, added || node.outputs[node.outputs.length - 1]);
+    }
+  }
+
+  // Reorder dynamic outputs to match desired order while updating graph link origin_slot.
+  const fixedOutputs = node.outputs.slice(0, 2);
+  const orderedDynamic = desired.map((name) => existingByName.get(name)).filter(Boolean);
+  const nextOutputs = [...fixedOutputs, ...orderedDynamic];
+  if (nextOutputs.length === node.outputs.length) {
+    node.outputs.splice(0, node.outputs.length, ...nextOutputs);
+    for (let slotIdx = 2; slotIdx < node.outputs.length; slotIdx += 1) {
+      const output = node.outputs[slotIdx];
+      if (Array.isArray(output?.links)) {
+        for (const linkId of output.links) {
+          const linked = resolveGraphLink(linkId);
+          if (linked) linked.origin_slot = slotIdx;
+        }
+      }
+    }
+  }
+
   node.setDirtyCanvas?.(true, true);
   node.graph?.setDirtyCanvas?.(true, true);
   node.graph?.change?.();
