@@ -362,6 +362,63 @@ class TestPromptWorkbenchNode(unittest.TestCase):
         zh_hits = routes.search_phrases(query="胶片", language="zh", limit=5)
         self.assertTrue(any(hit["role"] == "camera" for hit in zh_hits))
 
+    def test_pr9_codex_review_fixes_return_types_weighted_split_and_prose_preservation(self):
+        from nodes import _merge_unique_tags
+
+        # P1: DynamicReturnTypes supports slot >= 2 while keeping len == 2
+        self.assertEqual(len(PromptWorkbenchFork.RETURN_TYPES), 2)
+        self.assertEqual(PromptWorkbenchFork.RETURN_TYPES[2], "STRING")
+        self.assertEqual(len(PromptWorkbenchMCP.RETURN_TYPES), 2)
+        self.assertEqual(PromptWorkbenchMCP.RETURN_TYPES[6], "STRING")
+
+        # P2: weighted groups containing commas are not split mid-group
+        merged = _merge_unique_tags("(red hair, blue eyes:1.2)", "(red hair, green eyes:1.2)")
+        self.assertEqual(merged, "(red hair, blue eyes:1.2), (red hair, green eyes:1.2)")
+
+        # P2: prose mode preserves newlines and suppresses trailing comma in tags output format
+        node = PromptWorkbenchFork()
+        prose_payload = json.dumps(
+            {
+                "sections": [
+                    {
+                        "id": "s1",
+                        "title": "Scene",
+                        "role": "positive",
+                        "mode": "prose",
+                        "enabled": True,
+                        "text": "Line one.\nLine two.",
+                        "socket_output": True,
+                    }
+                ]
+            }
+        )
+        out_prompt, _, out_scene = node.emit_prompt(output_format="tags", sections_payload=prose_payload)
+        self.assertEqual(out_prompt, "Line one.\nLine two.")
+        self.assertEqual(out_scene, "Line one.\nLine two.")
+
+        # No-dynamic-socket fallback also preserves prose formatting
+        no_socket_payload = json.dumps(
+            {
+                "sections": [
+                    {
+                        "id": "s1",
+                        "title": "Scene",
+                        "role": "positive",
+                        "mode": "prose",
+                        "enabled": True,
+                        "text": "Line one.\nLine two.",
+                        "socket_output": False,
+                    }
+                ]
+            }
+        )
+        fallback_prompt, _ = node.emit_prompt(
+            prompt="Line one.\nLine two.",
+            output_format="tags",
+            sections_payload=no_socket_payload,
+        )
+        self.assertEqual(fallback_prompt, "Line one.\nLine two.")
+
 
 if __name__ == "__main__":
     unittest.main()

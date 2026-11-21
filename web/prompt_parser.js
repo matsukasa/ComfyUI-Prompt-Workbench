@@ -816,6 +816,7 @@ export function parseStructuredPrompt(text, previousSections = []) {
       ...(reused || {}),
       title: raw.title,
       role: reused?.role || inferSectionRole(raw.title),
+      proseText: reused?.mode === "prose" ? raw.body : String(reused?.proseText || ""),
       trailingSeparator: parsed.trailingSeparator,
       tags: nextTags,
     });

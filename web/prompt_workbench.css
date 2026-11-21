@@ -158,6 +158,7 @@
   padding: 3px;
 }
 .paio-tags.is-marquee-selecting { user-select: none; }
+.paio-tags.is-marquee-selecting .paio-select-mark:empty { display: inline-block; }
 .paio-marquee-box {
   position: absolute;
   z-index: 4;

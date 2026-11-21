@@ -1099,7 +1099,7 @@ export class PromptEditor {
       const parsed = parseStructuredPrompt(widgetValue, this.sections);
       this.sections = parsed.sections;
       this.activeSectionId = this.sections[0]?.id || "sec-1";
-      this.outputFormat = "structured";
+      this.outputFormat = parsed.isJson ? "json" : "structured";
       this.wrapBraces = parsed.wrapBraces;
       this.includeNegativeInPrompt = parsed.sections.some((section) => section.role === "negative");
       if (negativeValue.trim() && !this.sections.some((section) => section.role === "negative")) {
@@ -1565,7 +1565,7 @@ export class PromptEditor {
     if (!Array.isArray(this.sections)) return "";
     const socketNames = this.sectionSocketNames();
     const outputLanguage = this.settings?.outputLanguage || "en";
-    const replaceUnderscores = Boolean(this.settings?.replaceUnderscores);
+    const replaceUnderscores = Boolean(this.settings?.replaceUnderscoresForOutput);
     const structuredMode = this.outputFormat === "structured" || this.outputFormat === "json";
     const outputOrder = Array.isArray(this.node?.outputs)
       ? this.node.outputs.slice(2).map((output) => output?._paioSectionOutId).filter(Boolean)
@@ -4386,7 +4386,7 @@ export class PromptEditor {
   async translateProseSections(targetSections, targetLang, fromTranslationField) {
     const pairs = targetSections
       .map((sec) => ({
-        sec,
+        secId: sec.id,
         sourceText: fromTranslationField ? String(sec.translation || "").trim() : String(sec.proseText || "").trim(),
       }))
       .filter((pair) => pair.sourceText);
@@ -4394,7 +4394,9 @@ export class PromptEditor {
       this.setStatus(t("翻訳対象のテキストがありません"));
       return;
     }
-    const provider = this.settings.translationProvider === "offline" ? "local" : (this.settings.translationProvider || "local");
+    const generation = this.translationGeneration;
+    const requestId = this.translationRequestId = (this.translationRequestId || 0) + 1;
+    const provider = this.settings.translationProvider || "local";
     this.setStatus(t("{count}ブロックを翻訳中…", { count: pairs.length }));
     try {
       const results = await translateTags(this.api, pairs.map((p) => p.sourceText), {
@@ -4403,13 +4405,27 @@ export class PromptEditor {
         target: targetLang,
         catalog: this.settings.libraryFile,
         timeoutMs: translationBatchTimeoutMs(pairs.length * 4),
+        isCancelled: () => this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId,
       });
-      this.pushUndo();
-      let updated = 0;
-      pairs.forEach(({ sec }, idx) => {
+      if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
+      const applicable = [];
+      pairs.forEach(({ secId, sourceText }, idx) => {
+        const currentSec = this.sections?.find((item) => item.id === secId);
+        if (!currentSec) return;
+        const latestSource = fromTranslationField
+          ? String(currentSec.translation || "").trim()
+          : String(currentSec.proseText || "").trim();
+        if (latestSource !== sourceText) return;
         const translated = cleanTranslation(results[idx]?.translated);
         if (!translated) return;
-        updated += 1;
+        applicable.push({ sec: currentSec, translated });
+      });
+      if (!applicable.length) {
+        this.setStatus(t("翻訳結果を取得できませんでした（プロバイダー設定を確認してください）"), true);
+        return;
+      }
+      this.pushUndo();
+      for (const { sec, translated } of applicable) {
         if (fromTranslationField) {
           sec.proseText = translated;
           sec.tags = [createTag(translated, { translation: sec.translation, translatedTo: this.settings.localLanguage })];
@@ -4417,13 +4433,12 @@ export class PromptEditor {
           sec.translation = translated;
           sec.translatedTo = targetLang;
         }
-      });
+      }
       this.syncToWidgets();
       this.render();
-      this.setStatus(updated
-        ? t("{count}ブロックを翻訳しました", { count: updated })
-        : t("翻訳結果を取得できませんでした（プロバイダー設定を確認してください）"), updated === 0);
+      this.setStatus(t("{count}ブロックを翻訳しました", { count: applicable.length }));
     } catch (error) {
+      if (this.disposed || generation !== this.translationGeneration || this.translationRequestId !== requestId) return;
       this.setStatus(t("翻訳に失敗しました: {error}", { error: error.message }), true);
     }
   }
@@ -5180,7 +5195,9 @@ export class PromptEditor {
   }
 
   replaceWithPreferredTag(index, preferred) {
-    const tag = this.currentTags[index];
+    const initialId = this.currentTags[index]?.id;
+    this.commitPromptBeforeAction();
+    const tag = (initialId ? this.currentTags.find((item) => item.id === initialId) : null) || this.currentTags[index];
     if (!tag) return;
     this.pushUndo();
     tag.value = replacePromptBody(tag.value, preferred);

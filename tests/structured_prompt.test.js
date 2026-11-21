@@ -776,3 +776,61 @@ test("PR #20 Codex review fixes: prototype pollution guard and buildSectionsPayl
   const payload = JSON.parse(editor.buildSectionsPayload());
   assert.equal(payload.sections[0].text, "portrait");
 });
+
+test("PR #9 Codex review fixes: prose re-parse, JSON restore, underscore payload, offline & stale prose translation", async () => {
+  // P2: re-parsing an existing prose section refreshes proseText
+  const existing = [createSection({ title: "【Scene】", mode: "prose", proseText: "Old prose." })];
+  const reparsed = parseStructuredPrompt("【Scene】\nNew prose.", existing);
+  assert.equal(reparsed.sections[0].mode, "prose");
+  assert.equal(reparsed.sections[0].proseText, "New prose.");
+
+  // P2: applyRawWidgetValue preserves json outputFormat for JSON prompts
+  const editor = Object.assign(Object.create(PromptEditor.prototype), {
+    sections: [createSection({ id: "sec-1", title: "", tags: [] })],
+    activeSectionId: "sec-1",
+    outputFormat: "tags",
+    wrapBraces: false,
+    includeNegativeInPrompt: false,
+    settings: sanitizeSettings({ autoTranslate: false, replaceUnderscoresForOutput: true, translationProvider: "offline" }),
+    node: { outputs: [{ name: "prompt" }, { name: "negative" }] },
+    translationGeneration: 1,
+    disposed: false,
+    pushUndo() {},
+    syncToWidgets() {},
+    render() {},
+    setStatus() {},
+  });
+  editor.applyRawWidgetValue('{"shot":{"angle":"eye-level"}}', "");
+  assert.equal(editor.outputFormat, "json");
+
+  // P2: buildSectionsPayload honors replaceUnderscoresForOutput
+  editor.sections = [createSection({ id: "sec-1", title: "subject", mode: "tags", tags: [createTag("blue_eyes")] })];
+  const payload = JSON.parse(editor.buildSectionsPayload());
+  assert.equal(payload.sections[0].text, "blue eyes");
+
+  // P1 & P2: translateProseSections preserves offline provider and ignores stale responses after manual edit
+  let sentProvider = "";
+  let resolveFetch;
+  editor.api = {
+    fetchApi(_url, opts) {
+      sentProvider = JSON.parse(opts.body).provider;
+      return new Promise((resolve) => {
+        resolveFetch = () => resolve({
+          ok: true,
+          async json() {
+            return { results: [{ source: "Old draft", translated: "Stale translation" }] };
+          },
+        });
+      });
+    },
+  };
+  const proseSec = createSection({ id: "sec-p", title: "Scene", mode: "prose", proseText: "Initial", translation: "Old draft" });
+  editor.sections = [proseSec];
+  const pending = editor.translateProseSections([proseSec], "en", true);
+  assert.equal(sentProvider, "offline");
+  // User edits translation before response returns -> stale response must be ignored
+  proseSec.translation = "Newer manual edit";
+  resolveFetch();
+  await pending;
+  assert.equal(proseSec.proseText, "Initial");
+});

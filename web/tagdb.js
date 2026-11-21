@@ -55,6 +55,20 @@ export function promptTokenAt(text, caret) {
   return { start, end: caret, text: text.slice(start, caret) };
 }
 
+export function promptTokenSpanAt(text, caret) {
+  const value = String(text || "");
+  const isSeparator = (character) => character === "," || character === "\n";
+  let start = caret;
+  while (start > 0 && !isSeparator(value[start - 1])) start -= 1;
+  while (start < caret && /[\s([{]/u.test(value[start])) start += 1;
+  let end = caret;
+  while (end < value.length && !isSeparator(value[end]) && !/[)\]}:]/u.test(value[end])) end += 1;
+  while (end > start && /\s/u.test(value[end - 1])) end -= 1;
+  const trailing = value.slice(end);
+  const hasFollowingSeparator = /^\s*[,\n]/u.test(trailing);
+  return { start, end, text: value.slice(start, end), hasFollowingSeparator };
+}
+
 export function shouldSearchTagDb(text) {
   const value = String(text || "").trim();
   if (!value || /^</u.test(value) || /[:|{}]/u.test(value)) return false;
@@ -83,9 +97,9 @@ export function attachTagSuggestions(input, { api, language, onPick }) {
       onPick(item);
       return;
     }
-    const token = promptTokenAt(input.value, input.selectionStart);
-    const insertion = `${item.tag}, `;
-    input.setRangeText(insertion, token.start, token.end, "end");
+    const span = promptTokenSpanAt(input.value, input.selectionStart);
+    const insertion = span.hasFollowingSeparator ? item.tag : `${item.tag}, `;
+    input.setRangeText(insertion, span.start, span.end, "end");
     input.dispatchEvent(new Event("input", { bubbles: true }));
     close();
   };

@@ -65,10 +65,53 @@ def _split_tag_items(text):
     raw = "" if text is None else str(text)
     if not raw.strip():
         return []
-    # Split on newlines or unescaped commas while keeping A1111 weights like (tag:1.2) intact.
-    flattened = re.sub(r"(?:\r\n|\r|\n)+", ",", raw)
-    parts = re.split(r"(?<!\\),", flattened)
-    return [part.strip() for part in parts if part.strip()]
+    # Split only on top-level commas or newlines while keeping brackets, quotes, and escapes intact.
+    open_to_close = {"(": ")", "[": "]", "{": "}", "<": ">"}
+    close_chars = set(open_to_close.values())
+    stack = []
+    in_quote = None
+    escaped = False
+    items = []
+    buf = []
+
+    for ch in raw:
+        if escaped:
+            buf.append(ch)
+            escaped = False
+            continue
+        if ch == "\\":
+            buf.append(ch)
+            escaped = True
+            continue
+        if in_quote:
+            buf.append(ch)
+            if ch == in_quote:
+                in_quote = None
+            continue
+        if ch == '"':
+            buf.append(ch)
+            in_quote = ch
+            continue
+        if ch in open_to_close:
+            stack.append(open_to_close[ch])
+            buf.append(ch)
+            continue
+        if ch in close_chars and stack and stack[-1] == ch:
+            stack.pop()
+            buf.append(ch)
+            continue
+        if not stack and ch in (",", "\n", "\r"):
+            token = "".join(buf).strip()
+            if token:
+                items.append(token)
+            buf = []
+            continue
+        buf.append(ch)
+
+    tail = "".join(buf).strip()
+    if tail:
+        items.append(tail)
+    return items
 
 
 def _normalize_section_text(text, normalize_tags=True):
@@ -177,6 +220,15 @@ class DynamicOptionalInputs(dict):
         return ("STRING", {"forceInput": True})
 
 
+class DynamicReturnTypes(tuple):
+    """Tuple-compatible RETURN_TYPES reporting 'STRING' for dynamic slots >= len(self)."""
+
+    def __getitem__(self, index):
+        if isinstance(index, int) and index >= super().__len__():
+            return "STRING"
+        return super().__getitem__(index)
+
+
 def _strip_section_brackets(title, fallback):
     text = str(title or "").strip()
     if not text:
@@ -272,7 +324,7 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
 
         if not enabled or not merged_text:
             continue
-        entry = (title or f"section_{index + 1}", title, merged_text)
+        entry = (title or f"section_{index + 1}", title, merged_text, mode)
         if role == "negative":
             neg_blocks.append(entry)
             if include_neg:
@@ -295,9 +347,9 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
             return ""
         if output_format == "json":
             if is_negative:
-                return normalize_structured_prompt("\n\n".join(text for _, _, text in blocks))
+                return normalize_structured_prompt("\n\n".join(text for _, _, text, _ in blocks))
             obj = {}
-            for idx, (fallback_key, title, text) in enumerate(blocks):
+            for idx, (fallback_key, title, text, _) in enumerate(blocks):
                 base_key = _strip_section_brackets(title, fallback_key or f"section_{idx + 1}")
                 _set_nested_json_value(obj, base_key, text, fallback_suffix=idx + 1)
             if nest_roles:
@@ -307,7 +359,7 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
                         wrapped["negative"] = neg_blocks[0][2]
                     else:
                         neg_obj = {}
-                        for idx, (fallback_key, title, text) in enumerate(neg_blocks):
+                        for idx, (fallback_key, title, text, _) in enumerate(neg_blocks):
                             base_key = _strip_section_brackets(title, fallback_key or f"negative_{idx + 1}")
                             _set_nested_json_value(neg_obj, base_key, text, fallback_suffix=idx + 1)
                         wrapped["negative"] = neg_obj
@@ -316,11 +368,13 @@ def _merge_dynamic_section_payload(sections_payload, dynamic_inputs, output_form
         if output_format == "structured":
             rendered = [
                 (f"{title}\n{text}" if (title and not is_negative) else text)
-                for _, title, text in blocks
+                for _, title, text, _ in blocks
             ]
             body = normalize_structured_prompt("\n\n".join(rendered))
             return f"{{\n{body}\n}}" if apply_braces and body else body
-        return normalize_output_prompt(", ".join(text for _, _, text in blocks))
+        if any(mode == "prose" for _, _, _, mode in blocks):
+            return ", ".join(normalize_structured_prompt(text) for _, _, text, _ in blocks if text)
+        return normalize_output_prompt(", ".join(text for _, _, text, _ in blocks))
 
     return (
         render_blocks(pos_blocks, apply_braces=wrap_braces, is_negative=False),
@@ -359,7 +413,7 @@ class PromptWorkbenchFork:
             ),
         }
 
-    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_TYPES = DynamicReturnTypes(("STRING", "STRING"))
     RETURN_NAMES = ("prompt", "negative")
     FUNCTION = "emit_prompt"
     CATEGORY = "prompt/Prompt Workbench"
@@ -372,14 +426,24 @@ class PromptWorkbenchFork:
             if val is not None and str(val).strip() != ""
         }
         has_section_outputs = False
+        has_pos_prose = False
+        has_neg_prose = False
         if sections_payload:
             try:
                 parsed_payload = json.loads(sections_payload)
                 if isinstance(parsed_payload, dict) and isinstance(parsed_payload.get("sections"), list):
-                    has_section_outputs = any(
-                        isinstance(sec, dict) and bool(sec.get("socket_output"))
-                        for sec in parsed_payload["sections"]
-                    )
+                    for sec in parsed_payload["sections"]:
+                        if not isinstance(sec, dict):
+                            continue
+                        if bool(sec.get("socket_output")):
+                            has_section_outputs = True
+                        if _coerce_enabled(sec.get("enabled"), default=True) and sec.get("mode") == "prose":
+                            if sec.get("role") == "negative":
+                                has_neg_prose = True
+                                if bool(parsed_payload.get("include_negative_in_prompt")):
+                                    has_pos_prose = True
+                            else:
+                                has_pos_prose = True
             except (TypeError, ValueError, json.JSONDecodeError):
                 has_section_outputs = False
         if dynamic_inputs or has_section_outputs:
@@ -396,8 +460,8 @@ class PromptWorkbenchFork:
                 normalize_structured_prompt(negative),
             )
         return (
-            normalize_output_prompt(prompt),
-            normalize_output_prompt(negative),
+            normalize_structured_prompt(prompt) if has_pos_prose else normalize_output_prompt(prompt),
+            normalize_structured_prompt(negative) if has_neg_prose else normalize_output_prompt(negative),
         )
 
 
@@ -493,7 +557,7 @@ class PromptWorkbenchMCP:
             },
         }
 
-    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_TYPES = DynamicReturnTypes(("STRING", "STRING"))
     RETURN_NAMES = ("prompt", "negative")
     FUNCTION = "emit_prompt"
     CATEGORY = "prompt/Prompt Workbench"
