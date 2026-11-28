@@ -124,6 +124,10 @@ export function applyMarqueeSelection(tags, hitIndices, initialSelectedIds = new
   return lastIndex;
 }
 
+export function marqueePointerMatches(event, pointerId) {
+  return !String(event?.type || "").startsWith("pointer") || event.pointerId === pointerId;
+}
+
 function clampTagSetListHeight(value) {
   return Math.min(MAX_TAG_SET_LIST_HEIGHT, Math.max(MIN_TAG_SET_LIST_HEIGHT, Math.round(Number(value) || DEFAULT_TAG_SET_LIST_HEIGHT)));
 }
@@ -3625,6 +3629,7 @@ export class PromptEditor {
 
       const onMove = (moveEvent) => {
         if (finished) return;
+        if (!marqueePointerMatches(moveEvent, pointerId)) return;
         if (!moveEvent.shiftKey) {
           finish(moveEvent);
           return;
@@ -3650,6 +3655,7 @@ export class PromptEditor {
 
       const finish = (endEvent) => {
         if (finished) return;
+        if (!marqueePointerMatches(endEvent, pointerId)) return;
         finished = true;
         window.removeEventListener("pointermove", onMove, true);
         window.removeEventListener("pointerup", finish, true);
