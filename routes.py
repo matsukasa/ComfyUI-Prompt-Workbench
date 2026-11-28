@@ -1150,12 +1150,42 @@ def _parse_mymemory_result(data, query):
     return result
 
 
+def _canonical_translation_language(code):
+    value = str(code or "").strip()
+    lowered = value.casefold()
+    if lowered in {"zh", "zh-cn", "zh-hans"}:
+        return "zh-CN"
+    if lowered in {"zh-tw", "zh-hant"}:
+        return "zh-TW"
+    if lowered in {"auto", "en", "ja"}:
+        return lowered
+    return value
+
+
+def _detect_source_language(text, target="en"):
+    value = str(text or "")
+    if re.search(r"[\u3040-\u309f\u30a0-\u30ff]", value):
+        return "ja"
+    if re.search(r"[\u4e00-\u9fff]", value):
+        return "zh-CN"
+    return "en"
+
+
+def _normalize_deepl_language(code, target=False):
+    canonical = _canonical_translation_language(code)
+    if canonical == "zh-CN":
+        return "ZH-HANS" if target else "ZH"
+    if canonical == "zh-TW":
+        return "ZH-HANT" if target else "ZH"
+    return canonical.upper()
+
+
 async def _translate_mymemory(session, text, source, target):
     query = _mymemory_query(text)
-    source_language = source.lower()
-    target_language = target.lower()
+    source_language = _canonical_translation_language(source)
+    target_language = _canonical_translation_language(target)
     if source_language == "auto":
-        source_language = "en" if target_language.startswith("ja") else "ja"
+        source_language = _detect_source_language(text, target_language)
     data = await _get_json(
         session,
         MYMEMORY_URL,
@@ -1171,6 +1201,9 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
         raise TranslationError(f"Translation text exceeds {MAX_TEXT_LENGTH} characters")
     if provider not in SUPPORTED_PROVIDERS:
         raise TranslationError("Unknown translation provider")
+
+    source = _canonical_translation_language(source)
+    target = _canonical_translation_language(target)
 
     dictionary_signature = _dictionary_signature(catalog_name)
     key = _cache_key(provider, source, target, text, dictionary_signature)
@@ -1216,9 +1249,9 @@ async def translate_text(provider, text, source="auto", target="en", timeout=12,
             base_url = _validate_url(
                 os.getenv("PROMPT_WORKBENCH_DEEPL_URL", "https://api-free.deepl.com/v2")
             )
-            payload = {"text": [text], "target_lang": target.upper()}
+            payload = {"text": [text], "target_lang": _normalize_deepl_language(target, target=True)}
             if source.lower() != "auto":
-                payload["source_lang"] = source.upper()
+                payload["source_lang"] = _normalize_deepl_language(source, target=False)
             data = await _post_json(
                 session,
                 f"{base_url}/translate",

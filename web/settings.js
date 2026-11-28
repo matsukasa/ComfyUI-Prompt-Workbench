@@ -3,6 +3,17 @@ import { sanitizeCategoryColors } from "./category_colors.js";
 
 export const DEFAULT_CATALOG_NAME = "tag_catalog";
 export const FAVORITES_SCHEMA = "prompt-workbench/favorites";
+export const SUPPORTED_OUTPUT_LANGUAGES = Object.freeze(["en", "ja", "zh-CN", "zh-TW"]);
+export const SUPPORTED_LOCAL_LANGUAGES = Object.freeze(["en", "ja", "zh-CN", "zh-TW"]);
+
+export function normalizeTranslationLanguage(value) {
+  const language = String(value || "").trim().toLocaleLowerCase();
+  if (language === "zh" || language === "zh-cn" || language === "zh-hans") return "zh-CN";
+  if (language === "zh-tw" || language === "zh-hant") return "zh-TW";
+  if (language === "en") return "en";
+  if (language === "ja") return "ja";
+  return "";
+}
 
 export const DEFAULT_SETTINGS = Object.freeze({
   weightStep: 0.05,
@@ -96,13 +107,13 @@ export function sanitizeSettings(input = {}) {
   if (["local", "offline", "libretranslate", "deepl", "openai"].includes(input.translationProvider)) {
     settings.translationProvider = input.translationProvider;
   }
-  if (["en", "ja"].includes(input.outputLanguage)) settings.outputLanguage = input.outputLanguage;
+  const outputLanguage = normalizeTranslationLanguage(input.outputLanguage);
+  if (SUPPORTED_OUTPUT_LANGUAGES.includes(outputLanguage)) settings.outputLanguage = outputLanguage;
   if (["original", "local", "both"].includes(input.translationDisplay)) {
     settings.translationDisplay = input.translationDisplay;
   }
-  if (typeof input.localLanguage === "string" && /^[a-z-]{2,16}$/i.test(input.localLanguage)) {
-    settings.localLanguage = input.localLanguage;
-  }
+  const localLanguage = normalizeTranslationLanguage(input.localLanguage);
+  if (SUPPORTED_LOCAL_LANGUAGES.includes(localLanguage)) settings.localLanguage = localLanguage;
   settings.autoTranslate = Boolean(input.autoTranslate);
   if (["warn", "disable", "delete"].includes(input.blacklistAction)) {
     settings.blacklistAction = input.blacklistAction;

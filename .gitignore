@@ -21,6 +21,8 @@ user_data/
 !/tests/library_sort.test.js
 !/tests/marquee_pointer.test.js
 !/tests/marquee_styles.test.js
+!/tests/multilingual_translation.test.js
+!/tests/test_translation_languages.py
 /DESIGN.md
 /PRODUCT.md
 /SOURCE_AUDIT.md
